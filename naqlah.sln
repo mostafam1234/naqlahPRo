@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113 d17.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NAQLAH.Server", "NAQLAH.Server\NAQLAH.Server.csproj", "{EFA31464-2040-4720-B343-603EC6C2CC14}"
+EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "naqlah.client", "naqlah.client\naqlah.client.esproj", "{531CA84E-5B56-420F-850C-430F2BF6F3EA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EFA31464-2040-4720-B343-603EC6C2CC14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFA31464-2040-4720-B343-603EC6C2CC14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFA31464-2040-4720-B343-603EC6C2CC14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFA31464-2040-4720-B343-603EC6C2CC14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{531CA84E-5B56-420F-850C-430F2BF6F3EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{531CA84E-5B56-420F-850C-430F2BF6F3EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{531CA84E-5B56-420F-850C-430F2BF6F3EA}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{531CA84E-5B56-420F-850C-430F2BF6F3EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{531CA84E-5B56-420F-850C-430F2BF6F3EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{531CA84E-5B56-420F-850C-430F2BF6F3EA}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
