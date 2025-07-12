@@ -1,12 +1,17 @@
 using Application.DependencyInjection;
 using Domain.Models;
+using NAQLAH.Server.ApiDependencyInjection;
 using Hangfire;
 using Infrastructure;
 using Infrastructure.HangFireDepencies;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using NAQLAH.Server.MiddleWares;
 using Presentaion;
+using System.Globalization;
 
 namespace NAQLAH.Server
 {
@@ -25,11 +30,13 @@ namespace NAQLAH.Server
             builder.Services.AddSwaggerGen();
             builder.Services.AddServicesForApplicationLayer()
                             .AddDataBase(builder.Configuration)
-                            .AddHangFireConfig(builder.Configuration);
+                            .AddServicesForApi()
+                            .AddHangFireConfig(builder.Configuration)
+                            .AddServicesForApi();
 
 
 
-            var keysFolder = Path.Combine(builder.Environment.ContentRootPath, "Keys");
+            var keysFolder = Path.Combine(builder.Environment.ContentRootPath,"Keys");
             builder.Services.AddDataProtection()
                             .PersistKeysToFileSystem(new DirectoryInfo(keysFolder));
 
@@ -56,6 +63,21 @@ namespace NAQLAH.Server
                 options.Password.RequiredLength = 4;
             });
 
+            builder.Services.AddLocalization(options => options.ResourcesPath = "Resources")
+                   .Configure<RequestLocalizationOptions>(options =>
+                   {
+                    var supportedCultures = new[] { new CultureInfo("en-US"), new CultureInfo("ar") };
+                    foreach (var culture in supportedCultures)
+                    {
+                      culture.DateTimeFormat.Calendar = new GregorianCalendar();
+                    }
+
+                    options.DefaultRequestCulture = new RequestCulture(culture: "en-US",
+                                                                       uiCulture: "en-US");
+                    options.SupportedCultures = supportedCultures;
+                    options.SupportedUICultures = supportedCultures;
+                   });
+
             builder.Services.AddOpenApiDocument(document =>
             {
                 document.Title = "Naqlah API";
@@ -65,6 +87,7 @@ namespace NAQLAH.Server
 
 
             var app = builder.Build();
+            app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
 
             using (var scope = app.Services.CreateScope())
             {
@@ -107,12 +130,13 @@ namespace NAQLAH.Server
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            app.UseMiddleware<ExceptionHandlingMiddleWare>();
             app.UseHttpsRedirection();
 
             app.MapIdentityApi<User>();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseMiddleware<SessionInfoMiddleWare>();
             app.UseHangfireDashboard();
 
 
