@@ -1,4 +1,5 @@
 ﻿using Domain.InterFaces;
+using Infrastructure.Services;
 using NAQLAH.Server.Services;
 
 namespace NAQLAH.Server.ApiDependencyInjection
@@ -10,6 +11,9 @@ namespace NAQLAH.Server.ApiDependencyInjection
             services.AddScoped<UserSession>();
             services.AddScoped<IUserSession, UserSessions>();
             services.AddSingleton<LockServices>();
+            services.AddScoped<IDateTimeProvider, DateTimeProvider>();
+            services.AddScoped<IWebEnvironment, WebEnvironment>();
+            services.AddScoped<IMediaUploader, MediaUploader>();
             services.AddSingleton<IReadFromResourceFile, ReadFromResourceFile>();
             services.AddHttpClient();
             services.AddSingleton<IReadFromAppSetting, ReadFromAppSetting>();

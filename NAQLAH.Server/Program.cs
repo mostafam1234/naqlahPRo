@@ -79,7 +79,7 @@ namespace NAQLAH.Server
                    });
 
             builder.Services.AddOpenApiDocument(document =>
-            {
+            {   
                 document.Title = "Naqlah API";
             });
 
