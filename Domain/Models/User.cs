@@ -24,5 +24,6 @@ namespace Domain.Models
         public ICollection<UserLogin> AspNetUserLogins { get; set; }
 
         public ICollection<UserRole> AspNetUserRoles { get; set; }
+        public DeliveryMan? DeliveryMan { get;private set; }
     }
 }

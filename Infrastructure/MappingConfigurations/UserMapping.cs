@@ -9,7 +9,11 @@ namespace Infrastructure.MappingConfigurations
         public void Configure(EntityTypeBuilder<User> builder)
         {
             builder.ToTable("NA_User");
-           
+
+            builder.HasOne(x => x.DeliveryMan)
+                .WithOne(x => x.User)
+                .HasForeignKey<DeliveryMan>(x => x.UserId)
+                .IsRequired();
         }
     }
 }
