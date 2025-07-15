@@ -17,10 +17,10 @@ namespace Domain.Models
             this.BankAccountNumber = string.Empty;
         }
         [Key]
-        public int DeliveryManId { get; set; }
-        public string CitizenName { get; set; }
-        public string FrontIdentityImagePath { get; set; }
-        public string BackIdentityImagePath { get; set; }
-        public string BankAccountNumber { get; set; }
+        public int DeliveryVehicleId { get;private set; }
+        public string CitizenName { get;private set; }
+        public string FrontIdentityImagePath { get;private set; }
+        public string BackIdentityImagePath { get;private set; }
+        public string BankAccountNumber { get;private set; }
     }
 }

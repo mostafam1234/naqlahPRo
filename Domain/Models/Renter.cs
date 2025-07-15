@@ -19,7 +19,7 @@ namespace Domain.Models
             this.BankAccountNumber = string.Empty;
         }
         [Key]
-        public int DeliveryManId { get;private set; }
+        public int DeliveryVehicleId { get;private set; }
         public string CitizenName { get;private set; }
         public string IdentityNumber { get;private set; }
         public string FrontIdentityImagePath { get;private set; }

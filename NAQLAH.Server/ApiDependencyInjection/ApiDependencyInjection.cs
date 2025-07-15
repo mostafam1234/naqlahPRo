@@ -10,6 +10,7 @@ namespace NAQLAH.Server.ApiDependencyInjection
         {
             services.AddScoped<UserSession>();
             services.AddScoped<IUserSession, UserSessions>();
+            services.AddScoped<IUserService, UserService>();
             services.AddSingleton<LockServices>();
             services.AddScoped<IDateTimeProvider, DateTimeProvider>();
             services.AddScoped<IWebEnvironment, WebEnvironment>();

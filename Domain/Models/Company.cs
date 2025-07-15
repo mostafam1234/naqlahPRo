@@ -19,7 +19,7 @@ namespace Domain.Models
             this.TaxCertificateImagePath = string.Empty;
         }
         [Key]
-        public int DeliveryManId { get;private set; }
+        public int DeliveryVehicleId { get;private set; }
         public string CompanyName { get;private set; }
         public string CommercialRecordNumber { get;private set; }
         public string RecordImagePath { get;private set; }

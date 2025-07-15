@@ -41,5 +41,7 @@ namespace Domain.Models
         public Company? Company { get;private set; }
         public Renter? Renter { get;private set; }
         public DeliveryMan DeliveryMan { get;private set; }
+        public VehicleType VehicleType { get;private set; }
+        public VehicleBrand VehicleBrand { get;private set; }
     }
 }

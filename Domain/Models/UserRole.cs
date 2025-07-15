@@ -9,5 +9,9 @@ namespace Domain.Models
 {
     public class UserRole : IdentityUserRole<int>
     {
+        public static UserRole Instance(int roleId)
+        {
+            return new UserRole { RoleId = roleId };
+        }
     }
 }

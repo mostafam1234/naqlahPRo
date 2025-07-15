@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,7 +16,12 @@ namespace Domain.Models
             this.FullName = string.Empty;
             this.Address = string.Empty;
             this.PhoneNumber= string.Empty;
-
+            this.IdentityNumber = string.Empty;
+            this.BackDrivingLicenseImagePath = string.Empty;
+            this.FrontIdenitytImagePath = string.Empty;
+            this.BackIdenitytImagePath = string.Empty;
+            this.PersonalImagePath = string.Empty;
+            this.FrontDrivingLicenseImagePath = string.Empty;
         }
         public int Id { get; set; }
         public string FullName { get;private set; }
@@ -27,7 +33,6 @@ namespace Domain.Models
         public string PersonalImagePath { get;private set; }
         public DateTime IdentityExpirationDate { get;private set; }
         public DateTime DrivingLicenseExpirationDate { get;private set; }
-        public string FrontDrivingLicenseImage { get; set; }
         public DeliveryType DeliveryType { get;private set; }
         public DeliveryLicenseType DeliveryLicenseType { get;private set; }
         public string FrontDrivingLicenseImagePath { get;private set; }
@@ -39,6 +44,16 @@ namespace Domain.Models
         public User User { get;private set; }
         public DeliveryVehicle? Vehicle { get;private set; }
 
+        public static DeliveryMan Instance(string phoneNumber,
+                                           string name)
+        {
+            var deliveryMan = new DeliveryMan
+            {
+                PhoneNumber = phoneNumber,
+                FullName = name
+            };
 
+            return deliveryMan;
+        }
     }
 }
