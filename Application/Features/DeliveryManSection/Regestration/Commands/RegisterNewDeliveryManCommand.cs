@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Domain.InterFaces;
+using Domain.Shared;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Application.Features.DeliveryManSection.Regestration.Commands
 {
-    public sealed record RegisterNewDeliveryManCommand:IRequest<Result>
+    public sealed record RegisterNewDeliveryManCommand:IRequest<Result<DeliveryManTokenResponse>>
     {
         public string Name { get; init; } = string.Empty;
         public string PhoneNumber { get; init; } = string.Empty;
@@ -17,7 +18,7 @@ namespace Application.Features.DeliveryManSection.Regestration.Commands
         public string Password { get; init; } = string.Empty;
 
         private class RegisterNewDeliveryManCommandHandler
-            : IRequestHandler<RegisterNewDeliveryManCommand, Result>
+            : IRequestHandler<RegisterNewDeliveryManCommand, Result<DeliveryManTokenResponse>>
         {
             private readonly IUserService userService;
 
@@ -25,7 +26,7 @@ namespace Application.Features.DeliveryManSection.Regestration.Commands
             {
                 this.userService = userService;
             }
-            public async Task<Result> Handle(RegisterNewDeliveryManCommand request, CancellationToken cancellationToken)
+            public async Task<Result<DeliveryManTokenResponse>> Handle(RegisterNewDeliveryManCommand request, CancellationToken cancellationToken)
             {
                 var deliveryUser = await userService.CreateDeliveryUser(request.PhoneNumber,
                                                                         request.Email,
@@ -34,10 +35,27 @@ namespace Application.Features.DeliveryManSection.Regestration.Commands
 
                 if (deliveryUser.IsFailure)
                 {
-                    return Result.Failure(deliveryUser.Error);
+                    return Result.Failure<DeliveryManTokenResponse>(deliveryUser.Error);
                 }
 
-                return Result.Success();
+                var tokenResponse = await userService.GetAcessToken(request.PhoneNumber,
+                                                                    request.Password);
+
+                if (tokenResponse.IsFailure)
+                {
+                    return Result.Failure<DeliveryManTokenResponse>("Server Error");
+                }
+
+                var deliveryResponse = new DeliveryManTokenResponse
+                {
+                    RequiredDeliveryInfo = true,
+                    RequiredPersonalInfo = true,
+                    RequiredVehicleInfo = true,
+                    CarOwnerType = null,
+                    TokenResponse = tokenResponse.Value
+                };
+
+                return Result.Success(deliveryResponse);
             }
         }
     }

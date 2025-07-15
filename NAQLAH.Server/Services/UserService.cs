@@ -1,12 +1,14 @@
 ﻿using CSharpFunctionalExtensions;
 using Domain.InterFaces;
 using Domain.Models;
+using Domain.Shared;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace NAQLAH.Server.Services
 {
-    public class UserService: IUserService
+    public class UserService : IUserService
     {
         private readonly UserManager<User> userManager;
         private readonly IReadFromResourceFile readFromResourceFile;
@@ -69,6 +71,23 @@ namespace NAQLAH.Server.Services
 
 
             return user.Id;
+        }
+
+        public async Task<Result<TokenResponse>> GetAcessToken(string userName,
+                                                              string Password)
+        {
+            var client = httpClientFactory.CreateClient();
+            var logInRequest = new LoginRequest { Email = userName, Password = Password };
+            var apiBaseUrl = readFromAppSetting.GetValue<string>("apiBaseUrl");
+            var loginUrl = string.Format("{0}/login", apiBaseUrl);
+            var response = await client.PostAsJsonAsync(loginUrl, logInRequest);
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = readFromResourceFile.GetLocalizedMessage("InValidUsernameOrPassword");
+                return Result.Failure<TokenResponse>(error);
+            }
+            var result = await response.Content.ReadFromJsonAsync<TokenResponse>();
+            return Result.Success<TokenResponse>(result);
         }
     }
 }

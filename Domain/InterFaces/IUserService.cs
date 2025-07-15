@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using Domain.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +14,8 @@ namespace Domain.InterFaces
                                              string email,
                                              string name,
                                              string password);
+
+        Task<Result<TokenResponse>> GetAcessToken(string userName,
+                                                  string Password);
     }
 }

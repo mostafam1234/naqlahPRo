@@ -8,6 +8,6 @@ namespace Domain.InterFaces
 {
     public interface IMediaUploader
     {
-        Task<string> UploadFromBase64(string imageBase64);
+        Task<string> UploadFromBase64(string imageBase64,string foldePath);
     }
 }

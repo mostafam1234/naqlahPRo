@@ -1,4 +1,5 @@
-﻿using Domain.Enums;
+﻿using CSharpFunctionalExtensions;
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -43,5 +44,39 @@ namespace Domain.Models
         public DeliveryMan DeliveryMan { get;private set; }
         public VehicleType VehicleType { get;private set; }
         public VehicleBrand VehicleBrand { get;private set; }
+
+
+        public static Result<DeliveryVehicle>Instance(int vehicleTypeId,
+                                                      int vehicleBrandId,
+                                                      string licensePlateNumber,
+                                                      string frontImagePath,
+                                                      string sideImagePath,
+                                                      string frontLicenseImagePath,
+                                                      string backLicenseImagePath,
+                                                      DateTime licenseExpirationDate,
+                                                      string frontInsuranceImagePath,
+                                                      string backInsuranceImagePath,
+                                                      DateTime inSuranceExpirationDate,
+                                                      int vehicleOwnerTypeId
+                                                      )
+        {
+            var vehicle = new DeliveryVehicle
+            {
+                VehicleBrandId = vehicleBrandId,
+                VehicleTypeId = vehicleTypeId,
+                LicensePlateNumber = licensePlateNumber,
+                LicenseExpirationDate = licenseExpirationDate,
+                FrontImagePath = frontImagePath,
+                SideImagePath = sideImagePath,
+                BackInsuranceImagePath = backInsuranceImagePath,
+                FrontInsuranceImagePath = frontInsuranceImagePath,
+                FrontLicenseImagePath = frontLicenseImagePath,
+                BackLicenseImagePath = backLicenseImagePath,
+                InSuranceExpirationDate = inSuranceExpirationDate,
+
+            };
+
+            return vehicle;
+        }
     }
 }

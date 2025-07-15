@@ -14,6 +14,9 @@ namespace Domain.InterFaces
         DbSet<User> Users { get; set; }
         DbSet<Role> Roles { get; set; }
         DbSet<UserRole> UserRoles { get; set; }
+        DbSet<DeliveryMan> DeliveryMen { get; set; }
+        DbSet<VehicleBrand> VehicleBrands { get; set; }
+        DbSet<VehicleType> VehicleTypes { get; set; }
 
         Task<Result> SaveChangesAsyncWithResult();
     }

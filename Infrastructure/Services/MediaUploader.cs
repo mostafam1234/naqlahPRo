@@ -19,7 +19,7 @@ namespace Infrastructure.Services
         }
 
 
-        public async Task<string> UploadFromBase64(string imageBase64)
+        public async Task<string> UploadFromBase64(string imageBase64,string folderPath)
         {
             try
             {
@@ -27,8 +27,9 @@ namespace Infrastructure.Services
 
                 byte[] imageBytes = Convert.FromBase64String(data);
                 var extension = FileExtensionExtractor.GetExtension(imageBytes);
-                string fileName = string.Format("{0}.{1}", Guid.NewGuid().ToString(), extension);
-                string uploadsFolder = Path.Combine(_webEnvironment.WebRootPath, "ImageBank");
+                string shortId = Guid.NewGuid().ToString("N").Substring(0, 8);
+                string fileName = string.Format("{0}.{1}", shortId, extension);
+                string uploadsFolder = Path.Combine(_webEnvironment.WebRootPath, "ImageBank",folderPath);
                 string filePath = Path.Combine(uploadsFolder, fileName);
 
                 // Ensure the uploads folder exists

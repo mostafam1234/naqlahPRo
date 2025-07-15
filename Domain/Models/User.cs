@@ -58,7 +58,6 @@ namespace Domain.Models
             };
 
             user.AspNetUserRoles.Add(userRole);
-            user.GenerateActivationCode();
             return user;
         }
 

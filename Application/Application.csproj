@@ -19,7 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\DeliveryManSection\Regestration\Dtos\" />
     <Folder Include="Features\DeliveryManSection\Regestration\Validators\" />
   </ItemGroup>
 
