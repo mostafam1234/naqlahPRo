@@ -1,0 +1,23 @@
+<!-- dashboard.component.html -->
+<div class="G-dashboard bg-adminPrimaryBg" [class.rtl]="language === 'ar'" [class.ltr]="language === 'en'">
+  <div class="left-side"
+  [ngClass]="{
+    en: language === 'en',
+    ar: language === 'ar',
+    open: appearSideBar,
+    closed: !appearSideBar,
+    large: !isSmallScreen,
+    small: isSmallScreen
+  }">
+    <app-side-bar (dataEmitter)="handleSideBarVisibility($event)"></app-side-bar>
+  </div>
+  <div class="right-side">
+    <app-header (dataEmitter)="handleSideBarVisibility($event)"></app-header>
+      <div class="G-container">
+        <div class="bg-white G-sub_container">
+          <router-outlet></router-outlet>
+          <span *ngIf="loading" class="loading-spinner" ></span>
+        </div>
+      </div>
+  </div>
+</div>

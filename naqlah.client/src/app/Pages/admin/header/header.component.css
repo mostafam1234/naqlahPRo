@@ -1,0 +1,22 @@
+.custom-navBar {
+  width: 100%;
+  padding: 0.4rem 2rem;
+  z-index: 999;
+}
+.header {
+  flex-wrap: wrap;
+  align-items: center;
+}
+.humburgerIcon {
+  visibility: hidden;
+}
+.header-search input {
+  border-radius: 25px;
+}
+/** responsive **/
+@media (max-width: 992px) {
+  .humburgerIcon {
+    visibility: visible;
+    cursor: pointer;
+  }
+}

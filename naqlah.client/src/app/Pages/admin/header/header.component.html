@@ -1,0 +1,101 @@
+
+<header class="custom-navBar flex justify-between items-center sticky top-0 bg-headerBg ">
+  <div class="container">
+    <div class="header flex gap-[10px] md:gap-[15px] items-center w-full justify-between">
+      <div class="humburgerIcon" (click)="AppearSideBar()">
+        <svg  xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30">
+          <rect x="4" y="6" width="22" height="2" fill="#106490"/>
+          <rect x="4" y="13" width="22" height="2" fill="#106490"/>
+          <rect x="4" y="20" width="22" height="2" fill="#106490"/>
+        </svg>
+      </div>
+      <div class="header-date hidden md:inline-block">
+        icon
+      </div>
+      <div class="header-search hidden md:inline-block">
+        <form>
+          <input type="text" id="search" class="w-[318px] h-[48px] bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search" />
+        </form>
+      </div>
+
+      <div class="header-user flex gap-[5px] md:gap-[45px]">
+        <div class="header-user_settings flex gap-[10px] items-center">
+          <div>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M14.7354 1.9209C15.1084 1.2565 15.8636 1.07755 16.415 1.4248V1.42578L16.4268 1.43262L18.502 2.69043V2.69141C19.2313 3.13324 19.5148 4.15949 19.0703 4.98535C18.4573 6.11888 18.3215 7.30683 18.8428 8.26172C19.3723 9.23164 20.4436 9.71578 21.709 9.71582C22.5102 9.71582 23.2411 10.4291 23.25 11.3877V13.6191C23.2498 14.5788 22.5157 15.2842 21.7207 15.2842C20.4559 15.2843 19.3835 15.7681 18.8555 16.7393C18.3679 17.636 18.4612 18.7369 18.9854 19.8047L19.0957 20.0176C19.537 20.8283 19.2563 21.8662 18.5264 22.3086L18.5254 22.3096L16.4502 23.5674L16.4395 23.5742C15.8879 23.922 15.1319 23.7439 14.7588 23.0791L14.6309 22.8447C14.0156 21.7196 13.093 20.958 11.9951 20.958C10.8971 20.9582 9.97845 21.7198 9.36914 22.8447L9.24121 23.0791C8.86809 23.7439 8.11209 23.922 7.56055 23.5742L7.5498 23.5674L5.47461 22.3096L5.47363 22.3086C4.74536 21.8672 4.46202 20.8428 4.9043 20.0176C5.52385 18.8845 5.66454 17.6957 5.14453 16.7393C4.61651 15.7681 3.54405 15.2843 2.2793 15.2842C1.47728 15.2842 0.750186 14.5713 0.75 13.6191V11.3809C0.750187 10.4212 1.4843 9.71582 2.2793 9.71582C3.54392 9.71571 4.61638 9.23181 5.14453 8.2627C5.63234 7.36727 5.5385 6.26897 5.01367 5.20605L4.90332 4.99316C4.46169 4.16663 4.74739 3.13161 5.47363 2.69141L5.47461 2.69043L7.5498 1.43262L7.56055 1.42578C8.11635 1.07528 8.86233 1.2623 9.20996 1.90918L9.21289 1.91309L9.34473 2.15527C9.96003 3.2805 10.8826 4.04197 11.9805 4.04199C13.0788 4.04199 13.9971 3.27963 14.6064 2.1543L14.6074 2.15527L14.7354 1.9209ZM11.9941 7.61816C9.39244 7.61816 7.3457 9.85185 7.3457 12.5C7.3457 15.1481 9.39244 17.3818 11.9941 17.3818C14.5958 17.3818 16.6416 15.1481 16.6416 12.5C16.6416 9.8519 14.5958 7.61824 11.9941 7.61816Z" stroke="#234A43" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <div>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12.0201 3.41016C8.71009 3.41016 6.02009 6.10016 6.02009 9.41016V12.3002C6.02009 12.9102 5.76009 13.8402 5.45009 14.3602L4.30009 16.2702C3.59009 17.4502 4.08009 18.7602 5.38009 19.2002C9.69009 20.6402 14.3401 20.6402 18.6501 19.2002C19.8601 18.8002 20.3901 17.3702 19.7301 16.2702L18.5801 14.3602C18.2801 13.8402 18.0201 12.9102 18.0201 12.3002V9.41016C18.0201 6.11016 15.3201 3.41016 12.0201 3.41016Z" stroke="#234A43" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"/>
+              <path d="M13.8699 3.69945C13.5599 3.60945 13.2399 3.53945 12.9099 3.49945C11.9499 3.37945 11.0299 3.44945 10.1699 3.69945C10.4599 2.95945 11.1799 2.43945 12.0199 2.43945C12.8599 2.43945 13.5799 2.95945 13.8699 3.69945Z" stroke="#234A43" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M15.02 19.5605C15.02 21.2105 13.67 22.5605 12.02 22.5605C11.2 22.5605 10.44 22.2205 9.90002 21.6805C9.36002 21.1405 9.02002 20.3805 9.02002 19.5605" stroke="#234A43" stroke-width="1.5" stroke-miterlimit="10"/>
+            </svg>
+          </div>
+          <div class="relative">
+            <button (click)="toggleLanguageDropdown()" class="flex items-center gap-1 p-2 hover:bg-gray-100 rounded-full transition">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="9" stroke="#234A43" stroke-width="1.5"/>
+                <path d="M3 12H21" stroke="#234A43" stroke-width="1.5"/>
+                <path d="M12 3C14.5 6 14.5 18 12 21C9.5 18 9.5 6 12 3Z" stroke="#234A43" stroke-width="1.5"/>
+              </svg>
+              <span class="text-sm text-gray-700" *ngIf="isActiveLanguage('en')">EN</span>
+              <span class="text-sm text-gray-700" *ngIf="isActiveLanguage('ar')">AR</span>
+            </button>
+            <div *ngIf="languageDropdownOpen" class="absolute top-full right-0 mt-2 w-28 bg-white border border-gray-200 rounded shadow-lg z-50">
+              <ul
+                class="p-2 text-sm text-gray-700">
+                <li
+                  class="text-lg cursor-pointer font-arabic"
+                  [ngClass]="{ active: isActiveLanguage('ar') }"
+                  (click)="ChangeLanguage('rtl')"
+                  [style.pointer-events]="isActiveLanguage('ar') ? 'none' : 'auto'"
+                >
+                  العربية
+                </li>
+                <li
+                  class="text-lg cursor-pointer font-english"
+                  [ngClass]="{ active: isActiveLanguage('en') }"
+                  (click)="ChangeLanguage('ltr')"
+                  [style.pointer-events]="isActiveLanguage('en') ? 'none' : 'auto'"
+                >
+                  EN
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="header-user_profile flex gap-[10px] relative items-center cursor-pointer" (click)="toggleDropdown()">
+          <div class="flex items-center gap-1">
+            <span class="text-sm font-medium text-gray-800">John Doe</span>
+            <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </div>
+
+        <!-- Dropdown -->
+          <div
+            *ngIf="dropdownOpen"
+            class="absolute top-full right-0 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+            <button
+              class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              (click)="logout()">
+              Logout
+            </button>
+          </div>
+          <div>
+            <img
+              src="./assets/images/user.png"
+              alt="User Avatar"
+              class="w-[67px] h-[67px] rounded-full border border-gray-300"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>

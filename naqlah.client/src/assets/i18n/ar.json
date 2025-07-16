@@ -1,0 +1,23 @@
+{
+  "ADMIN": {
+    "SIDEBAR": {
+      "HOME": "الصفحة الرئيسية",
+      "USERS": "المستخدمين",
+      "HR": "موظفين HR",
+      "DATA_REVIEW": "مراجعه البيانات",
+      "REQUESTS": "الطلبات",
+      "MESSAGES": "الرسائل",
+      "TECH_SUPPORT": "الدعم الفني",
+      "NOTIFICATIONS": "الاشعارات",
+      "CATEGORY_CONTROL": "التحكم في الأنواع",
+      "COMPLAINTS": "الشكاوي",
+      "INVOICES": "الفواتير",
+      "WALLET": "المحفظة",
+      "LEGAL": "الشؤون القانونية",
+      "LOGOUT": "الخروج"
+    },
+    "HEADER": {
+
+    }
+  }
+}
