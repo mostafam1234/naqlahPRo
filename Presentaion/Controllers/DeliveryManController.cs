@@ -1,4 +1,7 @@
-﻿using Application.Features.DeliveryManSection.LogIn;
+﻿using Application.Features.DeliveryManSection.Assistant.Commands;
+using Application.Features.DeliveryManSection.Assistant.Dtos;
+using Application.Features.DeliveryManSection.Assistant.Queries;
+using Application.Features.DeliveryManSection.LogIn;
 using Application.Features.DeliveryManSection.LogIn.Commands;
 using Application.Features.DeliveryManSection.LogIn.Dtos;
 using Application.Features.DeliveryManSection.LogIn.Queries;
@@ -73,15 +76,108 @@ namespace Presentaion.Controllers
             return Ok(result.Value);
         }
 
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("Assistant")]
+        [Authorize]
+        public async Task<IActionResult> Assistant([FromBody] AddAssistantRequest request)
+        {
+
+            var result = await mediator.Send(new AddDeliveryAssistantCommand
+            {
+               Name=request.Name,
+               Address=request.Address,
+               PhoneNumber=request.Phone,
+               AssistanWorkId=request.MaidTypeId,
+               FrontIdentityImagePath=request.FrontIdentityImage,
+               BackIdentityImagePath=request.BackIdentityImage,
+               IdentityNumber=request.IdentityNumber,
+               IdentityExpirationDate=request.IdentityExpirationDate
+            });
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+            return Ok();
+        }
+
+
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("AddDeviceTokens")]
+        [Authorize]
+        public async Task<IActionResult> AddDeviceTokens([FromBody] DeliveryDeviceTokensDto request)
+        {
+
+            var result = await mediator.Send(new AddDeliveryManDeviceTokenCommand
+            {
+                IosDevice = request.IosDevice,
+                AndriodDevice = request.AndriodDevice
+            });
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+            return Ok();
+        }
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("RemoveDeviceTokens")]
+        [Authorize]
+        public async Task<IActionResult> RemoveDeviceTokens([FromBody] DeliveryDeviceTokensDto request)
+        {
+
+            var result = await mediator.Send(new RemoveDeliveryManDeviceTokenCommand
+            {
+                IosDevice = request.IosDevice,
+                AndriodDevice = request.AndriodDevice
+            });
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+            return Ok();
+        }
+
+
+
+
         [HttpGet]
         [ProducesResponseType(typeof(DeliveryManInfoDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
         [Route("Info")]
+        [Authorize]
         public async Task<IActionResult> Info()
         {
 
             var result = await mediator.Send(new GetDeliveryManInfoQuery());
-           
+
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+            return Ok(result.Value);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(List<MaidTypeDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("MaidTypes")]
+        [Authorize]
+        public async Task<IActionResult> MaidTypes()
+        {
+
+            var result = await mediator.Send(new GetAssistantWorksQuery());
+
 
             if (result.IsFailure)
             {

@@ -20,6 +20,8 @@ namespace Domain.InterFaces
         DbSet<Resident> Residents { get; set; }
         DbSet<Company> Companies { get; set; }
         DbSet<Renter> Renters { get; set; }
+        DbSet<Assistant> Assistants { get; set; }
+        DbSet<AssistanWork> AssistanWorks { get; set; }
 
         Task<Result> SaveChangesAsyncWithResult();
     }

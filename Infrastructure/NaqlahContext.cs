@@ -49,6 +49,8 @@ namespace Infrastructure
         public DbSet<Resident> Residents { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<Renter> Renters { get; set; }
+        public DbSet<Assistant> Assistants { get; set; }
+        public DbSet<AssistanWork> AssistanWorks { get; set; }
 
 
         public async Task<Result> SaveChangesAsyncWithResult()

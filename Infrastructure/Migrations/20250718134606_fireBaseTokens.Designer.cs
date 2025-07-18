@@ -4,6 +4,7 @@ using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(NaqlahContext))]
-    partial class NaqlahContextModelSnapshot : ModelSnapshot
+    [Migration("20250718134606_fireBaseTokens")]
+    partial class fireBaseTokens
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,80 +24,6 @@ namespace Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Domain.Models.AssistanWork", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ArabicName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EnglishName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("NA_AssistanWork", (string)null);
-                });
-
-            modelBuilder.Entity("Domain.Models.Assistant", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("AssistanWorkId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("BackIdentityImagePath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("DeliveryManId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FrontIdentityImagePath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("IdentityExpirationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("IdentityNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AssistanWorkId");
-
-                    b.HasIndex("DeliveryManId");
-
-                    b.ToTable("NA_Assistant", (string)null);
-                });
 
             modelBuilder.Entity("Domain.Models.Company", b =>
                 {
@@ -618,24 +547,6 @@ namespace Infrastructure.Migrations
                     b.ToTable("NA_VehicleType", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Models.Assistant", b =>
-                {
-                    b.HasOne("Domain.Models.AssistanWork", "AssistanWork")
-                        .WithMany()
-                        .HasForeignKey("AssistanWorkId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Models.DeliveryMan", "DeliveryMan")
-                        .WithMany("Assistants")
-                        .HasForeignKey("DeliveryManId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("AssistanWork");
-
-                    b.Navigation("DeliveryMan");
-                });
-
             modelBuilder.Entity("Domain.Models.Company", b =>
                 {
                     b.HasOne("Domain.Models.DeliveryVehicle", null)
@@ -754,8 +665,6 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Models.DeliveryMan", b =>
                 {
-                    b.Navigation("Assistants");
-
                     b.Navigation("Vehicle");
                 });
 

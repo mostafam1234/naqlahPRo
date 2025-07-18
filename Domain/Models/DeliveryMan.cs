@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Domain.Enums;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -23,6 +24,8 @@ namespace Domain.Models
             this.BackIdenitytImagePath = string.Empty;
             this.PersonalImagePath = string.Empty;
             this.FrontDrivingLicenseImagePath = string.Empty;
+            this.AndriodDevice = string.Empty;
+            this.IosDevice = string.Empty;
         }
         public int Id { get; set; }
         public string FullName { get; private set; }
@@ -44,7 +47,20 @@ namespace Domain.Models
         public int? VehicleId { get; private set; }
         public User User { get; private set; }
         public DeliveryVehicle? Vehicle { get; private set; }
-
+        public string AndriodDevice { get;private set; }
+        public string IosDevice { get;private set; }
+        private List<Assistant> _Assistants { get; set; }
+        public IReadOnlyList<Assistant> Assistants
+        {
+            get
+            {
+                return _Assistants;
+            }
+            private set
+            {
+                _Assistants = (List<Assistant>)value.ToList();
+            }
+        }
         public static DeliveryMan Instance(string phoneNumber,
                                            string name)
         {
@@ -55,6 +71,33 @@ namespace Domain.Models
             };
 
             return deliveryMan;
+        }
+
+
+        public Result SetFireBaseTokens(string andriodDevice, string iosDevice)
+        {
+            if (string.IsNullOrWhiteSpace(andriodDevice) && string.IsNullOrWhiteSpace(iosDevice))
+            {
+                return Result.Failure("Devices Can Not Be Empty");
+            }
+
+            this.AndriodDevice = andriodDevice;
+            this.IosDevice = iosDevice;
+            return Result.Success();
+        }
+
+        public Result RemoveFireBaseTokens(string andriodDevice, string iosDevice)
+        {
+            if (!string.IsNullOrWhiteSpace(andriodDevice))
+            {
+                this.AndriodDevice = string.Empty;
+            }
+
+            if (!string.IsNullOrWhiteSpace(iosDevice))
+            {
+                this.IosDevice = string.Empty;
+            }
+            return Result.Success();
         }
 
         public Result SetDeliveryVehicleOwnerAsResident(string citizenName,
