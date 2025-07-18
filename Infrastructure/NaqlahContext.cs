@@ -46,6 +46,9 @@ namespace Infrastructure
         public DbSet<DeliveryMan> DeliveryMen { get; set; }
         public DbSet<VehicleBrand> VehicleBrands { get; set; }
         public DbSet<VehicleType> VehicleTypes { get; set; }
+        public DbSet<Resident> Residents { get; set; }
+        public DbSet<Company> Companies { get; set; }
+        public DbSet<Renter> Renters { get; set; }
 
 
         public async Task<Result> SaveChangesAsyncWithResult()

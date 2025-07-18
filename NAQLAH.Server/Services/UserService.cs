@@ -1,4 +1,5 @@
-﻿using CSharpFunctionalExtensions;
+﻿using Azure.Core;
+using CSharpFunctionalExtensions;
 using Domain.InterFaces;
 using Domain.Models;
 using Domain.Shared;
@@ -32,6 +33,28 @@ namespace NAQLAH.Server.Services
             context = Context;
         }
 
+        public async Task<Result>CheckUserPassword(string userName,
+                                                   string password)
+        {
+            var user = await userManager.Users
+                                        .FirstOrDefaultAsync(x => x.UserName == userName);
+
+            if (user is null)
+            {
+                var error = readFromResourceFile.GetLocalizedMessage("InvalidUserNameOrPassword");
+                return Result.Failure<string>(error);
+            }
+
+            var passwordResult = await userManager.CheckPasswordAsync(user,password);
+            if (!passwordResult)
+            {
+                var error = readFromResourceFile.GetLocalizedMessage("InvalidUserNameOrPassword");
+                return Result.Failure<string>(error);
+            }
+
+            return Result.Success();
+        }
+
         public async Task<Result<int>> CreateDeliveryUser(string mobile,
                                                           string email,
                                                           string name,
@@ -42,7 +65,8 @@ namespace NAQLAH.Server.Services
 
             if (isPhoneNumberAlreadyExsist)
             {
-                return Result.Failure<int>("Phone Number is Already Exsist");
+                var error = readFromResourceFile.GetLocalizedMessage("PhoneNumberAlreadyExist");
+                return Result.Failure<int>(error);
             }
 
             var isEmailAlreadyExsist = await context.Users
@@ -50,7 +74,8 @@ namespace NAQLAH.Server.Services
 
             if (isEmailAlreadyExsist)
             {
-                return Result.Failure<int>("Email is ALready Exsist");
+                var error = readFromResourceFile.GetLocalizedMessage("EmailAlreadyExist");
+                return Result.Failure<int>(error);
             }
 
 

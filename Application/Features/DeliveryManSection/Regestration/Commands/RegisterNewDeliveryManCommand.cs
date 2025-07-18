@@ -48,7 +48,7 @@ namespace Application.Features.DeliveryManSection.Regestration.Commands
 
                 var deliveryResponse = new DeliveryManTokenResponse
                 {
-                    RequiredDeliveryInfo = true,
+                    RequiredCarOwnerInfo = true,
                     RequiredPersonalInfo = true,
                     RequiredVehicleInfo = true,
                     CarOwnerType = null,

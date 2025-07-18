@@ -17,5 +17,8 @@ namespace Domain.InterFaces
 
         Task<Result<TokenResponse>> GetAcessToken(string userName,
                                                   string Password);
+
+        Task<Result> CheckUserPassword(string userName,
+                                       string password);
     }
 }

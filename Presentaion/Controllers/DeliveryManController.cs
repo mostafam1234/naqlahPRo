@@ -1,4 +1,5 @@
-﻿using Application.Features.DeliveryManSection.Regestration.Commands;
+﻿using Application.Features.DeliveryManSection.LogIn;
+using Application.Features.DeliveryManSection.Regestration.Commands;
 using Application.Features.DeliveryManSection.Regestration.Dtos;
 using Application.Features.DeliveryManSection.Regestration.Qureies;
 using Domain.Shared;
@@ -39,6 +40,27 @@ namespace Presentaion.Controllers
                 Name = registerRequest.Name,
                 Password = registerRequest.Password,
                 PhoneNumber = registerRequest.PhoneNumber
+            });
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+            return Ok(result.Value);
+        }
+
+
+        [HttpPost]
+        [ProducesResponseType(typeof(DeliveryManTokenResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("LogIn")]
+        public async Task<IActionResult> LogIn([FromBody] DeliveryRegisterRequest registerRequest)
+        {
+
+            var result = await mediator.Send(new DeliveryManLogInCommand
+            {
+                UserName = registerRequest.Email,
+                Password = registerRequest.Password
             });
 
             if (result.IsFailure)
