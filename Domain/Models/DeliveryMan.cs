@@ -57,6 +57,70 @@ namespace Domain.Models
             return deliveryMan;
         }
 
+        public Result SetDeliveryVehicleOwnerAsResident(string citizenName,
+                                                        string IdentityNumber,
+                                                        string frontIdentityImage,
+                                                        string backIdentityImage,
+                                                        string bankAccountNumber)
+        {
+            var vehicle = this.Vehicle;
+            if (vehicle is null)
+            {
+                return Result.Failure("DeliveryMan Should Have vehicle");
+            }
+            vehicle.SetCarOwnerAsResident(citizenName,
+                                          IdentityNumber,
+                                          frontIdentityImage,
+                                          backIdentityImage,
+                                          bankAccountNumber);
+
+            return Result.Success();
+        }
+
+
+        public Result SetDeliveryVehicleOwnerAsRenter(string citizenName,
+                                                      string identityNumber,
+                                                      string frontIdentityImagePath,
+                                                      string backIdentityImagePath,
+                                                      string rentContractImagePath,
+                                                      string bankAccountNumber)
+        {
+            var vehicle = this.Vehicle;
+            if (vehicle is null)
+            {
+                return Result.Failure("DeliveryMan Should Have vehicle");
+            }
+            vehicle.SetCarOwnerAsRenter(citizenName,
+                                        identityNumber,
+                                        frontIdentityImagePath,
+                                        backIdentityImagePath,
+                                        rentContractImagePath,
+                                        bankAccountNumber);
+
+            return Result.Success();
+        }
+        public Result SetDeliveryVehicleOwnerAsCompany(string companName,
+                                                       string commercialRecordNumbeer,
+                                                        string recordImagePath,
+                                                        string taxNumber,
+                                                        string taxCertificateImagePath,
+                                                        string bankAccounNumber)
+        {
+            var vehicle = this.Vehicle;
+            if (vehicle is null)
+            {
+                return Result.Failure("DeliveryMan Should Have vehicle");
+            }
+            vehicle.SetCarOwnerAsCompany(companName,
+                                         commercialRecordNumbeer,
+                                         recordImagePath,
+                                         taxNumber,
+                                         taxCertificateImagePath,
+                                         bankAccounNumber);
+
+            return Result.Success();
+        }
+
         public Result UpdatePersnalInfo(string fullName,
                                         string address,
                                         string IdentityNumber,

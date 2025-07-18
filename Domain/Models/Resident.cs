@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CSharpFunctionalExtensions;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -24,5 +25,22 @@ namespace Domain.Models
         public string FrontIdentityImagePath { get;private set; }
         public string BackIdentityImagePath { get;private set; }
         public string BankAccountNumber { get;private set; }
+
+        public static Result<Resident> Instance(string citizenName,
+                                        string IdentityNumber,
+                                        string frontIdentityImage,
+                                        string backIdentityImage,
+                                        string bankAccountNumber)
+        {
+            var resident = new Resident
+            {
+                CitizenName = citizenName,
+                BankAccountNumber = bankAccountNumber,
+                BackIdentityImagePath = backIdentityImage,
+                FrontIdentityImagePath = frontIdentityImage,
+                IdentityNumber = IdentityNumber
+            };
+            return resident;
+        }
     }
 }

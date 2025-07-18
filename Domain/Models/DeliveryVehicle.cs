@@ -14,7 +14,7 @@ namespace Domain.Models
         public DeliveryVehicle()
         {
             this.LicensePlateNumber = string.Empty;
-            this.FrontImagePath=string.Empty;
+            this.FrontImagePath = string.Empty;
             this.FrontLicenseImagePath = string.Empty;
             this.SideImagePath = string.Empty;
             this.FrontLicenseImagePath = string.Empty;
@@ -22,31 +22,31 @@ namespace Domain.Models
             this.BackInsuranceImagePath = string.Empty;
             this.FrontInsuranceImagePath = string.Empty;
         }
-        public int Id { get;private set; }
+        public int Id { get; private set; }
 
         [Required]
-        public int DeliveryManId { get;private set; }
-        public int VehicleTypeId { get;private set; }
-        public int VehicleBrandId { get;private set; }
-        public string LicensePlateNumber { get;private set; }
-        public string FrontImagePath { get;private set; }
-        public string SideImagePath { get;private set; }
-        public string FrontLicenseImagePath { get;private set; }
-        public string BackLicenseImagePath { get;private set; }
-        public DateTime LicenseExpirationDate { get;private set; }
+        public int DeliveryManId { get; private set; }
+        public int VehicleTypeId { get; private set; }
+        public int VehicleBrandId { get; private set; }
+        public string LicensePlateNumber { get; private set; }
+        public string FrontImagePath { get; private set; }
+        public string SideImagePath { get; private set; }
+        public string FrontLicenseImagePath { get; private set; }
+        public string BackLicenseImagePath { get; private set; }
+        public DateTime LicenseExpirationDate { get; private set; }
         public string FrontInsuranceImagePath { get; private set; }
         public string BackInsuranceImagePath { get; private set; }
-        public DateTime InSuranceExpirationDate { get;private set; }
-        public VehicleOwnerType VehicleOwnerType { get;private set; }
-        public Resident? Resident { get;private set; }
-        public Company? Company { get;private set; }
-        public Renter? Renter { get;private set; }
-        public DeliveryMan DeliveryMan { get;private set; }
-        public VehicleType VehicleType { get;private set; }
-        public VehicleBrand VehicleBrand { get;private set; }
+        public DateTime InSuranceExpirationDate { get; private set; }
+        public VehicleOwnerType VehicleOwnerType { get; private set; }
+        public Resident? Resident { get; private set; }
+        public Company? Company { get; private set; }
+        public Renter? Renter { get; private set; }
+        public DeliveryMan DeliveryMan { get; private set; }
+        public VehicleType VehicleType { get; private set; }
+        public VehicleBrand VehicleBrand { get; private set; }
 
 
-        public static Result<DeliveryVehicle>Instance(int vehicleTypeId,
+        public static Result<DeliveryVehicle> Instance(int vehicleTypeId,
                                                       int vehicleBrandId,
                                                       string licensePlateNumber,
                                                       string frontImagePath,
@@ -77,6 +77,58 @@ namespace Domain.Models
             };
 
             return vehicle;
+        }
+
+        public Result SetCarOwnerAsResident(string citizenName,
+                                            string IdentityNumber,
+                                            string frontIdentityImage,
+                                            string backIdentityImage,
+                                            string bankAccountNumber)
+        {
+            var carOwner = Resident.Instance(citizenName,
+                                           IdentityNumber,
+                                           frontIdentityImage,
+                                           backIdentityImage,
+                                           bankAccountNumber);
+            this.Resident = carOwner.Value;
+            return Result.Success();
+
+        }
+
+        public Result SetCarOwnerAsCompany(string companName,
+                                           string commercialRecordNumbeer,
+                                           string recordImagePath,
+                                           string taxNumber,
+                                           string taxCertificateImagePath,
+                                           string bankAccounNumber)
+        {
+            var carOwner = Company.Instance(companName,
+                                           commercialRecordNumbeer,
+                                           recordImagePath,
+                                           taxNumber,
+                                           taxCertificateImagePath,
+                                           bankAccounNumber);
+            this.Company = carOwner.Value;
+            return Result.Success();
+
+        }
+
+        public Result SetCarOwnerAsRenter(string citizenName,
+                                          string identityNumber,
+                                          string frontIdentityImagePath,
+                                          string backIdentityImagePath,
+                                          string rentContractImagePath,
+                                          string bankAccountNumber)
+        {
+            var carOwner = Renter.Instance(citizenName,
+                                           identityNumber,
+                                           frontIdentityImagePath,
+                                           backIdentityImagePath,
+                                           rentContractImagePath,
+                                           bankAccountNumber);
+            this.Renter = carOwner.Value;
+            return Result.Success();
+
         }
     }
 }

@@ -87,7 +87,19 @@ namespace Presentaion.Controllers
         [Authorize]
         public async Task<IActionResult> AddCarOwnerResidentInfo([FromBody] ResidentRequest request)
         {
+            var result = await mediator.Send(new SaveDeliveryCarOwnerAsResidentCommand
+            {
+                BankAccountNumber = request.BankAccountNumber,
+                CitizenName = request.CitizenName,
+                IdentityNumber = request.IdentityNumber,
+                BackIdentityImage = request.BackIdentityImage,
+                FrontIdentityImage = request.FrontIdentityImage
+            });
 
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
 
             return Ok();
         }
@@ -100,7 +112,20 @@ namespace Presentaion.Controllers
         [Authorize]
         public async Task<IActionResult> AddCarOwnerCompanyInfo([FromBody] CompanyRequest request)
         {
+            var result = await mediator.Send(new SaveDeliveryCarOwnerAsCompanyCommand
+            {
+                CompanyName = request.CompanyName,
+                CommercialRecordNumber = request.CommercialRecordNumber,
+                BankAccountNumber = request.BankAccountNumber,
+                RecordImagePath = request.RecordImagePath,
+                TaxCertificateImage = request.TaxCertificateImage,
+                TaxNumber = request.TaxNumber
+            });
 
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
 
             return Ok();
         }
@@ -113,6 +138,20 @@ namespace Presentaion.Controllers
         public async Task<IActionResult> AddCarOwnerRenterInfo([FromBody] RenterRequest request)
         {
 
+            var result=await mediator.Send(new SaveDeliveryCarOwnerAsRenterCommand
+            {
+                CitizenName=request.CitizenName,
+                RentContractImage=request.RentContractImage,
+                BankAccountNumber=request.BankAccountNumber,
+                BackIdentityImage=request.BackIdentityImage,
+                FrontIdentityImage=request.FrontIdentityImage,
+                IdentityNumber=request.IdentityNumber
+            });
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
 
             return Ok();
         }

@@ -22,6 +22,6 @@ namespace Application.Features.DeliveryManSection.Regestration.Dtos
         public string FrontIdentityImage { get;  set; }
         public string BackIdentityImage { get;  set; }
         public string RentContractImage { get;  set; }
-        public string BankAccountNumber { get; private set; }
+        public string BankAccountNumber { get;  set; }
     }
 }
