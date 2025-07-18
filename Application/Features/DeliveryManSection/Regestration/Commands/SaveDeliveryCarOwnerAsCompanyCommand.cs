@@ -47,7 +47,7 @@ namespace Application.Features.DeliveryManSection.Regestration.Commands
                     return Result.Failure("DeliveryMan Not Found");
                 }
 
-                var deliveryFolder = string.Join("{0}_1", DeliveryFolderPrefix, deliveryMan.Id);
+                var deliveryFolder = string.Join("{0}_{1}", DeliveryFolderPrefix, deliveryMan.Id);
 
                 var recordImagePath = await mediaUploader.UploadFromBase64(request.RecordImagePath,
                                                                            deliveryFolder);

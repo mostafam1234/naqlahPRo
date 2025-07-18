@@ -12,7 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Features.DeliveryManSection.LogIn
+namespace Application.Features.DeliveryManSection.LogIn.Commands
 {
     public sealed record DeliveryManLogInCommand : IRequest<Result<DeliveryManTokenResponse>>
     {

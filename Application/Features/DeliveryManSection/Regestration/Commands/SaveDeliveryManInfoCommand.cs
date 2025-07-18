@@ -58,7 +58,7 @@ namespace Application.Features.DeliveryManSection.Regestration.Commands
                 DateTime.TryParseExact(request.IdentityExpirationDate, "yyyy/MM/dd", new CultureInfo("en-US"), DateTimeStyles.None, out identityExpirationDate);
                 DateTime.TryParseExact(request.DrivingLicenseExpirationDate, "yyyy/MM/dd", new CultureInfo("en-US"), DateTimeStyles.None, out licenceExpirationDate);
 
-                var deliveryFolder = string.Join("{0}_1", DeliveryFolderPrefix, deliveryMan.Id);
+                var deliveryFolder = string.Join("{0}_{1}", DeliveryFolderPrefix, deliveryMan.Id);
 
                 var frontIdenitytImagePath = await mediaUploader.UploadFromBase64(request.FrontIdenitytImage,
                                                                                 deliveryFolder);

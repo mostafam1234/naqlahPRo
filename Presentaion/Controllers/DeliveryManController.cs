@@ -1,4 +1,7 @@
 ﻿using Application.Features.DeliveryManSection.LogIn;
+using Application.Features.DeliveryManSection.LogIn.Commands;
+using Application.Features.DeliveryManSection.LogIn.Dtos;
+using Application.Features.DeliveryManSection.LogIn.Queries;
 using Application.Features.DeliveryManSection.Regestration.Commands;
 using Application.Features.DeliveryManSection.Regestration.Dtos;
 using Application.Features.DeliveryManSection.Regestration.Qureies;
@@ -54,14 +57,31 @@ namespace Presentaion.Controllers
         [ProducesResponseType(typeof(DeliveryManTokenResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
         [Route("LogIn")]
-        public async Task<IActionResult> LogIn([FromBody] DeliveryRegisterRequest registerRequest)
+        public async Task<IActionResult> LogIn([FromBody] LoginRquestDto registerRequest)
         {
 
             var result = await mediator.Send(new DeliveryManLogInCommand
             {
-                UserName = registerRequest.Email,
+                UserName = registerRequest.UserName,
                 Password = registerRequest.Password
             });
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+            return Ok(result.Value);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(DeliveryManInfoDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("Info")]
+        public async Task<IActionResult> Info()
+        {
+
+            var result = await mediator.Send(new GetDeliveryManInfoQuery());
+           
 
             if (result.IsFailure)
             {
