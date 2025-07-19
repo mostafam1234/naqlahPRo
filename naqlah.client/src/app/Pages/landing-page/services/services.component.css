@@ -1,0 +1,7 @@
+.services .services-container {
+  background-image: url('../../../../assets/images/pic6.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  width: 100%;
+  @apply h-auto lg:h-[600px] bg-cover lg:bg-contain md:p-2 p-6;
+}

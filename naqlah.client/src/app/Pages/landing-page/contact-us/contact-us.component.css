@@ -1,0 +1,11 @@
+.contactUs-info {
+  background-color: #e9f0ee;
+  padding:17px;
+  width: 35%;
+}
+.truck {
+  background-image: url("../../../../assets/images/truck.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  height: 438px;
+}

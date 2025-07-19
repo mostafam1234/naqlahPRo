@@ -88,7 +88,6 @@
   transform: translate(-50%, -50%);
   z-index: 9999;
 }
-
 @keyframes spin {
   0% {
     transform: rotate(0deg);

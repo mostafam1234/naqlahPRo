@@ -1,0 +1,20 @@
+.vision-images {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  @apply justify-center
+}
+.vision-images img:first-of-type {
+  position: absolute;
+  top: 0;
+  z-index: 2;
+  height: 231px
+}
+.vision-images img:nth-of-type(2) {
+  position: absolute;
+  z-index: 1;
+  left: 80px;
+  top: 136px;
+  height: 203px;
+}
