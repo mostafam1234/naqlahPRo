@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-
+import * as AOS from 'aos';
 @Component({
   selector: 'app-about',
   standalone: true,
@@ -9,4 +9,7 @@ import { Component } from '@angular/core';
 })
 export class AboutComponent {
 
+  ngOnInit(): void {
+    AOS.init();
+  }
 }

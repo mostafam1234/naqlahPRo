@@ -23,6 +23,7 @@
     "@angular/router": "^18.2.13",
     "@ngx-translate/core": "^16.0.4",
     "@ngx-translate/http-loader": "^16.0.1",
+    "aos": "^2.3.4",
     "autoprefixer": "^10.4.21",
     "jest-editor-support": "*",
     "ngx-toastr": "^19.0.0",
