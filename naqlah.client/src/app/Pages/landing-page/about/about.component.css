@@ -1,0 +1,23 @@
+.about_header {
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 1.4;
+  letter-spacing: 0;
+}
+.about-images {
+  position: relative;
+  display: flex;
+  align-items: center;
+  @apply justify-center md:justify-end
+}
+.about-images img:first-of-type {
+  position: absolute;
+  top: 0;
+  z-index: 1;
+  @apply h-[213px] md:h-[316px];
+}
+.about-images img:nth-of-type(2) {
+  position: absolute;
+  z-index: 2;
+  @apply top-[136px] md:top-[15%] left-[80px] md:left-[200px] h-[203px] md:h-[220px];
+}

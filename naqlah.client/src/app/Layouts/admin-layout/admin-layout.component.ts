@@ -1,0 +1,76 @@
+import { CommonModule, NgClass, NgIf } from '@angular/common';
+import { Component, HostListener } from '@angular/core';
+import { NavigationEnd, NavigationError, NavigationStart, Router, RouterModule, RouterOutlet } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
+import { LanguageService } from 'src/app/Core/services/language.service';
+import { LoaderService } from 'src/app/Core/services/loader.service';
+import { HeaderComponent } from 'src/app/Pages/admin/header/header.component';
+import { SideBarComponent } from 'src/app/Pages/admin/side-bar/side-bar.component';
+
+@Component({
+  selector: 'app-admin-layout',
+  standalone: true,
+  imports: [
+    RouterModule,
+    TranslateModule,
+    SideBarComponent,
+    RouterOutlet,
+    HeaderComponent,
+    CommonModule,
+    NgIf,
+    NgClass
+  ],
+  templateUrl: './admin-layout.component.html',
+  styleUrl: './admin-layout.component.css'
+})
+export class AdminLayoutComponent {
+  screenWidth: number = window.innerWidth;
+  isSmallScreen: boolean = false;
+  language: string = 'rtl';
+  fadeState: string = 'in';
+  slide: string = "";
+  loading: boolean = false;
+  routerSubscription!: Subscription;
+  appearSideBar: boolean = false;
+  constructor(
+    private languageService: LanguageService,
+    private router: Router,
+    private loaderService: LoaderService) {}
+  ngOnInit() {
+    this.getLanuage();
+    this.onResize();
+    this.loaderService.loading$.subscribe((loadingState) => {
+      this.loading = loadingState;
+    });
+    this.routerSubscription = this.router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        this.loaderService.showLoader();
+      } else if (event instanceof NavigationEnd || event instanceof NavigationError) {
+        this.loaderService.hideLoader();
+      }
+    });
+  }
+  @HostListener('window:resize', ['$event'])
+  onResize(): void {
+    this.checkScreenSize();
+  }
+
+  private checkScreenSize(): void {
+    this.isSmallScreen = window.innerWidth < 992;
+
+  }
+
+  handleSideBarVisibility(data: boolean){
+    this.appearSideBar = data;
+  }
+  getLanuage() {
+    this.language = this.languageService.getLanguage();
+  }
+
+  ngOnDestroy() {
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
+  }
+}

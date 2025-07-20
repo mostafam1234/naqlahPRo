@@ -1,0 +1,23 @@
+{
+  "ADMIN": {
+    "SIDEBAR": {
+      "HOME": "Home Page",
+      "USERS": "Users",
+      "HR": "HR Staff",
+      "DATA_REVIEW": "Data Review",
+      "REQUESTS": "Requests",
+      "MESSAGES": "Messages",
+      "TECH_SUPPORT": "Technical Support",
+      "NOTIFICATIONS": "Notifications",
+      "CATEGORY_CONTROL": "Category Control",
+      "COMPLAINTS": "Complaints",
+      "INVOICES": "Invoices",
+      "WALLET": "Wallet",
+      "LEGAL": "Legal Affairs",
+      "LOGOUT": "Logout"
+    },
+    "HEADER": {
+
+    }
+  }
+}

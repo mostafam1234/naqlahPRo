@@ -1,1 +1,57 @@
-/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+}
+
+body{
+  margin: 0;
+  padding: 0;
+}
+.custom-container {
+  width: 100%;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+.main-header {
+  font-weight: 600;
+  line-height: 1.4;
+  @apply text-secondaryColor text-[24px] text-center;
+}
+.main-definition {
+  font-weight: 500;
+  @apply text-primaryColor;
+  font-size: 24px;
+}
+
+/* Responsive max-widths */
+@media (min-width: 576px) {
+  .custom-container {
+    max-width: 540px;
+  }
+}
+@media (min-width: 768px) {
+  .custom-container {
+    max-width: 720px;
+  }
+}
+@media (min-width: 992px) {
+  .custom-container {
+    max-width: 960px;
+  }
+}
+@media (min-width: 1200px) {
+  .custom-container {
+    max-width: 1140px;
+  }
+}
+@media (min-width: 1400px) {
+  .custom-container {
+    max-width: 1320px;
+  }
+}
+
