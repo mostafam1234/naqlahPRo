@@ -123,7 +123,6 @@ namespace NAQLAH.Server
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
-
             // Configure the HTTP request pipeline.
             app.UseSwagger();
             app.UseSwaggerUI();

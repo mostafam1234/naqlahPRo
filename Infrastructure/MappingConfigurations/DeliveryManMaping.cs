@@ -19,6 +19,10 @@ namespace Infrastructure.MappingConfigurations
                    .WithOne(x => x.DeliveryMan)
                    .HasForeignKey<DeliveryVehicle>(x => x.DeliveryManId)
                    .IsRequired();
+            builder.HasOne(x => x.DeliveryManLocation)
+                   .WithOne()
+                   .HasForeignKey<DeliveryManLocation>(x => x.DeliveryManId)
+                   .IsRequired();
 
         }
     }

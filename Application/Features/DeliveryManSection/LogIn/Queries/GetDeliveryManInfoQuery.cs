@@ -41,6 +41,8 @@ namespace Application.Features.DeliveryManSection.LogIn.Queries
                                                  Id=x.Id,
                                                  Name=x.FullName,
                                                  PhoneNumber=x.PhoneNumber,
+                                                 Active=x.Active,
+                                                 ChatUrl="",
                                                  PersonalImagePath =$"{baseUrl}/ImageBank/{DeliveryFolderPrefix}_{x.Id}/{x.PersonalImagePath}"
 
                                              }).FirstOrDefaultAsync();

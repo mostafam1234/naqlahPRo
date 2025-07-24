@@ -22,7 +22,8 @@ namespace Domain.InterFaces
         DbSet<Renter> Renters { get; set; }
         DbSet<Assistant> Assistants { get; set; }
         DbSet<AssistanWork> AssistanWorks { get; set; }
-
+        DbSet<DeliveryVehicle> DeliveryVehicles { get; set; }
+        DbSet<DeliveryManLocation> DeliveryManLocations { get; set; }
         Task<Result> SaveChangesAsyncWithResult();
     }
 }

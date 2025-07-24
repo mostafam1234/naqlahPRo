@@ -27,7 +27,7 @@ namespace Application.Features.DeliveryManSection.LogIn.Commands
             private readonly IUserService userService;
             private readonly INaqlahContext context;
 
-            public DeliveryManLogInCommandHandler(UserManager<User>userManager,
+            public DeliveryManLogInCommandHandler(UserManager<User> userManager,
                                                   IUserService userService,
                                                   INaqlahContext context)
             {
@@ -65,23 +65,28 @@ namespace Application.Features.DeliveryManSection.LogIn.Commands
                 var deliveryMan = await context.DeliveryMen
                                                .Include(x => x.Vehicle)
                                                .FirstOrDefaultAsync(x => x.UserId == deliveryManUser.Id);
+
                 if (deliveryMan is null)
                 {
                     return deliveryToneResponse;
                 }
 
 
-                if (deliveryMan.Vehicle is null)
+                if (deliveryMan.DeliveryType == DeliveryType.Citizen ||
+                    deliveryMan.DeliveryType == DeliveryType.Resident)
                 {
                     deliveryToneResponse.RequiredPersonalInfo = false;
-                    return deliveryToneResponse;
                 }
 
-                var ownerCarType = deliveryMan.Vehicle.VehicleOwnerType;
-                deliveryToneResponse.CarOwnerType =(int) ownerCarType;
-                deliveryToneResponse.RequiredVehicleInfo = false;
 
-                var carOwnerTypeExist = ownerCarType == VehicleOwnerType.Resident ?
+
+                if (deliveryMan.Vehicle is not null)
+                {
+                    var ownerCarType = deliveryMan.Vehicle.VehicleOwnerType;
+                    deliveryToneResponse.CarOwnerType = (int)ownerCarType;
+                    deliveryToneResponse.RequiredVehicleInfo = false;
+
+                     var carOwnerTypeExist = ownerCarType == VehicleOwnerType.Resident ?
                     await context.Residents.AnyAsync(x => x.DeliveryVehicleId == deliveryMan.Vehicle.Id) :
                     ownerCarType == VehicleOwnerType.Company ?
                     await context.Companies.AnyAsync(x => x.DeliveryVehicleId == deliveryMan.Vehicle.Id) :
@@ -89,6 +94,11 @@ namespace Application.Features.DeliveryManSection.LogIn.Commands
 
 
                 deliveryToneResponse.RequiredCarOwnerInfo = !carOwnerTypeExist;
+                }
+
+
+
+
                 return deliveryToneResponse;
 
 

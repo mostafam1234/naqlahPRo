@@ -1,6 +1,8 @@
 ﻿using Application.Features.DeliveryManSection.Assistant.Commands;
 using Application.Features.DeliveryManSection.Assistant.Dtos;
 using Application.Features.DeliveryManSection.Assistant.Queries;
+using Application.Features.DeliveryManSection.LoationAndWorkTracking.Commands;
+using Application.Features.DeliveryManSection.LoationAndWorkTracking.Dtos;
 using Application.Features.DeliveryManSection.LogIn;
 using Application.Features.DeliveryManSection.LogIn.Commands;
 using Application.Features.DeliveryManSection.LogIn.Dtos;
@@ -53,6 +55,47 @@ namespace Presentaion.Controllers
                 return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
             }
             return Ok(result.Value);
+        }
+
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("Active")]
+        public async Task<IActionResult> Active([FromBody] ChangeDeliverManActiationRequest request)
+        {
+
+            var result = await mediator.Send(new ChangeDeliveryManActivationCommand
+            {
+                Active = request.Active
+            });
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+            return Ok();
+        }
+
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("SaveLocation")]
+        public async Task<IActionResult> SaveLocation([FromBody] DeliveryManLocationRequest request)
+        {
+
+            var result = await mediator.Send(new SaveDeliveryManLocationCommand
+            {
+                Longitude=request.Longitude,
+                Latitude=request.Latitude
+            });
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+            return Ok();
         }
 
 

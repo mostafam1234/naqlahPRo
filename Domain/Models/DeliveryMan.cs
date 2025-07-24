@@ -49,6 +49,8 @@ namespace Domain.Models
         public DeliveryVehicle? Vehicle { get; private set; }
         public string AndriodDevice { get;private set; }
         public string IosDevice { get;private set; }
+        public bool Active { get;private set; }
+        public DeliveryManLocation DeliveryManLocation { get;private set; }
         private List<Assistant> _Assistants { get; set; }
         public IReadOnlyList<Assistant> Assistants
         {
@@ -73,7 +75,23 @@ namespace Domain.Models
             return deliveryMan;
         }
 
+        public void SaveLocation(double longitude,double latitude)
+        {
+            var location = this.DeliveryManLocation;
+            if(location is null)
+            {
+                var newLocation = DeliveryManLocation.Instsance(longitude, latitude);
+                this.DeliveryManLocation = newLocation;
+                return;
+            }
 
+            location.UpdateLocation(longitude, latitude);
+        }
+
+        public void ChangeActivation(bool active)
+        {
+            this.Active = active;
+        }
         public Result SetFireBaseTokens(string andriodDevice, string iosDevice)
         {
             if (string.IsNullOrWhiteSpace(andriodDevice) && string.IsNullOrWhiteSpace(iosDevice))

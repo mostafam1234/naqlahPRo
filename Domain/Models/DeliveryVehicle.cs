@@ -73,7 +73,7 @@ namespace Domain.Models
                 FrontLicenseImagePath = frontLicenseImagePath,
                 BackLicenseImagePath = backLicenseImagePath,
                 InSuranceExpirationDate = inSuranceExpirationDate,
-
+                VehicleOwnerType=(VehicleOwnerType)vehicleOwnerTypeId,
             };
 
             return vehicle;

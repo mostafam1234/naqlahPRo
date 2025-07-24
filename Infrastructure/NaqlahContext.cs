@@ -51,7 +51,8 @@ namespace Infrastructure
         public DbSet<Renter> Renters { get; set; }
         public DbSet<Assistant> Assistants { get; set; }
         public DbSet<AssistanWork> AssistanWorks { get; set; }
-
+        public DbSet<DeliveryVehicle> DeliveryVehicles { get; set; }
+        public DbSet<DeliveryManLocation> DeliveryManLocations { get; set; }
 
         public async Task<Result> SaveChangesAsyncWithResult()
         {

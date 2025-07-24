@@ -27,7 +27,7 @@ namespace Domain.Models
 
         public ICollection<UserRole> AspNetUserRoles { get; set; }
         public DeliveryMan? DeliveryMan { get; private set; }
-
+        public Customer? Customer { get; private set; }
 
         public static Result<User> CreateDeliveryUser(string mobile,
                                                      string email,
