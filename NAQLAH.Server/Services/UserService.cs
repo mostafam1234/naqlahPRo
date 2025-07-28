@@ -70,7 +70,7 @@ namespace NAQLAH.Server.Services
             }
 
             var isEmailAlreadyExsist = await context.Users
-                                                    .AnyAsync(x => x.PhoneNumber == mobile);
+                                                    .AnyAsync(x => x.Email == email);
 
             if (isEmailAlreadyExsist)
             {
@@ -97,6 +97,100 @@ namespace NAQLAH.Server.Services
 
             return user.Id;
         }
+
+
+        public async Task<Result<int>> CreateCustomerUserAsIndividual(string phoneNumber,
+                                                                      string identtyNumber,
+                                                                      string frontIdentitImage,
+                                                                      string backIdentityImag,
+                                                                      string password)
+        {
+            var isPhoneNumberAlreadyExsist = await context.Users
+                                                 .AnyAsync(x => x.PhoneNumber == phoneNumber);
+
+            if (isPhoneNumberAlreadyExsist)
+            {
+                var error = readFromResourceFile.GetLocalizedMessage("PhoneNumberAlreadyExist");
+                return Result.Failure<int>(error);
+            }
+
+
+            var customer = User.CreateIndividualCustomerUser(phoneNumber,
+                                                             identtyNumber,
+                                                             frontIdentitImage,
+                                                             backIdentityImag);
+
+            if (customer.IsFailure)
+            {
+                return Result.Failure<int>(customer.Error);
+            }
+
+            var user = customer.Value;
+            var registrationResult = await userManager.CreateAsync(user, password);
+            if (!registrationResult.Succeeded)
+            {
+                var errors = registrationResult.Errors.ToList();
+                var errorMessage = string.Join(",", errors);
+                return Result.Failure<int>(errorMessage);
+            }
+
+
+            return user.Id;
+        }
+
+
+
+        public async Task<Result<int>> CreateCustomerUserAsEstablishMent(string phoneNumber,
+                                                                         string name,
+                                                                         string recordImagePath,
+                                                                         string taxRegistrationNumber,
+                                                                         string taxRegestationImagePath,
+                                                                         string address,
+                                                                     string establishmentRepresentitveName,
+                                                               string establishmentRepresentitveMobile,
+                                                               string establishmentRepresentitvefrontImage,
+                                                               string establishmentRepresentitveBackImage,
+                                                                         string password)
+        {
+            var isPhoneNumberAlreadyExsist = await context.Users
+                                                 .AnyAsync(x => x.PhoneNumber == phoneNumber);
+
+            if (isPhoneNumberAlreadyExsist)
+            {
+                var error = readFromResourceFile.GetLocalizedMessage("PhoneNumberAlreadyExist");
+                return Result.Failure<int>(error);
+            }
+
+
+            var customer = User.CreateEtablishMentCustomerUser(phoneNumber,
+                                                               name,
+                                                               recordImagePath,
+                                                               taxRegistrationNumber,
+                                                               taxRegestationImagePath,
+                                                               address,
+                                                               establishmentRepresentitveName,
+                                                               establishmentRepresentitveMobile,
+                                                               establishmentRepresentitvefrontImage,
+                                                               establishmentRepresentitveBackImage);
+
+            if (customer.IsFailure)
+            {
+                return Result.Failure<int>(customer.Error);
+            }
+
+            var user = customer.Value;
+            var registrationResult = await userManager.CreateAsync(user, password);
+            if (!registrationResult.Succeeded)
+            {
+                var errors = registrationResult.Errors.ToList();
+                var errorMessage = string.Join(",", errors);
+                return Result.Failure<int>(errorMessage);
+            }
+
+
+            return user.Id;
+        }
+
 
         public async Task<Result<TokenResponse>> GetAcessToken(string userName,
                                                               string Password)

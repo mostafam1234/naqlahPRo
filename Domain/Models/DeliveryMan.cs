@@ -94,10 +94,7 @@ namespace Domain.Models
         }
         public Result SetFireBaseTokens(string andriodDevice, string iosDevice)
         {
-            if (string.IsNullOrWhiteSpace(andriodDevice) && string.IsNullOrWhiteSpace(iosDevice))
-            {
-                return Result.Failure("Devices Can Not Be Empty");
-            }
+           
 
             this.AndriodDevice = andriodDevice;
             this.IosDevice = iosDevice;

@@ -657,6 +657,414 @@ export class WeatherForecastClient {
 @Injectable({
     providedIn: 'root'
 })
+export class CustomerClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ?? "";
+    }
+
+    registerAsIndividual(registerRequest: IndividualCustomerRequest): Observable<void> {
+        let url_ = this.baseUrl + "/api/Customer/RegisterAsIndividual";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(registerRequest);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processRegisterAsIndividual(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processRegisterAsIndividual(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processRegisterAsIndividual(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    regenerateActivationCode(request: RegenerateActivationCodeRequest): Observable<void> {
+        let url_ = this.baseUrl + "/api/Customer/RegenerateActivationCode";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(request);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processRegenerateActivationCode(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processRegenerateActivationCode(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processRegenerateActivationCode(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getActivationCode(phoneNumber?: string | undefined): Observable<string> {
+        let url_ = this.baseUrl + "/api/Customer/GetActivationCode?";
+        if (phoneNumber === null)
+            throw new Error("The parameter 'phoneNumber' cannot be null.");
+        else if (phoneNumber !== undefined)
+            url_ += "phoneNumber=" + encodeURIComponent("" + phoneNumber) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetActivationCode(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetActivationCode(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<string>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<string>;
+        }));
+    }
+
+    protected processGetActivationCode(response: HttpResponseBase): Observable<string> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    activate(request: ActivationRequest): Observable<void> {
+        let url_ = this.baseUrl + "/api/Customer/Activate";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(request);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processActivate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processActivate(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processActivate(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    addDevices(request: DeliveryDeviceTokensDto): Observable<void> {
+        let url_ = this.baseUrl + "/api/Customer/AddDevices";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(request);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAddDevices(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAddDevices(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processAddDevices(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    logIn(request: LoginRquestDto): Observable<CustomerLoginResponse> {
+        let url_ = this.baseUrl + "/api/Customer/LogIn";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(request);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processLogIn(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processLogIn(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<CustomerLoginResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<CustomerLoginResponse>;
+        }));
+    }
+
+    protected processLogIn(response: HttpResponseBase): Observable<CustomerLoginResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CustomerLoginResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    registerAsEstablishMent(registerRequest: EstablishMentCustomerRequest): Observable<void> {
+        let url_ = this.baseUrl + "/api/Customer/RegisterAsEstablishMent";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(registerRequest);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processRegisterAsEstablishMent(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processRegisterAsEstablishMent(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processRegisterAsEstablishMent(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
 export class DeliveryManClient {
     private http: HttpClient;
     private baseUrl: string;
@@ -2028,37 +2436,167 @@ export class WeatherForecast {
     }
 }
 
-export class DeliveryManTokenResponse {
-    tokenResponse!: TokenResponse;
-    requiredCarOwnerInfo!: boolean;
-    requiredPersonalInfo!: boolean;
-    requiredVehicleInfo!: boolean;
-    carOwnerType!: number | null;
+export class ProblemDetail {
+    statusCode!: number;
+    errorMessage!: string;
+    additioanlData!: any;
 
     init(_data?: any) {
         if (_data) {
-            this.tokenResponse = _data["tokenResponse"] ? TokenResponse.fromJS(_data["tokenResponse"]) : <any>null;
-            this.requiredCarOwnerInfo = _data["requiredCarOwnerInfo"] !== undefined ? _data["requiredCarOwnerInfo"] : <any>null;
-            this.requiredPersonalInfo = _data["requiredPersonalInfo"] !== undefined ? _data["requiredPersonalInfo"] : <any>null;
-            this.requiredVehicleInfo = _data["requiredVehicleInfo"] !== undefined ? _data["requiredVehicleInfo"] : <any>null;
-            this.carOwnerType = _data["carOwnerType"] !== undefined ? _data["carOwnerType"] : <any>null;
+            this.statusCode = _data["statusCode"] !== undefined ? _data["statusCode"] : <any>null;
+            this.errorMessage = _data["errorMessage"] !== undefined ? _data["errorMessage"] : <any>null;
+            this.additioanlData = _data["additioanlData"] !== undefined ? _data["additioanlData"] : <any>null;
         }
     }
 
-    static fromJS(data: any): DeliveryManTokenResponse {
+    static fromJS(data: any): ProblemDetail {
         data = typeof data === 'object' ? data : {};
-        let result = new DeliveryManTokenResponse();
+        let result = new ProblemDetail();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["statusCode"] = this.statusCode !== undefined ? this.statusCode : <any>null;
+        data["errorMessage"] = this.errorMessage !== undefined ? this.errorMessage : <any>null;
+        data["additioanlData"] = this.additioanlData !== undefined ? this.additioanlData : <any>null;
+        return data;
+    }
+}
+
+export class IndividualCustomerRequest {
+    phoneNumber!: string;
+    identityNumber!: string;
+    frontIdentityImage!: string;
+    backIdentityImage!: string;
+    password!: string;
+
+    init(_data?: any) {
+        if (_data) {
+            this.phoneNumber = _data["phoneNumber"] !== undefined ? _data["phoneNumber"] : <any>null;
+            this.identityNumber = _data["identityNumber"] !== undefined ? _data["identityNumber"] : <any>null;
+            this.frontIdentityImage = _data["frontIdentityImage"] !== undefined ? _data["frontIdentityImage"] : <any>null;
+            this.backIdentityImage = _data["backIdentityImage"] !== undefined ? _data["backIdentityImage"] : <any>null;
+            this.password = _data["password"] !== undefined ? _data["password"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): IndividualCustomerRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new IndividualCustomerRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["phoneNumber"] = this.phoneNumber !== undefined ? this.phoneNumber : <any>null;
+        data["identityNumber"] = this.identityNumber !== undefined ? this.identityNumber : <any>null;
+        data["frontIdentityImage"] = this.frontIdentityImage !== undefined ? this.frontIdentityImage : <any>null;
+        data["backIdentityImage"] = this.backIdentityImage !== undefined ? this.backIdentityImage : <any>null;
+        data["password"] = this.password !== undefined ? this.password : <any>null;
+        return data;
+    }
+}
+
+export class RegenerateActivationCodeRequest {
+    phoneNumber!: string;
+
+    init(_data?: any) {
+        if (_data) {
+            this.phoneNumber = _data["phoneNumber"] !== undefined ? _data["phoneNumber"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): RegenerateActivationCodeRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new RegenerateActivationCodeRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["phoneNumber"] = this.phoneNumber !== undefined ? this.phoneNumber : <any>null;
+        return data;
+    }
+}
+
+export class ActivationRequest {
+    phoneNumber!: string;
+    activeCode!: string;
+
+    init(_data?: any) {
+        if (_data) {
+            this.phoneNumber = _data["phoneNumber"] !== undefined ? _data["phoneNumber"] : <any>null;
+            this.activeCode = _data["activeCode"] !== undefined ? _data["activeCode"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): ActivationRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new ActivationRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["phoneNumber"] = this.phoneNumber !== undefined ? this.phoneNumber : <any>null;
+        data["activeCode"] = this.activeCode !== undefined ? this.activeCode : <any>null;
+        return data;
+    }
+}
+
+export class DeliveryDeviceTokensDto {
+    andriodDevice!: string;
+    iosDevice!: string;
+
+    init(_data?: any) {
+        if (_data) {
+            this.andriodDevice = _data["andriodDevice"] !== undefined ? _data["andriodDevice"] : <any>null;
+            this.iosDevice = _data["iosDevice"] !== undefined ? _data["iosDevice"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): DeliveryDeviceTokensDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeliveryDeviceTokensDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["andriodDevice"] = this.andriodDevice !== undefined ? this.andriodDevice : <any>null;
+        data["iosDevice"] = this.iosDevice !== undefined ? this.iosDevice : <any>null;
+        return data;
+    }
+}
+
+export class CustomerLoginResponse {
+    isActive!: boolean;
+    tokenResponse!: TokenResponse;
+
+    init(_data?: any) {
+        if (_data) {
+            this.isActive = _data["isActive"] !== undefined ? _data["isActive"] : <any>null;
+            this.tokenResponse = _data["tokenResponse"] ? TokenResponse.fromJS(_data["tokenResponse"]) : <any>null;
+        }
+    }
+
+    static fromJS(data: any): CustomerLoginResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new CustomerLoginResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["isActive"] = this.isActive !== undefined ? this.isActive : <any>null;
         data["tokenResponse"] = this.tokenResponse ? this.tokenResponse.toJSON() : <any>null;
-        data["requiredCarOwnerInfo"] = this.requiredCarOwnerInfo !== undefined ? this.requiredCarOwnerInfo : <any>null;
-        data["requiredPersonalInfo"] = this.requiredPersonalInfo !== undefined ? this.requiredPersonalInfo : <any>null;
-        data["requiredVehicleInfo"] = this.requiredVehicleInfo !== undefined ? this.requiredVehicleInfo : <any>null;
-        data["carOwnerType"] = this.carOwnerType !== undefined ? this.carOwnerType : <any>null;
         return data;
     }
 }
@@ -2092,31 +2630,116 @@ export class TokenResponse {
     }
 }
 
-export class ProblemDetail {
-    statusCode!: number;
-    errorMessage!: string;
-    additioanlData!: any;
+export class LoginRquestDto {
+    userName!: string;
+    password!: string;
 
     init(_data?: any) {
         if (_data) {
-            this.statusCode = _data["statusCode"] !== undefined ? _data["statusCode"] : <any>null;
-            this.errorMessage = _data["errorMessage"] !== undefined ? _data["errorMessage"] : <any>null;
-            this.additioanlData = _data["additioanlData"] !== undefined ? _data["additioanlData"] : <any>null;
+            this.userName = _data["userName"] !== undefined ? _data["userName"] : <any>null;
+            this.password = _data["password"] !== undefined ? _data["password"] : <any>null;
         }
     }
 
-    static fromJS(data: any): ProblemDetail {
+    static fromJS(data: any): LoginRquestDto {
         data = typeof data === 'object' ? data : {};
-        let result = new ProblemDetail();
+        let result = new LoginRquestDto();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["statusCode"] = this.statusCode !== undefined ? this.statusCode : <any>null;
-        data["errorMessage"] = this.errorMessage !== undefined ? this.errorMessage : <any>null;
-        data["additioanlData"] = this.additioanlData !== undefined ? this.additioanlData : <any>null;
+        data["userName"] = this.userName !== undefined ? this.userName : <any>null;
+        data["password"] = this.password !== undefined ? this.password : <any>null;
+        return data;
+    }
+}
+
+export class EstablishMentCustomerRequest {
+    name!: string;
+    mobileNumber!: string;
+    recoredImage!: string;
+    taxRegistrationNumber!: string;
+    taxRegistrationImage!: string;
+    address!: string;
+    representitveName!: string;
+    representitvePhoneNumber!: string;
+    representitveFrontIdentityNumberImage!: string;
+    representitveBackIdentityNumberImage!: string;
+    password!: string;
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"] !== undefined ? _data["name"] : <any>null;
+            this.mobileNumber = _data["mobileNumber"] !== undefined ? _data["mobileNumber"] : <any>null;
+            this.recoredImage = _data["recoredImage"] !== undefined ? _data["recoredImage"] : <any>null;
+            this.taxRegistrationNumber = _data["taxRegistrationNumber"] !== undefined ? _data["taxRegistrationNumber"] : <any>null;
+            this.taxRegistrationImage = _data["taxRegistrationImage"] !== undefined ? _data["taxRegistrationImage"] : <any>null;
+            this.address = _data["address"] !== undefined ? _data["address"] : <any>null;
+            this.representitveName = _data["representitveName"] !== undefined ? _data["representitveName"] : <any>null;
+            this.representitvePhoneNumber = _data["representitvePhoneNumber"] !== undefined ? _data["representitvePhoneNumber"] : <any>null;
+            this.representitveFrontIdentityNumberImage = _data["representitveFrontIdentityNumberImage"] !== undefined ? _data["representitveFrontIdentityNumberImage"] : <any>null;
+            this.representitveBackIdentityNumberImage = _data["representitveBackIdentityNumberImage"] !== undefined ? _data["representitveBackIdentityNumberImage"] : <any>null;
+            this.password = _data["password"] !== undefined ? _data["password"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): EstablishMentCustomerRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new EstablishMentCustomerRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name !== undefined ? this.name : <any>null;
+        data["mobileNumber"] = this.mobileNumber !== undefined ? this.mobileNumber : <any>null;
+        data["recoredImage"] = this.recoredImage !== undefined ? this.recoredImage : <any>null;
+        data["taxRegistrationNumber"] = this.taxRegistrationNumber !== undefined ? this.taxRegistrationNumber : <any>null;
+        data["taxRegistrationImage"] = this.taxRegistrationImage !== undefined ? this.taxRegistrationImage : <any>null;
+        data["address"] = this.address !== undefined ? this.address : <any>null;
+        data["representitveName"] = this.representitveName !== undefined ? this.representitveName : <any>null;
+        data["representitvePhoneNumber"] = this.representitvePhoneNumber !== undefined ? this.representitvePhoneNumber : <any>null;
+        data["representitveFrontIdentityNumberImage"] = this.representitveFrontIdentityNumberImage !== undefined ? this.representitveFrontIdentityNumberImage : <any>null;
+        data["representitveBackIdentityNumberImage"] = this.representitveBackIdentityNumberImage !== undefined ? this.representitveBackIdentityNumberImage : <any>null;
+        data["password"] = this.password !== undefined ? this.password : <any>null;
+        return data;
+    }
+}
+
+export class DeliveryManTokenResponse {
+    tokenResponse!: TokenResponse;
+    requiredCarOwnerInfo!: boolean;
+    requiredPersonalInfo!: boolean;
+    requiredVehicleInfo!: boolean;
+    carOwnerType!: number | null;
+
+    init(_data?: any) {
+        if (_data) {
+            this.tokenResponse = _data["tokenResponse"] ? TokenResponse.fromJS(_data["tokenResponse"]) : <any>null;
+            this.requiredCarOwnerInfo = _data["requiredCarOwnerInfo"] !== undefined ? _data["requiredCarOwnerInfo"] : <any>null;
+            this.requiredPersonalInfo = _data["requiredPersonalInfo"] !== undefined ? _data["requiredPersonalInfo"] : <any>null;
+            this.requiredVehicleInfo = _data["requiredVehicleInfo"] !== undefined ? _data["requiredVehicleInfo"] : <any>null;
+            this.carOwnerType = _data["carOwnerType"] !== undefined ? _data["carOwnerType"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): DeliveryManTokenResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeliveryManTokenResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["tokenResponse"] = this.tokenResponse ? this.tokenResponse.toJSON() : <any>null;
+        data["requiredCarOwnerInfo"] = this.requiredCarOwnerInfo !== undefined ? this.requiredCarOwnerInfo : <any>null;
+        data["requiredPersonalInfo"] = this.requiredPersonalInfo !== undefined ? this.requiredPersonalInfo : <any>null;
+        data["requiredVehicleInfo"] = this.requiredVehicleInfo !== undefined ? this.requiredVehicleInfo : <any>null;
+        data["carOwnerType"] = this.carOwnerType !== undefined ? this.carOwnerType : <any>null;
         return data;
     }
 }
@@ -2202,32 +2825,6 @@ export class DeliveryManLocationRequest {
     }
 }
 
-export class LoginRquestDto {
-    userName!: string;
-    password!: string;
-
-    init(_data?: any) {
-        if (_data) {
-            this.userName = _data["userName"] !== undefined ? _data["userName"] : <any>null;
-            this.password = _data["password"] !== undefined ? _data["password"] : <any>null;
-        }
-    }
-
-    static fromJS(data: any): LoginRquestDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new LoginRquestDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["userName"] = this.userName !== undefined ? this.userName : <any>null;
-        data["password"] = this.password !== undefined ? this.password : <any>null;
-        return data;
-    }
-}
-
 export class AddAssistantRequest {
     name!: string;
     phone!: string;
@@ -2268,32 +2865,6 @@ export class AddAssistantRequest {
         data["backIdentityImage"] = this.backIdentityImage !== undefined ? this.backIdentityImage : <any>null;
         data["identityExpirationDate"] = this.identityExpirationDate !== undefined ? this.identityExpirationDate : <any>null;
         data["maidTypeId"] = this.maidTypeId !== undefined ? this.maidTypeId : <any>null;
-        return data;
-    }
-}
-
-export class DeliveryDeviceTokensDto {
-    andriodDevice!: string;
-    iosDevice!: string;
-
-    init(_data?: any) {
-        if (_data) {
-            this.andriodDevice = _data["andriodDevice"] !== undefined ? _data["andriodDevice"] : <any>null;
-            this.iosDevice = _data["iosDevice"] !== undefined ? _data["iosDevice"] : <any>null;
-        }
-    }
-
-    static fromJS(data: any): DeliveryDeviceTokensDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new DeliveryDeviceTokensDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["andriodDevice"] = this.andriodDevice !== undefined ? this.andriodDevice : <any>null;
-        data["iosDevice"] = this.iosDevice !== undefined ? this.iosDevice : <any>null;
         return data;
     }
 }

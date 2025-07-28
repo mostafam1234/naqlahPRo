@@ -368,6 +368,263 @@
         }
       }
     },
+    "/api/Customer/RegisterAsIndividual": {
+      "post": {
+        "tags": [
+          "Customer"
+        ],
+        "operationId": "Customer_RegisterAsIndividual",
+        "requestBody": {
+          "x-name": "registerRequest",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IndividualCustomerRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Customer/RegenerateActivationCode": {
+      "post": {
+        "tags": [
+          "Customer"
+        ],
+        "operationId": "Customer_RegenerateActivationCode",
+        "requestBody": {
+          "x-name": "request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegenerateActivationCodeRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Customer/GetActivationCode": {
+      "get": {
+        "tags": [
+          "Customer"
+        ],
+        "operationId": "Customer_GetActivationCode",
+        "parameters": [
+          {
+            "name": "phoneNumber",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Customer/Activate": {
+      "post": {
+        "tags": [
+          "Customer"
+        ],
+        "operationId": "Customer_Activate",
+        "requestBody": {
+          "x-name": "request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActivationRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Customer/AddDevices": {
+      "post": {
+        "tags": [
+          "Customer"
+        ],
+        "operationId": "Customer_AddDevices",
+        "requestBody": {
+          "x-name": "request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeliveryDeviceTokensDto"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Customer/LogIn": {
+      "post": {
+        "tags": [
+          "Customer"
+        ],
+        "operationId": "Customer_LogIn",
+        "requestBody": {
+          "x-name": "request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRquestDto"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomerLoginResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Customer/RegisterAsEstablishMent": {
+      "post": {
+        "tags": [
+          "Customer"
+        ],
+        "operationId": "Customer_RegisterAsEstablishMent",
+        "requestBody": {
+          "x-name": "registerRequest",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EstablishMentCustomerRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/DeliveryMan/Register": {
       "post": {
         "tags": [
@@ -1181,6 +1438,153 @@
           }
         }
       },
+      "ProblemDetail": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "statusCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "errorMessage": {
+            "type": "string"
+          },
+          "additioanlData": {}
+        }
+      },
+      "IndividualCustomerRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "phoneNumber": {
+            "type": "string"
+          },
+          "identityNumber": {
+            "type": "string"
+          },
+          "frontIdentityImage": {
+            "type": "string"
+          },
+          "backIdentityImage": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "RegenerateActivationCodeRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "phoneNumber": {
+            "type": "string"
+          }
+        }
+      },
+      "ActivationRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "phoneNumber": {
+            "type": "string"
+          },
+          "activeCode": {
+            "type": "string"
+          }
+        }
+      },
+      "DeliveryDeviceTokensDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "andriodDevice": {
+            "type": "string"
+          },
+          "iosDevice": {
+            "type": "string"
+          }
+        }
+      },
+      "CustomerLoginResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "isActive": {
+            "type": "boolean"
+          },
+          "tokenResponse": {
+            "$ref": "#/components/schemas/TokenResponse"
+          }
+        }
+      },
+      "TokenResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "accessToken": {
+            "type": "string"
+          },
+          "expiresIn": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "refreshToken": {
+            "type": "string"
+          }
+        }
+      },
+      "LoginRquestDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userName": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
+      "EstablishMentCustomerRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "mobileNumber": {
+            "type": "string"
+          },
+          "recoredImage": {
+            "type": "string"
+          },
+          "taxRegistrationNumber": {
+            "type": "string"
+          },
+          "taxRegistrationImage": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "representitveName": {
+            "type": "string"
+          },
+          "representitvePhoneNumber": {
+            "type": "string"
+          },
+          "representitveFrontIdentityNumberImage": {
+            "type": "string"
+          },
+          "representitveBackIdentityNumberImage": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
       "DeliveryManTokenResponse": {
         "type": "object",
         "additionalProperties": false,
@@ -1202,36 +1606,6 @@
             "format": "int32",
             "nullable": true
           }
-        }
-      },
-      "TokenResponse": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "accessToken": {
-            "type": "string"
-          },
-          "expiresIn": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "refreshToken": {
-            "type": "string"
-          }
-        }
-      },
-      "ProblemDetail": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "statusCode": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "errorMessage": {
-            "type": "string"
-          },
-          "additioanlData": {}
         }
       },
       "DeliveryRegisterRequest": {
@@ -1275,18 +1649,6 @@
           }
         }
       },
-      "LoginRquestDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "userName": {
-            "type": "string"
-          },
-          "password": {
-            "type": "string"
-          }
-        }
-      },
       "AddAssistantRequest": {
         "type": "object",
         "additionalProperties": false,
@@ -1315,18 +1677,6 @@
           "maidTypeId": {
             "type": "integer",
             "format": "int32"
-          }
-        }
-      },
-      "DeliveryDeviceTokensDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "andriodDevice": {
-            "type": "string"
-          },
-          "iosDevice": {
-            "type": "string"
           }
         }
       },

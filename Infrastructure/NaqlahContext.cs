@@ -44,6 +44,7 @@ namespace Infrastructure
 
         public DatabaseFacade Database => base.Database;
         public DbSet<DeliveryMan> DeliveryMen { get; set; }
+        public DbSet<Customer> Customers { get; set; }
         public DbSet<VehicleBrand> VehicleBrands { get; set; }
         public DbSet<VehicleType> VehicleTypes { get; set; }
         public DbSet<Resident> Residents { get; set; }

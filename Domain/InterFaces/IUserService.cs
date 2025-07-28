@@ -20,5 +20,22 @@ namespace Domain.InterFaces
 
         Task<Result> CheckUserPassword(string userName,
                                        string password);
+
+        Task<Result<int>> CreateCustomerUserAsEstablishMent(string phoneNumber,
+                                                            string name,
+                                                            string recordImagePath,
+                                                            string taxRegistrationNumber,
+                                                            string taxRegestationImagePath,
+                                                            string address,
+                                                            string establishmentRepresentitveName,
+                                                            string establishmentRepresentitveMobile,
+                                                            string establishmentRepresentitvefrontImage,
+                                                            string establishmentRepresentitveBackImage,
+                                                            string password);
+        Task<Result<int>> CreateCustomerUserAsIndividual(string phoneNumber,
+                                                         string identtyNumber,
+                                                         string frontIdentitImage,
+                                                         string backIdentityImag,
+                                                         string password);
     }
 }
