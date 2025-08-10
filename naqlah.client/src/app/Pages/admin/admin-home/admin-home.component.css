@@ -1,0 +1,32 @@
+.request-info {
+  padding: 20px;
+  background-color: #EAF9C8;
+  border-radius: 10px;
+}
+.select-date {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+.select-date::-ms-expand {
+  display: none;
+}
+.custom-arrow {
+  right: 0.7rem;
+  top:3px
+}
+.cards-info {
+  gap: 5px;
+}
+.cards-info:nth-child(1) {
+  background-color: #EAF9C8;
+}
+.cards-info:nth-child(2) {
+  background-color: #9ECAC1;
+}.cards-info:nth-child(3) {
+  background-color: #DFEEDF;
+}.cards-info:nth-child(4) {
+  background-color: #96B9D8;
+}.cards-info:nth-child(5) {
+  background-color: #DFEEDF;
+}

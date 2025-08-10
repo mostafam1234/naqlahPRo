@@ -1,0 +1,94 @@
+<section class="captain flex flex-col gap-[30px]">
+  <div class="flex justify-center">
+    <div class="bg-mainButtonBg mainButtonText py-4 px-8 rounded-xl shadow w-[100%] flex flex-wrap items-center justify-between gap-4">
+      <p class="font-bold text-[18px]">الكابتن / السيد أحمد محمود</p>
+      <div class="flex gap-[5px] flex-wrap">
+        <button
+          class="bg-white flex items-center justify-center text-black w-[100px] text-base py-2 rounded-full shadow transition-colors duration-200"
+        >
+          موافقة
+        </button>
+        <button
+          class="bg-white flex items-center justify-center text-black w-[100px] text-base py-2 rounded-full shadow transition-colors duration-200"
+        >
+          تعليق
+        </button>
+        <button
+          class="bg-white flex items-center justify-center text-black w-[100px] text-base py-2 rounded-full shadow transition-colors duration-200"
+        >
+          كومنت
+        </button>
+        <button
+          class="bg-white flex items-center justify-center text-black w-[100px] text-base py-2 rounded-full shadow transition-colors duration-200"
+        >
+          بلوك
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 p-4">
+        <!-- قسم الفورم -->
+    <div class="flex-1 bg-white p-4 rounded-xl shadow">
+      <form class="flex flex-col gap-4">
+        <div>
+          <label class="block text-sm mb-1">العنوان</label>
+          <input type="text" class="w-full rounded-md bg-gray-100 p-2 outline-none" placeholder="العنوان" />
+        </div>
+        <div>
+          <label class="block text-sm mb-1">رقم الجوال</label>
+          <input type="number" class="w-full rounded-md bg-gray-100 p-2 outline-none" placeholder="رقم الجوال" />
+        </div>
+        <div>
+          <label class="block text-sm mb-1">رقم الهوية</label>
+          <input type="text" class="w-full rounded-md bg-gray-100 p-2 outline-none" placeholder="رقم الهوية" />
+        </div>
+        <div>
+          <label class="block text-sm mb-1">تاريخ انتهاء الهوية</label>
+          <input type="date" class="w-full rounded-md bg-gray-100 p-2 outline-none" />
+        </div>
+        <div>
+          <label class="block text-sm mb-1">نوع رخصة القيادة</label>
+          <input type="text" class="w-full rounded-md bg-gray-100 p-2 outline-none" placeholder="نوع رخصة القيادة" />
+        </div>
+      </form>
+    </div>
+    <!-- قسم الصور -->
+      <div class="grid grid-cols-2 gap-4 bg-white p-4 rounded-xl shadow">
+        <div class="flex flex-col items-center gap-[12px]">
+          <span class="mt-1 text-sm">صورة الرخصة</span>
+          <div class="bg-teal-900 flex items-center justify-center rounded-lg w-full lg:w-[80%] aspect-video">
+            <svg width="67" height="67" viewBox="0 0 67 67" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7.20248 53.0695L7.14665 53.1253C6.3929 51.4782 5.91832 49.6078 5.7229 47.542C5.91832 49.5799 6.44873 51.4224 7.20248 53.0695Z" fill="white"/>
+              <path d="M25.1249 28.9775C28.7944 28.9775 31.769 26.0028 31.769 22.3334C31.769 18.6639 28.7944 15.6892 25.1249 15.6892C21.4554 15.6892 18.4807 18.6639 18.4807 22.3334C18.4807 26.0028 21.4554 28.9775 25.1249 28.9775Z" fill="white"/>
+              <path d="M45.197 5.58325H21.8028C11.6412 5.58325 5.58325 11.6412 5.58325 21.8028V45.197C5.58325 48.2399 6.11367 50.892 7.14659 53.1253C9.54742 58.4295 14.6841 61.4166 21.8028 61.4166H45.197C55.3587 61.4166 61.4166 55.3587 61.4166 45.197V38.8041V21.8028C61.4166 11.6412 55.3587 5.58325 45.197 5.58325ZM56.8662 34.8958C54.6887 33.0253 51.1712 33.0253 48.9937 34.8958L37.3803 44.862C35.2028 46.7324 31.6853 46.7324 29.5078 44.862L28.5587 44.0803C26.5766 42.3495 23.422 42.182 21.1887 43.6895L10.7478 50.6966C10.1337 49.1333 9.77075 47.3187 9.77075 45.197V21.8028C9.77075 13.9303 13.9303 9.77075 21.8028 9.77075H45.197C53.0695 9.77075 57.2291 13.9303 57.2291 21.8028V35.2028L56.8662 34.8958Z" fill="white"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="flex flex-col items-center gap-[12px]">
+          <span class="mt-1 text-sm">صورة الهوية</span>
+          <div class="bg-teal-900 flex items-center justify-center rounded-lg w-full lg:w-[80%] aspect-video">
+            <svg width="67" height="67" viewBox="0 0 67 67" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7.20248 53.0695L7.14665 53.1253C6.3929 51.4782 5.91832 49.6078 5.7229 47.542C5.91832 49.5799 6.44873 51.4224 7.20248 53.0695Z" fill="white"/>
+              <path d="M25.1249 28.9775C28.7944 28.9775 31.769 26.0028 31.769 22.3334C31.769 18.6639 28.7944 15.6892 25.1249 15.6892C21.4554 15.6892 18.4807 18.6639 18.4807 22.3334C18.4807 26.0028 21.4554 28.9775 25.1249 28.9775Z" fill="white"/>
+              <path d="M45.197 5.58325H21.8028C11.6412 5.58325 5.58325 11.6412 5.58325 21.8028V45.197C5.58325 48.2399 6.11367 50.892 7.14659 53.1253C9.54742 58.4295 14.6841 61.4166 21.8028 61.4166H45.197C55.3587 61.4166 61.4166 55.3587 61.4166 45.197V38.8041V21.8028C61.4166 11.6412 55.3587 5.58325 45.197 5.58325ZM56.8662 34.8958C54.6887 33.0253 51.1712 33.0253 48.9937 34.8958L37.3803 44.862C35.2028 46.7324 31.6853 46.7324 29.5078 44.862L28.5587 44.0803C26.5766 42.3495 23.422 42.182 21.1887 43.6895L10.7478 50.6966C10.1337 49.1333 9.77075 47.3187 9.77075 45.197V21.8028C9.77075 13.9303 13.9303 9.77075 21.8028 9.77075H45.197C53.0695 9.77075 57.2291 13.9303 57.2291 21.8028V35.2028L56.8662 34.8958Z" fill="white"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="col-span-2 flex justify-center">
+          <div class="mt-4 flex flex-col w-[50%] items-center gap-[12px]">
+            <span class="mt-1 text-sm">صورة الرخصة</span>
+            <div class="bg-teal-900 flex items-center justify-center rounded-lg w-[80%]  aspect-video">
+              <svg width="67" height="67" viewBox="0 0 67 67" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7.20248 53.0695L7.14665 53.1253C6.3929 51.4782 5.91832 49.6078 5.7229 47.542C5.91832 49.5799 6.44873 51.4224 7.20248 53.0695Z" fill="white"/>
+                <path d="M25.1249 28.9775C28.7944 28.9775 31.769 26.0028 31.769 22.3334C31.769 18.6639 28.7944 15.6892 25.1249 15.6892C21.4554 15.6892 18.4807 18.6639 18.4807 22.3334C18.4807 26.0028 21.4554 28.9775 25.1249 28.9775Z" fill="white"/>
+                <path d="M45.197 5.58325H21.8028C11.6412 5.58325 5.58325 11.6412 5.58325 21.8028V45.197C5.58325 48.2399 6.11367 50.892 7.14659 53.1253C9.54742 58.4295 14.6841 61.4166 21.8028 61.4166H45.197C55.3587 61.4166 61.4166 55.3587 61.4166 45.197V38.8041V21.8028C61.4166 11.6412 55.3587 5.58325 45.197 5.58325ZM56.8662 34.8958C54.6887 33.0253 51.1712 33.0253 48.9937 34.8958L37.3803 44.862C35.2028 46.7324 31.6853 46.7324 29.5078 44.862L28.5587 44.0803C26.5766 42.3495 23.422 42.182 21.1887 43.6895L10.7478 50.6966C10.1337 49.1333 9.77075 47.3187 9.77075 45.197V21.8028C9.77075 13.9303 13.9303 9.77075 21.8028 9.77075H45.197C53.0695 9.77075 57.2291 13.9303 57.2291 21.8028V35.2028L56.8662 34.8958Z" fill="white"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+
+</section>

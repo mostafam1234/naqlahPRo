@@ -36,6 +36,104 @@ const routes: Routes = [
             (m) => m.AdminHomeComponent
           ),
       },
+      {
+        path: 'users/captains',
+        loadComponent: () =>
+          import('./Pages/admin/users/captain/captain.component').then(
+            (m) => m.CaptainComponent
+          ),
+      },
+      {
+        path: 'users/captains/add-captain',
+        loadComponent: () =>
+          import('./Pages/admin/users/captain/add-captain/add-captain.component').then(
+            (m) => m.AddCaptainComponent
+          ),
+      },
+      {
+        path: 'users/captains/edit-captain/:id',
+        loadComponent: () =>
+          import('./Pages/admin/users/captain/edit-captain/edit-captain.component').then(
+            (m) => m.EditCaptainComponent
+          ),
+      },
+      {
+        path: 'users/captains/details/:id',
+        loadComponent: () =>
+          import('./Pages/admin/users/captain/captain-details/captain-details.component').then(
+            (m) => m.CaptainDetailsComponent
+          ),
+      },
+      {
+        path: 'users/systemUsers',
+        loadComponent: () =>
+          import('./Pages/admin/users/systme-users/systme-users.component').then(
+            (m) => m.SystmeUsersComponent
+          ),
+      },
+      {
+        path: 'users/systemUsers/add-employee',
+        loadComponent: () =>
+          import('./Pages/admin/users/systme-users/add-employee/add-employee.component').then(
+            (m) => m.AddEmployeeComponent
+          ),
+      },
+      {
+        path: 'users/systemUsers/edit-employee/:id',
+        loadComponent: () =>
+          import('./Pages/admin/users/systme-users/edit-employee/edit-employee.component').then(
+            (m) => m.EditEmployeeComponent
+          ),
+      },
+      {
+        path: 'users/systemUsers/details/:id',
+        loadComponent: () =>
+          import('./Pages/admin/users/systme-users/employee-details/employee-details.component').then(
+            (m) => m.EmployeeDetailsComponent
+          ),
+      },
+      {
+        path: 'newCaptain',
+        loadComponent: () =>
+          import('./Pages/admin/users/new-captain/new-captain.component').then(
+            (m) => m.NewCaptainComponent
+          ),
+      },
+      {
+        path: 'newCaptain/action/:id',
+        loadComponent: () =>
+          import('./Pages/admin/users/new-captain/captain-action/captain-action.component').then(
+            (m) => m.CaptainActionComponent
+          ),
+      },
+      {
+        path: 'wallet/captain',
+        loadComponent: () =>
+          import('./Pages/admin/wallet/wallet-captain/wallet-captain.component').then(
+            (m) => m.WalletCaptainComponent
+          ),
+      },
+      {
+        path: 'wallet/captain/details/:id',
+        loadComponent: () =>
+          import('./Pages/admin/wallet/wallet-captain/wallet-captain-details/wallet-captain-details.component').then(
+            (m) => m.WalletCaptainDetailsComponent
+          ),
+      },
+      {
+        path: 'requests',
+        loadComponent: () =>
+          import('./Pages/admin/orders/orders.component').then(
+            (m) => m.OrdersComponent
+          ),
+      },
+      {
+        path: 'requests/controlCaptainRequest',
+        loadComponent: () =>
+          import('./Pages/admin/orders/control-captain-orders/control-captain-orders.component').then(
+            (m) => m.ControlCaptainOrdersComponent
+          ),
+      },
     ],
   }
 ];

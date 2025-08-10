@@ -27,7 +27,9 @@ body{
   @apply text-primaryColor;
   font-size: 24px;
 }
-
+.custom-card {
+  @apply rounded-xl shadow-md p-4 bg-white;
+}
 /* Responsive max-widths */
 @media (min-width: 576px) {
   .custom-container {

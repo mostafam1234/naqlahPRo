@@ -1,6 +1,6 @@
 import { NgClass, NgIf } from '@angular/common';
 import { Component, EventEmitter, Output } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -15,7 +15,7 @@ export class SideBarComponent {
   @Output() dataEmitter: EventEmitter<any> = new EventEmitter();
   openDropdown: string | null = null;
 
-  constructor(){}
+  constructor(private router: Router){}
 
   DisAppearSideBar() {
     this.appearSideBarNav = false;
@@ -24,5 +24,8 @@ export class SideBarComponent {
 
   toggleDropdown(menu: string): void {
     this.openDropdown = this.openDropdown === menu ? null : menu;
+    if (menu === 'requests') {
+      this.router.navigate(['/admin/requests']);
+    }
   }
 }
