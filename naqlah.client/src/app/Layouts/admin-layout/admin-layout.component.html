@@ -13,7 +13,7 @@
   </div>
   <div class="right-side">
     <app-header (dataEmitter)="handleSideBarVisibility($event)"></app-header>
-      <div class="G-container bg-adminBodyBG h-screen">
+      <div class="G-container bg-adminBodyBG">
         <div class="G-sub_container">
           <router-outlet></router-outlet>
           <span *ngIf="loading" class="loading-spinner" ></span>

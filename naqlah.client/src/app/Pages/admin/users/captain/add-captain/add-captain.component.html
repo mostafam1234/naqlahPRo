@@ -1,0 +1,93 @@
+<section class="bg-white p-[40px] rounded-lg shadow">
+  <h2 class="text-2xl font-bold mb-8">إضافة كابتن جديد</h2>
+
+  <form [formGroup]="captainForm" (ngSubmit)="submitForm()" class="space-y-4">
+    <div class="grid grid-cols-1 md: grid-cols-2 gap-[15px]">
+      <div class="flex flex-col">
+        <label for="nameAr" class="font-medium">الاسم بالعربي</label>
+        <input
+          id="nameAr"
+          type="text"
+          formControlName="nameAr"
+          class="border rounded px-4 py-2 mt-2"
+          placeholder="أدخل الاسم بالعربي"
+        />
+        <div *ngIf="captainForm.get('nameAr')?.invalid && captainForm.get('nameAr')?.touched" class="text-red-500 text-sm mt-2">
+          الاسم مطلوب
+        </div>
+      </div>
+
+      <div class="flex flex-col">
+        <label for="nameEn" class="font-medium">الاسم بالإنجليزي</label>
+        <input
+          id="nameEn"
+          type="text"
+          formControlName="nameEn"
+          class="border rounded px-4 py-2 mt-2"
+          placeholder="Enter name in English"
+        />
+        <div *ngIf="captainForm.get('nameEn')?.invalid && captainForm.get('nameEn')?.touched" class="text-red-500 text-sm mt-2">
+          الاسم مطلوب
+        </div>
+      </div>
+
+      <div class="flex flex-col">
+        <label for="phone" class="font-medium">رقم الهاتف</label>
+        <input
+          id="phone"
+          type="text"
+          formControlName="phone"
+          class="border rounded px-4 py-2 mt-2"
+          placeholder="أدخل رقم الهاتف"
+        />
+        <div *ngIf="captainForm.get('phone')?.invalid && captainForm.get('phone')?.touched" class="text-red-500 text-sm mt-2">
+          رقم الهاتف مطلوب
+        </div>
+      </div>
+      <div class="flex flex-col">
+          <label class="font-medium">البريد الإلكتروني</label>
+          <input type="email" formControlName="email" placeholder="example@email.com"
+                class="border rounded px-4 py-2 mt-2" />
+          <div *ngIf="captainForm.get('email')?.invalid && captainForm.get('email')?.touched"
+              class="text-red-500 text-sm">البريد مطلوب وصحيح</div>
+        </div>
+
+        <!-- النوع -->
+        <div class="flex flex-col">
+          <label class="font-medium">النوع</label>
+          <select formControlName="type" class="border rounded px-4 py-2 mt-2">
+            <option value="" disabled selected>اختر النوع</option>
+            <option value="individual">فردي</option>
+            <option value="institution">مؤسسة</option>
+          </select>
+          <div *ngIf="captainForm.get('type')?.invalid && captainForm.get('type')?.touched"
+              class="text-red-500 text-sm mt-2">
+              النوع مطلوب
+          </div>
+        </div>
+        <div class="flex flex-col gap-2 col-span-2 mt-4">
+          <label class="font-medium">صورة الطيار</label>
+          <div class="border border-dashed w-full p-8 min-h-[100px] flex flex-col justify-center items-center">
+            <div class="flex items-center gap-4">
+              <label for="fileUpload"
+                    class="cursor-pointer mb-4 bg-mainButtonBg mainButtonText py-2 px-4 rounded-full hover:bg-opacity-90">
+                اختر صورة
+              </label>
+              <input type="file" id="fileUpload" (change)="onImageSelected($event)"
+                    accept="image/*" hidden />
+            </div>
+            <div *ngIf="imagePreview" class="custom-card border border-dashed rounded-xl p-4 max-w-xs">
+              <img [src]="imagePreview" alt="معاينة الصورة" class="rounded-xl h-[150px] w-[150px] w-full object-cover" />
+            </div>
+          </div>
+        </div>
+      </div>
+    <button
+      type="submit"
+      [disabled]="captainForm.invalid"
+      class="bg-mainButtonBg mainButtonText py-2 px-6 rounded-full hover:bg-opacity-90"
+    >
+      حفظ الكابتن
+    </button>
+  </form>
+</section>

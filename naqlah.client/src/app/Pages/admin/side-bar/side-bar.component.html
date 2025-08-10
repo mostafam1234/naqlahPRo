@@ -4,7 +4,7 @@
 <div class="side-bar bg-adminPrimaryCardBg flex flex-col p-4">
   <!-- HOME -->
   <div>
-    <a class="flex items-center cursor-pointer side-bar_links side-bar_links gap-[10px]" routerLink="/go-admin/dashboard/homePage">
+    <a class="flex items-center cursor-pointer side-bar_links side-bar_links gap-[10px]" routerLink="/admin/home">
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M18.3333 6.89102V3.52435C18.3333 2.19935 17.8 1.66602 16.475 1.66602H13.1083C11.7833 1.66602 11.25 2.19935 11.25 3.52435V6.89102C11.25 8.21602 11.7833 8.74935 13.1083 8.74935H16.475C17.8 8.74935 18.3333 8.21602 18.3333 6.89102Z" fill="#292D32" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         <path d="M8.74984 7.09935V3.31602C8.74984 2.14102 8.2165 1.66602 6.8915 1.66602H3.52484C2.19984 1.66602 1.6665 2.14102 1.6665 3.31602V7.09102C1.6665 8.27435 2.19984 8.74102 3.52484 8.74102H6.8915C8.2165 8.74935 8.74984 8.27435 8.74984 7.09935Z" fill="#292D32" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -34,9 +34,70 @@
         </svg>
       </span>
     </div>
-    <div *ngIf="openDropdown === 'users'" class="dropdown-links space-y-2">
-      <a routerLink="/go-admin/dashboard/users/list" class="block side-bar_links mt-2">Users List</a>
-      <a routerLink="/go-admin/dashboard/users/roles" class="block side-bar_links">User Roles</a>
+    <div *ngIf="openDropdown === 'users'" class="dropdown-links space-y-2 ">
+      <a routerLink="/admin/users/systemUsers" class="block side-bar_links--dropdown mt-2 flex gap-[10px] items-center">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M7.63021 9.05866C7.54687 9.05033 7.44687 9.05033 7.35521 9.05866C5.37187 8.99199 3.79688 7.36699 3.79688 5.36699C3.79687 3.32533 5.44687 1.66699 7.49687 1.66699C9.53854 1.66699 11.1969 3.32533 11.1969 5.36699C11.1885 7.36699 9.61354 8.99199 7.63021 9.05866Z" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M13.6747 3.33301C15.2914 3.33301 16.5914 4.64134 16.5914 6.24967C16.5914 7.82467 15.3414 9.10801 13.7831 9.16634C13.7164 9.15801 13.6414 9.15801 13.5664 9.16634" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M3.46563 12.133C1.44896 13.483 1.44896 15.683 3.46563 17.0247C5.75729 18.558 9.51563 18.558 11.8073 17.0247C13.824 15.6747 13.824 13.4747 11.8073 12.133C9.52396 10.608 5.76562 10.608 3.46563 12.133Z" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M15.2812 16.667C15.8813 16.542 16.4479 16.3003 16.9146 15.942C18.2146 14.967 18.2146 13.3587 16.9146 12.3837C16.4562 12.0337 15.8979 11.8003 15.3063 11.667" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        {{ 'ADMIN.SIDEBAR.USERSPAGE.SYSTEMUSERS' | translate }}
+      </a>
+      <a routerLink="/admin/users/captains" class="block side-bar_links--dropdown flex items-center gap-[10px]">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M7.63021 9.05866C7.54687 9.05033 7.44687 9.05033 7.35521 9.05866C5.37187 8.99199 3.79688 7.36699 3.79688 5.36699C3.79687 3.32533 5.44687 1.66699 7.49687 1.66699C9.53854 1.66699 11.1969 3.32533 11.1969 5.36699C11.1885 7.36699 9.61354 8.99199 7.63021 9.05866Z" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M13.6747 3.33301C15.2914 3.33301 16.5914 4.64134 16.5914 6.24967C16.5914 7.82467 15.3414 9.10801 13.7831 9.16634C13.7164 9.15801 13.6414 9.15801 13.5664 9.16634" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M3.46563 12.133C1.44896 13.483 1.44896 15.683 3.46563 17.0247C5.75729 18.558 9.51563 18.558 11.8073 17.0247C13.824 15.6747 13.824 13.4747 11.8073 12.133C9.52396 10.608 5.76562 10.608 3.46563 12.133Z" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M15.2812 16.667C15.8813 16.542 16.4479 16.3003 16.9146 15.942C18.2146 14.967 18.2146 13.3587 16.9146 12.3837C16.4562 12.0337 15.8979 11.8003 15.3063 11.667" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        {{ 'ADMIN.SIDEBAR.USERSPAGE.CAPTAIN' | translate }}
+      </a>
+      <a routerLink="" class="block side-bar_links--dropdown flex items-center gap-[10px]">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M7.63021 9.05866C7.54687 9.05033 7.44687 9.05033 7.35521 9.05866C5.37187 8.99199 3.79688 7.36699 3.79688 5.36699C3.79687 3.32533 5.44687 1.66699 7.49687 1.66699C9.53854 1.66699 11.1969 3.32533 11.1969 5.36699C11.1885 7.36699 9.61354 8.99199 7.63021 9.05866Z" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M13.6747 3.33301C15.2914 3.33301 16.5914 4.64134 16.5914 6.24967C16.5914 7.82467 15.3414 9.10801 13.7831 9.16634C13.7164 9.15801 13.6414 9.15801 13.5664 9.16634" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M3.46563 12.133C1.44896 13.483 1.44896 15.683 3.46563 17.0247C5.75729 18.558 9.51563 18.558 11.8073 17.0247C13.824 15.6747 13.824 13.4747 11.8073 12.133C9.52396 10.608 5.76562 10.608 3.46563 12.133Z" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M15.2812 16.667C15.8813 16.542 16.4479 16.3003 16.9146 15.942C18.2146 14.967 18.2146 13.3587 16.9146 12.3837C16.4562 12.0337 15.8979 11.8003 15.3063 11.667" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        {{ 'ADMIN.SIDEBAR.USERSPAGE.SERVICEREQUEST' | translate }}
+      </a>
+    </div>
+  </div>
+
+
+  <!-- REQUESTS -->
+  <div>
+    <div class="flex justify-between items-center cursor-pointer side-bar_links side-bar_links" (click)="toggleDropdown('requests')">
+      <div class="flex gap-[10px]">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9.99817 11.666H10.8315C11.7482 11.666 12.4982 10.916 12.4982 9.99935V1.66602L4.99817 1.66602C3.74817 1.66602 2.65651 2.35767 2.08984 3.37434" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M1.66406 14.166C1.66406 15.5493 2.78073 16.666 4.16406 16.666H4.9974C4.9974 15.7493 5.7474 14.9993 6.66406 14.9993C7.58073 14.9993 8.33073 15.7493 8.33073 16.666H11.6641C11.6641 15.7493 12.4141 14.9993 13.3307 14.9993C14.2474 14.9993 14.9974 15.7493 14.9974 16.666H15.8307C17.2141 16.666 18.3307 15.5493 18.3307 14.166V11.666H15.8307C15.3724 11.666 14.9974 11.291 14.9974 10.8327V8.33268C14.9974 7.87435 15.3724 7.49935 15.8307 7.49935H16.9057L15.4807 5.00769C15.1807 4.49102 14.6308 4.16602 14.0308 4.16602H12.4974V9.99935C12.4974 10.916 11.7474 11.666 10.8307 11.666H9.9974" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M6.66667 18.3333C7.58714 18.3333 8.33333 17.5871 8.33333 16.6667C8.33333 15.7462 7.58714 15 6.66667 15C5.74619 15 5 15.7462 5 16.6667C5 17.5871 5.74619 18.3333 6.66667 18.3333Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M13.3307 18.3333C14.2512 18.3333 14.9974 17.5871 14.9974 16.6667C14.9974 15.7462 14.2512 15 13.3307 15C12.4103 15 11.6641 15.7462 11.6641 16.6667C11.6641 17.5871 12.4103 18.3333 13.3307 18.3333Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M18.3333 10V11.6667H15.8333C15.375 11.6667 15 11.2917 15 10.8333V8.33333C15 7.875 15.375 7.5 15.8333 7.5H16.9083L18.3333 10Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M1.66406 6.66602H6.66406" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M1.66406 9.16602H4.9974" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M1.66406 11.666H3.33073" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>{{ 'ADMIN.SIDEBAR.REQUESTS' | translate }}</span>
+      </div>
+      <span [ngClass]="{ 'rotate-90': openDropdown === 'requests' }">
+        <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12.662 17.8299L6.47716 11.5155C6.39067 11.4275 6.3224 11.3233 6.27627 11.2089C6.23013 11.0944 6.20704 10.972 6.20832 10.8486C6.2096 10.7252 6.23522 10.6033 6.28372 10.4899C6.33222 10.3764 6.40263 10.2736 6.49093 10.1874L12.8054 4.00256C12.9833 3.82828 13.2232 3.73182 13.4723 3.7344C13.7213 3.73698 13.9591 3.83839 14.1334 4.01633C14.3077 4.19427 14.4042 4.43415 14.4016 4.68321C14.399 4.93227 14.2976 5.1701 14.1197 5.34438L8.47534 10.8729L14.0046 16.5172C14.1789 16.6952 14.2754 16.935 14.2728 17.1841C14.2702 17.4332 14.1688 17.671 13.9909 17.8453C13.8129 18.0196 13.573 18.116 13.324 18.1134C13.0749 18.1109 12.8371 18.0095 12.6628 17.8315L12.662 17.8299Z" fill="black" fill-opacity="0.68"/>
+        </svg>
+      </span>
+    </div>
+    <div *ngIf="openDropdown === 'requests'" class="dropdown-links space-y-2">
+      <a routerLink="/admin/requests/controlCaptainRequest" class="block side-bar_links--dropdown flex items-center gap-[10px]">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M7.63021 9.05866C7.54687 9.05033 7.44687 9.05033 7.35521 9.05866C5.37187 8.99199 3.79688 7.36699 3.79688 5.36699C3.79687 3.32533 5.44687 1.66699 7.49687 1.66699C9.53854 1.66699 11.1969 3.32533 11.1969 5.36699C11.1885 7.36699 9.61354 8.99199 7.63021 9.05866Z" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M13.6747 3.33301C15.2914 3.33301 16.5914 4.64134 16.5914 6.24967C16.5914 7.82467 15.3414 9.10801 13.7831 9.16634C13.7164 9.15801 13.6414 9.15801 13.5664 9.16634" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M3.46563 12.133C1.44896 13.483 1.44896 15.683 3.46563 17.0247C5.75729 18.558 9.51563 18.558 11.8073 17.0247C13.824 15.6747 13.824 13.4747 11.8073 12.133C9.52396 10.608 5.76562 10.608 3.46563 12.133Z" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M15.2812 16.667C15.8813 16.542 16.4479 16.3003 16.9146 15.942C18.2146 14.967 18.2146 13.3587 16.9146 12.3837C16.4562 12.0337 15.8979 11.8003 15.3063 11.667" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        {{ 'ADMIN.SIDEBAR.CAPTAINREQUESTS' | translate }}
+      </a>
     </div>
   </div>
 
@@ -82,37 +143,27 @@
       </span>
     </div>
     <div *ngIf="openDropdown === 'dataReview'" class="dropdown-links space-y-2">
-      <a routerLink="/go-admin/dashboard/data-review/reports" class="block side-bar_links mt-2">Reports</a>
-      <a routerLink="/go-admin/dashboard/data-review/analytics" class="block side-bar_links">Analytics</a>
+      <a routerLink="/admin/newCaptain" class="block side-bar_links--dropdown flex items-center gap-[10px]">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M7.63021 9.05866C7.54687 9.05033 7.44687 9.05033 7.35521 9.05866C5.37187 8.99199 3.79688 7.36699 3.79688 5.36699C3.79687 3.32533 5.44687 1.66699 7.49687 1.66699C9.53854 1.66699 11.1969 3.32533 11.1969 5.36699C11.1885 7.36699 9.61354 8.99199 7.63021 9.05866Z" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M13.6747 3.33301C15.2914 3.33301 16.5914 4.64134 16.5914 6.24967C16.5914 7.82467 15.3414 9.10801 13.7831 9.16634C13.7164 9.15801 13.6414 9.15801 13.5664 9.16634" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M3.46563 12.133C1.44896 13.483 1.44896 15.683 3.46563 17.0247C5.75729 18.558 9.51563 18.558 11.8073 17.0247C13.824 15.6747 13.824 13.4747 11.8073 12.133C9.52396 10.608 5.76562 10.608 3.46563 12.133Z" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M15.2812 16.667C15.8813 16.542 16.4479 16.3003 16.9146 15.942C18.2146 14.967 18.2146 13.3587 16.9146 12.3837C16.4562 12.0337 15.8979 11.8003 15.3063 11.667" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        {{ 'ADMIN.SIDEBAR.USERSPAGE.CAPTAIN' | translate }}
+      </a>
+      <a routerLink="/admin/newRequest" class="block side-bar_links--dropdown flex items-center gap-[10px]">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M7.63021 9.05866C7.54687 9.05033 7.44687 9.05033 7.35521 9.05866C5.37187 8.99199 3.79688 7.36699 3.79688 5.36699C3.79687 3.32533 5.44687 1.66699 7.49687 1.66699C9.53854 1.66699 11.1969 3.32533 11.1969 5.36699C11.1885 7.36699 9.61354 8.99199 7.63021 9.05866Z" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M13.6747 3.33301C15.2914 3.33301 16.5914 4.64134 16.5914 6.24967C16.5914 7.82467 15.3414 9.10801 13.7831 9.16634C13.7164 9.15801 13.6414 9.15801 13.5664 9.16634" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M3.46563 12.133C1.44896 13.483 1.44896 15.683 3.46563 17.0247C5.75729 18.558 9.51563 18.558 11.8073 17.0247C13.824 15.6747 13.824 13.4747 11.8073 12.133C9.52396 10.608 5.76562 10.608 3.46563 12.133Z" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M15.2812 16.667C15.8813 16.542 16.4479 16.3003 16.9146 15.942C18.2146 14.967 18.2146 13.3587 16.9146 12.3837C16.4562 12.0337 15.8979 11.8003 15.3063 11.667" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        {{ 'ADMIN.SIDEBAR.USERSPAGE.SERVICEREQUEST' | translate }}
+      </a>
     </div>
   </div>
 
-  <!-- REQUESTS -->
-  <div>
-    <div class="flex justify-between items-center cursor-pointer side-bar_links side-bar_links" (click)="toggleDropdown('requests')">
-      <div class="flex gap-[10px]">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M9.99817 11.666H10.8315C11.7482 11.666 12.4982 10.916 12.4982 9.99935V1.66602L4.99817 1.66602C3.74817 1.66602 2.65651 2.35767 2.08984 3.37434" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M1.66406 14.166C1.66406 15.5493 2.78073 16.666 4.16406 16.666H4.9974C4.9974 15.7493 5.7474 14.9993 6.66406 14.9993C7.58073 14.9993 8.33073 15.7493 8.33073 16.666H11.6641C11.6641 15.7493 12.4141 14.9993 13.3307 14.9993C14.2474 14.9993 14.9974 15.7493 14.9974 16.666H15.8307C17.2141 16.666 18.3307 15.5493 18.3307 14.166V11.666H15.8307C15.3724 11.666 14.9974 11.291 14.9974 10.8327V8.33268C14.9974 7.87435 15.3724 7.49935 15.8307 7.49935H16.9057L15.4807 5.00769C15.1807 4.49102 14.6308 4.16602 14.0308 4.16602H12.4974V9.99935C12.4974 10.916 11.7474 11.666 10.8307 11.666H9.9974" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M6.66667 18.3333C7.58714 18.3333 8.33333 17.5871 8.33333 16.6667C8.33333 15.7462 7.58714 15 6.66667 15C5.74619 15 5 15.7462 5 16.6667C5 17.5871 5.74619 18.3333 6.66667 18.3333Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M13.3307 18.3333C14.2512 18.3333 14.9974 17.5871 14.9974 16.6667C14.9974 15.7462 14.2512 15 13.3307 15C12.4103 15 11.6641 15.7462 11.6641 16.6667C11.6641 17.5871 12.4103 18.3333 13.3307 18.3333Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M18.3333 10V11.6667H15.8333C15.375 11.6667 15 11.2917 15 10.8333V8.33333C15 7.875 15.375 7.5 15.8333 7.5H16.9083L18.3333 10Z" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M1.66406 6.66602H6.66406" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M1.66406 9.16602H4.9974" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M1.66406 11.666H3.33073" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <span>{{ 'ADMIN.SIDEBAR.REQUESTS' | translate }}</span>
-      </div>
-      <span [ngClass]="{ 'rotate-90': openDropdown === 'requests' }">
-        <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12.662 17.8299L6.47716 11.5155C6.39067 11.4275 6.3224 11.3233 6.27627 11.2089C6.23013 11.0944 6.20704 10.972 6.20832 10.8486C6.2096 10.7252 6.23522 10.6033 6.28372 10.4899C6.33222 10.3764 6.40263 10.2736 6.49093 10.1874L12.8054 4.00256C12.9833 3.82828 13.2232 3.73182 13.4723 3.7344C13.7213 3.73698 13.9591 3.83839 14.1334 4.01633C14.3077 4.19427 14.4042 4.43415 14.4016 4.68321C14.399 4.93227 14.2976 5.1701 14.1197 5.34438L8.47534 10.8729L14.0046 16.5172C14.1789 16.6952 14.2754 16.935 14.2728 17.1841C14.2702 17.4332 14.1688 17.671 13.9909 17.8453C13.8129 18.0196 13.573 18.116 13.324 18.1134C13.0749 18.1109 12.8371 18.0095 12.6628 17.8315L12.662 17.8299Z" fill="black" fill-opacity="0.68"/>
-        </svg>
-      </span>
-    </div>
-    <div *ngIf="openDropdown === 'requests'" class="dropdown-links space-y-2">
-      <a routerLink="/go-admin/dashboard/requests/all" class="block side-bar_links mt-2">All Requests</a>
-    </div>
-  </div>
 
   <!-- MESSAGES -->
   <div>
@@ -266,7 +317,24 @@
       </span>
     </div>
     <div *ngIf="openDropdown === 'wallet'" class="dropdown-links space-y-2">
-      <a routerLink="/go-admin/dashboard/wallet/history" class="block side-bar_links mt-2">Transaction History</a>
+      <a routerLink="/admin/wallet/captain" class="block side-bar_links--dropdown flex items-center gap-[10px]">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M7.63021 9.05866C7.54687 9.05033 7.44687 9.05033 7.35521 9.05866C5.37187 8.99199 3.79688 7.36699 3.79688 5.36699C3.79687 3.32533 5.44687 1.66699 7.49687 1.66699C9.53854 1.66699 11.1969 3.32533 11.1969 5.36699C11.1885 7.36699 9.61354 8.99199 7.63021 9.05866Z" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M13.6747 3.33301C15.2914 3.33301 16.5914 4.64134 16.5914 6.24967C16.5914 7.82467 15.3414 9.10801 13.7831 9.16634C13.7164 9.15801 13.6414 9.15801 13.5664 9.16634" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M3.46563 12.133C1.44896 13.483 1.44896 15.683 3.46563 17.0247C5.75729 18.558 9.51563 18.558 11.8073 17.0247C13.824 15.6747 13.824 13.4747 11.8073 12.133C9.52396 10.608 5.76562 10.608 3.46563 12.133Z" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M15.2812 16.667C15.8813 16.542 16.4479 16.3003 16.9146 15.942C18.2146 14.967 18.2146 13.3587 16.9146 12.3837C16.4562 12.0337 15.8979 11.8003 15.3063 11.667" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        {{ 'ADMIN.SIDEBAR.USERSPAGE.CAPTAIN' | translate }}
+      </a>
+      <a routerLink="/admin/newRequest" class="block side-bar_links--dropdown flex items-center gap-[10px]">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M7.63021 9.05866C7.54687 9.05033 7.44687 9.05033 7.35521 9.05866C5.37187 8.99199 3.79688 7.36699 3.79688 5.36699C3.79687 3.32533 5.44687 1.66699 7.49687 1.66699C9.53854 1.66699 11.1969 3.32533 11.1969 5.36699C11.1885 7.36699 9.61354 8.99199 7.63021 9.05866Z" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M13.6747 3.33301C15.2914 3.33301 16.5914 4.64134 16.5914 6.24967C16.5914 7.82467 15.3414 9.10801 13.7831 9.16634C13.7164 9.15801 13.6414 9.15801 13.5664 9.16634" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M3.46563 12.133C1.44896 13.483 1.44896 15.683 3.46563 17.0247C5.75729 18.558 9.51563 18.558 11.8073 17.0247C13.824 15.6747 13.824 13.4747 11.8073 12.133C9.52396 10.608 5.76562 10.608 3.46563 12.133Z" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M15.2812 16.667C15.8813 16.542 16.4479 16.3003 16.9146 15.942C18.2146 14.967 18.2146 13.3587 16.9146 12.3837C16.4562 12.0337 15.8979 11.8003 15.3063 11.667" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        {{ 'ADMIN.SIDEBAR.USERSPAGE.SERVICEREQUEST' | translate }}
+      </a>
     </div>
   </div>
 

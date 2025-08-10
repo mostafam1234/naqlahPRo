@@ -1,0 +1,36 @@
+  <div class="flex justify-center">
+    <div class="bg-white p-2 rounded-xl shadow w-[100%] md:w[70%] lg:w-[50%] flex justify-center gap-4">
+      <button
+        (click)="setActiveTab('all')"
+        [ngClass]="{
+          'bg-mainButtonBg mainButtonText': activeTab === 'all',
+          'bg-gray-200 text-[#67696A] hover:bg-mainButtonBg hover:mainButtonText': activeTab !== 'all'
+        }"
+        class="w-[143px] text-base py-2 rounded-full font-bold shadow transition-colors duration-200"
+      >
+        الكل
+      </button>
+
+      <button
+        (click)="setActiveTab('individual')"
+        [ngClass]="{
+          'bg-mainButtonBg mainButtonText': activeTab === 'individual',
+          'bg-gray-200 text-[#67696A] hover:bg-mainButtonBg hover:mainButtonText': activeTab !== 'individual'
+        }"
+        class="w-[143px] text-base py-2 rounded-full font-bold shadow transition-colors duration-200"
+      >
+        الأفراد
+      </button>
+
+      <button
+        (click)="setActiveTab('institution')"
+        [ngClass]="{
+          'bg-mainButtonBg mainButtonText': activeTab === 'institution',
+          'bg-gray-200 text-[#67696A] hover:bg-mainButtonBg hover:mainButtonText': activeTab !== 'institution'
+        }"
+        class="w-[143px] text-base py-2 rounded-full font-bold shadow transition-colors duration-200"
+      >
+        المؤسسات
+      </button>
+    </div>
+  </div>

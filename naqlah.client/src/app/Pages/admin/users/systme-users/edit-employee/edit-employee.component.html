@@ -1,0 +1,126 @@
+<section class="bg-white p-[40px] rounded-lg shadow">
+  <h2 class="text-2xl font-bold mb-8">تعديل بيانات الموظف</h2>
+
+  <form [formGroup]="empForm" (ngSubmit)="submitForm()" class="space-y-4">
+    <div class="grid grid-cols-1 md: grid-cols-2 gap-[15px]">
+      <div class="flex flex-col">
+        <label for="nameAr" class="font-medium">الاسم بالعربي</label>
+        <input
+          id="nameAr"
+          type="text"
+          formControlName="nameAr"
+          class="border rounded px-4 py-2 mt-2"
+          placeholder="أدخل الاسم بالعربي"
+        />
+        <div *ngIf="empForm.get('nameAr')?.invalid && empForm.get('nameAr')?.touched" class="text-red-500 text-sm mt-2">
+          الاسم مطلوب
+        </div>
+      </div>
+
+      <div class="flex flex-col">
+        <label for="nameEn" class="font-medium">الاسم بالإنجليزي</label>
+        <input
+          id="nameEn"
+          type="text"
+          formControlName="nameEn"
+          class="border rounded px-4 py-2 mt-2"
+          placeholder="Enter name in English"
+        />
+        <div *ngIf="empForm.get('nameEn')?.invalid && empForm.get('nameEn')?.touched" class="text-red-500 text-sm mt-2">
+          الاسم مطلوب
+        </div>
+      </div>
+
+      <div class="flex flex-col">
+        <label for="password" class="font-medium">كلمة المرور</label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          class="border rounded px-4 py-2 mt-2"
+          placeholder="كلمة المرور"
+        />
+        <div *ngIf="empForm.get('password')?.invalid && empForm.get('password')?.touched" class="text-red-500 text-sm mt-2">
+          حقل كلمة المرور مطلوب
+        </div>
+      </div>
+
+      <div class="flex flex-col">
+        <label for="phone" class="font-medium">رقم الهاتف</label>
+        <input
+          id="phone"
+          type="text"
+          formControlName="phone"
+          class="border rounded px-4 py-2 mt-2"
+          placeholder="أدخل رقم الهاتف"
+        />
+        <div *ngIf="empForm.get('phone')?.invalid && empForm.get('phone')?.touched" class="text-red-500 text-sm mt-2">
+          رقم الهاتف مطلوب
+        </div>
+      </div>
+      <div class="flex flex-col">
+        <label class="font-medium"> الجنسية</label>
+        <input type="text" formControlName="nationality" placeholder="الجنسية"
+              class="border rounded px-4 py-2 mt-2" />
+        <div *ngIf="empForm.get('nationality')?.invalid && empForm.get('nationality')?.touched"
+            class="text-red-500 text-sm">حقل الجنسية مطلوب
+        </div>
+      </div>
+      <div class="flex flex-col">
+        <label class="font-medium"> السن</label>
+        <input type="number" formControlName="age" placeholder="السن"
+              class="border rounded px-4 py-2 mt-2" />
+        <div *ngIf="empForm.get('age')?.invalid && empForm.get('age')?.touched"
+            class="text-red-500 text-sm">حقل السن مطلوب
+        </div>
+      </div>
+      <div class="flex flex-col">
+        <label class="font-medium">الوظيفة</label>
+        <select formControlName="job" class="border rounded px-4 py-2 mt-2">
+          <option value="" disabled selected>اختر الوظيفة</option>
+          <option value="individual">موارد بشرية</option>
+          <option value="institution">محاسب</option>
+          <option value="institution">مراجع مالى</option>
+          <option value="institution">مراجع عام</option>
+          <option value="institution">خدمة عملاء</option>
+        </select>
+        <div *ngIf="empForm.get('job')?.invalid && empForm.get('job')?.touched"
+            class="text-red-500 text-sm mt-2">
+            حقل الوظيفة مطلوب
+        </div>
+      </div>
+      <div class="flex flex-col">
+        <label class="font-medium">نوع الوظيفة</label>
+        <input type="text" formControlName="jobType" placeholder="نوع الوظيفة"
+              class="border rounded px-4 py-2 mt-2" />
+        <div *ngIf="empForm.get('jobType')?.invalid && empForm.get('jobType')?.touched"
+            class="text-red-500 text-sm">حقل نوع الوظيفة مطلوب
+        </div>
+      </div>
+
+        <div class="flex flex-col gap-2 col-span-2 mt-4">
+          <label class="font-medium">صورة المستخدم</label>
+          <div class="border border-dashed w-full p-8 min-h-[100px] flex flex-col justify-center items-center">
+            <div class="flex items-center gap-4">
+              <label for="fileUpload"
+                    class="cursor-pointer mb-4 bg-mainButtonBg mainButtonText py-2 px-4 rounded-full hover:bg-opacity-90">
+                اختر صورة
+              </label>
+              <input type="file" id="fileUpload" (change)="onImageSelected($event)"
+                    accept="image/*" hidden />
+            </div>
+            <div *ngIf="imagePreview" class="custom-card border border-dashed rounded-xl p-4 max-w-xs">
+              <img [src]="imagePreview" alt="معاينة الصورة" class="rounded-xl h-[150px] w-[150px] w-full object-cover" />
+            </div>
+          </div>
+        </div>
+      </div>
+    <button
+      type="submit"
+      [disabled]="empForm.invalid"
+      class="bg-mainButtonBg mainButtonText py-2 px-6 rounded-full font-bold hover:bg-opacity-90"
+    >
+      تعديل الموظف
+    </button>
+  </form>
+</section>

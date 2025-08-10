@@ -1,1 +1,221 @@
-<p>admin-home works!</p>
+<section class="homePage flex flex-col gap-[80px]">
+  <div class="homePage-Info grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-[15px]">
+    <div class="cards-info rounded-xl p-4 shadow-sm">
+      <div class="flex justify-between items-center mb-2">
+        <span class="text-gray-700 font-medium">عدد الطلبات</span>
+        <div class="relative">
+          <select class="select-date text-sm border border-gray-300 rounded-full pl-3 pr-7 py-1 bg-white text-gray-700 focus:outline-none">
+            <option>اليوم</option>
+            <option>أمس</option>
+            <option>آخر 7 أيام</option>
+            <option>هذا الشهر</option>
+          </select>
+          <div class="custom-arrow pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-600">
+            <svg width="11" height="10" viewBox="0 0 11 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9.13655 4.08128L6.01156 7.20628C5.96801 7.24998 5.91626 7.28466 5.85928 7.30831C5.80231 7.33197 5.74122 7.34415 5.67952 7.34415C5.61783 7.34415 5.55674 7.33197 5.49976 7.30831C5.44279 7.28466 5.39104 7.24998 5.34749 7.20628L2.22249 4.08128C2.13443 3.99322 2.08496 3.87379 2.08496 3.74925C2.08496 3.62471 2.13443 3.50528 2.22249 3.41722C2.31055 3.32916 2.42999 3.27969 2.55452 3.27969C2.67906 3.27969 2.7985 3.32916 2.88656 3.41722L5.67991 6.21058L8.47327 3.41683C8.56133 3.32877 8.68077 3.2793 8.8053 3.2793C8.92984 3.2793 9.04928 3.32877 9.13734 3.41683C9.2254 3.50489 9.27487 3.62432 9.27487 3.74886C9.27487 3.8734 9.2254 3.99283 9.13734 4.08089L9.13655 4.08128Z" fill="#141D21"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-[15px] text-gray-700 justify-center mt-[20px]">
+        <svg width="16" height="19" viewBox="0 0 16 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9.46609 9.56719L8.64915 10.0363L8.63687 18.4898L15.9931 14.2756L16.0054 5.82207L9.46609 9.56719Z" fill="#234A43"/>
+          <path d="M10.8073 1.98843L7.98301 0.355326L0.422561 4.68585L3.25064 6.31896L10.8073 1.98843Z" fill="#234A43"/>
+          <path d="M15.5271 4.70779L12.2723 2.85585L4.71562 7.18638L5.1461 7.40897L7.9704 9.03832L10.7843 7.42845L15.5271 4.70779Z" fill="#234A43"/>
+          <path d="M4.14048 10.2931L2.78862 9.59887L2.79175 7.44693L0.00519438 5.84398L-0.00699711 14.2373L7.28408 18.4427L7.29628 10.0494L4.14347 8.23518L4.14048 10.2931Z" fill="#234A43"/>
+        </svg>
+        <span class="text-lg font-semibold">5523</span>
+        <svg width="13" height="8" viewBox="0 0 13 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M7.44169 1.60777L12.9868 0L11.6066 5.6061L9.88485 3.9532L7.10751 6.84627C7.01322 6.94448 6.88296 7 6.74682 7C6.61067 7 6.48041 6.94448 6.38612 6.84627L4.34682 4.72199L1.34751 7.84627C1.15627 8.04547 0.839757 8.05193 0.640551 7.86069C0.441346 7.66946 0.434886 7.35294 0.626123 7.15373L3.98612 3.65373C4.08041 3.55552 4.21067 3.5 4.34682 3.5C4.48296 3.5 4.61322 3.55552 4.70751 3.65373L6.74682 5.77801L9.16346 3.26067L7.44169 1.60777Z" fill="#1C1C1C"/>
+        </svg>
+      </div>
+    </div>
+    <div class="cards-info rounded-xl p-4 shadow-sm">
+      <div class="flex justify-between items-center mb-2 gap-[5px]">
+        <span class="text-gray-700 font-medium"> المستخدمين الجدد</span>
+        <div class="relative">
+          <select class="select-date text-sm border border-gray-300 rounded-full pl-3 pr-7 py-1 bg-white text-gray-700 focus:outline-none">
+            <option>اليوم</option>
+            <option>أمس</option>
+            <option>آخر 7 أيام</option>
+            <option>هذا الشهر</option>
+          </select>
+          <div class="custom-arrow pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-600">
+            <svg width="11" height="10" viewBox="0 0 11 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9.13655 4.08128L6.01156 7.20628C5.96801 7.24998 5.91626 7.28466 5.85928 7.30831C5.80231 7.33197 5.74122 7.34415 5.67952 7.34415C5.61783 7.34415 5.55674 7.33197 5.49976 7.30831C5.44279 7.28466 5.39104 7.24998 5.34749 7.20628L2.22249 4.08128C2.13443 3.99322 2.08496 3.87379 2.08496 3.74925C2.08496 3.62471 2.13443 3.50528 2.22249 3.41722C2.31055 3.32916 2.42999 3.27969 2.55452 3.27969C2.67906 3.27969 2.7985 3.32916 2.88656 3.41722L5.67991 6.21058L8.47327 3.41683C8.56133 3.32877 8.68077 3.2793 8.8053 3.2793C8.92984 3.2793 9.04928 3.32877 9.13734 3.41683C9.2254 3.50489 9.27487 3.62432 9.27487 3.74886C9.27487 3.8734 9.2254 3.99283 9.13734 4.08089L9.13655 4.08128Z" fill="#141D21"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-[15px] text-gray-700 justify-center mt-[20px]">
+        <svg width="16" height="19" viewBox="0 0 16 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9.46609 9.56719L8.64915 10.0363L8.63687 18.4898L15.9931 14.2756L16.0054 5.82207L9.46609 9.56719Z" fill="#234A43"/>
+          <path d="M10.8073 1.98843L7.98301 0.355326L0.422561 4.68585L3.25064 6.31896L10.8073 1.98843Z" fill="#234A43"/>
+          <path d="M15.5271 4.70779L12.2723 2.85585L4.71562 7.18638L5.1461 7.40897L7.9704 9.03832L10.7843 7.42845L15.5271 4.70779Z" fill="#234A43"/>
+          <path d="M4.14048 10.2931L2.78862 9.59887L2.79175 7.44693L0.00519438 5.84398L-0.00699711 14.2373L7.28408 18.4427L7.29628 10.0494L4.14347 8.23518L4.14048 10.2931Z" fill="#234A43"/>
+        </svg>
+        <span class="text-lg font-semibold">5523</span>
+        <svg width="13" height="8" viewBox="0 0 13 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M7.44169 1.60777L12.9868 0L11.6066 5.6061L9.88485 3.9532L7.10751 6.84627C7.01322 6.94448 6.88296 7 6.74682 7C6.61067 7 6.48041 6.94448 6.38612 6.84627L4.34682 4.72199L1.34751 7.84627C1.15627 8.04547 0.839757 8.05193 0.640551 7.86069C0.441346 7.66946 0.434886 7.35294 0.626123 7.15373L3.98612 3.65373C4.08041 3.55552 4.21067 3.5 4.34682 3.5C4.48296 3.5 4.61322 3.55552 4.70751 3.65373L6.74682 5.77801L9.16346 3.26067L7.44169 1.60777Z" fill="#1C1C1C"/>
+        </svg>
+      </div>
+    </div>
+    <div class="cards-info rounded-xl p-4 shadow-sm">
+      <div class="flex justify-between items-center mb-2 gap-[5px]">
+        <span class="text-gray-700 font-medium">عدد الطلبات</span>
+        <div class="relative">
+          <select class="select-date text-sm border border-gray-300 rounded-full pl-3 pr-7 py-1 bg-white text-gray-700 focus:outline-none">
+            <option>اليوم</option>
+            <option>أمس</option>
+            <option>آخر 7 أيام</option>
+            <option>هذا الشهر</option>
+          </select>
+          <div class="custom-arrow pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-600">
+            <svg width="11" height="10" viewBox="0 0 11 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9.13655 4.08128L6.01156 7.20628C5.96801 7.24998 5.91626 7.28466 5.85928 7.30831C5.80231 7.33197 5.74122 7.34415 5.67952 7.34415C5.61783 7.34415 5.55674 7.33197 5.49976 7.30831C5.44279 7.28466 5.39104 7.24998 5.34749 7.20628L2.22249 4.08128C2.13443 3.99322 2.08496 3.87379 2.08496 3.74925C2.08496 3.62471 2.13443 3.50528 2.22249 3.41722C2.31055 3.32916 2.42999 3.27969 2.55452 3.27969C2.67906 3.27969 2.7985 3.32916 2.88656 3.41722L5.67991 6.21058L8.47327 3.41683C8.56133 3.32877 8.68077 3.2793 8.8053 3.2793C8.92984 3.2793 9.04928 3.32877 9.13734 3.41683C9.2254 3.50489 9.27487 3.62432 9.27487 3.74886C9.27487 3.8734 9.2254 3.99283 9.13734 4.08089L9.13655 4.08128Z" fill="#141D21"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-[15px] text-gray-700 justify-center mt-[20px]">
+        <svg width="16" height="19" viewBox="0 0 16 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9.46609 9.56719L8.64915 10.0363L8.63687 18.4898L15.9931 14.2756L16.0054 5.82207L9.46609 9.56719Z" fill="#234A43"/>
+          <path d="M10.8073 1.98843L7.98301 0.355326L0.422561 4.68585L3.25064 6.31896L10.8073 1.98843Z" fill="#234A43"/>
+          <path d="M15.5271 4.70779L12.2723 2.85585L4.71562 7.18638L5.1461 7.40897L7.9704 9.03832L10.7843 7.42845L15.5271 4.70779Z" fill="#234A43"/>
+          <path d="M4.14048 10.2931L2.78862 9.59887L2.79175 7.44693L0.00519438 5.84398L-0.00699711 14.2373L7.28408 18.4427L7.29628 10.0494L4.14347 8.23518L4.14048 10.2931Z" fill="#234A43"/>
+        </svg>
+        <span class="text-lg font-semibold">5523</span>
+        <svg width="13" height="8" viewBox="0 0 13 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M7.44169 1.60777L12.9868 0L11.6066 5.6061L9.88485 3.9532L7.10751 6.84627C7.01322 6.94448 6.88296 7 6.74682 7C6.61067 7 6.48041 6.94448 6.38612 6.84627L4.34682 4.72199L1.34751 7.84627C1.15627 8.04547 0.839757 8.05193 0.640551 7.86069C0.441346 7.66946 0.434886 7.35294 0.626123 7.15373L3.98612 3.65373C4.08041 3.55552 4.21067 3.5 4.34682 3.5C4.48296 3.5 4.61322 3.55552 4.70751 3.65373L6.74682 5.77801L9.16346 3.26067L7.44169 1.60777Z" fill="#1C1C1C"/>
+        </svg>
+      </div>
+    </div>
+    <div class="cards-info rounded-xl p-4 shadow-sm">
+      <div class="flex justify-between items-center mb-2 gap-[5px]">
+        <span class="text-gray-700 font-medium">عدد الطلبات</span>
+        <div class="relative">
+          <select class="select-date text-sm border border-gray-300 rounded-full pl-3 pr-7 py-1 bg-white text-gray-700 focus:outline-none">
+            <option>اليوم</option>
+            <option>أمس</option>
+            <option>آخر 7 أيام</option>
+            <option>هذا الشهر</option>
+          </select>
+          <div class="custom-arrow pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-600">
+            <svg width="11" height="10" viewBox="0 0 11 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9.13655 4.08128L6.01156 7.20628C5.96801 7.24998 5.91626 7.28466 5.85928 7.30831C5.80231 7.33197 5.74122 7.34415 5.67952 7.34415C5.61783 7.34415 5.55674 7.33197 5.49976 7.30831C5.44279 7.28466 5.39104 7.24998 5.34749 7.20628L2.22249 4.08128C2.13443 3.99322 2.08496 3.87379 2.08496 3.74925C2.08496 3.62471 2.13443 3.50528 2.22249 3.41722C2.31055 3.32916 2.42999 3.27969 2.55452 3.27969C2.67906 3.27969 2.7985 3.32916 2.88656 3.41722L5.67991 6.21058L8.47327 3.41683C8.56133 3.32877 8.68077 3.2793 8.8053 3.2793C8.92984 3.2793 9.04928 3.32877 9.13734 3.41683C9.2254 3.50489 9.27487 3.62432 9.27487 3.74886C9.27487 3.8734 9.2254 3.99283 9.13734 4.08089L9.13655 4.08128Z" fill="#141D21"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-[15px] text-gray-700 justify-center mt-[20px]">
+        <svg width="16" height="19" viewBox="0 0 16 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9.46609 9.56719L8.64915 10.0363L8.63687 18.4898L15.9931 14.2756L16.0054 5.82207L9.46609 9.56719Z" fill="#234A43"/>
+          <path d="M10.8073 1.98843L7.98301 0.355326L0.422561 4.68585L3.25064 6.31896L10.8073 1.98843Z" fill="#234A43"/>
+          <path d="M15.5271 4.70779L12.2723 2.85585L4.71562 7.18638L5.1461 7.40897L7.9704 9.03832L10.7843 7.42845L15.5271 4.70779Z" fill="#234A43"/>
+          <path d="M4.14048 10.2931L2.78862 9.59887L2.79175 7.44693L0.00519438 5.84398L-0.00699711 14.2373L7.28408 18.4427L7.29628 10.0494L4.14347 8.23518L4.14048 10.2931Z" fill="#234A43"/>
+        </svg>
+        <span class="text-lg font-semibold">5523</span>
+        <svg width="13" height="8" viewBox="0 0 13 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M7.44169 1.60777L12.9868 0L11.6066 5.6061L9.88485 3.9532L7.10751 6.84627C7.01322 6.94448 6.88296 7 6.74682 7C6.61067 7 6.48041 6.94448 6.38612 6.84627L4.34682 4.72199L1.34751 7.84627C1.15627 8.04547 0.839757 8.05193 0.640551 7.86069C0.441346 7.66946 0.434886 7.35294 0.626123 7.15373L3.98612 3.65373C4.08041 3.55552 4.21067 3.5 4.34682 3.5C4.48296 3.5 4.61322 3.55552 4.70751 3.65373L6.74682 5.77801L9.16346 3.26067L7.44169 1.60777Z" fill="#1C1C1C"/>
+        </svg>
+      </div>
+    </div>
+    <div class="cards-info rounded-xl p-4 shadow-sm">
+      <div class="flex justify-between items-center mb-2 gap-[5px]">
+        <span class="text-gray-700 font-medium">عدد الطلبات</span>
+        <div class="relative">
+          <select class="select-date text-sm border border-gray-300 rounded-full pl-3 pr-7 py-1 bg-white text-gray-700 focus:outline-none">
+            <option>اليوم</option>
+            <option>أمس</option>
+            <option>آخر 7 أيام</option>
+            <option>هذا الشهر</option>
+          </select>
+          <div class="custom-arrow pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-600">
+            <svg width="11" height="10" viewBox="0 0 11 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9.13655 4.08128L6.01156 7.20628C5.96801 7.24998 5.91626 7.28466 5.85928 7.30831C5.80231 7.33197 5.74122 7.34415 5.67952 7.34415C5.61783 7.34415 5.55674 7.33197 5.49976 7.30831C5.44279 7.28466 5.39104 7.24998 5.34749 7.20628L2.22249 4.08128C2.13443 3.99322 2.08496 3.87379 2.08496 3.74925C2.08496 3.62471 2.13443 3.50528 2.22249 3.41722C2.31055 3.32916 2.42999 3.27969 2.55452 3.27969C2.67906 3.27969 2.7985 3.32916 2.88656 3.41722L5.67991 6.21058L8.47327 3.41683C8.56133 3.32877 8.68077 3.2793 8.8053 3.2793C8.92984 3.2793 9.04928 3.32877 9.13734 3.41683C9.2254 3.50489 9.27487 3.62432 9.27487 3.74886C9.27487 3.8734 9.2254 3.99283 9.13734 4.08089L9.13655 4.08128Z" fill="#141D21"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-[15px] text-gray-700 justify-center mt-[20px]">
+        <svg width="16" height="19" viewBox="0 0 16 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9.46609 9.56719L8.64915 10.0363L8.63687 18.4898L15.9931 14.2756L16.0054 5.82207L9.46609 9.56719Z" fill="#234A43"/>
+          <path d="M10.8073 1.98843L7.98301 0.355326L0.422561 4.68585L3.25064 6.31896L10.8073 1.98843Z" fill="#234A43"/>
+          <path d="M15.5271 4.70779L12.2723 2.85585L4.71562 7.18638L5.1461 7.40897L7.9704 9.03832L10.7843 7.42845L15.5271 4.70779Z" fill="#234A43"/>
+          <path d="M4.14048 10.2931L2.78862 9.59887L2.79175 7.44693L0.00519438 5.84398L-0.00699711 14.2373L7.28408 18.4427L7.29628 10.0494L4.14347 8.23518L4.14048 10.2931Z" fill="#234A43"/>
+        </svg>
+        <span class="text-lg font-semibold">5523</span>
+        <svg width="13" height="8" viewBox="0 0 13 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" clip-rule="evenodd" d="M7.44169 1.60777L12.9868 0L11.6066 5.6061L9.88485 3.9532L7.10751 6.84627C7.01322 6.94448 6.88296 7 6.74682 7C6.61067 7 6.48041 6.94448 6.38612 6.84627L4.34682 4.72199L1.34751 7.84627C1.15627 8.04547 0.839757 8.05193 0.640551 7.86069C0.441346 7.66946 0.434886 7.35294 0.626123 7.15373L3.98612 3.65373C4.08041 3.55552 4.21067 3.5 4.34682 3.5C4.48296 3.5 4.61322 3.55552 4.70751 3.65373L6.74682 5.77801L9.16346 3.26067L7.44169 1.60777Z" fill="#1C1C1C"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+  <div class="charts grid grid-cols-1 gap-[20px] lg:grid-cols-2">
+    <div class="custom-card flex justify-center">
+      <div class="w-[50%]">
+        <canvas
+          baseChart
+          [data]="doughnutChartData"
+          [type]="doughnutChartType"
+        ></canvas>
+      </div>
+    </div>
+    <div class="custom-card flex justify-center">
+      <canvas
+        baseChart
+        [data]="barChartData"
+        [options]="barChartOptions"
+        [type]="barChartType"
+      ></canvas>
+    </div>
+    <div class="custom-card mt-4">
+      <canvas
+        baseChart
+        [data]="barChartDataForComplains"
+        [options]="barChartOptionsForComplains"
+        [type]="barChartTypeForComplains"
+      ></canvas>
+    </div>
+    <div class="custom-card flex justify-center mt-4">
+      <canvas
+        baseChart
+        [data]="lineChartData"
+        [options]="lineChartOptions"
+        [type]="lineChartType"
+      ></canvas>
+    </div>
+  </div>
+
+  <!-- component.html -->
+<div class="grid grid-cols-2 gap-4 p-4 items-center">
+
+  <!-- القائمة الجانبية -->
+  <div class="space-y-4 flex flex-col justify-center items-center">
+    <div *ngFor="let city of cities" class="bg-secondaryCard rounded-xl shadow p-4 w-[50%]">
+      <div class="flex justify-between text-secondaryProgressColor font-bold mb-8">
+        <span>{{ city.name }}</span>
+        <span>{{ city.percentage }}%</span>
+      </div>
+      <div class="w-full h-2 bg-gray-200 rounded">
+        <div
+          class="h-2 bg-secondaryProgressColor rounded"
+          [style.width.%]="city.percentage"
+        ></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- خريطة الطلبات -->
+  <div class="custom-card flex flex-col gap-[20px]">
+    <h3 class="text-center text-lg font-bold">رسم بياني لتوضيح حجم الطلبات</h3>
+    <canvas id="worldMapChart"></canvas>
+    <div class="flex justify-center gap-4 mt-2 text-sm text-gray-600">
+      <div><span class="inline-block w-3 h-3 bg-blue-400 rounded-full mr-1"></span> الاتجاه الأكثر طلبًا</div>
+      <div><span class="inline-block w-3 h-3 bg-gray-400 rounded-full mr-1"></span> الاتجاه الأقل طلبًا</div>
+    </div>
+  </div>
+
+</div>
+
+</section>

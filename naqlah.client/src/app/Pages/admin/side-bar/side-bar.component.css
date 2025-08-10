@@ -15,7 +15,7 @@
   color: #000;
   text-decoration: none;
 }
-.side-bar_links:hover {
+.side-bar_links:hover,.side-bar_links--dropdown:hover  {
   background-color: #0387c4;
   color: #FFF;
   transition: all 0.5s;
@@ -24,10 +24,10 @@
   transition: all 0.5s;
   fill: #FFF;
 }
-.dropdown-links {
-  margin-top: 0.7 rem;
-  padding: 0 15px;
+.side-bar_links--dropdown {
+  padding: 5px 33px;
 }
+
 .side-bar_links a {
   width: 100%;
 }

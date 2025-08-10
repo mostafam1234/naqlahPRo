@@ -1,0 +1,180 @@
+<section class="captain flex flex-col gap-[45px]">
+  <div class="flex justify-center">
+    <div class="bg-white p-2 rounded-xl shadow w-[100%] md:w[70%] lg:w-[50%] flex justify-center gap-4">
+      <button
+        (click)="setActiveTab('all')"
+        [ngClass]="{
+          'bg-mainButtonBg mainButtonText': activeTab === 'all',
+          'bg-gray-200 text-[#67696A] hover:bg-mainButtonBg hover:mainButtonText': activeTab !== 'all'
+        }"
+        class="w-[143px] text-base py-2 rounded-full font-bold shadow transition-colors duration-200"
+      >
+        الكل
+      </button>
+
+      <button
+        (click)="setActiveTab('individual')"
+        [ngClass]="{
+          'bg-mainButtonBg mainButtonText': activeTab === 'individual',
+          'bg-gray-200 text-[#67696A] hover:bg-mainButtonBg hover:mainButtonText': activeTab !== 'individual'
+        }"
+        class="w-[143px] text-base py-2 rounded-full font-bold shadow transition-colors duration-200"
+      >
+        الأفراد
+      </button>
+
+      <button
+        (click)="setActiveTab('institution')"
+        [ngClass]="{
+          'bg-mainButtonBg mainButtonText': activeTab === 'institution',
+          'bg-gray-200 text-[#67696A] hover:bg-mainButtonBg hover:mainButtonText': activeTab !== 'institution'
+        }"
+        class="w-[143px] text-base py-2 rounded-full font-bold shadow transition-colors duration-200"
+      >
+        المؤسسات
+      </button>
+    </div>
+  </div>
+
+  <div class="flex flex-wrap items-center justify-between gap-4">
+    <div class="flex gap-[60px]">
+      <input
+        type="text"
+        placeholder="Search"
+        class="border rounded-full px-4 py-2 w-full"
+      />
+      <div class="flex items-center gap-2">
+        <svg
+          (click)="viewMode = 'table'" [ngClass]="{'ring rounded-lg ring-mainButtonBg': viewMode === 'table'}"
+          class="cursor-pointer transition"width="46" height="40"
+          viewBox="0 0 46 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="1.3856" y="0.470068" width="44.1442" height="39.0599" rx="10.8116" fill="white"/>
+          <rect x="1.3856" y="0.470068" width="44.1442" height="39.0599" rx="10.8116" stroke="#C5C5D3" stroke-width="0.940136"/>
+          <path d="M15.9575 15H30.9575M15.9575 20H30.9575M15.9575 25H30.9575" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="15.4155" y1="14" x2="15.4155" y2="26" stroke="black"/>
+          <line x1="19.4155" y1="14" x2="19.4155" y2="26" stroke="black"/>
+          <line x1="23.4155" y1="14" x2="23.4155" y2="26" stroke="black"/>
+          <line x1="27.4155" y1="14" x2="27.4155" y2="26" stroke="black"/>
+          <line x1="31.4155" y1="14" x2="31.4155" y2="26" stroke="black"/>
+        </svg>
+
+        <svg
+          (click)="viewMode = 'cards'" [ngClass]="{'ring rounded-lg ring-mainButtonBg': viewMode === 'cards'}"
+          class="cursor-pointer transition"width="46" height="40"
+          viewBox="0 0 46 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="1.30112" y="0.470068" width="44.1442" height="39.0599" rx="10.8116" fill="white"/>
+          <rect x="1.30112" y="0.470068" width="44.1442" height="39.0599" rx="10.8116" stroke="#C5C5D3" stroke-width="0.940136"/>
+          <path d="M15.873 15H30.873M15.873 20H30.873M15.873 25H30.873" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cards grid -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[20px]" *ngIf="viewMode === 'cards'">
+    <div *ngFor="let captain of paginatedCaptains; let i = index" class="custom-card rounded flex flex-col gap-[20px] shadow">
+      <div class="flex justify-between items-center">
+        <div class="flex gap-[10px] items-center">
+          <img
+            [src]="captain.avatar"
+            alt="avatar"
+            class="w-[50px] h-[50px] rounded-full object-cover"
+          />
+          <p class="font-bold text-sm">{{ captain.name }}</p>
+        </div>
+
+        <div class="flex text-sm gap-[5px]">
+          <!-- زر المعاينة -->
+          <div class="relative group inline-block">
+            <a
+              routerLink="details/{{captain.id}}"
+              class="flex items-center gap-1 px-3 py-1.5 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+              </svg>
+            </a>
+
+            <!-- Tooltip -->
+            <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block bg-gray-800 text-white text-sm rounded py-1 px-2 shadow-md z-10">
+              التفاصيل
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- معلومات الكابتن -->
+      <div class="flex flex-col gap-[10px] w-full">
+        <div class="flex items-center gap-[10px] text-sm text-gray-700">
+          <i class="fa fa-envelope ml-2"></i> {{ captain.name }}
+        </div>
+        <div class="flex items-center gap-[10px] text-sm text-gray-700">
+          <i class="fa fa-map-marker ml-2"></i> {{ captain.type }}
+        </div>
+        <div class="flex items-center gap-[10px] text-sm text-gray-700">
+          <i class="fa fa-phone ml-2"></i> {{ captain.accountNumber }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="viewMode === 'table'" class="overflow-x-auto shadow rounded-lg">
+    <table class="min-w-full divide-y divide-gray-200 text-sm text-center">
+      <thead class="bg-gray-100 text-gray-700">
+        <tr>
+          <th class="px-4 py-3">#</th>
+          <th class="px-4 py-3">الاسم</th>
+          <th class="px-4 py-3">التاريخ</th>
+          <th class="px-4 py-3">النوع</th>
+          <th class="px-4 py-3">رقم الحساب</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <tr *ngFor="let captain of paginatedCaptains; let i = index" class="hover:bg-gray-50">
+          <td class="px-4 py-3 font-bold">{{ i + 1 }}</td>
+          <td class="px-4 py-3">
+            <img [src]="captain.avatar" alt="avatar" class="w-10 h-10 rounded-full object-cover mx-auto">
+          </td>
+          <td class="px-4 py-3">{{ captain.name }}</td>
+          <td class="px-4 py-3">{{ captain.date }}</td>
+          <td class="px-4 py-3">{{ captain.type }}</td>
+          <td class="px-4 py-3">{{ captain.accountNumber }}</td>
+          <td class="px-4 py-3">
+            <div class="flex justify-center gap-1">
+              <!-- المعاينة -->
+              <div class="relative group inline-block">
+                <a routerLink="details/{{captain.id}}"
+                  class="flex items-center px-2 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                  </svg>
+                </a>
+              </div>
+
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="flex w-full justify-start gap-2" *ngIf="totalPages > 1">
+      <button
+        *ngFor="let page of [].constructor(totalPages); let i = index"
+        (click)="changePage(i + 1)"
+        [ngClass]="{
+          'bg-mainButtonBg mainButtonText': currentPage === (i + 1),
+          'bg-gray-200 text-gray-700': currentPage !== (i + 1)
+        }"
+        class="w-10 h-10 rounded-full font-bold flex items-center justify-center transition-colors duration-200"
+      >
+        {{ i + 1 }}
+      </button>
+    </div>
+</section>
