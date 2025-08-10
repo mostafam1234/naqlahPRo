@@ -1,4 +1,4 @@
-  <div class="flex justify-center">
+  <div class="flex flex-col justify-center items-center gap-[35px]">
     <div class="bg-white p-2 rounded-xl shadow w-[100%] md:w[70%] lg:w-[50%] flex justify-center gap-4">
       <button
         (click)="setActiveTab('all')"
@@ -32,5 +32,198 @@
       >
         المؤسسات
       </button>
+    </div>
+
+    <div class="bg-white p-2 rounded-xl shadow w-[100%] md:w[90%] lg:w-[70%] flex justify-center gap-4">
+      <button
+        (click)="setActiveProgressTab('all')"
+        [ngClass]="{
+          'bg-mainButtonBg mainButtonText': activeProgressTab === 'all',
+          'bg-gray-200 text-[#67696A] hover:bg-mainButtonBg hover:mainButtonText': activeProgressTab !== 'all'
+        }"
+        class="w-[143px] text-base py-2 rounded-full font-bold shadow transition-colors duration-200"
+      >
+        الكل
+      </button>
+
+      <button
+        (click)="setActiveProgressTab('current')"
+        [ngClass]="{
+          'bg-mainButtonBg mainButtonText': activeProgressTab === 'current',
+          'bg-gray-200 text-[#67696A] hover:bg-mainButtonBg hover:mainButtonText': activeProgressTab !== 'current'
+        }"
+        class="w-[143px] text-base py-2 rounded-full font-bold shadow transition-colors duration-200"
+      >
+        الجارية
+      </button>
+
+      <button
+        (click)="setActiveProgressTab('expired')"
+        [ngClass]="{
+          'bg-mainButtonBg mainButtonText': activeProgressTab === 'expired',
+          'bg-gray-200 text-[#67696A] hover:bg-mainButtonBg hover:mainButtonText': activeProgressTab !== 'expired'
+        }"
+        class="w-[143px] text-base py-2 rounded-full font-bold shadow transition-colors duration-200"
+      >
+        منتهية
+      </button>
+
+      <button
+        (click)="setActiveProgressTab('advanced')"
+        [ngClass]="{
+          'bg-mainButtonBg mainButtonText': activeProgressTab === 'advanced',
+          'bg-gray-200 text-[#67696A] hover:bg-mainButtonBg hover:mainButtonText': activeProgressTab !== 'advanced'
+        }"
+        class="w-[143px] text-base py-2 rounded-full font-bold shadow transition-colors duration-200"
+      >
+        مقدمة
+      </button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 bg-gray-100 w-full">
+      <div class="md:col-span-2">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div *ngFor="let card of paginatedOrders">
+            <div class="bg-white rounded-lg shadow p-4 flex flex-col gap-3 p-4 px-8">
+              <!-- رقم الشحنة -->
+              <div class="flex items-center justify-between">
+                <img src="./assets/images/car.png" class="h-[85px] w-[85px]" alt="">
+                <p class="font-bold">
+                  <span>رقم الشحنة : </span>
+                  #{{ card.number }}
+                </p>
+              </div>
+
+              <!-- العنوان -->
+              <div  class="flex flex-col items-center justify-center gap-3 mt-2 mb-2">
+                <div class="flex gap-3">
+                  <svg width="39" height="38" viewBox="0 0 39 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="19.5" cy="19" r="19" fill="#67696A" fill-opacity="0.57"/>
+                    <circle cx="19.5" cy="19" r="7" fill="#343333"/>
+                  </svg>
+                  <div class="flex flex-col items-center justify-center">
+                    <p class="font-bold text-[14px]">{{card.from}}</p>
+                    <p class="text-gray-700 text-[12px]">{{ card.fromAddress }}</p>
+                  </div>
+                </div>
+
+                <div class="flex gap-3">
+                  <svg width="39" height="38" viewBox="0 0 39 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="19.5" cy="19" r="19" fill="#E5E5E5"/>
+                    <path d="M27 15.45C25.95 10.83 21.92 8.75 18.38 8.75C18.38 8.75 18.38 8.75 18.37 8.75C14.84 8.75 10.8 10.82 9.74998 15.44C8.57998 20.6 11.74 24.97 14.6 27.72C15.66 28.74 17.02 29.25 18.38 29.25C19.74 29.25 21.1 28.74 22.15 27.72C25.01 24.97 28.17 20.61 27 15.45ZM18.38 20.46C16.64 20.46 15.23 19.05 15.23 17.31C15.23 15.57 16.64 14.16 18.38 14.16C20.12 14.16 21.53 15.57 21.53 17.31C21.53 19.05 20.12 20.46 18.38 20.46Z" fill="#67696A"/>
+                  </svg>
+
+                  <div class="flex flex-col items-center justify-center">
+                    <p class="font-bold text-[14px]">{{card.to}}</p>
+                    <p class="text-sm text-gray-700">{{ card.toAddress }}</p>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center justify-between mt-2">
+                <div class="flex gap-2">
+                  <svg width="38" height="39" viewBox="0 0 38 39" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect y="0.5" width="38" height="38" rx="9.12" fill="#F7F5FF"/>
+                    <path d="M15.5 26.5H15C11 26.5 9 25.5 9 20.5V15.5C9 11.5 11 9.5 15 9.5H23C27 9.5 29 11.5 29 15.5V20.5C29 24.5 27 26.5 23 26.5H22.5C22.19 26.5 21.89 26.65 21.7 26.9L20.2 28.9C19.54 29.78 18.46 29.78 17.8 28.9L16.3 26.9C16.14 26.68 15.77 26.5 15.5 26.5Z" stroke="#343333" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M14 15.5H24" stroke="#343333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M14 20.5H20" stroke="#343333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="28" cy="10.5" r="6" fill="black"/>
+                  </svg>
+                  <svg width="38" height="39" viewBox="0 0 38 39" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect y="0.5" width="38" height="38" rx="9.12" fill="#F7F5FF"/>
+                    <path d="M28.97 25.83C28.97 26.19 28.89 26.56 28.72 26.92C28.55 27.28 28.33 27.62 28.04 27.94C27.55 28.48 27.01 28.87 26.4 29.12C25.8 29.37 25.15 29.5 24.45 29.5C23.43 29.5 22.34 29.26 21.19 28.77C20.04 28.28 18.89 27.62 17.75 26.79C16.6 25.95 15.51 25.02 14.47 23.99C13.44 22.95 12.51 21.86 11.68 20.72C10.86 19.58 10.2 18.44 9.72 17.31C9.24 16.17 9 15.08 9 14.04C9 13.36 9.12 12.71 9.36 12.11C9.6 11.5 9.98 10.94 10.51 10.44C11.15 9.81 11.85 9.5 12.59 9.5C12.87 9.5 13.15 9.56 13.4 9.68C13.66 9.8 13.89 9.98 14.07 10.24L16.39 13.51C16.57 13.76 16.7 13.99 16.79 14.21C16.88 14.42 16.93 14.63 16.93 14.82C16.93 15.06 16.86 15.3 16.72 15.53C16.59 15.76 16.4 16 16.16 16.24L15.4 17.03C15.29 17.14 15.24 17.27 15.24 17.43C15.24 17.51 15.25 17.58 15.27 17.66C15.3 17.74 15.33 17.8 15.35 17.86C15.53 18.19 15.84 18.62 16.28 19.14C16.73 19.66 17.21 20.19 17.73 20.72C18.27 21.25 18.79 21.74 19.32 22.19C19.84 22.63 20.27 22.93 20.61 23.11C20.66 23.13 20.72 23.16 20.79 23.19C20.87 23.22 20.95 23.23 21.04 23.23C21.21 23.23 21.34 23.17 21.45 23.06L22.21 22.31C22.46 22.06 22.7 21.87 22.93 21.75C23.16 21.61 23.39 21.54 23.64 21.54C23.83 21.54 24.03 21.58 24.25 21.67C24.47 21.76 24.7 21.89 24.95 22.06L28.26 24.41C28.52 24.59 28.7 24.8 28.81 25.05C28.91 25.3 28.97 25.55 28.97 25.83Z" stroke="#343333" stroke-width="1.5" stroke-miterlimit="10"/>
+                  </svg>
+                </div>
+                <div class="flex gap-[15px]">
+                  <div>
+                    <p class="text-gray-500 text-sm">الكابتن</p>
+                    <p class="font-bold">احمد السيد</p>
+                  </div>
+                  <div>
+                    <img
+                      src="./assets/images/user.png"
+                      alt="User Avatar"
+                      class="w-[50px] h-[50px] rounded-full border border-gray-300"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex w-full justify-start gap-2 mt-4" *ngIf="totalPages > 1">
+          <button
+            *ngFor="let page of [].constructor(totalPages); let i = index"
+            (click)="changePage(i + 1)"
+            [ngClass]="{
+              'bg-mainButtonBg mainButtonText': currentPage === (i + 1),
+              'bg-gray-200 text-gray-700': currentPage !== (i + 1)
+            }"
+            class="w-10 h-10 rounded-full font-bold flex items-center justify-center transition-colors duration-200"
+          >
+            {{ i + 1 }}
+          </button>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-lg shadow p-4 flex flex-col gap-4 col-span-1 flex flex-col justify-center">
+        <div class="flex flex-col gap-[50px]">
+          <div class="relative">
+            <div id="map" class="rounded-lg w-full h-[230px]"></div>
+            <p class="text-center text-gray-600 font-semibold mt-4">العملية / جارية</p>
+          </div>
+
+          <div class="flex items-center justify-between px-2">
+            <div class="flex gap-2">
+              <svg width="38" height="39" viewBox="0 0 38 39" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect y="0.5" width="38" height="38" rx="9.12" fill="#F7F5FF"/>
+                <path d="M15.5 26.5H15C11 26.5 9 25.5 9 20.5V15.5C9 11.5 11 9.5 15 9.5H23C27 9.5 29 11.5 29 15.5V20.5C29 24.5 27 26.5 23 26.5H22.5C22.19 26.5 21.89 26.65 21.7 26.9L20.2 28.9C19.54 29.78 18.46 29.78 17.8 28.9L16.3 26.9C16.14 26.68 15.77 26.5 15.5 26.5Z" stroke="#343333" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M14 15.5H24" stroke="#343333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M14 20.5H20" stroke="#343333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="28" cy="10.5" r="6" fill="black"/>
+              </svg>
+              <svg width="38" height="39" viewBox="0 0 38 39" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect y="0.5" width="38" height="38" rx="9.12" fill="#F7F5FF"/>
+                <path d="M28.97 25.83C28.97 26.19 28.89 26.56 28.72 26.92C28.55 27.28 28.33 27.62 28.04 27.94C27.55 28.48 27.01 28.87 26.4 29.12C25.8 29.37 25.15 29.5 24.45 29.5C23.43 29.5 22.34 29.26 21.19 28.77C20.04 28.28 18.89 27.62 17.75 26.79C16.6 25.95 15.51 25.02 14.47 23.99C13.44 22.95 12.51 21.86 11.68 20.72C10.86 19.58 10.2 18.44 9.72 17.31C9.24 16.17 9 15.08 9 14.04C9 13.36 9.12 12.71 9.36 12.11C9.6 11.5 9.98 10.94 10.51 10.44C11.15 9.81 11.85 9.5 12.59 9.5C12.87 9.5 13.15 9.56 13.4 9.68C13.66 9.8 13.89 9.98 14.07 10.24L16.39 13.51C16.57 13.76 16.7 13.99 16.79 14.21C16.88 14.42 16.93 14.63 16.93 14.82C16.93 15.06 16.86 15.3 16.72 15.53C16.59 15.76 16.4 16 16.16 16.24L15.4 17.03C15.29 17.14 15.24 17.27 15.24 17.43C15.24 17.51 15.25 17.58 15.27 17.66C15.3 17.74 15.33 17.8 15.35 17.86C15.53 18.19 15.84 18.62 16.28 19.14C16.73 19.66 17.21 20.19 17.73 20.72C18.27 21.25 18.79 21.74 19.32 22.19C19.84 22.63 20.27 22.93 20.61 23.11C20.66 23.13 20.72 23.16 20.79 23.19C20.87 23.22 20.95 23.23 21.04 23.23C21.21 23.23 21.34 23.17 21.45 23.06L22.21 22.31C22.46 22.06 22.7 21.87 22.93 21.75C23.16 21.61 23.39 21.54 23.64 21.54C23.83 21.54 24.03 21.58 24.25 21.67C24.47 21.76 24.7 21.89 24.95 22.06L28.26 24.41C28.52 24.59 28.7 24.8 28.81 25.05C28.91 25.3 28.97 25.55 28.97 25.83Z" stroke="#343333" stroke-width="1.5" stroke-miterlimit="10"/>
+              </svg>
+            </div>
+            <div class="flex gap-[15px]">
+              <div>
+                <p class="text-gray-500 text-sm">الكابتن</p>
+                <p class="font-bold">احمد السيد</p>
+              </div>
+              <div>
+                <img
+                  src="./assets/images/user.png"
+                  alt="User Avatar"
+                  class="w-[50px] h-[50px] rounded-full border border-gray-300"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 mt-8">
+            <div class="text-center">
+              <p class="text-sm text-gray-500 mb-2">صورة المحموله بعد التحميل</p>
+              <div class="bg-gray-100 border rounded-lg h-20 flex items-center justify-center">
+                <svg width="43" height="42" viewBox="0 0 43 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M5.01539 33.2672L4.98039 33.3022C4.50789 32.2697 4.21039 31.0972 4.08789 29.8022C4.21039 31.0797 4.54289 32.2347 5.01539 33.2672Z" fill="white"/>
+                  <path d="M16.249 18.165C18.5493 18.165 20.414 16.3002 20.414 14C20.414 11.6997 18.5493 9.83496 16.249 9.83496C13.9487 9.83496 12.084 11.6997 12.084 14C12.084 16.3002 13.9487 18.165 16.249 18.165Z" fill="white"/>
+                  <path d="M28.8325 3.5H14.1675C7.7975 3.5 4 7.2975 4 13.6675V28.3325C4 30.24 4.3325 31.9025 4.98 33.3025C6.485 36.6275 9.705 38.5 14.1675 38.5H28.8325C35.2025 38.5 39 34.7025 39 28.3325V24.325V13.6675C39 7.2975 35.2025 3.5 28.8325 3.5ZM36.1475 21.875C34.7825 20.7025 32.5775 20.7025 31.2125 21.875L23.9325 28.1225C22.5675 29.295 20.3625 29.295 18.9975 28.1225L18.4025 27.6325C17.16 26.5475 15.1825 26.4425 13.7825 27.3875L7.2375 31.78C6.8525 30.8 6.625 29.6625 6.625 28.3325V13.6675C6.625 8.7325 9.2325 6.125 14.1675 6.125H28.8325C33.7675 6.125 36.375 8.7325 36.375 13.6675V22.0675L36.1475 21.875Z" fill="white"/>
+                </svg>
+              </div>
+            </div>
+            <div class="text-center">
+              <p class="text-sm text-gray-500 mb-2">صورة العربة بعد التسليم</p>
+              <div class="bg-gray-100 border rounded-lg h-20 flex items-center justify-center">
+                <svg width="43" height="42" viewBox="0 0 43 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M5.01539 33.2672L4.98039 33.3022C4.50789 32.2697 4.21039 31.0972 4.08789 29.8022C4.21039 31.0797 4.54289 32.2347 5.01539 33.2672Z" fill="white"/>
+                  <path d="M16.249 18.165C18.5493 18.165 20.414 16.3002 20.414 14C20.414 11.6997 18.5493 9.83496 16.249 9.83496C13.9487 9.83496 12.084 11.6997 12.084 14C12.084 16.3002 13.9487 18.165 16.249 18.165Z" fill="white"/>
+                  <path d="M28.8325 3.5H14.1675C7.7975 3.5 4 7.2975 4 13.6675V28.3325C4 30.24 4.3325 31.9025 4.98 33.3025C6.485 36.6275 9.705 38.5 14.1675 38.5H28.8325C35.2025 38.5 39 34.7025 39 28.3325V24.325V13.6675C39 7.2975 35.2025 3.5 28.8325 3.5ZM36.1475 21.875C34.7825 20.7025 32.5775 20.7025 31.2125 21.875L23.9325 28.1225C22.5675 29.295 20.3625 29.295 18.9975 28.1225L18.4025 27.6325C17.16 26.5475 15.1825 26.4425 13.7825 27.3875L7.2375 31.78C6.8525 30.8 6.625 29.6625 6.625 28.3325V13.6675C6.625 8.7325 9.2325 6.125 14.1675 6.125H28.8325C33.7675 6.125 36.375 8.7325 36.375 13.6675V22.0675L36.1475 21.875Z" fill="white"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
