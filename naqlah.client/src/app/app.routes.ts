@@ -134,6 +134,20 @@ const routes: Routes = [
             (m) => m.ControlCaptainOrdersComponent
           ),
       },
+      {
+        path: 'chat/serviceRequest',
+        loadComponent: () =>
+          import('./Pages/admin/chat/srevice-request-chat/srevice-request-chat.component').then(
+            (m) => m.SreviceRequestChatComponent
+          ),
+      },
+      {
+        path: 'chat/review',
+        loadComponent: () =>
+          import('./Pages/admin/chat/chat-review/chat-review.component').then(
+            (m) => m.ChatReviewComponent
+          ),
+      }
     ],
   }
 ];

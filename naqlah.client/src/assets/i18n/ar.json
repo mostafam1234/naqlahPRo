@@ -20,7 +20,11 @@
       "INVOICES": "الفواتير",
       "WALLET": "المحفظة",
       "LEGAL": "الشؤون القانونية",
-      "LOGOUT": "الخروج"
+      "LOGOUT": "الخروج",
+      "CHAT":{
+        "SERVIEREQUEST":"طلب خدمة",
+        "REVIEW":"مراجعة الرسائل"
+      }
     },
     "HEADER": {
 
