@@ -1,0 +1,379 @@
+<div class="flex justify-center mb-[30px]">
+  <div class="bg-gray-100 rounded-2xl p-2 w-[100%] md:w[70%] lg:w-[50%] flex justify-center">
+    <div class="flex relative">
+      <button
+        (click)="setActiveTab('all')"
+        [ngClass]="{
+          'bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-md z-10': activeTab === 'all',
+          'text-gray-600 hover:text-gray-800 hover:bg-white hover:shadow-md': activeTab !== 'all'
+        }"
+        class="relative px-8 py-4 font-bold rounded-xl transition-all duration-300 transform hover:scale-105"
+      >
+        <span class="relative z-10">الكل</span>
+      </button>
+
+      <button
+        (click)="setActiveTab('individual')"
+        [ngClass]="{
+          'bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-md z-10': activeTab === 'individual',
+          'text-gray-600 hover:text-gray-800 hover:bg-white hover:shadow-md': activeTab !== 'individual'
+        }"
+        class="px-8 py-4 font-bold rounded-xl transition-all duration-300 transform hover:scale-105"
+      >
+        الأفراد
+      </button>
+
+      <button
+        (click)="setActiveTab('institution')"
+        [ngClass]="{
+          'bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-md z-10': activeTab === 'institution',
+          'text-gray-600 hover:text-gray-800 hover:bg-white hover:shadow-md': activeTab !== 'institution'
+        }"
+        class="px-8 py-4 font-bold rounded-xl transition-all duration-300 transform hover:scale-105"
+      >
+        المؤسسات
+      </button>
+    </div>
+  </div>
+</div>
+<div class="flex h-screen bg-gray-100" dir="rtl">
+      <!-- Sidebar - Contacts List -->
+      <div class="w-full md:w-80 bg-white border-l border-gray-200 flex flex-col"
+           [class.hidden]="selectedContact && isMobile"
+           [class.block]="!selectedContact || !isMobile">
+
+        <div class="p-4 border-b border-gray-200">
+          <div class="flex items-center justify-between mb-4">
+            <div class="relative">
+              <button (click)="toggleMenu()"
+                      class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+              </button>
+
+              <!-- Dropdown Menu - Positioned on the left -->
+              <div *ngIf="isMenuVisible"
+                   class="absolute top-full right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                <div class="py-2">
+                  <!-- Filter Options -->
+                  <div class="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b">
+                    فلترة المحادثات
+                  </div>
+
+                  <button (click)="setFilter('all')"
+                          class="w-full text-right px-4 py-2 text-sm transition-colors flex items-center justify-between"
+                          [class.bg-blue-50]="currentFilter === 'all'"
+                          [class.text-blue-600]="currentFilter === 'all'"
+                          [class.text-gray-700]="currentFilter !== 'all'"
+                          [class.hover:bg-gray-100]="currentFilter !== 'all'">
+                    <span class="flex items-center">
+                      <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                      </svg>
+                      جميع المحادثات
+                    </span>
+                    <span class="text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded-full">
+                      {{ getAllContactsCount() }}
+                    </span>
+                  </button>
+
+                  <button (click)="setFilter('unread')"
+                          class="w-full text-right px-4 py-2 text-sm transition-colors flex items-center justify-between"
+                          [class.bg-blue-50]="currentFilter === 'unread'"
+                          [class.text-blue-600]="currentFilter === 'unread'"
+                          [class.text-gray-700]="currentFilter !== 'unread'"
+                          [class.hover:bg-gray-100]="currentFilter !== 'unread'">
+                    <span class="flex items-center">
+                      <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                      </svg>
+                      غير المقروءة
+                    </span>
+                    <span class="text-xs bg-red-500 text-white px-2 py-1 rounded-full">
+                      {{ getTotalUnreadCount() }}
+                    </span>
+                  </button>
+
+                  <button (click)="setFilter('read')"
+                          class="w-full text-right px-4 py-2 text-sm transition-colors flex items-center justify-between"
+                          [class.bg-blue-50]="currentFilter === 'read'"
+                          [class.text-blue-600]="currentFilter === 'read'"
+                          [class.text-gray-700]="currentFilter !== 'read'"
+                          [class.hover:bg-gray-100]="currentFilter !== 'read'">
+                    <span class="flex items-center">
+                      <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                      </svg>
+                      المقروءة
+                    </span>
+                    <span class="text-xs bg-green-500 text-white px-2 py-1 rounded-full">
+                      {{ getReadContactsCount() }}
+                    </span>
+                  </button>
+
+                  <button (click)="setFilter('archived')"
+                          class="w-full text-right px-4 py-2 text-sm transition-colors flex items-center justify-between"
+                          [class.bg-blue-50]="currentFilter === 'archived'"
+                          [class.text-blue-600]="currentFilter === 'archived'"
+                          [class.text-gray-700]="currentFilter !== 'archived'"
+                          [class.hover:bg-gray-100]="currentFilter !== 'archived'">
+                    <span class="flex items-center">
+                      <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
+                      </svg>
+                      المؤرشفة
+                    </span>
+                    <span class="text-xs bg-gray-500 text-white px-2 py-1 rounded-full">
+                      {{ getArchivedContactsCount() }}
+                    </span>
+                  </button>
+
+                  <hr class="my-2">
+
+                  <!-- Actions -->
+                  <div class="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b">
+                    الإجراءات
+                  </div>
+
+                  <button (click)="markAllAsRead()"
+                          class="w-full text-right px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors flex items-center">
+                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    تحديد الكل كمقروء
+                  </button>
+
+                  <button (click)="clearSearch()"
+                          class="w-full text-right px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors flex items-center">
+                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                    مسح البحث
+                  </button>
+
+                  <hr class="my-2">
+
+                  <button class="w-full text-right px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors flex items-center">
+                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    الإعدادات
+                  </button>
+
+                  <button class="w-full text-right px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center">
+                    <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                    </svg>
+                    تسجيل الخروج
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center space-x-2 space-x-reverse">
+              <span class="text-lg font-semibold text-gray-800">الرسائل</span>
+              <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+            </div>
+            <div class="flex items-center space-x-2 space-x-reverse">
+              <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face&auto=format"
+                   alt="User" class="w-8 h-8 rounded-full">
+            </div>
+          </div>
+          <!-- Search -->
+          <div class="relative">
+            <input type="text"
+                   [(ngModel)]="searchQuery"
+                   (ngModelChange)="onSearchChange()"
+                   placeholder="بحث في المحادثات..."
+                   class="w-full bg-gray-50 border border-gray-200 rounded-lg py-2 px-4 pr-10 text-right focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+
+            <svg *ngIf="!searchQuery" class="w-5 h-5 text-gray-400 absolute right-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+
+            <button *ngIf="searchQuery"
+                    (click)="clearSearch()"
+                    class="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Filter Pills -->
+          <div *ngIf="currentFilter !== 'all'" class="mt-3 flex items-center">
+            <div class="flex items-center bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
+              <span>{{ getFilterLabel(currentFilter) }}</span>
+              <button (click)="setFilter('all')" class="ml-2 hover:text-blue-900">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contacts List -->
+        <div class="flex-1 overflow-y-auto">
+          <div *ngFor="let contact of contacts"
+               (click)="selectContact(contact)"
+               class="flex items-center p-4 hover:bg-gray-50 cursor-pointer border-b border-gray-100 transition-colors"
+               [class.bg-blue-50]="selectedContact?.id === contact.id">
+
+            <div class="flex-1 ml-3">
+              <div class="flex items-center justify-between">
+                <h3 class="font-medium text-gray-900">{{ contact.name }}</h3>
+                <span class="text-xs text-gray-500">{{ contact.time }}</span>
+              </div>
+              <p class="text-sm text-gray-600 truncate mt-1">{{ contact.lastMessage }}</p>
+            </div>
+
+            <div class="flex flex-col items-center">
+              <img [src]="contact.avatar"
+                   [alt]="contact.name"
+                   class="w-12 h-12 rounded-full">
+              <div *ngIf="contact.unread"
+                   class="w-5 h-5 bg-blue-500 text-white text-xs rounded-full flex items-center justify-center mt-1">
+                {{ contact.unread }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Chat Area -->
+      <div class="flex-1 flex flex-col"
+           [class.hidden]="!selectedContact && isMobile"
+           [class.flex]="selectedContact || !isMobile">
+
+        <!-- Chat Header -->
+        <div *ngIf="selectedContact" class="bg-white border-b border-gray-200 p-4 flex items-center">
+          <button (click)="goBack()" class="md:hidden p-2 hover:bg-gray-100 rounded-lg ml-2">
+            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+          </button>
+          <img [src]="selectedContact.avatar"
+               [alt]="selectedContact.name"
+               class="w-10 h-10 rounded-full ml-3">
+          <div class="flex-1">
+            <h3 class="font-medium text-gray-900">{{ selectedContact.name }}</h3>
+            <p class="text-sm text-green-600">متصل الآن</p>
+          </div>
+        </div>
+
+        <!-- Messages -->
+        <div *ngIf="selectedContact" class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+          <div *ngFor="let message of messages"
+               class="flex"
+               [class.justify-start]="!message.isSent"
+               [class.justify-end]="message.isSent">
+
+            <div class="max-w-xs lg:max-w-md px-4 py-2 rounded-2xl"
+                 [class.bg-teal-700]="message.isSent"
+                 [class.text-white]="message.isSent"
+                 [class.bg-white]="!message.isSent"
+                 [class.text-gray-800]="!message.isSent"
+                 [class.shadow-sm]="!message.isSent">
+
+              <!-- Text Message -->
+              <p *ngIf="!message.image" class="text-sm">{{ message.text }}</p>
+
+              <!-- Image Message -->
+              <div *ngIf="message.image" class="space-y-2">
+                <img [src]="message.image"
+                     [alt]="message.text || 'صورة'"
+                     class="rounded-lg max-w-full h-auto cursor-pointer"
+                     (click)="openImagePreview(message.image)">
+                <p *ngIf="message.text" class="text-sm">{{ message.text }}</p>
+              </div>
+
+              <p class="text-xs mt-1 opacity-70">{{ message.time }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Message Input -->
+        <div *ngIf="selectedContact" class="bg-white border-t border-gray-200 p-4">
+          <!-- Image Preview -->
+          <div *ngIf="previewImage" class="mb-3 p-3 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm text-gray-600">معاينة الصورة:</span>
+              <button (click)="removeSelectedImage()"
+                      class="text-red-500 hover:text-red-700 p-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            </div>
+            <img [src]="previewImage" alt="Preview" class="max-h-32 rounded-lg">
+          </div>
+
+          <div class="flex items-center space-x-2 space-x-reverse">
+            <!-- File Upload Button -->
+            <label class="p-2 text-gray-500 hover:text-gray-700 cursor-pointer hover:bg-gray-100 rounded-lg transition-colors">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"></path>
+              </svg>
+              <input type="file"
+                     #fileInput
+                     (change)="onFileSelected($event)"
+                     accept="image/*"
+                     class="hidden">
+            </label>
+
+            <button class="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h8m2-10v18l-4-4H6a2 2 0 01-2-2V6a2 2 0 012-2h12a2 2 0 012 2z"></path>
+              </svg>
+            </button>
+
+            <div class="flex-1 relative">
+              <input type="text"
+                     [(ngModel)]="newMessage"
+                     (keyup.enter)="sendMessage()"
+                     placeholder="اكتب رسالتك هنا..."
+                     class="w-full bg-gray-100 rounded-full py-3 px-4 pr-12 text-right focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+              <button (click)="sendMessage()"
+                      class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-teal-600 hover:bg-teal-700 text-white p-2 rounded-full transition-colors">
+                <svg class="w-4 h-4 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="!selectedContact" class="flex-1 flex items-center justify-center bg-gray-50">
+          <div class="text-center">
+            <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+            </svg>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">مرحباً بك في الرسائل</h3>
+            <p class="text-gray-500">اختر محادثة للبدء</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Image Preview Modal -->
+    <div *ngIf="imagePreviewUrl"
+         class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"
+         (click)="closeImagePreview()">
+      <div class="relative max-w-4xl max-h-4xl p-4">
+        <button (click)="closeImagePreview()"
+                class="absolute top-2 right-2 text-white hover:text-gray-300 z-10">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+        <img [src]="imagePreviewUrl"
+             alt="Preview"
+             class="max-w-full max-h-full object-contain rounded-lg"
+             (click)="$event.stopPropagation()">
+      </div>
+    </div>

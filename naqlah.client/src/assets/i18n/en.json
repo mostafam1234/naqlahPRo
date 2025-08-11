@@ -20,7 +20,11 @@
       "INVOICES": "Invoices",
       "WALLET": "Wallet",
       "LEGAL": "Legal Affairs",
-      "LOGOUT": "Logout"
+      "LOGOUT": "Logout",
+      "CHAT":{
+        "SERVIEREQUEST":"Service Request",
+        "REVIEW":"Chat Review"
+      }
     },
     "HEADER": {
 
