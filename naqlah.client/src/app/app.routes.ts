@@ -135,6 +135,20 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'requests/controlCaptainRequest/requestTracking/:id',
+        loadComponent: () =>
+          import('./Pages/admin/orders/order-tracking/order-tracking.component').then(
+            (m) => m.OrderTrackingComponent
+          ),
+      },
+      {
+        path: 'categoriesControl',
+        loadComponent: () =>
+          import('./Pages/admin/types-control/types-control.component').then(
+            (m) => m.TypesControlComponent
+          ),
+      },
+      {
         path: 'chat/serviceRequest',
         loadComponent: () =>
           import('./Pages/admin/chat/srevice-request-chat/srevice-request-chat.component').then(

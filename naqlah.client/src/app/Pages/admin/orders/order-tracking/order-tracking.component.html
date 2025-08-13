@@ -1,0 +1,118 @@
+ <div class="min-h-screen bg-gray-100 p-4">
+
+      <!-- Header -->
+      <div class="bg-white rounded-lg p-4 mb-4 flex justify-between items-center shadow-sm">
+        <h1 class="text-xl font-bold text-gray-800">التحكم في الطلبيات/الكابتن</h1>
+        <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-lg">
+            <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+            </svg>
+            <span class="text-gray-700">الكابتن / السيد احمد</span>
+          </div>
+          <div class="w-10 h-10 bg-gray-300 rounded-full"></div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <!-- right Panel -->
+        <div class=" bg-white col-span-1 lg:col-span-2 h-[350px] rounded-lg p-4 shadow-sm">
+            <div id="map" class="rounded-lg w-full h-[100%]"></div>
+        </div>
+
+        <!-- left Panel -->
+        <div>
+          <!-- TimeLine -->
+          <div class="bg-white rounded-lg p-4 mb-4 shadow-sm">
+          <!-- Timeline Steps -->
+          <div class="space-y-4">
+            <div *ngFor="let step of timelineSteps; let i = index" class="flex items-center gap-4">
+              <!-- Timeline dot -->
+              <div class="flex flex-col items-center">
+                <div [class]="step.completed ? 'w-4 h-4 bg-red-500 rounded-full' : 'w-4 h-4 bg-gray-300 rounded-full border-2 border-gray-300'"></div>
+                <div *ngIf="i < timelineSteps.length - 1" class="w-0.5 h-8 bg-gray-200 mt-2"></div>
+              </div>
+
+              <!-- Step content -->
+              <div class="flex-1">
+                <div class="flex justify-between items-center">
+                  <span [class]="step.completed ? 'text-gray-800 font-medium' : 'text-gray-500'">{{ step.title }}</span>
+                  <span class="text-sm text-gray-500">{{ step.time }}</span>
+                </div>
+                <div class="text-sm text-gray-400 mt-1">{{ step.description }}</div>
+              </div>
+            </div>
+          </div>
+
+            <!-- Contact info -->
+            <div class="mt-4 flex items-center justify-between">
+              <div>
+                <div class="font-medium">الكابتن</div>
+                <div class="text-sm text-gray-500">احمد السيد</div>
+              </div>
+              <div class="flex gap-2">
+                <button class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200">
+                  <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                  </svg>
+                </button>
+                <button class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center hover:bg-gray-200">
+                  <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="mt-4 bg-gray-50 rounded-lg p-3 text-center">
+              <span class="font-medium">العملية / جارية</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Table -->
+      <div class="bg-white rounded-lg p-4 mt-4 shadow-sm">
+        <table class="min-w-full divide-y divide-gray-200 text-sm text-center">
+          <thead class="bg-gray-100 text-gray-700">
+            <tr>
+              <th class="py-3 px-4">رقم الشحنة</th>
+              <th class="py-3 px-4">نوع الخدمة</th>
+              <th class="py-3 px-4">نوع الرحلة</th>
+              <th class="py-3 px-4">نوع الشحنة</th>
+              <th class="py-3 px-4">أضافه خدمة</th>
+              <th class="py-3 px-4">حجم الشحنة</th>
+              <th class="py-3 px-4">ارفاق الصور</th>
+              <th class="py-3 px-4">الإجراء</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr class="hover:bg-gray-50">
+              <td class="px-4 py-3">#00121</td>
+              <td class="px-4 py-3">نقل ثقيل</td>
+              <td class="px-4 py-3">متعدد الوجهات</td>
+              <td class="px-4 py-3">أوراق</td>
+              <td class="px-4 py-3">تغليف</td>
+              <td class="px-4 py-3">حجم كبير</td>
+              <td class="px-4 py-3">تم العمل</td>
+              <td class="px-4 py-3">
+                <div class="flex justify-center gap-1">
+                  <!-- المعاينة -->
+                  <div class="relative group inline-block">
+                    <a routerLink="requestTracking/1"
+                      class="flex items-center px-2 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                      </svg>
+                    </a>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>

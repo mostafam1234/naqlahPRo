@@ -103,11 +103,9 @@
                 {{ message.content }}
               </div>
 
-              <!-- وقت الرسالة وحالتها -->
               <div class="flex items-center justify-between mt-1 px-1">
                 <span class="text-xs text-gray-500">{{ message.time }}</span>
 
-                <!-- حالة المراجعة -->
                 <div class="flex items-center gap-2">
                   <span
                     class="text-xs px-2 py-1 rounded-full"
@@ -120,7 +118,6 @@
                     {{ getStatusText(message.status) }}
                   </span>
 
-                  <!-- أزرار المراجعة للرسائل المعلقة -->
                   <div *ngIf="message.status === 'pending'" class="flex gap-1">
                     <button
                       class="w-6 h-6 bg-green-500 hover:bg-green-600 text-white rounded-full flex items-center justify-center text-xs transition-colors"
@@ -139,7 +136,6 @@
           </div>
         </div>
 
-        <!-- رسالة فارغة -->
         <div *ngIf="!selectedUser" class="flex-1 flex items-center justify-center text-gray-500">
           <div class="text-center">
             <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">

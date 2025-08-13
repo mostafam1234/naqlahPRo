@@ -260,15 +260,11 @@
         </svg>
         <span>{{ 'ADMIN.SIDEBAR.CATEGORY_CONTROL' | translate }}</span>
       </div>
-      <span [ngClass]="{ 'rotate-90': openDropdown === 'category' }">
+      <span>
         <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M12.662 17.8299L6.47716 11.5155C6.39067 11.4275 6.3224 11.3233 6.27627 11.2089C6.23013 11.0944 6.20704 10.972 6.20832 10.8486C6.2096 10.7252 6.23522 10.6033 6.28372 10.4899C6.33222 10.3764 6.40263 10.2736 6.49093 10.1874L12.8054 4.00256C12.9833 3.82828 13.2232 3.73182 13.4723 3.7344C13.7213 3.73698 13.9591 3.83839 14.1334 4.01633C14.3077 4.19427 14.4042 4.43415 14.4016 4.68321C14.399 4.93227 14.2976 5.1701 14.1197 5.34438L8.47534 10.8729L14.0046 16.5172C14.1789 16.6952 14.2754 16.935 14.2728 17.1841C14.2702 17.4332 14.1688 17.671 13.9909 17.8453C13.8129 18.0196 13.573 18.116 13.324 18.1134C13.0749 18.1109 12.8371 18.0095 12.6628 17.8315L12.662 17.8299Z" fill="black" fill-opacity="0.68"/>
         </svg>
       </span>
-    </div>
-    <div *ngIf="openDropdown === 'category'" class="dropdown-links space-y-2">
-      <a routerLink="/go-admin/dashboard/category-control/main" class="block side-bar_links mt-2">Main Categories</a>
-      <a routerLink="/go-admin/dashboard/category-control/sub" class="block side-bar_links">Sub Categories</a>
     </div>
   </div>
 
