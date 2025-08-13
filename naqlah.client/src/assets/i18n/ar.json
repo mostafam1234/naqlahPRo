@@ -27,7 +27,24 @@
       }
     },
     "HEADER": {
-
+      "SELECT_LANGUAGE": "اختر اللغة",
+      "ARABIC": "عربي",
+      "ENGLISH": "إنجليزي",
+      "PAGE_WILL_RELOAD": "سيتم إعادة تحميل الصفحة",
+      "SETTINGS": "الإعدادات",
+      "PROFILE_SECTION": "الملف الشخصي",
+      "PREFERENCES_SECTION": "التفضيلات",
+      "SYSTEM_SECTION": "النظام",
+      "PROFILE": "الملف الشخصي",
+      "CHANGE_PASSWORD": "تغيير كلمة المرور",
+      "ACCOUNT_INFO": "معلومات الحساب",
+      "DARK_MODE": "الوضع الليلي",
+      "LANGUAGE": "اللغة",
+      "NOTIFICATIONS_SETTING": "الإشعارات",
+      "PRIVACY": "الخصوصية",
+      "HELP_SUPPORT": "المساعدة والدعم",
+      "ABOUT_APP": "حول التطبيق",
+      "LOGOUT": "تسجيل الخروج"
     },
     "WALLET": {
       "CAPTAIN": {

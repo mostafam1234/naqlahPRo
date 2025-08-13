@@ -218,4 +218,61 @@
 
 </div>
 
+<div class="flex flex-col gap-[30px]">
+  <div class="header flex justify-between items-center">
+    <h1 class="text-[20px] font-bold">الشحنات الى تم العمل بها خلال اليوم</h1>
+    <svg width="46" height="40" viewBox="0 0 46 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0.470068" y="0.470068" width="44.1442" height="39.0599" rx="10.8116" fill="white"/>
+      <rect x="0.470068" y="0.470068" width="44.1442" height="39.0599" rx="10.8116" stroke="#C5C5D3" stroke-width="0.940136"/>
+      <path d="M15.0422 15H30.0422M17.5422 20H27.5422M20.5422 25H24.5422" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <div class="overflow-x-auto shadow rounded-lg">
+    <table class="min-w-full divide-y divide-gray-200 text-sm text-center">
+      <thead class="bg-gray-100 text-gray-700">
+        <tr>
+          <th class="px-4 py-3">#</th>
+          <th class="px-4 py-3">نوع النقل</th>
+          <th class="px-4 py-3">الوصف</th>
+          <th class="px-4 py-3">السعر</th>
+          <th class="px-4 py-3">حالة الشحنة</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <tr *ngFor="let shipping of paginatedshipping; let i = index" class="hover:bg-gray-50">
+          <td class="px-4 py-3 font-bold">{{ i + 1 }}</td>
+          <td class="px-4 py-3 rounded">{{ shipping.type }}</td>
+          <td class="px-4 py-3 rounded">{{ shipping.destination }}</td>
+          <td class="px-4 py-3 rounded">{{ shipping.price }}</td>
+          <td class="flex items-center justify-center p-2">
+            <p class="w-[50%] p-2 rounded-md"
+              [ngClass]="{
+              'bg-yellow-100 text-yellow-800': shipping.stateId === 1,
+              'bg-blue-100 text-blue-700': shipping.stateId === 2,
+              'bg-green-100 text-greed-700': shipping.stateId === 3,
+              'bg-red-100 text-red-700': shipping.stateId === 4,
+              }">
+              {{ shipping.state }}
+            </p>
+            </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+    <div class="flex w-full justify-start gap-2" *ngIf="totalPages > 1">
+    <button
+      *ngFor="let page of [].constructor(totalPages); let i = index"
+      (click)="changePage(i + 1)"
+      [ngClass]="{
+        'bg-mainButtonBg text-white': currentPage === (i + 1),
+        'bg-gray-200 text-gray-700': currentPage !== (i + 1)
+      }"
+      class="w-10 h-10 rounded-full font-bold flex items-center justify-center transition-colors duration-200"
+    >
+      {{ i + 1 }}
+    </button>
+  </div>
+</div>
+
+
 </section>

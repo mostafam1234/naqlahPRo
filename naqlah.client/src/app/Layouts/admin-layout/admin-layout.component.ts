@@ -7,6 +7,7 @@ import { LanguageService } from 'src/app/Core/services/language.service';
 import { LoaderService } from 'src/app/Core/services/loader.service';
 import { HeaderComponent } from 'src/app/Pages/admin/header/header.component';
 import { SideBarComponent } from 'src/app/Pages/admin/side-bar/side-bar.component';
+import { PublicFooterComponent } from 'src/app/Pages/landing-page/public-footer/public-footer.component';
 
 @Component({
   selector: 'app-admin-layout',
@@ -19,7 +20,8 @@ import { SideBarComponent } from 'src/app/Pages/admin/side-bar/side-bar.componen
     HeaderComponent,
     CommonModule,
     NgIf,
-    NgClass
+    NgClass,
+    PublicFooterComponent
   ],
   templateUrl: './admin-layout.component.html',
   styleUrl: './admin-layout.component.css'

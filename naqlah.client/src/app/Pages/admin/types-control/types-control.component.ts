@@ -1,18 +1,19 @@
 import { NgClass, NgFor, NgIf } from '@angular/common';
 import { Component, HostListener } from '@angular/core';
-import { Router, RouterLink, RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { LanguageService } from 'src/app/Core/services/language.service';
 
 @Component({
-  selector: 'app-control-captain-orders',
+  selector: 'app-types-control',
   standalone: true,
-  imports: [NgFor, NgClass, NgIf, TranslateModule, RouterModule, RouterLink],
-  templateUrl: './control-captain-orders.component.html',
-  styleUrl: './control-captain-orders.component.css'
+  imports: [NgIf, TranslateModule, RouterModule,],
+  templateUrl: './types-control.component.html',
+  styleUrl: './types-control.component.css'
 })
-export class ControlCaptainOrdersComponent {
-lang: string = 'ar';
+export class TypesControlComponent {
+  isModalOpen = false;
+  lang: string = 'ar';
   viewMode: 'cards' | 'table' = 'table';
   constructor(
     private languageService: LanguageService,
@@ -34,9 +35,7 @@ lang: string = 'ar';
       location: 'القاهرة، مصر',
       phone: '+20 100 123 4567',
       avatar: 'https://i.pravatar.cc/150?img=1',
-      type: 'individual',
-      code:'#125445',
-      type2:'مقيم'
+      type: 'individual'
     },
     {
       id: 2,
@@ -45,9 +44,7 @@ lang: string = 'ar';
       location: 'الرياض، السعودية',
       phone: '+966 50 234 5678',
       avatar: 'https://i.pravatar.cc/150?img=2',
-      type: 'institution',
-      code:'#125445',
-      type2:'مقيم'
+      type: 'institution'
     },
     {
       id: 3,
@@ -56,9 +53,7 @@ lang: string = 'ar';
       location: 'دبي، الإمارات',
       phone: '+971 55 987 6543',
       avatar: 'https://i.pravatar.cc/150?img=3',
-      type: 'individual',
-      code:'#125445',
-      type2:'مقيم'
+      type: 'individual'
     },
     {
       id: 4,
@@ -67,9 +62,7 @@ lang: string = 'ar';
       location: 'الكويت',
       phone: '+965 600 11223',
       avatar: 'https://i.pravatar.cc/150?img=4',
-      type: 'institution',
-      code:'#125445',
-      type2:'مقيم'
+      type: 'institution'
     },
     {
       id: 5,
@@ -78,9 +71,7 @@ lang: string = 'ar';
       location: 'بيروت، لبنان',
       phone: '+961 3 556677',
       avatar: 'https://i.pravatar.cc/150?img=5',
-      type: 'individual',
-      code:'#125445',
-      type2:'مقيم'
+      type: 'individual'
     },
     {
       id: 6,
@@ -89,9 +80,7 @@ lang: string = 'ar';
       location: 'عمان، الأردن',
       phone: '+962 79 332211',
       avatar: 'https://i.pravatar.cc/150?img=6',
-      type:'individual',
-      code:'#125445',
-      type2:'مقيم'
+      type:'individual'
     },
     {
       id: 7,
@@ -100,9 +89,7 @@ lang: string = 'ar';
       location: 'تونس',
       phone: '+216 98 123 456',
       avatar: 'https://i.pravatar.cc/150?img=7',
-      type: 'institution',
-      code:'#125445',
-      type2:'مقيم'
+      type: 'institution'
     },
     {
       id: 8,
@@ -111,9 +98,7 @@ lang: string = 'ar';
       location: 'مصر - الغردقة',
       phone: '+212 6 789 01234',
       avatar: 'https://i.pravatar.cc/150?img=8',
-      type: 'institution',
-      code:'#125445',
-      type2:'مقيم'
+      type: 'institution'
     },
     {
       id: 9,
@@ -122,9 +107,7 @@ lang: string = 'ar';
       location: 'السعودية - جدة',
       phone: '+212 6 789 01234',
       avatar: 'https://i.pravatar.cc/150?img=11',
-      type: 'individual',
-      code:'#125445',
-      type2:'مقيم'
+      type: 'individual'
     },
     {
       id: 10,
@@ -133,9 +116,7 @@ lang: string = 'ar';
       location: 'السعودية - جدة',
       phone: '+212 6 789 01234',
       avatar: 'https://i.pravatar.cc/150?img=12',
-      type: 'individual',
-      code:'#125445',
-      type2:'مقيم'
+      type: 'individual'
     },
     {
       id: 11,
@@ -144,9 +125,7 @@ lang: string = 'ar';
       location: 'السعودية - جدة',
       phone: '+212 6 789 01234',
       avatar: 'https://i.pravatar.cc/150?img=13',
-      type: 'individual',
-      code:'#125445',
-      type2:'مقيم'
+      type: 'individual'
     },
     {
       id: 12,
@@ -155,9 +134,7 @@ lang: string = 'ar';
       location: 'السعودية - جدة',
       phone: '+212 6 789 01234',
       avatar: 'https://i.pravatar.cc/150?img=14',
-      type: 'individual',
-      code:'#125445',
-      type2:'مقيم'
+      type: 'individual'
     },
     {
       id: 13,
@@ -166,9 +143,7 @@ lang: string = 'ar';
       location: 'السعودية - جدة',
       phone: '+212 6 789 01234',
       avatar: 'https://i.pravatar.cc/150?img=15',
-      type: 'individual',
-      code:'#125445',
-      type2:'مقيم'
+      type: 'individual'
     },
     {
       id: 14,
@@ -177,9 +152,7 @@ lang: string = 'ar';
       location: 'السعودية - جدة',
       phone: '+212 6 789 01234',
       avatar: 'https://i.pravatar.cc/150?img=16',
-      type: 'individual',
-            code:'#125445',
-      type2:'مقيم'
+      type: 'individual'
     },
     {
       id: 15,
@@ -188,9 +161,7 @@ lang: string = 'ar';
       location: 'السعودية - جدة',
       phone: '+212 6 789 01234',
       avatar: 'https://i.pravatar.cc/150?img=17',
-      type: 'individual',
-            code:'#125445',
-      type2:'مقيم'
+      type: 'individual'
     },
     {
       id: 16,
@@ -199,9 +170,7 @@ lang: string = 'ar';
       location: 'السعودية - جدة',
       phone: '+212 6 789 01234',
       avatar: 'https://i.pravatar.cc/150?img=18',
-      type: 'individual',
-            code:'#125445',
-      type2:'مقيم'
+      type: 'individual'
     },
     {
       id: 17,
@@ -210,9 +179,7 @@ lang: string = 'ar';
       location: 'السعودية - جدة',
       phone: '+212 6 789 01234',
       avatar: 'https://i.pravatar.cc/150?img=19',
-      type: 'individual',
-            code:'#125445',
-      type2:'مقيم'
+      type: 'individual'
     },
     {
       id: 18,
@@ -221,9 +188,7 @@ lang: string = 'ar';
       location: 'السعودية - جدة',
       phone: '+212 6 789 01234',
       avatar: 'https://i.pravatar.cc/150?img=20',
-      type: 'individual',
-            code:'#125445',
-      type2:'مقيم'
+      type: 'individual'
     },
     {
       id: 19,
@@ -232,9 +197,7 @@ lang: string = 'ar';
       location: 'السعودية - جدة',
       phone: '+212 6 789 01234',
       avatar: 'https://i.pravatar.cc/150?img=21',
-      type: 'individual',
-            code:'#125445',
-      type2:'مقيم'
+      type: 'individual'
     },
     {
       id: 20,
@@ -243,9 +206,7 @@ lang: string = 'ar';
       location: 'السعودية - جدة',
       phone: '+212 6 789 01234',
       avatar: 'https://i.pravatar.cc/150?img=21',
-      type: 'individual',
-            code:'#125445',
-      type2:'مقيم'
+      type: 'individual'
     },
     {
       id: 21,
@@ -254,9 +215,7 @@ lang: string = 'ar';
       location: 'السعودية - جدة',
       phone: '+212 6 789 01234',
       avatar: 'https://i.pravatar.cc/150?img=22',
-      type: 'individual',
-            code:'#125445',
-      type2:'مقيم'
+      type: 'individual'
     },
     {
       id: 22,
@@ -265,9 +224,7 @@ lang: string = 'ar';
       location: 'السعودية - جدة',
       phone: '+212 6 789 01234',
       avatar: 'https://i.pravatar.cc/150?img=23',
-      type: 'individual',
-            code:'#125445',
-      type2:'مقيم'
+      type: 'individual'
     },
     {
       id: 23,
@@ -276,23 +233,16 @@ lang: string = 'ar';
       location: 'السعودية - جدة',
       phone: '+212 6 789 01234',
       avatar: 'https://i.pravatar.cc/150?img=24',
-      type: 'individual',
-      code:'#125445',
-      type2:'مقيم'
+      type: 'individual'
     },
   ];
 
-  cards = [
-    { title: 'الطلبيات القديمة', count: 10 },
-    { title: 'الطلبيات المدفوعة', count: 10 },
-    { title: 'الطلبيات الجارية', count: 30 }
-  ];
   get filteredCaptains() {
     if (this.activeTab === 'all') return this.captains;
     return this.captains.filter(c => c.type === this.activeTab);
   }
 
-    get paginatedCaptains() {
+  get paginatedCaptains() {
     const start = (this.currentPage - 1) * this.itemsPerPage;
     return this.filteredCaptains.slice(start, start + this.itemsPerPage);
   }
@@ -314,7 +264,7 @@ lang: string = 'ar';
     this.openDropdownId = this.openDropdownId === index ? null : index;
   }
 
-    editCaptain(captain: any) {
+  editCaptain(captain: any) {
     console.log('تعديل الكابتن:', captain);
     this.openDropdownId = null;
   }
@@ -337,4 +287,16 @@ lang: string = 'ar';
     }
   }
 
+  openModal() {
+    this.isModalOpen = true;
+  }
+
+  closeModal() {
+    this.isModalOpen = false;
+  }
+
+  saveAction() {
+    console.log('تم الحفظ');
+    this.closeModal();
+  }
 }

@@ -1,0 +1,123 @@
+<section class="captain flex flex-col gap-[45px]">
+  <div class="flex flex-wrap items-center justify-between gap-4">
+    <div class="flex gap-[60px]">
+      <input
+        type="text"
+        placeholder="Search"
+        class="border rounded-full px-4 py-2 w-full"
+      />
+    </div>
+    <button
+      (click)="openModal()"
+      class="bg-mainButtonBg mainButtonText hover:bg-green-700 text-white px-6 py-2 rounded-md transition-colors duration-200">
+      فتح المودال
+    </button>
+  </div>
+  <div class="bg-white rounded-lg p-4 shadow-sm">
+    <table class="min-w-full divide-y divide-gray-200 text-sm text-center">
+      <thead class="bg-gray-100 text-gray-700">
+        <tr>
+          <th class="py-3 px-4">نوع الشحنة </th>
+          <th class="py-3 px-4">نوع المركبة</th>
+          <th class="py-3 px-4">نوع الفنى</th>
+          <th class="py-3 px-4">حجم الشحنة</th>
+          <th class="py-3 px-4">نوع المدينة</th>
+          <th class="py-3 px-4">الإجراء</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <tr class="hover:bg-gray-50">
+          <td class="px-4 py-3">نقل ثقيل</td>
+          <td class="px-4 py-3">نيسان</td>
+          <td class="px-4 py-3">سائق</td>
+          <td class="px-4 py-3">حجم كبير</td>
+          <td class="px-4 py-3">تحت الانشاء</td>
+          <td class="px-4 py-3">
+            <div class="flex justify-center gap-1">
+              <!-- المعاينة -->
+              <div class="relative group inline-block">
+                <a routerLink="requestTracking/1"
+                  class="flex items-center px-2 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</section>
+
+
+<div
+  *ngIf="isModalOpen"
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+  (click)="closeModal()">
+
+  <!-- Modal Content -->
+  <div
+    class="bg-white rounded-lg shadow-xl w-96 max-w-full mx-4"
+    (click)="$event.stopPropagation()">
+
+    <!-- Modal Header -->
+    <div class="p-6 border-b border-gray-200">
+      <h2 class="text-xl font-semibold text-gray-800 text-center">
+        أضافة جديدة
+      </h2>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="p-6 space-y-4">
+      <!-- First Input with Icon -->
+      <div class="relative">
+        <input
+          type="text"
+          placeholder="النوع"
+          class="w-full p-3 border border-gray-300 rounded-md pr-10 text-right focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
+        <div class="absolute left-3 top-1/2 transform -translate-y-1/2">
+          <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M9 12a1 1 0 102 0V7a1 1 0 10-2 0v5zM9 16a1 1 0 102 0v-1a1 1 0 10-2 0v1z"/>
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm0-2a6 6 0 100-12 6 6 0 000 12z" clip-rule="evenodd"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Second Input with Icon -->
+      <div class="relative">
+        <input
+          type="text"
+          placeholder="الكمية"
+          class="w-full p-3 border border-gray-300 rounded-md pr-10 text-right focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
+        <div class="absolute left-3 top-1/2 transform -translate-y-1/2">
+          <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="flex justify-between p-6 border-t border-gray-200">
+      <!-- Cancel Button -->
+      <button
+        (click)="closeModal()"
+        class="px-6 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors duration-200">
+        إلغاء
+      </button>
+
+      <!-- Save Button -->
+      <button
+        (click)="saveAction()"
+        class="px-6 py-2 bg-mainButtonBg mainButtonText text-white rounded-md hover:bg-green-700 transition-colors duration-200">
+        أضافة
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,4 +1,4 @@
-import { NgFor } from '@angular/common';
+import { NgClass, NgFor, NgIf } from '@angular/common';
 import { Component, AfterViewInit  } from '@angular/core';
 import { Chart, ChartData, ChartOptions, ChartType, registerables } from 'chart.js';
 import {
@@ -9,6 +9,7 @@ import {
   topojson,
 } from 'chartjs-chart-geo';
 import { NgChartsModule } from 'ng2-charts';
+import { LanguageService } from 'src/app/Core/services/language.service';
 
 Chart.register(
   ...registerables,
@@ -21,12 +22,21 @@ Chart.register(
 @Component({
   selector: 'app-admin-home',
   standalone: true,
-  imports: [NgChartsModule, NgFor ],
+  imports: [NgChartsModule, NgFor, NgClass, NgIf ],
   templateUrl: './admin-home.component.html',
   styleUrl: './admin-home.component.css'
 })
 export class AdminHomeComponent implements AfterViewInit  {
+  activeTab = 'all';
+  currentPage = 1;
+  itemsPerPage = 9;
+  openDropdownId: number = null;
+  lang: string = 'ar';
+  viewMode: 'cards' | 'table' = 'table';
 
+  constructor(private languageService: LanguageService,){
+
+  }
   // الخيارات
   barChartOptions: ChartOptions = {
     responsive: true,
@@ -188,5 +198,124 @@ cities = [
   });
 }
 
+  get language(){
+    return this.languageService.getLanguage();
+  }
+  shipping = [
+    {
+      id:1,
+      type: 'نقل أدوية',
+      destination: 'متعددة الواجهات',
+      price: '12.00$',
+      state: 'جارى العمل على نقل الشحنة',
+      stateId:1
+    },
+    {
+      id:2,
+      type: 'نقل أدوية',
+      destination: 'متعددة الواجهات',
+      price: '12.00$',
+      state: 'فى الطريق',
+      stateId:2
+    },
+    {
+      id:1,
+      type: 'نقل أدوية',
+      destination: 'متعددة الواجهات',
+      price: '12.00$',
+      state: 'تم التوصيل',
+      stateId:3
+    },
+    {
+      id:1,
+      type: 'نقل أدوية',
+      destination: 'متعددة الواجهات',
+      price: '12.00$',
+      state: 'تم الغاء الشحنة',
+      stateId:4
+    },
+    {
+      id:1,
+      type: 'نقل أدوية',
+      destination: 'متعددة الواجهات',
+      price: '12.00$',
+      state: 'تم التوصيل',
+      stateId:3
+    },
+    {
+      id:1,
+      type: 'نقل أدوية',
+      destination: 'متعددة الواجهات',
+      price: '12.00$',
+      state: 'فى الطريق',
+      stateId:2
+    },
+    {
+      id:1,
+      type: 'نقل أدوية',
+      destination: 'متعددة الواجهات',
+      price: '12.00$',
+      state: 'تم التوصيل',
+      stateId:3
+    },
+        {
+      id:1,
+      type: 'نقل أدوية',
+      destination: 'متعددة الواجهات',
+      price: '12.00$',
+      state: 'تم التوصيل',
+      stateId:3
+    },
+        {
+      id:1,
+      type: 'نقل أدوية',
+      destination: 'متعددة الواجهات',
+      price: '12.00$',
+      state: 'فى الطريق',
+      stateId:2
+    },
+        {
+      id:1,
+      type: 'نقل أدوية',
+      destination: 'متعددة الواجهات',
+      price: '12.00$',
+      state: 'تم التوصيل',
+      stateId:3
+    },
+        {
+      id:1,
+      type: 'نقل أدوية',
+      destination: 'متعددة الواجهات',
+      price: '12.00$',
+      state: 'فى الطريق',
+      stateId:2
+    },
+    {
+      id:1,
+      type: 'نقل أدوية',
+      destination: 'متعددة الواجهات',
+      price: '12.00$',
+      state: 'فى الطريق',
+      stateId:2
+    },
 
+  ];
+
+  get filteredshipping() {
+    if (this.activeTab === 'all') return this.shipping;
+    return this.shipping.filter(c => c.type === this.activeTab);
+  }
+
+    get paginatedshipping() {
+    const start = (this.currentPage - 1) * this.itemsPerPage;
+    return this.filteredshipping.slice(start, start + this.itemsPerPage);
+  }
+
+  get totalPages() {
+    return Math.ceil(this.filteredshipping.length / this.itemsPerPage);
+  }
+
+  changePage(page: number) {
+    this.currentPage = page;
+  }
 }

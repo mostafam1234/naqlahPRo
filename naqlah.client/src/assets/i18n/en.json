@@ -27,7 +27,24 @@
       }
     },
     "HEADER": {
-
+      "SELECT_LANGUAGE": "Select Language",
+      "ARABIC": "Arabic",
+      "ENGLISH": "English",
+      "PAGE_WILL_RELOAD": "Page will reload",
+      "SETTINGS": "Settings",
+      "PROFILE_SECTION": "Profile",
+      "PREFERENCES_SECTION": "Preferences",
+      "SYSTEM_SECTION": "System",
+      "PROFILE": "Profile",
+      "CHANGE_PASSWORD": "Change Password",
+      "ACCOUNT_INFO": "Account Information",
+      "DARK_MODE": "Dark Mode",
+      "LANGUAGE": "Language",
+      "NOTIFICATIONS_SETTING": "Notifications",
+      "PRIVACY": "Privacy",
+      "HELP_SUPPORT": "Help & Support",
+      "ABOUT_APP": "About Application",
+      "LOGOUT": "Logout"
     },
     "WALLET": {
       "CAPTAIN": {

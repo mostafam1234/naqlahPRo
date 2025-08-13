@@ -26,6 +26,8 @@ export class SideBarComponent {
     this.openDropdown = this.openDropdown === menu ? null : menu;
     if (menu === 'requests') {
       this.router.navigate(['/admin/requests']);
+    } else if (menu == 'category') {
+      this.router.navigate(['/admin/categoriesControl']);
     }
   }
 }
