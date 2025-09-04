@@ -143,5 +143,61 @@ namespace Domain.Models
             return order;
 
         }
+
+        public Result AssignToDeliveryMan(int deliveryManId, DateTime nowDate)
+        {
+            if (this.OrderStatus != OrderStatus.Pending)
+            {
+                return Result.Failure("Order is not in pending status");
+            }
+
+            if (this.DeliveryManId != null)
+            {
+                return Result.Failure("Order is already assigned to a delivery man");
+            }
+
+            if (deliveryManId <= 0)
+            {
+                return Result.Failure("Invalid delivery man ID");
+            }
+
+            // Update the order status and assign the delivery man
+            this.DeliveryManId = deliveryManId;
+            this.OrderStatus = OrderStatus.Assigned;
+
+            // Add status history for the assignment
+            var statusHistory = OrderStatusHistory.Create(OrderStatus.Assigned, nowDate);
+            this._OrderStatusHistories.Add(statusHistory);
+
+            return Result.Success();
+        }
+
+        public Result UpdateStatus(OrderStatus newStatus, DateTime nowDate)
+        {
+            if (this.OrderStatus == newStatus)
+            {
+                return Result.Failure($"Order is already in {newStatus} status");
+            }
+
+            // Add business rules for status transitions if needed
+            if (!IsValidStatusTransition(this.OrderStatus, newStatus))
+            {
+                return Result.Failure($"Cannot transition from {this.OrderStatus} to {newStatus}");
+            }
+
+            this.OrderStatus = newStatus;
+
+            // Add status history
+            var statusHistory = OrderStatusHistory.Create(newStatus, nowDate);
+            this._OrderStatusHistories.Add(statusHistory);
+
+            return Result.Success();
+        }
+
+        private bool IsValidStatusTransition(OrderStatus currentStatus, OrderStatus newStatus)
+        {
+            // Define valid status transitions
+            return true;
+        }
     }
 }
