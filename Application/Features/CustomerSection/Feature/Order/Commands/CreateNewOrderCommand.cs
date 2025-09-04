@@ -13,12 +13,12 @@ using System.Threading.Tasks;
 
 namespace Application.Features.CustomerSection.Feature.Order.Commands
 {
-    public sealed record CreateNewOrderCommand:IRequest<Result<int>>
+    public sealed record CreateNewOrderCommand:IRequest<Result<CreateOrderResponseDto>>
     {
         public CreateOrderDto Order { get; init; }
 
         private class CreateNewOrderCommandHandler : IRequestHandler<CreateNewOrderCommand,
-                                                                      Result<int>>
+                                                                      Result<CreateOrderResponseDto>>
         {
             private readonly INaqlahContext context;
             private readonly IUserSession userSession;
@@ -32,18 +32,18 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
                 this.userSession = userSession;
                 this.dateTimeProvider = dateTimeProvider;
             }
-            public async Task<Result<int>> Handle(CreateNewOrderCommand request, CancellationToken cancellationToken)
+            public async Task<Result<CreateOrderResponseDto>> Handle(CreateNewOrderCommand request, CancellationToken cancellationToken)
             {
                 var nowDate = dateTimeProvider.Now;
                 var orderDetailsResult =await BuildOrderDetails(request.Order.MainCategoryIds);
                 if (orderDetailsResult.IsFailure)
                 {
-                    return Result.Failure<int>(orderDetailsResult.Error);
+                    return Result.Failure<CreateOrderResponseDto>(orderDetailsResult.Error);
                 }
                 var orderWayPointsResult = BuildOrderWayPoints(request.Order.WayPoints);
                 if (orderWayPointsResult.IsFailure)
                 {
-                    return Result.Failure<int>(orderWayPointsResult.Error);
+                    return Result.Failure<CreateOrderResponseDto>(orderWayPointsResult.Error);
                 }
 
                 var customerId = await context.Customers
@@ -52,7 +52,7 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
                                           .FirstOrDefaultAsync();
                 if (customerId == 0)
                 {
-                    return Result.Failure<int>("Customer not found");
+                    return Result.Failure<CreateOrderResponseDto>("Customer not found");
                 }
 
                 var orderServices = await BuildOrderService(request.Order.OrderServiceIds); 
@@ -68,7 +68,30 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
                                               orderDetailsResult.Value,
                                               orderWayPointsResult.Value,
                                               orderServices);
-                return Result.Success(0);
+                
+                if (orderResult.IsFailure)
+                {
+                    return Result.Failure<CreateOrderResponseDto>(orderResult.Error);
+                }
+
+                // Save the order to database
+                context.Orders.Add(orderResult.Value);
+                var saveResult = await context.SaveChangesAsyncWithResult();
+                if (saveResult.IsFailure)
+                {
+                    return Result.Failure<CreateOrderResponseDto>(saveResult.Error);
+                }
+
+                // Get matching vehicles based on selected categories
+                var matchingVehicles = await GetMatchingVehicles(request.Order.MainCategoryIds);
+
+                var response = new CreateOrderResponseDto
+                {
+                    OrderId = orderResult.Value.Id,
+                    MatchingVehicles = matchingVehicles
+                };
+
+                return Result.Success(response);
             }
 
             private async Task<Result<List<OrderDetails>>> BuildOrderDetails(List<int> mainCategoryIds)
@@ -148,6 +171,26 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
             {
                 var random = new Random();
                 return random.Next(100000, 999999).ToString();
+            }
+
+            private async Task<List<VehicleDto>> GetMatchingVehicles(List<int> mainCategoryIds)
+            {
+                var languageId = userSession.LanguageId;
+                
+                // Get all vehicle types that support ALL the selected categories
+                var vehicleTypes = await context.VehicleTypes
+                    .Include(vt => vt.VehicleTypeCategoies)
+                    .Where(vt => mainCategoryIds.All(categoryId => 
+                        vt.VehicleTypeCategoies.Any(vtc => vtc.MainCategoryId == categoryId)))
+                    .Select(vt => new VehicleDto
+                    {
+                        Id = vt.Id,
+                        Name = languageId == (int)Domain.Enums.Language.Arabic ? 
+                               vt.ArabicName : vt.EnglishName
+                    })
+                    .ToListAsync();
+
+                return vehicleTypes;
             }
         }
     }

@@ -26,7 +26,7 @@ namespace Presentaion.Controllers
 
 
         [HttpPost]
-        [ProducesResponseType(typeof(int),StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CreateOrderResponseDto),StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
         [Route("Create")]
         public async Task<IActionResult> Create([FromBody] CreateOrderDto request)
