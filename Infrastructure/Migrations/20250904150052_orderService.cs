@@ -11,6 +11,22 @@ namespace Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "NA_OrderPackage",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ArabicDescripton = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EnglishDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MinWeightInKiloGram = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    MaxWeightInKiloGram = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NA_OrderPackage", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "NA_OrderServices",
                 columns: table => new
                 {
@@ -39,22 +55,6 @@ namespace Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "OrderPackages",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ArabicDescripton = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EnglishDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MinWeightInKiloGram = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    MaxWeightInKiloGram = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OrderPackages", x => x.Id);
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_NA_OrderServices_OrderId",
                 table: "NA_OrderServices",
@@ -66,10 +66,10 @@ namespace Infrastructure.Migrations
                 column: "WorkId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_NA_Order_OrderPackages_OrderPackageId",
+                name: "FK_NA_Order_NA_OrderPackage_OrderPackageId",
                 table: "NA_Order",
                 column: "OrderPackageId",
-                principalTable: "OrderPackages",
+                principalTable: "NA_OrderPackage",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
         }
@@ -78,14 +78,14 @@ namespace Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_NA_Order_OrderPackages_OrderPackageId",
+                name: "FK_NA_Order_NA_OrderPackage_OrderPackageId",
                 table: "NA_Order");
 
             migrationBuilder.DropTable(
-                name: "NA_OrderServices");
+                name: "NA_OrderPackage");
 
             migrationBuilder.DropTable(
-                name: "OrderPackages");
+                name: "NA_OrderServices");
         }
     }
 }

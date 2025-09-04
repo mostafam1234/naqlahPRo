@@ -33,7 +33,7 @@ namespace Presentaion.Controllers
         {
             var result = await mediator.Send(new CreateNewOrderCommand
             {
-                Order=request
+                Order=request,
             });
 
             if (result.IsFailure)

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(NaqlahContext))]
-    [Migration("20250904093304_orderService")]
-    partial class orderService
+    [Migration("20250904150503_SeedDataForRegions")]
+    partial class SeedDataForRegions
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -623,9 +623,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("OrderPackages");
-
-                    b.ToFunction("NA_OrderPackage");
+                    b.ToTable("NA_OrderPackage", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Models.OrderPaymentMethod", b =>

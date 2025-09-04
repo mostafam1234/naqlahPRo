@@ -16,7 +16,6 @@ namespace Application.Features.CustomerSection.Feature.Order.Dtos
         }
         public int OrderPackId { get; set; }
         public int OrderTypeId { get; set; }
-        public int VehicleTypdId { get; set; }
         public List<int> MainCategoryIds { get; set; }
         public List<int> OrderServiceIds { get; set; }
         public List<CreateWayPointsDto> WayPoints { get; set; }

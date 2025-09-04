@@ -13,7 +13,7 @@ namespace Infrastructure.MappingConfigurations
     {
         public void Configure(EntityTypeBuilder<OrderPackage> builder)
         {
-            builder.ToFunction("NA_OrderPackage");
+            builder.ToTable("NA_OrderPackage");
             builder.HasKey(x => x.Id);
         }
     }
