@@ -9,14 +9,13 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.MappingConfigurations
 {
-    public class MainCategoryMaping : IEntityTypeConfiguration<MainCategory>
+    public class OrderDetailsMaping : IEntityTypeConfiguration<OrderDetails>
     {
-        public void Configure(EntityTypeBuilder<MainCategory> builder)
+        public void Configure(EntityTypeBuilder<OrderDetails> builder)
         {
-            builder.ToTable("NA_MainCategory");
+            builder.ToTable("NA_OrderDetails");
             builder.HasKey(x => x.Id);
-           
-
+            builder.HasOne(x=>x.MainCategory).WithMany().HasForeignKey(x=>x.MainCategoryId);
 
         }
     }

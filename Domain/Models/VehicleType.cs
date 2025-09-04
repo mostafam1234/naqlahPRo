@@ -12,9 +12,22 @@ namespace Domain.Models
         {
             this.ArabicName = string.Empty;
             this.EnglishName = string.Empty;
+            this.VehicleTypeCategoies = new List<VehiclTypeCategory>();
         }
         public int Id { get;private set; }
         public string ArabicName { get;private set; }
         public string EnglishName { get;private set; }
+        private List<VehiclTypeCategory> _VehicleTypeCategoies { get; set; }
+        public IReadOnlyList<VehiclTypeCategory> VehicleTypeCategoies
+        {
+            get
+            {
+                return _VehicleTypeCategoies;
+            }
+            private set
+            {
+                _VehicleTypeCategoies = (List<VehiclTypeCategory>)value.ToList();
+            }
+        }
     }
 }

@@ -4,6 +4,7 @@ using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(NaqlahContext))]
-    partial class NaqlahContextModelSnapshot : ModelSnapshot
+    [Migration("20250903163014_orderVehicleTypeId")]
+    partial class orderVehicleTypeId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -599,10 +602,7 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Models.OrderPackage", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ArabicDescripton")
                         .IsRequired()
@@ -620,7 +620,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("OrderPackages");
+                    b.ToTable((string)null);
 
                     b.ToFunction("NA_OrderPackage");
                 });
@@ -644,40 +644,6 @@ namespace Infrastructure.Migrations
                     b.HasIndex("PaymentMethodId");
 
                     b.ToTable("NA_OrderPaymentMethod", (string)null);
-                });
-
-            modelBuilder.Entity("Domain.Models.OrderService", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("ArabicName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EnglishName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("WorkId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
-
-                    b.HasIndex("WorkId");
-
-                    b.ToTable("NA_OrderServices", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Models.OrderStatusHistory", b =>
@@ -1381,23 +1347,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("PaymentMethod");
                 });
 
-            modelBuilder.Entity("Domain.Models.OrderService", b =>
-                {
-                    b.HasOne("Domain.Models.Order", null)
-                        .WithMany("OrderServices")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Models.AssistanWork", "AssistanWork")
-                        .WithMany()
-                        .HasForeignKey("WorkId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AssistanWork");
-                });
-
             modelBuilder.Entity("Domain.Models.OrderStatusHistory", b =>
                 {
                     b.HasOne("Domain.Models.Order", null)
@@ -1579,8 +1528,6 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Models.Order", b =>
                 {
                     b.Navigation("OrderDetails");
-
-                    b.Navigation("OrderServices");
 
                     b.Navigation("OrderStatusHistories");
 

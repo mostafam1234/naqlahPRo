@@ -9,15 +9,12 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.MappingConfigurations
 {
-    public class MainCategoryMaping : IEntityTypeConfiguration<MainCategory>
+    public class WalletTransctionMaping : IEntityTypeConfiguration<WalletTransctions>
     {
-        public void Configure(EntityTypeBuilder<MainCategory> builder)
+        public void Configure(EntityTypeBuilder<WalletTransctions> builder)
         {
-            builder.ToTable("NA_MainCategory");
+            builder.ToTable("NA_WalletTransctions");
             builder.HasKey(x => x.Id);
-           
-
-
         }
     }
 }

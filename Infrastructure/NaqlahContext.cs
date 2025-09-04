@@ -49,11 +49,16 @@ namespace Infrastructure
         public DbSet<VehicleType> VehicleTypes { get; set; }
         public DbSet<Resident> Residents { get; set; }
         public DbSet<Company> Companies { get; set; }
+        public DbSet<Order> Orders { get; set; }
         public DbSet<Renter> Renters { get; set; }
+        public DbSet<MainCategory> MainCategories { get; set; }
         public DbSet<Assistant> Assistants { get; set; }
         public DbSet<AssistanWork> AssistanWorks { get; set; }
         public DbSet<DeliveryVehicle> DeliveryVehicles { get; set; }
         public DbSet<DeliveryManLocation> DeliveryManLocations { get; set; }
+        public DbSet<OrderPackage> OrderPackages { get; set; }
+        public DbSet<Region> Regions { get; set; }
+
 
         public async Task<Result> SaveChangesAsyncWithResult()
         {

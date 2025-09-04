@@ -9,15 +9,12 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.MappingConfigurations
 {
-    public class MainCategoryMaping : IEntityTypeConfiguration<MainCategory>
+    public class OrderPackMaping : IEntityTypeConfiguration<OrderPackage>
     {
-        public void Configure(EntityTypeBuilder<MainCategory> builder)
+        public void Configure(EntityTypeBuilder<OrderPackage> builder)
         {
-            builder.ToTable("NA_MainCategory");
+            builder.ToFunction("NA_OrderPackage");
             builder.HasKey(x => x.Id);
-           
-
-
         }
     }
 }

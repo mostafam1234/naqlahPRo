@@ -4,6 +4,7 @@ using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(NaqlahContext))]
-    partial class NaqlahContextModelSnapshot : ModelSnapshot
+    [Migration("20250903115922_customerWalletTransctions")]
+    partial class customerWalletTransctions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -543,9 +546,6 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OrderPackageId")
-                        .HasColumnType("int");
-
                     b.Property<int>("OrderStatus")
                         .HasColumnType("int");
 
@@ -555,12 +555,7 @@ namespace Infrastructure.Migrations
                     b.Property<decimal>("Total")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("VehicleTypdId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("OrderPackageId");
 
                     b.ToTable("NA_Order", (string)null);
                 });
@@ -596,35 +591,6 @@ namespace Infrastructure.Migrations
                     b.ToTable("NA_OrderDetails", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Models.OrderPackage", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ArabicDescripton")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EnglishDescription")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("MaxWeightInKiloGram")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("MinWeightInKiloGram")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("OrderPackages");
-
-                    b.ToFunction("NA_OrderPackage");
-                });
-
             modelBuilder.Entity("Domain.Models.OrderPaymentMethod", b =>
                 {
                     b.Property<int>("OrderId")
@@ -644,40 +610,6 @@ namespace Infrastructure.Migrations
                     b.HasIndex("PaymentMethodId");
 
                     b.ToTable("NA_OrderPaymentMethod", (string)null);
-                });
-
-            modelBuilder.Entity("Domain.Models.OrderService", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("ArabicName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EnglishName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("WorkId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
-
-                    b.HasIndex("WorkId");
-
-                    b.ToTable("NA_OrderServices", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Models.OrderStatusHistory", b =>
@@ -1106,21 +1038,6 @@ namespace Infrastructure.Migrations
                     b.ToTable("NA_UserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Domain.Models.VehiclTypeCategory", b =>
-                {
-                    b.Property<int>("VehicleTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MainCategoryId")
-                        .HasColumnType("int");
-
-                    b.HasKey("VehicleTypeId", "MainCategoryId");
-
-                    b.HasIndex("MainCategoryId");
-
-                    b.ToTable("NA_VehicleTypeCategory", (string)null);
-                });
-
             modelBuilder.Entity("Domain.Models.VehicleBrand", b =>
                 {
                     b.Property<int>("Id")
@@ -1334,17 +1251,6 @@ namespace Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Domain.Models.Order", b =>
-                {
-                    b.HasOne("Domain.Models.OrderPackage", "OrderPackage")
-                        .WithMany()
-                        .HasForeignKey("OrderPackageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("OrderPackage");
-                });
-
             modelBuilder.Entity("Domain.Models.OrderDetails", b =>
                 {
                     b.HasOne("Domain.Models.MainCategory", "MainCategory")
@@ -1379,23 +1285,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("Order");
 
                     b.Navigation("PaymentMethod");
-                });
-
-            modelBuilder.Entity("Domain.Models.OrderService", b =>
-                {
-                    b.HasOne("Domain.Models.Order", null)
-                        .WithMany("OrderServices")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Models.AssistanWork", "AssistanWork")
-                        .WithMany()
-                        .HasForeignKey("WorkId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AssistanWork");
                 });
 
             modelBuilder.Entity("Domain.Models.OrderStatusHistory", b =>
@@ -1509,25 +1398,6 @@ namespace Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Domain.Models.VehiclTypeCategory", b =>
-                {
-                    b.HasOne("Domain.Models.MainCategory", "MainCategory")
-                        .WithMany()
-                        .HasForeignKey("MainCategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Models.VehicleType", "VehicleType")
-                        .WithMany("VehicleTypeCategoies")
-                        .HasForeignKey("VehicleTypeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("MainCategory");
-
-                    b.Navigation("VehicleType");
-                });
-
             modelBuilder.Entity("Domain.Models.WalletTransctions", b =>
                 {
                     b.HasOne("Domain.Models.Customer", null)
@@ -1580,8 +1450,6 @@ namespace Infrastructure.Migrations
                 {
                     b.Navigation("OrderDetails");
 
-                    b.Navigation("OrderServices");
-
                     b.Navigation("OrderStatusHistories");
 
                     b.Navigation("OrderWayPoints");
@@ -1610,11 +1478,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("Customer");
 
                     b.Navigation("DeliveryMan");
-                });
-
-            modelBuilder.Entity("Domain.Models.VehicleType", b =>
-                {
-                    b.Navigation("VehicleTypeCategoies");
                 });
 #pragma warning restore 612, 618
         }

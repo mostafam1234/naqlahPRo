@@ -16,6 +16,7 @@ namespace Domain.Models
             this.PhoneNumber = string.Empty;
             this.AndriodDevice = string.Empty;
             this.IosDevice = string.Empty;
+            this._WalletTransctions = new List<WalletTransctions>();
         }
         public int Id { get; private set; }
         public int UserId { get; private set; }
@@ -25,7 +26,19 @@ namespace Domain.Models
         public EstablishMent? EstablishMent { get; private set; }
         public string AndriodDevice { get; private set; }
         public string IosDevice { get; private set; }
-        public User User { get; set; }
+        public User User { get; private set; }
+        private List<WalletTransctions> _WalletTransctions { get; set; }
+        public IReadOnlyList<WalletTransctions> WalletTransctions
+        {
+            get
+            {
+                return _WalletTransctions;
+            }
+            private set
+            {
+                _WalletTransctions = (List<WalletTransctions>)value.ToList();
+            }
+        }
 
         public static Result<Customer> InstanceAsIndividual(string phoneNumber,
                                                             string identtyNumber,

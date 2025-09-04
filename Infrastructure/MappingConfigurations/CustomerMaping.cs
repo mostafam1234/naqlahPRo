@@ -25,6 +25,8 @@ namespace Infrastructure.MappingConfigurations
                    .HasForeignKey<EstablishMent>(x => x.CustomerId)
                    .IsRequired();
 
+            builder.HasMany(x=>x.WalletTransctions).WithOne().HasForeignKey(x=>x.CustomerId);
+
         }
     }
 }
