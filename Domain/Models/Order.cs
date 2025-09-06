@@ -221,5 +221,37 @@ namespace Domain.Models
             // Define valid status transitions
             return true;
         }
+
+        public Result CheckAndCompleteIfAllWayPointsPickedUp(DateTime nowDate)
+        {
+            // Check if all waypoints are picked up
+            var allWayPointsPickedUp = this._OrderWayPoints.All(wp => wp.OrderWayPointsStatus == OrderWayPointsStatus.PickedUp);
+
+            if (!allWayPointsPickedUp)
+            {
+                return Result.Success(); // Not all waypoints are picked up yet, nothing to do
+            }
+
+            // If the order is not in Assigned status, don't auto-complete
+            if (this.OrderStatus != OrderStatus.Assigned)
+            {
+                return Result.Success(); // Order is not in the right status for auto-completion
+            }
+
+            // Update order status to Completed
+            this.OrderStatus = OrderStatus.Completed;
+
+            // Add status history for completion
+            var statusHistory = OrderStatusHistory.Create(OrderStatus.Completed, nowDate);
+            this._OrderStatusHistories.Add(statusHistory);
+
+            // Mark all waypoints as completed
+            foreach (var wayPoint in this._OrderWayPoints)
+            {
+                wayPoint.MarkAsCompleted(nowDate);
+            }
+
+            return Result.Success();
+        }
     }
 }

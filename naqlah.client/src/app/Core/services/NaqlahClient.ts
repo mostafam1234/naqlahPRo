@@ -2512,6 +2512,119 @@ export class DeliveryOrderClient {
         }
         return _observableOf(null as any);
     }
+
+    getOrderDetails(orderId: number): Observable<OrderDetailsResponse> {
+        let url_ = this.baseUrl + "/api/DeliveryOrder/GetOrderDetails/{orderId}";
+        if (orderId === undefined || orderId === null)
+            throw new Error("The parameter 'orderId' must be defined.");
+        url_ = url_.replace("{orderId}", encodeURIComponent("" + orderId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetOrderDetails(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetOrderDetails(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<OrderDetailsResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<OrderDetailsResponse>;
+        }));
+    }
+
+    protected processGetOrderDetails(response: HttpResponseBase): Observable<OrderDetailsResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = OrderDetailsResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    changeWayPointStatus(request: ChangeWayPointStatusRequestDto): Observable<void> {
+        let url_ = this.baseUrl + "/api/DeliveryOrder/ChangeWayPointStatus";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(request);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processChangeWayPointStatus(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processChangeWayPointStatus(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processChangeWayPointStatus(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 @Injectable({
@@ -4703,6 +4816,296 @@ export class AssignOrderRequestDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["orderId"] = this.orderId !== undefined ? this.orderId : <any>null;
+        return data;
+    }
+}
+
+export class OrderDetailsResponse {
+    orderId!: number;
+    orderNumber!: string;
+    orderStatus!: OrderStatus;
+    orderType!: OrderType;
+    total!: number;
+    customerId!: number;
+    wayPoints!: OrderWayPointResponse[];
+    orderDetails!: OrderDetailItemResponse[];
+    orderServices!: OrderServiceResponse[];
+    orderPackageArabicDescription!: string;
+    orderPackageEnglishDescription!: string;
+    paymentMethods!: PaymentMethodResponse[];
+
+    init(_data?: any) {
+        if (_data) {
+            this.orderId = _data["orderId"] !== undefined ? _data["orderId"] : <any>null;
+            this.orderNumber = _data["orderNumber"] !== undefined ? _data["orderNumber"] : <any>null;
+            this.orderStatus = _data["orderStatus"] !== undefined ? _data["orderStatus"] : <any>null;
+            this.orderType = _data["orderType"] !== undefined ? _data["orderType"] : <any>null;
+            this.total = _data["total"] !== undefined ? _data["total"] : <any>null;
+            this.customerId = _data["customerId"] !== undefined ? _data["customerId"] : <any>null;
+            if (Array.isArray(_data["wayPoints"])) {
+                this.wayPoints = [] as any;
+                for (let item of _data["wayPoints"])
+                    this.wayPoints!.push(OrderWayPointResponse.fromJS(item));
+            }
+            else {
+                this.wayPoints = <any>null;
+            }
+            if (Array.isArray(_data["orderDetails"])) {
+                this.orderDetails = [] as any;
+                for (let item of _data["orderDetails"])
+                    this.orderDetails!.push(OrderDetailItemResponse.fromJS(item));
+            }
+            else {
+                this.orderDetails = <any>null;
+            }
+            if (Array.isArray(_data["orderServices"])) {
+                this.orderServices = [] as any;
+                for (let item of _data["orderServices"])
+                    this.orderServices!.push(OrderServiceResponse.fromJS(item));
+            }
+            else {
+                this.orderServices = <any>null;
+            }
+            this.orderPackageArabicDescription = _data["orderPackageArabicDescription"] !== undefined ? _data["orderPackageArabicDescription"] : <any>null;
+            this.orderPackageEnglishDescription = _data["orderPackageEnglishDescription"] !== undefined ? _data["orderPackageEnglishDescription"] : <any>null;
+            if (Array.isArray(_data["paymentMethods"])) {
+                this.paymentMethods = [] as any;
+                for (let item of _data["paymentMethods"])
+                    this.paymentMethods!.push(PaymentMethodResponse.fromJS(item));
+            }
+            else {
+                this.paymentMethods = <any>null;
+            }
+        }
+    }
+
+    static fromJS(data: any): OrderDetailsResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new OrderDetailsResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["orderId"] = this.orderId !== undefined ? this.orderId : <any>null;
+        data["orderNumber"] = this.orderNumber !== undefined ? this.orderNumber : <any>null;
+        data["orderStatus"] = this.orderStatus !== undefined ? this.orderStatus : <any>null;
+        data["orderType"] = this.orderType !== undefined ? this.orderType : <any>null;
+        data["total"] = this.total !== undefined ? this.total : <any>null;
+        data["customerId"] = this.customerId !== undefined ? this.customerId : <any>null;
+        if (Array.isArray(this.wayPoints)) {
+            data["wayPoints"] = [];
+            for (let item of this.wayPoints)
+                data["wayPoints"].push(item.toJSON());
+        }
+        if (Array.isArray(this.orderDetails)) {
+            data["orderDetails"] = [];
+            for (let item of this.orderDetails)
+                data["orderDetails"].push(item.toJSON());
+        }
+        if (Array.isArray(this.orderServices)) {
+            data["orderServices"] = [];
+            for (let item of this.orderServices)
+                data["orderServices"].push(item.toJSON());
+        }
+        data["orderPackageArabicDescription"] = this.orderPackageArabicDescription !== undefined ? this.orderPackageArabicDescription : <any>null;
+        data["orderPackageEnglishDescription"] = this.orderPackageEnglishDescription !== undefined ? this.orderPackageEnglishDescription : <any>null;
+        if (Array.isArray(this.paymentMethods)) {
+            data["paymentMethods"] = [];
+            for (let item of this.paymentMethods)
+                data["paymentMethods"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export class OrderWayPointResponse {
+    id!: number;
+    latitude!: number;
+    longitude!: number;
+    status!: OrderWayPointsStatus;
+    pickedUpDate!: Date | null;
+    packImagePath!: string;
+    isOrigin!: boolean;
+    isDestination!: boolean;
+    regionArabicName!: string;
+    regionEnglishName!: string;
+    cityArabicName!: string;
+    cityEnglishName!: string;
+    neighborhoodArabicName!: string;
+    neighborhoodEnglishName!: string;
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.latitude = _data["latitude"] !== undefined ? _data["latitude"] : <any>null;
+            this.longitude = _data["longitude"] !== undefined ? _data["longitude"] : <any>null;
+            this.status = _data["status"] !== undefined ? _data["status"] : <any>null;
+            this.pickedUpDate = _data["pickedUpDate"] ? new Date(_data["pickedUpDate"].toString()) : <any>null;
+            this.packImagePath = _data["packImagePath"] !== undefined ? _data["packImagePath"] : <any>null;
+            this.isOrigin = _data["isOrigin"] !== undefined ? _data["isOrigin"] : <any>null;
+            this.isDestination = _data["isDestination"] !== undefined ? _data["isDestination"] : <any>null;
+            this.regionArabicName = _data["regionArabicName"] !== undefined ? _data["regionArabicName"] : <any>null;
+            this.regionEnglishName = _data["regionEnglishName"] !== undefined ? _data["regionEnglishName"] : <any>null;
+            this.cityArabicName = _data["cityArabicName"] !== undefined ? _data["cityArabicName"] : <any>null;
+            this.cityEnglishName = _data["cityEnglishName"] !== undefined ? _data["cityEnglishName"] : <any>null;
+            this.neighborhoodArabicName = _data["neighborhoodArabicName"] !== undefined ? _data["neighborhoodArabicName"] : <any>null;
+            this.neighborhoodEnglishName = _data["neighborhoodEnglishName"] !== undefined ? _data["neighborhoodEnglishName"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): OrderWayPointResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new OrderWayPointResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["latitude"] = this.latitude !== undefined ? this.latitude : <any>null;
+        data["longitude"] = this.longitude !== undefined ? this.longitude : <any>null;
+        data["status"] = this.status !== undefined ? this.status : <any>null;
+        data["pickedUpDate"] = this.pickedUpDate ? this.pickedUpDate.toISOString() : <any>null;
+        data["packImagePath"] = this.packImagePath !== undefined ? this.packImagePath : <any>null;
+        data["isOrigin"] = this.isOrigin !== undefined ? this.isOrigin : <any>null;
+        data["isDestination"] = this.isDestination !== undefined ? this.isDestination : <any>null;
+        data["regionArabicName"] = this.regionArabicName !== undefined ? this.regionArabicName : <any>null;
+        data["regionEnglishName"] = this.regionEnglishName !== undefined ? this.regionEnglishName : <any>null;
+        data["cityArabicName"] = this.cityArabicName !== undefined ? this.cityArabicName : <any>null;
+        data["cityEnglishName"] = this.cityEnglishName !== undefined ? this.cityEnglishName : <any>null;
+        data["neighborhoodArabicName"] = this.neighborhoodArabicName !== undefined ? this.neighborhoodArabicName : <any>null;
+        data["neighborhoodEnglishName"] = this.neighborhoodEnglishName !== undefined ? this.neighborhoodEnglishName : <any>null;
+        return data;
+    }
+}
+
+export class OrderDetailItemResponse {
+    id!: number;
+    mainCategoryId!: number;
+    arabicCategoryName!: string;
+    englishCategoryName!: string;
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.mainCategoryId = _data["mainCategoryId"] !== undefined ? _data["mainCategoryId"] : <any>null;
+            this.arabicCategoryName = _data["arabicCategoryName"] !== undefined ? _data["arabicCategoryName"] : <any>null;
+            this.englishCategoryName = _data["englishCategoryName"] !== undefined ? _data["englishCategoryName"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): OrderDetailItemResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new OrderDetailItemResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["mainCategoryId"] = this.mainCategoryId !== undefined ? this.mainCategoryId : <any>null;
+        data["arabicCategoryName"] = this.arabicCategoryName !== undefined ? this.arabicCategoryName : <any>null;
+        data["englishCategoryName"] = this.englishCategoryName !== undefined ? this.englishCategoryName : <any>null;
+        return data;
+    }
+}
+
+export class OrderServiceResponse {
+    id!: number;
+    workId!: number;
+    arabicName!: string;
+    englishName!: string;
+    amount!: number;
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.workId = _data["workId"] !== undefined ? _data["workId"] : <any>null;
+            this.arabicName = _data["arabicName"] !== undefined ? _data["arabicName"] : <any>null;
+            this.englishName = _data["englishName"] !== undefined ? _data["englishName"] : <any>null;
+            this.amount = _data["amount"] !== undefined ? _data["amount"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): OrderServiceResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new OrderServiceResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["workId"] = this.workId !== undefined ? this.workId : <any>null;
+        data["arabicName"] = this.arabicName !== undefined ? this.arabicName : <any>null;
+        data["englishName"] = this.englishName !== undefined ? this.englishName : <any>null;
+        data["amount"] = this.amount !== undefined ? this.amount : <any>null;
+        return data;
+    }
+}
+
+export class PaymentMethodResponse {
+    paymentMethodId!: number;
+    paymentMethodArabicName!: string;
+    paymentMethodEnglishName!: string;
+    amount!: number;
+
+    init(_data?: any) {
+        if (_data) {
+            this.paymentMethodId = _data["paymentMethodId"] !== undefined ? _data["paymentMethodId"] : <any>null;
+            this.paymentMethodArabicName = _data["paymentMethodArabicName"] !== undefined ? _data["paymentMethodArabicName"] : <any>null;
+            this.paymentMethodEnglishName = _data["paymentMethodEnglishName"] !== undefined ? _data["paymentMethodEnglishName"] : <any>null;
+            this.amount = _data["amount"] !== undefined ? _data["amount"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): PaymentMethodResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new PaymentMethodResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["paymentMethodId"] = this.paymentMethodId !== undefined ? this.paymentMethodId : <any>null;
+        data["paymentMethodArabicName"] = this.paymentMethodArabicName !== undefined ? this.paymentMethodArabicName : <any>null;
+        data["paymentMethodEnglishName"] = this.paymentMethodEnglishName !== undefined ? this.paymentMethodEnglishName : <any>null;
+        data["amount"] = this.amount !== undefined ? this.amount : <any>null;
+        return data;
+    }
+}
+
+export class ChangeWayPointStatusRequestDto {
+    orderId!: number;
+    wayPointId!: number;
+    packImageBase64!: string;
+
+    init(_data?: any) {
+        if (_data) {
+            this.orderId = _data["orderId"] !== undefined ? _data["orderId"] : <any>null;
+            this.wayPointId = _data["wayPointId"] !== undefined ? _data["wayPointId"] : <any>null;
+            this.packImageBase64 = _data["packImageBase64"] !== undefined ? _data["packImageBase64"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): ChangeWayPointStatusRequestDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ChangeWayPointStatusRequestDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["orderId"] = this.orderId !== undefined ? this.orderId : <any>null;
+        data["wayPointId"] = this.wayPointId !== undefined ? this.wayPointId : <any>null;
+        data["packImageBase64"] = this.packImageBase64 !== undefined ? this.packImageBase64 : <any>null;
         return data;
     }
 }

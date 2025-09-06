@@ -60,5 +60,42 @@ namespace Presentaion.Controllers
 
             return Ok(result.Value);
         }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(OrderDetailsResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("GetOrderDetails/{orderId}")]
+        public async Task<IActionResult> GetOrderDetails(int orderId)
+        {
+            var result = await mediator.Send(new GetOrderDetailsByIdQuery(orderId));
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+
+            return Ok(result.Value);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("ChangeWayPointStatus")]
+        public async Task<IActionResult> ChangeWayPointStatus([FromBody] ChangeWayPointStatusRequestDto request)
+        {
+            var result = await mediator.Send(new ChangeOrderWayPointStatusCommand
+            {
+                OrderId = request.OrderId,
+                WayPointId = request.WayPointId,
+                PackImageBase64 = request.PackImageBase64
+            });
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+
+            return Ok();
+        }
     }
 }

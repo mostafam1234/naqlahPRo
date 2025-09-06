@@ -49,5 +49,41 @@ namespace Domain.Models
                 OrderWayPointsStatus = OrderWayPointsStatus.Pending
             };
         }
+
+        public CSharpFunctionalExtensions.Result MarkAsPickedUp(string packImagePath, DateTime pickedUpDate)
+        {
+            if (string.IsNullOrWhiteSpace(packImagePath))
+            {
+                return CSharpFunctionalExtensions.Result.Failure("Pack image is required to mark waypoint as picked up");
+            }
+
+            if (this.OrderWayPointsStatus == OrderWayPointsStatus.PickedUp)
+            {
+                return CSharpFunctionalExtensions.Result.Failure("Waypoint is already marked as picked up");
+            }
+
+            if (this.OrderWayPointsStatus == OrderWayPointsStatus.Completed)
+            {
+                return CSharpFunctionalExtensions.Result.Failure("Waypoint is already completed");
+            }
+
+            this.OrderWayPointsStatus = OrderWayPointsStatus.PickedUp;
+            this.PackImagePath = packImagePath;
+            this.PickedUpDate = pickedUpDate;
+
+            return CSharpFunctionalExtensions.Result.Success();
+        }
+
+        public CSharpFunctionalExtensions.Result MarkAsCompleted(DateTime completedDate)
+        {
+            if (this.OrderWayPointsStatus != OrderWayPointsStatus.PickedUp)
+            {
+                return CSharpFunctionalExtensions.Result.Failure("Waypoint must be picked up before marking as completed");
+            }
+
+            this.OrderWayPointsStatus = OrderWayPointsStatus.Completed;
+            
+            return CSharpFunctionalExtensions.Result.Success();
+        }
     }
 }
