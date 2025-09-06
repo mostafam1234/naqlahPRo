@@ -14,8 +14,8 @@ namespace Application.Features.DeliveryManSection.Order.Queries
 {
     public sealed record GetPendingOrdersWithinRadiusQuery : IRequest<Result<List<PendingOrderDto>>>
     {
-        private class GetPendingOrdersWithinRadiusQueryHandler : IRequestHandler<GetPendingOrdersWithinRadiusQuery,
-                                                                                Result<List<PendingOrderDto>>>
+        private class GetPendingOrdersWithinRadiusQueryHandler :
+            IRequestHandler<GetPendingOrdersWithinRadiusQuery,                Result<List<PendingOrderDto>>>
         {
             private readonly INaqlahContext context;
             private readonly IUserSession userSession;
@@ -38,8 +38,6 @@ namespace Application.Features.DeliveryManSection.Order.Queries
                 var deliveryMan = await context.DeliveryMen
                     .Include(dm => dm.DeliveryManLocation)
                     .Include(dm => dm.Vehicle)
-                        .ThenInclude(v => v.VehicleType)
-                            .ThenInclude(vt => vt.VehicleTypeCategoies)
                     .Where(dm => dm.UserId == userSession.UserId)
                     .FirstOrDefaultAsync(cancellationToken);
 
@@ -53,31 +51,22 @@ namespace Application.Features.DeliveryManSection.Order.Queries
                     return Result.Failure<List<PendingOrderDto>>("Delivery man location not available");
                 }
 
-                if (deliveryMan.Vehicle == null || deliveryMan.Vehicle.VehicleType == null)
+                if (deliveryMan.Vehicle == null)
                 {
                     return Result.Failure<List<PendingOrderDto>>("Delivery man vehicle information not available");
                 }
 
-                // Get the categories that the delivery man's vehicle can handle
-                var vehicleCategoryIds = deliveryMan.Vehicle.VehicleType.VehicleTypeCategoies
-                    .Select(vtc => vtc.MainCategoryId)
-                    .ToList();
-
-                if (!vehicleCategoryIds.Any())
-                {
-                    return Result.Success(new List<PendingOrderDto>());
-                }
-
                 var deliveryManLat = deliveryMan.DeliveryManLocation.Latitude;
                 var deliveryManLon = deliveryMan.DeliveryManLocation.Longitude;
+                var deliveryManVehicleTypeId = deliveryMan.Vehicle.VehicleTypeId;
 
-                // Get pending orders that match the vehicle's capabilities
+                // Get pending orders that match the delivery man's vehicle type
                 var pendingOrders = await context.Orders
                     .Include(o => o.OrderDetails)
                     .Include(o => o.OrderWayPoints)
                     .Where(o => o.OrderStatus == OrderStatus.Pending && 
                                o.DeliveryManId == null &&
-                               o.OrderDetails.All(od => vehicleCategoryIds.Contains(od.MainCategoryId)))
+                               o.VehicleTypeId == deliveryManVehicleTypeId)
                     .ToListAsync(cancellationToken);
 
                 var ordersWithinRadius = new List<PendingOrderDto>();
@@ -111,7 +100,7 @@ namespace Application.Features.DeliveryManSection.Order.Queries
                             Categories = order.OrderDetails.Select(od => 
                                 languageId == (int)Language.Arabic ? 
                                 od.ArabicCategoryName : od.EnglishCategoryName).ToList(),
-                            CreatedAt = DateTime.Now // You might want to add a CreatedAt field to Order model
+                            CreatedAt = DateTime.Now
                         };
 
                         // Get address information

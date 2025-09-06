@@ -15,6 +15,7 @@ namespace NAQLAH.Server.ApiDependencyInjection
             services.AddScoped<IDateTimeProvider, DateTimeProvider>();
             services.AddScoped<IWebEnvironment, WebEnvironment>();
             services.AddScoped<IMediaUploader, MediaUploader>();
+            services.AddScoped<INotificationService, NotificationService>();
             services.AddSingleton<IReadFromResourceFile, ReadFromResourceFile>();
             services.AddHttpClient();
             services.AddSingleton<IReadFromAppSetting, ReadFromAppSetting>();

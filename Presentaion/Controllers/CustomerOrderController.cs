@@ -43,5 +43,20 @@ namespace Presentaion.Controllers
             return Ok(result.Value);
         }
 
+        [HttpPost]
+        [ProducesResponseType(typeof(SelectVehicleTypeResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("SelectVehicleType")]
+        public async Task<IActionResult> SelectVehicleType([FromBody] SelectVehicleTypeDto request)
+        {
+            var result = await mediator.Send(new SelectVehicleTypeForOrderCommand(request));
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+            return Ok(result.Value);
+        }
+
     }
 }

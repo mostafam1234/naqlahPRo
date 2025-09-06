@@ -22,6 +22,7 @@ namespace Domain.Models
         public int Id { get; private set; }
         public string OrderNumber { get; set; }
         public int CustomerId { get; private set; }
+        public int? VehicleTypeId { get;private set; }
         public int? DeliveryManId { get;private set; }
         public int OrderPackageId { get;private set; }
         public OrderType OrderType { get; private set; }
@@ -191,6 +192,27 @@ namespace Domain.Models
             var statusHistory = OrderStatusHistory.Create(newStatus, nowDate);
             this._OrderStatusHistories.Add(statusHistory);
 
+            return Result.Success();
+        }
+
+        public Result SetVehicleType(int vehicleTypeId)
+        {
+            if (vehicleTypeId <= 0)
+            {
+                return Result.Failure("Invalid vehicle type ID");
+            }
+
+            if (this.VehicleTypeId != null)
+            {
+                return Result.Failure("Vehicle type has already been selected for this order");
+            }
+
+            if (this.OrderStatus != OrderStatus.Pending)
+            {
+                return Result.Failure("Vehicle type can only be set for pending orders");
+            }
+
+            this.VehicleTypeId = vehicleTypeId;
             return Result.Success();
         }
 

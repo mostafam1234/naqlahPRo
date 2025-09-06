@@ -40,6 +40,14 @@ namespace Domain.Models
             }
         }
 
+        public decimal WalletBalance
+        {
+            get
+            {
+                return _WalletTransctions.Sum(t => t.Withdraw ? -t.Amount : t.Amount);
+            }
+        }
+
         public static Result<Customer> InstanceAsIndividual(string phoneNumber,
                                                             string identtyNumber,
                                                             string frontIdentitImage,

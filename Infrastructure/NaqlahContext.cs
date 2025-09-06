@@ -58,6 +58,7 @@ namespace Infrastructure
         public DbSet<DeliveryManLocation> DeliveryManLocations { get; set; }
         public DbSet<OrderPackage> OrderPackages { get; set; }
         public DbSet<Region> Regions { get; set; }
+        public DbSet<WalletTransctions> WalletTransctions { get; set; }
 
 
         public async Task<Result> SaveChangesAsyncWithResult()
