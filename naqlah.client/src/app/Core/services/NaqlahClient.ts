@@ -1192,6 +1192,133 @@ export class CustomerOrderClient {
         }
         return _observableOf(null as any);
     }
+
+    getMyOrders(pageNumber?: number | undefined, pageSize?: number | undefined, statusFilter?: OrderStatus | null | undefined, fromDate?: Date | null | undefined, toDate?: Date | null | undefined): Observable<PagedCustomerOrdersDto> {
+        let url_ = this.baseUrl + "/api/CustomerOrder/GetMyOrders?";
+        if (pageNumber === null)
+            throw new Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        if (statusFilter !== undefined && statusFilter !== null)
+            url_ += "StatusFilter=" + encodeURIComponent("" + statusFilter) + "&";
+        if (fromDate !== undefined && fromDate !== null)
+            url_ += "FromDate=" + encodeURIComponent(fromDate ? "" + fromDate.toISOString() : "") + "&";
+        if (toDate !== undefined && toDate !== null)
+            url_ += "ToDate=" + encodeURIComponent(toDate ? "" + toDate.toISOString() : "") + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetMyOrders(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetMyOrders(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<PagedCustomerOrdersDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<PagedCustomerOrdersDto>;
+        }));
+    }
+
+    protected processGetMyOrders(response: HttpResponseBase): Observable<PagedCustomerOrdersDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PagedCustomerOrdersDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getOrderDetails(orderId: number): Observable<OrderDetailsDto> {
+        let url_ = this.baseUrl + "/api/CustomerOrder/GetOrderDetails/{orderId}";
+        if (orderId === undefined || orderId === null)
+            throw new Error("The parameter 'orderId' must be defined.");
+        url_ = url_.replace("{orderId}", encodeURIComponent("" + orderId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetOrderDetails(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetOrderDetails(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<OrderDetailsDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<OrderDetailsDto>;
+        }));
+    }
+
+    protected processGetOrderDetails(response: HttpResponseBase): Observable<OrderDetailsDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = OrderDetailsDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 @Injectable({
@@ -3500,6 +3627,376 @@ export class SelectVehicleTypeDto {
         data = typeof data === 'object' ? data : {};
         data["orderId"] = this.orderId !== undefined ? this.orderId : <any>null;
         data["vehicleTypeId"] = this.vehicleTypeId !== undefined ? this.vehicleTypeId : <any>null;
+        return data;
+    }
+}
+
+export class PagedCustomerOrdersDto {
+    orders!: CustomerOrderListDto[];
+    totalCount!: number;
+    pageNumber!: number;
+    pageSize!: number;
+    totalPages!: number;
+    hasNextPage!: boolean;
+    hasPreviousPage!: boolean;
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["orders"])) {
+                this.orders = [] as any;
+                for (let item of _data["orders"])
+                    this.orders!.push(CustomerOrderListDto.fromJS(item));
+            }
+            else {
+                this.orders = <any>null;
+            }
+            this.totalCount = _data["totalCount"] !== undefined ? _data["totalCount"] : <any>null;
+            this.pageNumber = _data["pageNumber"] !== undefined ? _data["pageNumber"] : <any>null;
+            this.pageSize = _data["pageSize"] !== undefined ? _data["pageSize"] : <any>null;
+            this.totalPages = _data["totalPages"] !== undefined ? _data["totalPages"] : <any>null;
+            this.hasNextPage = _data["hasNextPage"] !== undefined ? _data["hasNextPage"] : <any>null;
+            this.hasPreviousPage = _data["hasPreviousPage"] !== undefined ? _data["hasPreviousPage"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): PagedCustomerOrdersDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedCustomerOrdersDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.orders)) {
+            data["orders"] = [];
+            for (let item of this.orders)
+                data["orders"].push(item.toJSON());
+        }
+        data["totalCount"] = this.totalCount !== undefined ? this.totalCount : <any>null;
+        data["pageNumber"] = this.pageNumber !== undefined ? this.pageNumber : <any>null;
+        data["pageSize"] = this.pageSize !== undefined ? this.pageSize : <any>null;
+        data["totalPages"] = this.totalPages !== undefined ? this.totalPages : <any>null;
+        data["hasNextPage"] = this.hasNextPage !== undefined ? this.hasNextPage : <any>null;
+        data["hasPreviousPage"] = this.hasPreviousPage !== undefined ? this.hasPreviousPage : <any>null;
+        return data;
+    }
+}
+
+export class CustomerOrderListDto {
+    id!: number;
+    orderNumber!: string;
+    createdDate!: Date;
+    status!: OrderStatus;
+    statusName!: string;
+    total!: number;
+    deliveryManName!: string;
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.orderNumber = _data["orderNumber"] !== undefined ? _data["orderNumber"] : <any>null;
+            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>null;
+            this.status = _data["status"] !== undefined ? _data["status"] : <any>null;
+            this.statusName = _data["statusName"] !== undefined ? _data["statusName"] : <any>null;
+            this.total = _data["total"] !== undefined ? _data["total"] : <any>null;
+            this.deliveryManName = _data["deliveryManName"] !== undefined ? _data["deliveryManName"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): CustomerOrderListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CustomerOrderListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["orderNumber"] = this.orderNumber !== undefined ? this.orderNumber : <any>null;
+        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>null;
+        data["status"] = this.status !== undefined ? this.status : <any>null;
+        data["statusName"] = this.statusName !== undefined ? this.statusName : <any>null;
+        data["total"] = this.total !== undefined ? this.total : <any>null;
+        data["deliveryManName"] = this.deliveryManName !== undefined ? this.deliveryManName : <any>null;
+        return data;
+    }
+}
+
+export enum OrderStatus {
+    Pending = 1,
+    Assigned = 2,
+    Cancelled = 3,
+    Completed = 4,
+}
+
+export class OrderDetailsDto {
+    id!: number;
+    orderNumber!: string;
+    createdDate!: Date;
+    status!: OrderStatus;
+    statusName!: string;
+    total!: number;
+    orderType!: OrderType;
+    orderTypeName!: string;
+    vehicleTypeId!: number | null;
+    vehicleTypeName!: string;
+    deliveryManId!: number | null;
+    deliveryManName!: string;
+    deliveryManPhone!: string;
+    packageName!: string;
+    categories!: OrderCategoryDto[];
+    services!: OrderServiceDto[];
+    wayPoints!: OrderWayPointDto[];
+    paymentMethods!: OrderPaymentMethodDto[];
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.orderNumber = _data["orderNumber"] !== undefined ? _data["orderNumber"] : <any>null;
+            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>null;
+            this.status = _data["status"] !== undefined ? _data["status"] : <any>null;
+            this.statusName = _data["statusName"] !== undefined ? _data["statusName"] : <any>null;
+            this.total = _data["total"] !== undefined ? _data["total"] : <any>null;
+            this.orderType = _data["orderType"] !== undefined ? _data["orderType"] : <any>null;
+            this.orderTypeName = _data["orderTypeName"] !== undefined ? _data["orderTypeName"] : <any>null;
+            this.vehicleTypeId = _data["vehicleTypeId"] !== undefined ? _data["vehicleTypeId"] : <any>null;
+            this.vehicleTypeName = _data["vehicleTypeName"] !== undefined ? _data["vehicleTypeName"] : <any>null;
+            this.deliveryManId = _data["deliveryManId"] !== undefined ? _data["deliveryManId"] : <any>null;
+            this.deliveryManName = _data["deliveryManName"] !== undefined ? _data["deliveryManName"] : <any>null;
+            this.deliveryManPhone = _data["deliveryManPhone"] !== undefined ? _data["deliveryManPhone"] : <any>null;
+            this.packageName = _data["packageName"] !== undefined ? _data["packageName"] : <any>null;
+            if (Array.isArray(_data["categories"])) {
+                this.categories = [] as any;
+                for (let item of _data["categories"])
+                    this.categories!.push(OrderCategoryDto.fromJS(item));
+            }
+            else {
+                this.categories = <any>null;
+            }
+            if (Array.isArray(_data["services"])) {
+                this.services = [] as any;
+                for (let item of _data["services"])
+                    this.services!.push(OrderServiceDto.fromJS(item));
+            }
+            else {
+                this.services = <any>null;
+            }
+            if (Array.isArray(_data["wayPoints"])) {
+                this.wayPoints = [] as any;
+                for (let item of _data["wayPoints"])
+                    this.wayPoints!.push(OrderWayPointDto.fromJS(item));
+            }
+            else {
+                this.wayPoints = <any>null;
+            }
+            if (Array.isArray(_data["paymentMethods"])) {
+                this.paymentMethods = [] as any;
+                for (let item of _data["paymentMethods"])
+                    this.paymentMethods!.push(OrderPaymentMethodDto.fromJS(item));
+            }
+            else {
+                this.paymentMethods = <any>null;
+            }
+        }
+    }
+
+    static fromJS(data: any): OrderDetailsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OrderDetailsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["orderNumber"] = this.orderNumber !== undefined ? this.orderNumber : <any>null;
+        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>null;
+        data["status"] = this.status !== undefined ? this.status : <any>null;
+        data["statusName"] = this.statusName !== undefined ? this.statusName : <any>null;
+        data["total"] = this.total !== undefined ? this.total : <any>null;
+        data["orderType"] = this.orderType !== undefined ? this.orderType : <any>null;
+        data["orderTypeName"] = this.orderTypeName !== undefined ? this.orderTypeName : <any>null;
+        data["vehicleTypeId"] = this.vehicleTypeId !== undefined ? this.vehicleTypeId : <any>null;
+        data["vehicleTypeName"] = this.vehicleTypeName !== undefined ? this.vehicleTypeName : <any>null;
+        data["deliveryManId"] = this.deliveryManId !== undefined ? this.deliveryManId : <any>null;
+        data["deliveryManName"] = this.deliveryManName !== undefined ? this.deliveryManName : <any>null;
+        data["deliveryManPhone"] = this.deliveryManPhone !== undefined ? this.deliveryManPhone : <any>null;
+        data["packageName"] = this.packageName !== undefined ? this.packageName : <any>null;
+        if (Array.isArray(this.categories)) {
+            data["categories"] = [];
+            for (let item of this.categories)
+                data["categories"].push(item.toJSON());
+        }
+        if (Array.isArray(this.services)) {
+            data["services"] = [];
+            for (let item of this.services)
+                data["services"].push(item.toJSON());
+        }
+        if (Array.isArray(this.wayPoints)) {
+            data["wayPoints"] = [];
+            for (let item of this.wayPoints)
+                data["wayPoints"].push(item.toJSON());
+        }
+        if (Array.isArray(this.paymentMethods)) {
+            data["paymentMethods"] = [];
+            for (let item of this.paymentMethods)
+                data["paymentMethods"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export enum OrderType {
+    SingleWayPoints = 1,
+    MultiWayPoints = 2,
+    BackAndForth = 3,
+}
+
+export class OrderCategoryDto {
+    categoryId!: number;
+    categoryName!: string;
+
+    init(_data?: any) {
+        if (_data) {
+            this.categoryId = _data["categoryId"] !== undefined ? _data["categoryId"] : <any>null;
+            this.categoryName = _data["categoryName"] !== undefined ? _data["categoryName"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): OrderCategoryDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OrderCategoryDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["categoryId"] = this.categoryId !== undefined ? this.categoryId : <any>null;
+        data["categoryName"] = this.categoryName !== undefined ? this.categoryName : <any>null;
+        return data;
+    }
+}
+
+export class OrderServiceDto {
+    serviceId!: number;
+    serviceName!: string;
+    amount!: number;
+
+    init(_data?: any) {
+        if (_data) {
+            this.serviceId = _data["serviceId"] !== undefined ? _data["serviceId"] : <any>null;
+            this.serviceName = _data["serviceName"] !== undefined ? _data["serviceName"] : <any>null;
+            this.amount = _data["amount"] !== undefined ? _data["amount"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): OrderServiceDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OrderServiceDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["serviceId"] = this.serviceId !== undefined ? this.serviceId : <any>null;
+        data["serviceName"] = this.serviceName !== undefined ? this.serviceName : <any>null;
+        data["amount"] = this.amount !== undefined ? this.amount : <any>null;
+        return data;
+    }
+}
+
+export class OrderWayPointDto {
+    id!: number;
+    latitude!: number;
+    longitude!: number;
+    isOrigin!: boolean;
+    isDestination!: boolean;
+    status!: OrderWayPointsStatus;
+    statusName!: string;
+    pickedUpDate!: Date | null;
+    address!: string;
+    regionName!: string;
+    cityName!: string;
+    neighborhoodName!: string;
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.latitude = _data["latitude"] !== undefined ? _data["latitude"] : <any>null;
+            this.longitude = _data["longitude"] !== undefined ? _data["longitude"] : <any>null;
+            this.isOrigin = _data["isOrigin"] !== undefined ? _data["isOrigin"] : <any>null;
+            this.isDestination = _data["isDestination"] !== undefined ? _data["isDestination"] : <any>null;
+            this.status = _data["status"] !== undefined ? _data["status"] : <any>null;
+            this.statusName = _data["statusName"] !== undefined ? _data["statusName"] : <any>null;
+            this.pickedUpDate = _data["pickedUpDate"] ? new Date(_data["pickedUpDate"].toString()) : <any>null;
+            this.address = _data["address"] !== undefined ? _data["address"] : <any>null;
+            this.regionName = _data["regionName"] !== undefined ? _data["regionName"] : <any>null;
+            this.cityName = _data["cityName"] !== undefined ? _data["cityName"] : <any>null;
+            this.neighborhoodName = _data["neighborhoodName"] !== undefined ? _data["neighborhoodName"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): OrderWayPointDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OrderWayPointDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["latitude"] = this.latitude !== undefined ? this.latitude : <any>null;
+        data["longitude"] = this.longitude !== undefined ? this.longitude : <any>null;
+        data["isOrigin"] = this.isOrigin !== undefined ? this.isOrigin : <any>null;
+        data["isDestination"] = this.isDestination !== undefined ? this.isDestination : <any>null;
+        data["status"] = this.status !== undefined ? this.status : <any>null;
+        data["statusName"] = this.statusName !== undefined ? this.statusName : <any>null;
+        data["pickedUpDate"] = this.pickedUpDate ? this.pickedUpDate.toISOString() : <any>null;
+        data["address"] = this.address !== undefined ? this.address : <any>null;
+        data["regionName"] = this.regionName !== undefined ? this.regionName : <any>null;
+        data["cityName"] = this.cityName !== undefined ? this.cityName : <any>null;
+        data["neighborhoodName"] = this.neighborhoodName !== undefined ? this.neighborhoodName : <any>null;
+        return data;
+    }
+}
+
+export enum OrderWayPointsStatus {
+    Pending = 1,
+    PickedUp = 2,
+    Completed = 3,
+}
+
+export class OrderPaymentMethodDto {
+    paymentMethodId!: number;
+    paymentMethodName!: string;
+    amount!: number;
+
+    init(_data?: any) {
+        if (_data) {
+            this.paymentMethodId = _data["paymentMethodId"] !== undefined ? _data["paymentMethodId"] : <any>null;
+            this.paymentMethodName = _data["paymentMethodName"] !== undefined ? _data["paymentMethodName"] : <any>null;
+            this.amount = _data["amount"] !== undefined ? _data["amount"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): OrderPaymentMethodDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OrderPaymentMethodDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["paymentMethodId"] = this.paymentMethodId !== undefined ? this.paymentMethodId : <any>null;
+        data["paymentMethodName"] = this.paymentMethodName !== undefined ? this.paymentMethodName : <any>null;
+        data["amount"] = this.amount !== undefined ? this.amount : <any>null;
         return data;
     }
 }

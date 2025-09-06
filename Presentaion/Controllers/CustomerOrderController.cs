@@ -1,5 +1,6 @@
 ﻿using Application.Features.CustomerSection.Feature.Order.Commands;
 using Application.Features.CustomerSection.Feature.Order.Dtos;
+using Application.Features.CustomerSection.Feature.Order.Queries;
 using Application.Features.CustomerSection.Feature.Regestration.Commands;
 using Application.Features.CustomerSection.Feature.Regestration.Dtos;
 using MediatR;
@@ -50,6 +51,36 @@ namespace Presentaion.Controllers
         public async Task<IActionResult> SelectVehicleType([FromBody] SelectVehicleTypeDto request)
         {
             var result = await mediator.Send(new SelectVehicleTypeForOrderCommand(request));
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+            return Ok(result.Value);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(PagedCustomerOrdersDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("GetMyOrders")]
+        public async Task<IActionResult> GetMyOrders([FromQuery] CustomerOrdersQueryRequest request)
+        {
+            var result = await mediator.Send(new GetCustomerOrdersQuery(request));
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+            return Ok(result.Value);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(OrderDetailsDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("GetOrderDetails/{orderId}")]
+        public async Task<IActionResult> GetOrderDetails(int orderId)
+        {
+            var result = await mediator.Send(new GetOrderDetailsByIdQuery(orderId));
 
             if (result.IsFailure)
             {

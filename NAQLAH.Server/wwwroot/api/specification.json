@@ -709,6 +709,131 @@
         }
       }
     },
+    "/api/CustomerOrder/GetMyOrders": {
+      "get": {
+        "tags": [
+          "CustomerOrder"
+        ],
+        "operationId": "CustomerOrder_GetMyOrders",
+        "parameters": [
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          },
+          {
+            "name": "StatusFilter",
+            "in": "query",
+            "schema": {
+              "nullable": true,
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/OrderStatus"
+                }
+              ]
+            },
+            "x-position": 3
+          },
+          {
+            "name": "FromDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-position": 4
+          },
+          {
+            "name": "ToDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-position": 5
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedCustomerOrdersDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/CustomerOrder/GetOrderDetails/{orderId}": {
+      "get": {
+        "tags": [
+          "CustomerOrder"
+        ],
+        "operationId": "CustomerOrder_GetOrderDetails",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderDetailsDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/CustomerWallet/GetBalance/{customerId}": {
       "get": {
         "tags": [
@@ -2007,6 +2132,287 @@
           "vehicleTypeId": {
             "type": "integer",
             "format": "int32"
+          }
+        }
+      },
+      "PagedCustomerOrdersDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "orders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomerOrderListDto"
+            }
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hasNextPage": {
+            "type": "boolean"
+          },
+          "hasPreviousPage": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CustomerOrderListDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "orderNumber": {
+            "type": "string"
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "$ref": "#/components/schemas/OrderStatus"
+          },
+          "statusName": {
+            "type": "string"
+          },
+          "total": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "deliveryManName": {
+            "type": "string"
+          }
+        }
+      },
+      "OrderStatus": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "Pending",
+          "Assigned",
+          "Cancelled",
+          "Completed"
+        ],
+        "enum": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "OrderDetailsDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "orderNumber": {
+            "type": "string"
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "$ref": "#/components/schemas/OrderStatus"
+          },
+          "statusName": {
+            "type": "string"
+          },
+          "total": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "orderType": {
+            "$ref": "#/components/schemas/OrderType"
+          },
+          "orderTypeName": {
+            "type": "string"
+          },
+          "vehicleTypeId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "vehicleTypeName": {
+            "type": "string"
+          },
+          "deliveryManId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "deliveryManName": {
+            "type": "string"
+          },
+          "deliveryManPhone": {
+            "type": "string"
+          },
+          "packageName": {
+            "type": "string"
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderCategoryDto"
+            }
+          },
+          "services": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderServiceDto"
+            }
+          },
+          "wayPoints": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderWayPointDto"
+            }
+          },
+          "paymentMethods": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderPaymentMethodDto"
+            }
+          }
+        }
+      },
+      "OrderType": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "SingleWayPoints",
+          "MultiWayPoints",
+          "BackAndForth"
+        ],
+        "enum": [
+          1,
+          2,
+          3
+        ]
+      },
+      "OrderCategoryDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "categoryId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "categoryName": {
+            "type": "string"
+          }
+        }
+      },
+      "OrderServiceDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "serviceId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "serviceName": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number",
+            "format": "decimal"
+          }
+        }
+      },
+      "OrderWayPointDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "isOrigin": {
+            "type": "boolean"
+          },
+          "isDestination": {
+            "type": "boolean"
+          },
+          "status": {
+            "$ref": "#/components/schemas/OrderWayPointsStatus"
+          },
+          "statusName": {
+            "type": "string"
+          },
+          "pickedUpDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "address": {
+            "type": "string"
+          },
+          "regionName": {
+            "type": "string"
+          },
+          "cityName": {
+            "type": "string"
+          },
+          "neighborhoodName": {
+            "type": "string"
+          }
+        }
+      },
+      "OrderWayPointsStatus": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "Pending",
+          "PickedUp",
+          "Completed"
+        ],
+        "enum": [
+          1,
+          2,
+          3
+        ]
+      },
+      "OrderPaymentMethodDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "paymentMethodId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "paymentMethodName": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number",
+            "format": "decimal"
           }
         }
       },
