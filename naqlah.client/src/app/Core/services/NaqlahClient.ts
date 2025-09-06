@@ -1060,6 +1060,61 @@ export class CustomerClient {
         }
         return _observableOf(null as any);
     }
+
+    getCustomerInfo(): Observable<CustomerInfoDto> {
+        let url_ = this.baseUrl + "/api/Customer/GetCustomerInfo";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetCustomerInfo(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetCustomerInfo(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<CustomerInfoDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<CustomerInfoDto>;
+        }));
+    }
+
+    protected processGetCustomerInfo(response: HttpResponseBase): Observable<CustomerInfoDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CustomerInfoDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 @Injectable({
@@ -3579,6 +3634,163 @@ export class EstablishMentCustomerRequest {
     }
 }
 
+export class CustomerInfoDto {
+    id!: number;
+    phoneNumber!: string;
+    customerType!: CustomerType;
+    walletBalance!: number;
+    individual!: IndividualDto | null;
+    establishment!: EstablishmentDto | null;
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.phoneNumber = _data["phoneNumber"] !== undefined ? _data["phoneNumber"] : <any>null;
+            this.customerType = _data["customerType"] !== undefined ? _data["customerType"] : <any>null;
+            this.walletBalance = _data["walletBalance"] !== undefined ? _data["walletBalance"] : <any>null;
+            this.individual = _data["individual"] ? IndividualDto.fromJS(_data["individual"]) : <any>null;
+            this.establishment = _data["establishment"] ? EstablishmentDto.fromJS(_data["establishment"]) : <any>null;
+        }
+    }
+
+    static fromJS(data: any): CustomerInfoDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CustomerInfoDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["phoneNumber"] = this.phoneNumber !== undefined ? this.phoneNumber : <any>null;
+        data["customerType"] = this.customerType !== undefined ? this.customerType : <any>null;
+        data["walletBalance"] = this.walletBalance !== undefined ? this.walletBalance : <any>null;
+        data["individual"] = this.individual ? this.individual.toJSON() : <any>null;
+        data["establishment"] = this.establishment ? this.establishment.toJSON() : <any>null;
+        return data;
+    }
+}
+
+export enum CustomerType {
+    Individual = 1,
+    Establishment = 2,
+}
+
+export class IndividualDto {
+    id!: number;
+    mobileNumber!: string;
+    identityNumber!: string;
+    frontIdentityImagePath!: string;
+    backIdentityImagePath!: string;
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.mobileNumber = _data["mobileNumber"] !== undefined ? _data["mobileNumber"] : <any>null;
+            this.identityNumber = _data["identityNumber"] !== undefined ? _data["identityNumber"] : <any>null;
+            this.frontIdentityImagePath = _data["frontIdentityImagePath"] !== undefined ? _data["frontIdentityImagePath"] : <any>null;
+            this.backIdentityImagePath = _data["backIdentityImagePath"] !== undefined ? _data["backIdentityImagePath"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): IndividualDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new IndividualDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["mobileNumber"] = this.mobileNumber !== undefined ? this.mobileNumber : <any>null;
+        data["identityNumber"] = this.identityNumber !== undefined ? this.identityNumber : <any>null;
+        data["frontIdentityImagePath"] = this.frontIdentityImagePath !== undefined ? this.frontIdentityImagePath : <any>null;
+        data["backIdentityImagePath"] = this.backIdentityImagePath !== undefined ? this.backIdentityImagePath : <any>null;
+        return data;
+    }
+}
+
+export class EstablishmentDto {
+    id!: number;
+    name!: string;
+    mobileNumber!: string;
+    recordImagePath!: string;
+    taxRegistrationNumber!: string;
+    taxRegistrationImagePath!: string;
+    address!: string;
+    representative!: EstablishmentRepresentativeDto;
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.name = _data["name"] !== undefined ? _data["name"] : <any>null;
+            this.mobileNumber = _data["mobileNumber"] !== undefined ? _data["mobileNumber"] : <any>null;
+            this.recordImagePath = _data["recordImagePath"] !== undefined ? _data["recordImagePath"] : <any>null;
+            this.taxRegistrationNumber = _data["taxRegistrationNumber"] !== undefined ? _data["taxRegistrationNumber"] : <any>null;
+            this.taxRegistrationImagePath = _data["taxRegistrationImagePath"] !== undefined ? _data["taxRegistrationImagePath"] : <any>null;
+            this.address = _data["address"] !== undefined ? _data["address"] : <any>null;
+            this.representative = _data["representative"] ? EstablishmentRepresentativeDto.fromJS(_data["representative"]) : <any>null;
+        }
+    }
+
+    static fromJS(data: any): EstablishmentDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new EstablishmentDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["name"] = this.name !== undefined ? this.name : <any>null;
+        data["mobileNumber"] = this.mobileNumber !== undefined ? this.mobileNumber : <any>null;
+        data["recordImagePath"] = this.recordImagePath !== undefined ? this.recordImagePath : <any>null;
+        data["taxRegistrationNumber"] = this.taxRegistrationNumber !== undefined ? this.taxRegistrationNumber : <any>null;
+        data["taxRegistrationImagePath"] = this.taxRegistrationImagePath !== undefined ? this.taxRegistrationImagePath : <any>null;
+        data["address"] = this.address !== undefined ? this.address : <any>null;
+        data["representative"] = this.representative ? this.representative.toJSON() : <any>null;
+        return data;
+    }
+}
+
+export class EstablishmentRepresentativeDto {
+    id!: number;
+    name!: string;
+    phoneNumber!: string;
+    frontIdentityNumberImagePath!: string;
+    backIdentityNumberImagePath!: string;
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.name = _data["name"] !== undefined ? _data["name"] : <any>null;
+            this.phoneNumber = _data["phoneNumber"] !== undefined ? _data["phoneNumber"] : <any>null;
+            this.frontIdentityNumberImagePath = _data["frontIdentityNumberImagePath"] !== undefined ? _data["frontIdentityNumberImagePath"] : <any>null;
+            this.backIdentityNumberImagePath = _data["backIdentityNumberImagePath"] !== undefined ? _data["backIdentityNumberImagePath"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): EstablishmentRepresentativeDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new EstablishmentRepresentativeDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["name"] = this.name !== undefined ? this.name : <any>null;
+        data["phoneNumber"] = this.phoneNumber !== undefined ? this.phoneNumber : <any>null;
+        data["frontIdentityNumberImagePath"] = this.frontIdentityNumberImagePath !== undefined ? this.frontIdentityNumberImagePath : <any>null;
+        data["backIdentityNumberImagePath"] = this.backIdentityNumberImagePath !== undefined ? this.backIdentityNumberImagePath : <any>null;
+        return data;
+    }
+}
+
 export class CreateOrderResponseDto {
     orderId!: number;
     matchingVehicles!: VehicleDto[];
@@ -3619,11 +3831,15 @@ export class CreateOrderResponseDto {
 export class VehicleDto {
     id!: number;
     name!: string;
+    price!: number;
+    iconPath!: string;
 
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
             this.name = _data["name"] !== undefined ? _data["name"] : <any>null;
+            this.price = _data["price"] !== undefined ? _data["price"] : <any>null;
+            this.iconPath = _data["iconPath"] !== undefined ? _data["iconPath"] : <any>null;
         }
     }
 
@@ -3638,6 +3854,8 @@ export class VehicleDto {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id !== undefined ? this.id : <any>null;
         data["name"] = this.name !== undefined ? this.name : <any>null;
+        data["price"] = this.price !== undefined ? this.price : <any>null;
+        data["iconPath"] = this.iconPath !== undefined ? this.iconPath : <any>null;
         return data;
     }
 }
@@ -3866,6 +4084,7 @@ export class CustomerOrderListDto {
     statusName!: string;
     total!: number;
     deliveryManName!: string;
+    wayPoints!: CustomerOrderWayPointDto[];
 
     init(_data?: any) {
         if (_data) {
@@ -3876,6 +4095,14 @@ export class CustomerOrderListDto {
             this.statusName = _data["statusName"] !== undefined ? _data["statusName"] : <any>null;
             this.total = _data["total"] !== undefined ? _data["total"] : <any>null;
             this.deliveryManName = _data["deliveryManName"] !== undefined ? _data["deliveryManName"] : <any>null;
+            if (Array.isArray(_data["wayPoints"])) {
+                this.wayPoints = [] as any;
+                for (let item of _data["wayPoints"])
+                    this.wayPoints!.push(CustomerOrderWayPointDto.fromJS(item));
+            }
+            else {
+                this.wayPoints = <any>null;
+            }
         }
     }
 
@@ -3895,6 +4122,11 @@ export class CustomerOrderListDto {
         data["statusName"] = this.statusName !== undefined ? this.statusName : <any>null;
         data["total"] = this.total !== undefined ? this.total : <any>null;
         data["deliveryManName"] = this.deliveryManName !== undefined ? this.deliveryManName : <any>null;
+        if (Array.isArray(this.wayPoints)) {
+            data["wayPoints"] = [];
+            for (let item of this.wayPoints)
+                data["wayPoints"].push(item.toJSON());
+        }
         return data;
     }
 }
@@ -3904,6 +4136,62 @@ export enum OrderStatus {
     Assigned = 2,
     Cancelled = 3,
     Completed = 4,
+}
+
+export class CustomerOrderWayPointDto {
+    id!: number;
+    latitude!: number;
+    longitude!: number;
+    isOrigin!: boolean;
+    isDestination!: boolean;
+    regionName!: string;
+    cityName!: string;
+    neighborhoodName!: string;
+    status!: OrderWayPointsStatus;
+    pickedUpDate!: Date | null;
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.latitude = _data["latitude"] !== undefined ? _data["latitude"] : <any>null;
+            this.longitude = _data["longitude"] !== undefined ? _data["longitude"] : <any>null;
+            this.isOrigin = _data["isOrigin"] !== undefined ? _data["isOrigin"] : <any>null;
+            this.isDestination = _data["isDestination"] !== undefined ? _data["isDestination"] : <any>null;
+            this.regionName = _data["regionName"] !== undefined ? _data["regionName"] : <any>null;
+            this.cityName = _data["cityName"] !== undefined ? _data["cityName"] : <any>null;
+            this.neighborhoodName = _data["neighborhoodName"] !== undefined ? _data["neighborhoodName"] : <any>null;
+            this.status = _data["status"] !== undefined ? _data["status"] : <any>null;
+            this.pickedUpDate = _data["pickedUpDate"] ? new Date(_data["pickedUpDate"].toString()) : <any>null;
+        }
+    }
+
+    static fromJS(data: any): CustomerOrderWayPointDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CustomerOrderWayPointDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["latitude"] = this.latitude !== undefined ? this.latitude : <any>null;
+        data["longitude"] = this.longitude !== undefined ? this.longitude : <any>null;
+        data["isOrigin"] = this.isOrigin !== undefined ? this.isOrigin : <any>null;
+        data["isDestination"] = this.isDestination !== undefined ? this.isDestination : <any>null;
+        data["regionName"] = this.regionName !== undefined ? this.regionName : <any>null;
+        data["cityName"] = this.cityName !== undefined ? this.cityName : <any>null;
+        data["neighborhoodName"] = this.neighborhoodName !== undefined ? this.neighborhoodName : <any>null;
+        data["status"] = this.status !== undefined ? this.status : <any>null;
+        data["pickedUpDate"] = this.pickedUpDate ? this.pickedUpDate.toISOString() : <any>null;
+        return data;
+    }
+}
+
+export enum OrderWayPointsStatus {
+    Pending = 1,
+    PickedUp = 2,
+    Completed = 3,
 }
 
 export class OrderDetailsDto {
@@ -4139,12 +4427,6 @@ export class OrderWayPointDto {
         data["neighborhoodName"] = this.neighborhoodName !== undefined ? this.neighborhoodName : <any>null;
         return data;
     }
-}
-
-export enum OrderWayPointsStatus {
-    Pending = 1,
-    PickedUp = 2,
-    Completed = 3,
 }
 
 export class OrderPaymentMethodDto {

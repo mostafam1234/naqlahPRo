@@ -21,8 +21,11 @@ namespace Application.Features.CustomerSection.Feature.Order.Dtos
         public VehicleDto()
         {
             this.Name = string.Empty;
+            this.IconPath = string.Empty;
         }
         public int Id { get; set; }
         public string Name { get; set; }
+        public decimal Price { get; set; }
+        public string IconPath { get; set; }
     }
 }

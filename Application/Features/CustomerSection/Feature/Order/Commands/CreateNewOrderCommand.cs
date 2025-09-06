@@ -186,7 +186,9 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
                     {
                         Id = vt.Id,
                         Name = languageId == (int)Domain.Enums.Language.Arabic ? 
-                               vt.ArabicName : vt.EnglishName
+                               vt.ArabicName : vt.EnglishName,
+                        Price = vt.Id * 100,
+                        IconPath= "https://naqlah.runasp.net/ImageBank/VehicleType/bigOne.png"
                     })
                     .ToListAsync();
 

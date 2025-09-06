@@ -17,6 +17,7 @@ namespace Domain.Models
         public int Id { get;private set; }
         public string ArabicName { get;private set; }
         public string EnglishName { get;private set; }
+        public string IconImagePath { get;private set; }
         private List<VehiclTypeCategory> _VehicleTypeCategoies { get; set; }
         public IReadOnlyList<VehiclTypeCategory> VehicleTypeCategoies
         {

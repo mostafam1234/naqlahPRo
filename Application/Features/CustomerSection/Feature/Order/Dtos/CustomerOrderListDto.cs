@@ -16,6 +16,26 @@ namespace Application.Features.CustomerSection.Feature.Order.Dtos
         public string StatusName { get; set; }
         public decimal Total { get; set; }
         public string DeliveryManName { get; set; }
+        public List<CustomerOrderWayPointDto> WayPoints { get; set; }
+
+        public CustomerOrderListDto()
+        {
+            WayPoints = new List<CustomerOrderWayPointDto>();
+        }
+    }
+
+    public class CustomerOrderWayPointDto
+    {
+        public int Id { get; set; }
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
+        public bool IsOrigin { get; set; }
+        public bool IsDestination { get; set; }
+        public string RegionName { get; set; }
+        public string CityName { get; set; }
+        public string NeighborhoodName { get; set; }
+        public OrderWayPointsStatus Status { get; set; }
+        public DateTime? PickedUpDate { get; set; }
     }
 
     public class PagedCustomerOrdersDto

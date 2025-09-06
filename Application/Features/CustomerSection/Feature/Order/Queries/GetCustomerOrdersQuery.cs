@@ -45,6 +45,12 @@ namespace Application.Features.CustomerSection.Feature.Order.Queries
                 // Build the query
                 var query = context.Orders
                     .Include(o => o.OrderStatusHistories)
+                    .Include(o => o.OrderWayPoints)
+                        .ThenInclude(wp => wp.Region)
+                    .Include(o => o.OrderWayPoints)
+                        .ThenInclude(wp => wp.City)
+                    .Include(o => o.OrderWayPoints)
+                        .ThenInclude(wp => wp.Neighborhood)
                     .Where(o => o.CustomerId == customerId);
 
                 // Apply filters
@@ -107,8 +113,20 @@ namespace Application.Features.CustomerSection.Feature.Order.Queries
                         Status = x.Order.OrderStatus,
                         StatusName = GetStatusName(x.Order.OrderStatus, languageId),
                         Total = x.Order.Total,
-                       
-                        DeliveryManName = x.DeliveryMan != null ? x.DeliveryMan.FullName : null
+                        DeliveryManName = x.DeliveryMan != null ? x.DeliveryMan.FullName : null,
+                        WayPoints = x.Order.OrderWayPoints.Select(wp => new CustomerOrderWayPointDto
+                        {
+                            Id = wp.Id,
+                            Latitude = wp.Latitude,
+                            Longitude = wp.longitude,
+                            IsOrigin = wp.IsOrgin,
+                            IsDestination = wp.IsDestination,
+                            RegionName = languageId == (int)Language.Arabic ? wp.Region.ArabicName : wp.Region.EnglishName,
+                            CityName = languageId == (int)Language.Arabic ? wp.City.ArabicName : wp.City.EnglishName,
+                            NeighborhoodName = languageId == (int)Language.Arabic ? wp.Neighborhood.ArabicName : wp.Neighborhood.EnglishName,
+                            Status = wp.OrderWayPointsStatus,
+                            PickedUpDate = wp.PickedUpDate
+                        }).ToList()
                     })
                     .ToListAsync(cancellationToken);
 
