@@ -1,4 +1,6 @@
-﻿using Application.Features.CustomerSection.Feature.Order.Commands;
+﻿using Application.Features.CustomerSection.Feature.AssistantWork.Dtos;
+using Application.Features.CustomerSection.Feature.AssistantWork.Queries;
+using Application.Features.CustomerSection.Feature.Order.Commands;
 using Application.Features.CustomerSection.Feature.Order.Dtos;
 using Application.Features.CustomerSection.Feature.Order.Queries;
 using Application.Features.CustomerSection.Feature.Regestration.Commands;
@@ -81,6 +83,21 @@ namespace Presentaion.Controllers
         public async Task<IActionResult> GetOrderDetails(int orderId)
         {
             var result = await mediator.Send(new GetOrderDetailsByIdQuery(orderId));
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+            return Ok(result.Value);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(List<AssistantWorkDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("GetAssistantWorks")]
+        public async Task<IActionResult> GetAssistantWorks()
+        {
+            var result = await mediator.Send(new GetAssistantWorksQuery());
 
             if (result.IsFailure)
             {
