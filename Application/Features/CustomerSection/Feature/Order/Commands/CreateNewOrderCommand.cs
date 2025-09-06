@@ -55,6 +55,15 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
                     return Result.Failure<CreateOrderResponseDto>("Customer not found");
                 }
 
+                // Check if customer has any pending orders
+                var hasPendingOrder = await context.Orders
+                    .AnyAsync(o => o.CustomerId == customerId && o.OrderStatus == OrderStatus.Pending, cancellationToken);
+                
+                if (hasPendingOrder)
+                {
+                    return Result.Failure<CreateOrderResponseDto>("Cannot create new order. Customer has a pending order that needs to be completed first.");
+                }
+
                 var orderServices = await BuildOrderService(request.Order.OrderServiceIds); 
 
                 var orderNumber = await GenerateUniqueOrderNumberAsync();

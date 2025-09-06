@@ -106,5 +106,20 @@ namespace Presentaion.Controllers
             return Ok(result.Value);
         }
 
+        [HttpGet]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("CheckPendingOrder")]
+        public async Task<IActionResult> CheckPendingOrder()
+        {
+            var result = await mediator.Send(new CheckPendingOrderQuery());
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+            return Ok(result.Value);
+        }
+
     }
 }

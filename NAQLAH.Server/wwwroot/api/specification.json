@@ -897,6 +897,36 @@
         }
       }
     },
+    "/api/CustomerOrder/CheckPendingOrder": {
+      "get": {
+        "tags": [
+          "CustomerOrder"
+        ],
+        "operationId": "CustomerOrder_CheckPendingOrder",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/CustomerWallet/GetBalance/{customerId}": {
       "get": {
         "tags": [
