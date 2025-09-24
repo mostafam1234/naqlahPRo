@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <Folder Include="Features\CustomerSection\Feature\Regestration\Queries\" />
+    <Folder Include="Features\DeliveryManSection\CurrentDeliveryMen\Dtos\" />
     <Folder Include="Features\DeliveryManSection\Regestration\Validators\" />
   </ItemGroup>
 

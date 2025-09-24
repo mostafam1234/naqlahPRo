@@ -38,6 +38,7 @@ namespace Domain.Models
         public DateTime IdentityExpirationDate { get; private set; }
         public DateTime DrivingLicenseExpirationDate { get; private set; }
         public DeliveryType DeliveryType { get; private set; }
+        public DeliveryRequesState DeliveryState { get; private set; }
         public DeliveryLicenseType DeliveryLicenseType { get; private set; }
         public string FrontDrivingLicenseImagePath { get; private set; }
         public string BackDrivingLicenseImagePath { get; private set; }
@@ -50,6 +51,7 @@ namespace Domain.Models
         public string AndriodDevice { get;private set; }
         public string IosDevice { get;private set; }
         public bool Active { get;private set; }
+        
         public DeliveryManLocation DeliveryManLocation { get;private set; }
         private List<Assistant> _Assistants { get; set; }
         public IReadOnlyList<Assistant> Assistants
@@ -239,6 +241,42 @@ namespace Domain.Models
 
             this.Vehicle = vehicle.Value;
             return Result.Success();
+        }
+
+        public void UpdateDeliveryManRequestState(int state)
+        {
+            if (Enum.IsDefined(typeof(DeliveryRequesState), state))
+            {
+                this.DeliveryState = (DeliveryRequesState)state;
+            }
+            else
+            {
+                throw new ArgumentException("Invalid state value.", nameof(state));
+            }
+        }
+
+        public static DeliveryMan CreateFullInstance(
+            string fullName,
+            string address,
+            string phoneNumber,
+            string identityNumber,
+            string personalImagePath,
+            DeliveryType deliveryType,
+            DeliveryRequesState state = DeliveryRequesState.New)
+        {
+            var deliveryMan = new DeliveryMan
+            {
+                FullName = fullName,
+                Address = address,
+                PhoneNumber = phoneNumber,
+                IdentityNumber = identityNumber,
+                PersonalImagePath = personalImagePath,
+                DeliveryType = deliveryType,
+                DeliveryState = state,
+                Active = true
+            };
+
+            return deliveryMan;
         }
     }
 }

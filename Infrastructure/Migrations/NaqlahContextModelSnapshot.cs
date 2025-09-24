@@ -96,6 +96,67 @@ namespace Infrastructure.Migrations
                     b.ToTable("NA_Assistant", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Models.CategorySize", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ArabicName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CategorySizeUnit")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EnglishName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("MainCategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("MaximumAmount")
+                        .HasColumnType("float");
+
+                    b.Property<double>("MinimumAmout")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MainCategoryId");
+
+                    b.ToTable("NA_CategorySize", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Models.City", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ArabicName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EnglishName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RegionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RegionId");
+
+                    b.ToTable("NA_City", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Models.Company", b =>
                 {
                     b.Property<int>("DeliveryVehicleId")
@@ -194,6 +255,9 @@ namespace Infrastructure.Migrations
                     b.Property<int>("DeliveryLicenseType")
                         .HasColumnType("int");
 
+                    b.Property<int>("DeliveryState")
+                        .HasColumnType("int");
+
                     b.Property<int>("DeliveryType")
                         .HasColumnType("int");
 
@@ -267,7 +331,7 @@ namespace Infrastructure.Migrations
                     b.HasIndex("DeliveryManId")
                         .IsUnique();
 
-                    b.ToTable("DeliveryManLocation");
+                    b.ToTable("DeliveryManLocations");
                 });
 
             modelBuilder.Entity("Domain.Models.DeliveryVehicle", b =>
@@ -450,6 +514,74 @@ namespace Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("NA_Individual", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Models.MainCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ArabicName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EnglishName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("NA_MainCategory", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Models.Neighborhood", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ArabicName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CityId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EnglishName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CityId");
+
+                    b.ToTable("NA_Neighborhood", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Models.Region", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ArabicName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EnglishName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("NA_Region", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Models.Renter", b =>
@@ -814,6 +946,23 @@ namespace Infrastructure.Migrations
                     b.Navigation("DeliveryMan");
                 });
 
+            modelBuilder.Entity("Domain.Models.CategorySize", b =>
+                {
+                    b.HasOne("Domain.Models.MainCategory", null)
+                        .WithMany("CategorySizes")
+                        .HasForeignKey("MainCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Domain.Models.City", b =>
+                {
+                    b.HasOne("Domain.Models.Region", null)
+                        .WithMany("Cities")
+                        .HasForeignKey("RegionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Domain.Models.Company", b =>
                 {
                     b.HasOne("Domain.Models.DeliveryVehicle", null)
@@ -914,6 +1063,15 @@ namespace Infrastructure.Migrations
                     b.Navigation("Customer");
                 });
 
+            modelBuilder.Entity("Domain.Models.Neighborhood", b =>
+                {
+                    b.HasOne("Domain.Models.City", null)
+                        .WithMany("Neighborhoods")
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Domain.Models.Renter", b =>
                 {
                     b.HasOne("Domain.Models.DeliveryVehicle", null)
@@ -983,6 +1141,11 @@ namespace Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Domain.Models.City", b =>
+                {
+                    b.Navigation("Neighborhoods");
+                });
+
             modelBuilder.Entity("Domain.Models.Customer", b =>
                 {
                     b.Navigation("EstablishMent");
@@ -1013,6 +1176,16 @@ namespace Infrastructure.Migrations
                 {
                     b.Navigation("EstablishMentRepresentitive")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Models.MainCategory", b =>
+                {
+                    b.Navigation("CategorySizes");
+                });
+
+            modelBuilder.Entity("Domain.Models.Region", b =>
+                {
+                    b.Navigation("Cities");
                 });
 
             modelBuilder.Entity("Domain.Models.Role", b =>

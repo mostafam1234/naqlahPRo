@@ -1985,6 +1985,736 @@ export class DeliveryManClient {
     }
 }
 
+@Injectable({
+    providedIn: 'root'
+})
+export class DeliveryManAdminClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ?? "";
+    }
+
+    getAllDeliveryMenRequests(skip?: number | undefined, take?: number | undefined, deliveryTypeFilter?: number | undefined, searchTerm?: string | undefined): Observable<PagedGetAllDeliveryMenRequestsPaged> {
+        let url_ = this.baseUrl + "/api/DeliveryManAdmin/GetAllDeliveryMenRequests?";
+        if (skip === null)
+            throw new Error("The parameter 'skip' cannot be null.");
+        else if (skip !== undefined)
+            url_ += "skip=" + encodeURIComponent("" + skip) + "&";
+        if (take === null)
+            throw new Error("The parameter 'take' cannot be null.");
+        else if (take !== undefined)
+            url_ += "take=" + encodeURIComponent("" + take) + "&";
+        if (deliveryTypeFilter === null)
+            throw new Error("The parameter 'deliveryTypeFilter' cannot be null.");
+        else if (deliveryTypeFilter !== undefined)
+            url_ += "deliveryTypeFilter=" + encodeURIComponent("" + deliveryTypeFilter) + "&";
+        if (searchTerm === null)
+            throw new Error("The parameter 'searchTerm' cannot be null.");
+        else if (searchTerm !== undefined)
+            url_ += "searchTerm=" + encodeURIComponent("" + searchTerm) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllDeliveryMenRequests(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllDeliveryMenRequests(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<PagedGetAllDeliveryMenRequestsPaged>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<PagedGetAllDeliveryMenRequestsPaged>;
+        }));
+    }
+
+    protected processGetAllDeliveryMenRequests(response: HttpResponseBase): Observable<PagedGetAllDeliveryMenRequestsPaged> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PagedGetAllDeliveryMenRequestsPaged.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getDeliveryManDetails(deliveryManId: number): Observable<GetDeliveryManRequestDetailsDto> {
+        let url_ = this.baseUrl + "/api/DeliveryManAdmin/GetDeliveryManDetails/{deliveryManId}";
+        if (deliveryManId === undefined || deliveryManId === null)
+            throw new Error("The parameter 'deliveryManId' must be defined.");
+        url_ = url_.replace("{deliveryManId}", encodeURIComponent("" + deliveryManId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetDeliveryManDetails(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetDeliveryManDetails(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<GetDeliveryManRequestDetailsDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<GetDeliveryManRequestDetailsDto>;
+        }));
+    }
+
+    protected processGetDeliveryManDetails(response: HttpResponseBase): Observable<GetDeliveryManRequestDetailsDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = GetDeliveryManRequestDetailsDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    updateDeliveryManState(deliveryManId?: number | undefined, state?: number | undefined): Observable<string> {
+        let url_ = this.baseUrl + "/api/DeliveryManAdmin/UpdateDeliveryManState?";
+        if (deliveryManId === null)
+            throw new Error("The parameter 'deliveryManId' cannot be null.");
+        else if (deliveryManId !== undefined)
+            url_ += "deliveryManId=" + encodeURIComponent("" + deliveryManId) + "&";
+        if (state === null)
+            throw new Error("The parameter 'state' cannot be null.");
+        else if (state !== undefined)
+            url_ += "state=" + encodeURIComponent("" + state) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdateDeliveryManState(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdateDeliveryManState(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<string>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<string>;
+        }));
+    }
+
+    protected processUpdateDeliveryManState(response: HttpResponseBase): Observable<string> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getAllApprovedDeliveryMen(skip?: number | undefined, take?: number | undefined, deliveryTypeFilter?: number | undefined, searchTerm?: string | undefined): Observable<PagedGetAllApprovedDeliveryMenPaged> {
+        let url_ = this.baseUrl + "/api/DeliveryManAdmin/GetAllApprovedDeliveryMen?";
+        if (skip === null)
+            throw new Error("The parameter 'skip' cannot be null.");
+        else if (skip !== undefined)
+            url_ += "skip=" + encodeURIComponent("" + skip) + "&";
+        if (take === null)
+            throw new Error("The parameter 'take' cannot be null.");
+        else if (take !== undefined)
+            url_ += "take=" + encodeURIComponent("" + take) + "&";
+        if (deliveryTypeFilter === null)
+            throw new Error("The parameter 'deliveryTypeFilter' cannot be null.");
+        else if (deliveryTypeFilter !== undefined)
+            url_ += "deliveryTypeFilter=" + encodeURIComponent("" + deliveryTypeFilter) + "&";
+        if (searchTerm === null)
+            throw new Error("The parameter 'searchTerm' cannot be null.");
+        else if (searchTerm !== undefined)
+            url_ += "searchTerm=" + encodeURIComponent("" + searchTerm) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllApprovedDeliveryMen(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllApprovedDeliveryMen(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<PagedGetAllApprovedDeliveryMenPaged>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<PagedGetAllApprovedDeliveryMenPaged>;
+        }));
+    }
+
+    protected processGetAllApprovedDeliveryMen(response: HttpResponseBase): Observable<PagedGetAllApprovedDeliveryMenPaged> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PagedGetAllApprovedDeliveryMenPaged.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    addDeliveryMan(deliveryManDto: AddDeliveryManDto): Observable<number> {
+        let url_ = this.baseUrl + "/api/DeliveryManAdmin/AddDeliveryMan";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(deliveryManDto);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAddDeliveryMan(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAddDeliveryMan(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<number>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<number>;
+        }));
+    }
+
+    protected processAddDeliveryMan(response: HttpResponseBase): Observable<number> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class VehicleAdminClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ?? "";
+    }
+
+    getVehiclesBrandLookup(): Observable<VehicleDto[]> {
+        let url_ = this.baseUrl + "/api/VehicleAdmin/GetVehiclesBrandLookup";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetVehiclesBrandLookup(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetVehiclesBrandLookup(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<VehicleDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<VehicleDto[]>;
+        }));
+    }
+
+    protected processGetVehiclesBrandLookup(response: HttpResponseBase): Observable<VehicleDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(VehicleDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getVehiclesTypesLookup(): Observable<VehicleDto[]> {
+        let url_ = this.baseUrl + "/api/VehicleAdmin/GetVehiclesTypesLookup";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetVehiclesTypesLookup(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetVehiclesTypesLookup(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<VehicleDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<VehicleDto[]>;
+        }));
+    }
+
+    protected processGetVehiclesTypesLookup(response: HttpResponseBase): Observable<VehicleDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(VehicleDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getVehiclesTypes(skip?: number | undefined, take?: number | undefined, searchterm?: string | undefined): Observable<PagedResultOfVehicleDto> {
+        let url_ = this.baseUrl + "/api/VehicleAdmin/GetVehiclesTypes?";
+        if (skip === null)
+            throw new Error("The parameter 'skip' cannot be null.");
+        else if (skip !== undefined)
+            url_ += "skip=" + encodeURIComponent("" + skip) + "&";
+        if (take === null)
+            throw new Error("The parameter 'take' cannot be null.");
+        else if (take !== undefined)
+            url_ += "take=" + encodeURIComponent("" + take) + "&";
+        if (searchterm === null)
+            throw new Error("The parameter 'searchterm' cannot be null.");
+        else if (searchterm !== undefined)
+            url_ += "searchterm=" + encodeURIComponent("" + searchterm) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetVehiclesTypes(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetVehiclesTypes(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<PagedResultOfVehicleDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<PagedResultOfVehicleDto>;
+        }));
+    }
+
+    protected processGetVehiclesTypes(response: HttpResponseBase): Observable<PagedResultOfVehicleDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PagedResultOfVehicleDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getVehiclesBrands(skip?: number | undefined, take?: number | undefined, searchterm?: string | undefined): Observable<PagedResultOfVehicleDto> {
+        let url_ = this.baseUrl + "/api/VehicleAdmin/GetVehiclesBrands?";
+        if (skip === null)
+            throw new Error("The parameter 'skip' cannot be null.");
+        else if (skip !== undefined)
+            url_ += "skip=" + encodeURIComponent("" + skip) + "&";
+        if (take === null)
+            throw new Error("The parameter 'take' cannot be null.");
+        else if (take !== undefined)
+            url_ += "take=" + encodeURIComponent("" + take) + "&";
+        if (searchterm === null)
+            throw new Error("The parameter 'searchterm' cannot be null.");
+        else if (searchterm !== undefined)
+            url_ += "searchterm=" + encodeURIComponent("" + searchterm) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetVehiclesBrands(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetVehiclesBrands(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<PagedResultOfVehicleDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<PagedResultOfVehicleDto>;
+        }));
+    }
+
+    protected processGetVehiclesBrands(response: HttpResponseBase): Observable<PagedResultOfVehicleDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PagedResultOfVehicleDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    addVehicleBrand(command: AddVehicleBrandCommand): Observable<number> {
+        let url_ = this.baseUrl + "/api/VehicleAdmin/AddVehicleBrand";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAddVehicleBrand(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAddVehicleBrand(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<number>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<number>;
+        }));
+    }
+
+    protected processAddVehicleBrand(response: HttpResponseBase): Observable<number> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    addVehicleType(command: AddVehicleTypeCommand): Observable<number> {
+        let url_ = this.baseUrl + "/api/VehicleAdmin/AddVehicleType";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAddVehicleType(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAddVehicleType(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<number>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<number>;
+        }));
+    }
+
+    protected processAddVehicleType(response: HttpResponseBase): Observable<number> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+}
+
 export class ProblemDetails {
     type!: string | null;
     title!: string | null;
@@ -3204,6 +3934,512 @@ export class VehicleTypeDto {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id !== undefined ? this.id : <any>null;
         data["name"] = this.name !== undefined ? this.name : <any>null;
+        return data;
+    }
+}
+
+export class PagedGetAllDeliveryMenRequestsPaged {
+    data!: GetAllDeliveryMenRequestsDto[];
+    totalCount!: number;
+    currentPage!: number;
+    pageSize!: number;
+    totalPages!: number;
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data!.push(GetAllDeliveryMenRequestsDto.fromJS(item));
+            }
+            else {
+                this.data = <any>null;
+            }
+            this.totalCount = _data["totalCount"] !== undefined ? _data["totalCount"] : <any>null;
+            this.currentPage = _data["currentPage"] !== undefined ? _data["currentPage"] : <any>null;
+            this.pageSize = _data["pageSize"] !== undefined ? _data["pageSize"] : <any>null;
+            this.totalPages = _data["totalPages"] !== undefined ? _data["totalPages"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): PagedGetAllDeliveryMenRequestsPaged {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedGetAllDeliveryMenRequestsPaged();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item.toJSON());
+        }
+        data["totalCount"] = this.totalCount !== undefined ? this.totalCount : <any>null;
+        data["currentPage"] = this.currentPage !== undefined ? this.currentPage : <any>null;
+        data["pageSize"] = this.pageSize !== undefined ? this.pageSize : <any>null;
+        data["totalPages"] = this.totalPages !== undefined ? this.totalPages : <any>null;
+        return data;
+    }
+}
+
+export class GetAllDeliveryMenRequestsDto {
+    deliveryManId!: number;
+    fullName!: string;
+    address!: string;
+    phoneNumber!: string;
+    identityNumber!: string;
+    personalImagePath!: string;
+    deliveryType!: string;
+    state!: string;
+
+    init(_data?: any) {
+        if (_data) {
+            this.deliveryManId = _data["deliveryManId"] !== undefined ? _data["deliveryManId"] : <any>null;
+            this.fullName = _data["fullName"] !== undefined ? _data["fullName"] : <any>null;
+            this.address = _data["address"] !== undefined ? _data["address"] : <any>null;
+            this.phoneNumber = _data["phoneNumber"] !== undefined ? _data["phoneNumber"] : <any>null;
+            this.identityNumber = _data["identityNumber"] !== undefined ? _data["identityNumber"] : <any>null;
+            this.personalImagePath = _data["personalImagePath"] !== undefined ? _data["personalImagePath"] : <any>null;
+            this.deliveryType = _data["deliveryType"] !== undefined ? _data["deliveryType"] : <any>null;
+            this.state = _data["state"] !== undefined ? _data["state"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): GetAllDeliveryMenRequestsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetAllDeliveryMenRequestsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["deliveryManId"] = this.deliveryManId !== undefined ? this.deliveryManId : <any>null;
+        data["fullName"] = this.fullName !== undefined ? this.fullName : <any>null;
+        data["address"] = this.address !== undefined ? this.address : <any>null;
+        data["phoneNumber"] = this.phoneNumber !== undefined ? this.phoneNumber : <any>null;
+        data["identityNumber"] = this.identityNumber !== undefined ? this.identityNumber : <any>null;
+        data["personalImagePath"] = this.personalImagePath !== undefined ? this.personalImagePath : <any>null;
+        data["deliveryType"] = this.deliveryType !== undefined ? this.deliveryType : <any>null;
+        data["state"] = this.state !== undefined ? this.state : <any>null;
+        return data;
+    }
+}
+
+export class GetDeliveryManRequestDetailsDto {
+    deliveryManId!: number;
+    fullName!: string;
+    address!: string;
+    phoneNumber!: string;
+    identityNumber!: string;
+    identityExpirationDate!: Date;
+    drivingLicenseExpirationDate!: Date;
+    deliveryType!: string;
+    deliveryLicenseType!: string;
+    state!: string;
+    frontIdentityImagePath!: string;
+    backIdentityImagePath!: string;
+    frontDrivingLicenseImagePath!: string;
+    backDrivingLicenseImagePath!: string;
+    personalImagePath!: string;
+    active!: boolean;
+    androidDevice!: string;
+    iosDevice!: string;
+    userId!: number;
+    vehicleId!: number | null;
+    vehiclePlateNumber!: string;
+    vehicleType!: string;
+    vehicleColor!: string;
+    vehicleModel!: string;
+
+    init(_data?: any) {
+        if (_data) {
+            this.deliveryManId = _data["deliveryManId"] !== undefined ? _data["deliveryManId"] : <any>null;
+            this.fullName = _data["fullName"] !== undefined ? _data["fullName"] : <any>null;
+            this.address = _data["address"] !== undefined ? _data["address"] : <any>null;
+            this.phoneNumber = _data["phoneNumber"] !== undefined ? _data["phoneNumber"] : <any>null;
+            this.identityNumber = _data["identityNumber"] !== undefined ? _data["identityNumber"] : <any>null;
+            this.identityExpirationDate = _data["identityExpirationDate"] ? new Date(_data["identityExpirationDate"].toString()) : <any>null;
+            this.drivingLicenseExpirationDate = _data["drivingLicenseExpirationDate"] ? new Date(_data["drivingLicenseExpirationDate"].toString()) : <any>null;
+            this.deliveryType = _data["deliveryType"] !== undefined ? _data["deliveryType"] : <any>null;
+            this.deliveryLicenseType = _data["deliveryLicenseType"] !== undefined ? _data["deliveryLicenseType"] : <any>null;
+            this.state = _data["state"] !== undefined ? _data["state"] : <any>null;
+            this.frontIdentityImagePath = _data["frontIdentityImagePath"] !== undefined ? _data["frontIdentityImagePath"] : <any>null;
+            this.backIdentityImagePath = _data["backIdentityImagePath"] !== undefined ? _data["backIdentityImagePath"] : <any>null;
+            this.frontDrivingLicenseImagePath = _data["frontDrivingLicenseImagePath"] !== undefined ? _data["frontDrivingLicenseImagePath"] : <any>null;
+            this.backDrivingLicenseImagePath = _data["backDrivingLicenseImagePath"] !== undefined ? _data["backDrivingLicenseImagePath"] : <any>null;
+            this.personalImagePath = _data["personalImagePath"] !== undefined ? _data["personalImagePath"] : <any>null;
+            this.active = _data["active"] !== undefined ? _data["active"] : <any>null;
+            this.androidDevice = _data["androidDevice"] !== undefined ? _data["androidDevice"] : <any>null;
+            this.iosDevice = _data["iosDevice"] !== undefined ? _data["iosDevice"] : <any>null;
+            this.userId = _data["userId"] !== undefined ? _data["userId"] : <any>null;
+            this.vehicleId = _data["vehicleId"] !== undefined ? _data["vehicleId"] : <any>null;
+            this.vehiclePlateNumber = _data["vehiclePlateNumber"] !== undefined ? _data["vehiclePlateNumber"] : <any>null;
+            this.vehicleType = _data["vehicleType"] !== undefined ? _data["vehicleType"] : <any>null;
+            this.vehicleColor = _data["vehicleColor"] !== undefined ? _data["vehicleColor"] : <any>null;
+            this.vehicleModel = _data["vehicleModel"] !== undefined ? _data["vehicleModel"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): GetDeliveryManRequestDetailsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetDeliveryManRequestDetailsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["deliveryManId"] = this.deliveryManId !== undefined ? this.deliveryManId : <any>null;
+        data["fullName"] = this.fullName !== undefined ? this.fullName : <any>null;
+        data["address"] = this.address !== undefined ? this.address : <any>null;
+        data["phoneNumber"] = this.phoneNumber !== undefined ? this.phoneNumber : <any>null;
+        data["identityNumber"] = this.identityNumber !== undefined ? this.identityNumber : <any>null;
+        data["identityExpirationDate"] = this.identityExpirationDate ? this.identityExpirationDate.toISOString() : <any>null;
+        data["drivingLicenseExpirationDate"] = this.drivingLicenseExpirationDate ? this.drivingLicenseExpirationDate.toISOString() : <any>null;
+        data["deliveryType"] = this.deliveryType !== undefined ? this.deliveryType : <any>null;
+        data["deliveryLicenseType"] = this.deliveryLicenseType !== undefined ? this.deliveryLicenseType : <any>null;
+        data["state"] = this.state !== undefined ? this.state : <any>null;
+        data["frontIdentityImagePath"] = this.frontIdentityImagePath !== undefined ? this.frontIdentityImagePath : <any>null;
+        data["backIdentityImagePath"] = this.backIdentityImagePath !== undefined ? this.backIdentityImagePath : <any>null;
+        data["frontDrivingLicenseImagePath"] = this.frontDrivingLicenseImagePath !== undefined ? this.frontDrivingLicenseImagePath : <any>null;
+        data["backDrivingLicenseImagePath"] = this.backDrivingLicenseImagePath !== undefined ? this.backDrivingLicenseImagePath : <any>null;
+        data["personalImagePath"] = this.personalImagePath !== undefined ? this.personalImagePath : <any>null;
+        data["active"] = this.active !== undefined ? this.active : <any>null;
+        data["androidDevice"] = this.androidDevice !== undefined ? this.androidDevice : <any>null;
+        data["iosDevice"] = this.iosDevice !== undefined ? this.iosDevice : <any>null;
+        data["userId"] = this.userId !== undefined ? this.userId : <any>null;
+        data["vehicleId"] = this.vehicleId !== undefined ? this.vehicleId : <any>null;
+        data["vehiclePlateNumber"] = this.vehiclePlateNumber !== undefined ? this.vehiclePlateNumber : <any>null;
+        data["vehicleType"] = this.vehicleType !== undefined ? this.vehicleType : <any>null;
+        data["vehicleColor"] = this.vehicleColor !== undefined ? this.vehicleColor : <any>null;
+        data["vehicleModel"] = this.vehicleModel !== undefined ? this.vehicleModel : <any>null;
+        return data;
+    }
+}
+
+export class PagedGetAllApprovedDeliveryMenPaged {
+    data!: GetAllApprovedDeliveryMenDto[];
+    totalCount!: number;
+    currentPage!: number;
+    pageSize!: number;
+    totalPages!: number;
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data!.push(GetAllApprovedDeliveryMenDto.fromJS(item));
+            }
+            else {
+                this.data = <any>null;
+            }
+            this.totalCount = _data["totalCount"] !== undefined ? _data["totalCount"] : <any>null;
+            this.currentPage = _data["currentPage"] !== undefined ? _data["currentPage"] : <any>null;
+            this.pageSize = _data["pageSize"] !== undefined ? _data["pageSize"] : <any>null;
+            this.totalPages = _data["totalPages"] !== undefined ? _data["totalPages"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): PagedGetAllApprovedDeliveryMenPaged {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedGetAllApprovedDeliveryMenPaged();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item.toJSON());
+        }
+        data["totalCount"] = this.totalCount !== undefined ? this.totalCount : <any>null;
+        data["currentPage"] = this.currentPage !== undefined ? this.currentPage : <any>null;
+        data["pageSize"] = this.pageSize !== undefined ? this.pageSize : <any>null;
+        data["totalPages"] = this.totalPages !== undefined ? this.totalPages : <any>null;
+        return data;
+    }
+}
+
+export class GetAllApprovedDeliveryMenDto {
+    deliveryManId!: number;
+    fullName!: string;
+    address!: string;
+    phoneNumber!: string;
+    identityNumber!: string;
+    personalImagePath!: string;
+    deliveryType!: string;
+    state!: number;
+    createdDate!: Date;
+    active!: boolean;
+
+    init(_data?: any) {
+        if (_data) {
+            this.deliveryManId = _data["deliveryManId"] !== undefined ? _data["deliveryManId"] : <any>null;
+            this.fullName = _data["fullName"] !== undefined ? _data["fullName"] : <any>null;
+            this.address = _data["address"] !== undefined ? _data["address"] : <any>null;
+            this.phoneNumber = _data["phoneNumber"] !== undefined ? _data["phoneNumber"] : <any>null;
+            this.identityNumber = _data["identityNumber"] !== undefined ? _data["identityNumber"] : <any>null;
+            this.personalImagePath = _data["personalImagePath"] !== undefined ? _data["personalImagePath"] : <any>null;
+            this.deliveryType = _data["deliveryType"] !== undefined ? _data["deliveryType"] : <any>null;
+            this.state = _data["state"] !== undefined ? _data["state"] : <any>null;
+            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>null;
+            this.active = _data["active"] !== undefined ? _data["active"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): GetAllApprovedDeliveryMenDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetAllApprovedDeliveryMenDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["deliveryManId"] = this.deliveryManId !== undefined ? this.deliveryManId : <any>null;
+        data["fullName"] = this.fullName !== undefined ? this.fullName : <any>null;
+        data["address"] = this.address !== undefined ? this.address : <any>null;
+        data["phoneNumber"] = this.phoneNumber !== undefined ? this.phoneNumber : <any>null;
+        data["identityNumber"] = this.identityNumber !== undefined ? this.identityNumber : <any>null;
+        data["personalImagePath"] = this.personalImagePath !== undefined ? this.personalImagePath : <any>null;
+        data["deliveryType"] = this.deliveryType !== undefined ? this.deliveryType : <any>null;
+        data["state"] = this.state !== undefined ? this.state : <any>null;
+        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>null;
+        data["active"] = this.active !== undefined ? this.active : <any>null;
+        return data;
+    }
+}
+
+export class AddDeliveryManDto {
+    fullName!: string;
+    address!: string;
+    phoneNumber!: string;
+    identityNumber!: string;
+    deliveryType!: number;
+    identityExpirationDate!: string;
+    deliveryLicenseType!: number;
+    drivingLicenseExpirationDate!: string;
+    vehiclePlateNumber!: string | null;
+    vehicleTypeId!: number | null;
+    vehicleBrandId!: number | null;
+    vehicleOwnerTypeId!: number | null;
+    vehicleLicenseExpirationDate!: string | null;
+    vehicleInsuranceExpirationDate!: string | null;
+    inSuranceExpirationDate!: string | null;
+    vehicleFrontImagePath!: string | null;
+    vehicleSideImagePath!: string | null;
+    vehicleFrontLicenseImagePath!: string | null;
+    vehicleBackLicenseImagePath!: string | null;
+    vehicleFrontInsuranceImagePath!: string | null;
+    vehicleBackInsuranceImagePath!: string | null;
+    personalImagePath!: string | null;
+    frontIdentityImagePath!: string | null;
+    backIdentityImagePath!: string | null;
+    frontDrivingLicenseImagePath!: string | null;
+    backDrivingLicenseImagePath!: string | null;
+    androidDevice!: string | null;
+    iosDevice!: string | null;
+    active!: boolean;
+
+    init(_data?: any) {
+        if (_data) {
+            this.fullName = _data["fullName"] !== undefined ? _data["fullName"] : <any>null;
+            this.address = _data["address"] !== undefined ? _data["address"] : <any>null;
+            this.phoneNumber = _data["phoneNumber"] !== undefined ? _data["phoneNumber"] : <any>null;
+            this.identityNumber = _data["identityNumber"] !== undefined ? _data["identityNumber"] : <any>null;
+            this.deliveryType = _data["deliveryType"] !== undefined ? _data["deliveryType"] : <any>null;
+            this.identityExpirationDate = _data["identityExpirationDate"] !== undefined ? _data["identityExpirationDate"] : <any>null;
+            this.deliveryLicenseType = _data["deliveryLicenseType"] !== undefined ? _data["deliveryLicenseType"] : <any>null;
+            this.drivingLicenseExpirationDate = _data["drivingLicenseExpirationDate"] !== undefined ? _data["drivingLicenseExpirationDate"] : <any>null;
+            this.vehiclePlateNumber = _data["vehiclePlateNumber"] !== undefined ? _data["vehiclePlateNumber"] : <any>null;
+            this.vehicleTypeId = _data["vehicleTypeId"] !== undefined ? _data["vehicleTypeId"] : <any>null;
+            this.vehicleBrandId = _data["vehicleBrandId"] !== undefined ? _data["vehicleBrandId"] : <any>null;
+            this.vehicleOwnerTypeId = _data["vehicleOwnerTypeId"] !== undefined ? _data["vehicleOwnerTypeId"] : <any>null;
+            this.vehicleLicenseExpirationDate = _data["vehicleLicenseExpirationDate"] !== undefined ? _data["vehicleLicenseExpirationDate"] : <any>null;
+            this.vehicleInsuranceExpirationDate = _data["vehicleInsuranceExpirationDate"] !== undefined ? _data["vehicleInsuranceExpirationDate"] : <any>null;
+            this.inSuranceExpirationDate = _data["inSuranceExpirationDate"] !== undefined ? _data["inSuranceExpirationDate"] : <any>null;
+            this.vehicleFrontImagePath = _data["vehicleFrontImagePath"] !== undefined ? _data["vehicleFrontImagePath"] : <any>null;
+            this.vehicleSideImagePath = _data["vehicleSideImagePath"] !== undefined ? _data["vehicleSideImagePath"] : <any>null;
+            this.vehicleFrontLicenseImagePath = _data["vehicleFrontLicenseImagePath"] !== undefined ? _data["vehicleFrontLicenseImagePath"] : <any>null;
+            this.vehicleBackLicenseImagePath = _data["vehicleBackLicenseImagePath"] !== undefined ? _data["vehicleBackLicenseImagePath"] : <any>null;
+            this.vehicleFrontInsuranceImagePath = _data["vehicleFrontInsuranceImagePath"] !== undefined ? _data["vehicleFrontInsuranceImagePath"] : <any>null;
+            this.vehicleBackInsuranceImagePath = _data["vehicleBackInsuranceImagePath"] !== undefined ? _data["vehicleBackInsuranceImagePath"] : <any>null;
+            this.personalImagePath = _data["personalImagePath"] !== undefined ? _data["personalImagePath"] : <any>null;
+            this.frontIdentityImagePath = _data["frontIdentityImagePath"] !== undefined ? _data["frontIdentityImagePath"] : <any>null;
+            this.backIdentityImagePath = _data["backIdentityImagePath"] !== undefined ? _data["backIdentityImagePath"] : <any>null;
+            this.frontDrivingLicenseImagePath = _data["frontDrivingLicenseImagePath"] !== undefined ? _data["frontDrivingLicenseImagePath"] : <any>null;
+            this.backDrivingLicenseImagePath = _data["backDrivingLicenseImagePath"] !== undefined ? _data["backDrivingLicenseImagePath"] : <any>null;
+            this.androidDevice = _data["androidDevice"] !== undefined ? _data["androidDevice"] : <any>null;
+            this.iosDevice = _data["iosDevice"] !== undefined ? _data["iosDevice"] : <any>null;
+            this.active = _data["active"] !== undefined ? _data["active"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): AddDeliveryManDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AddDeliveryManDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["fullName"] = this.fullName !== undefined ? this.fullName : <any>null;
+        data["address"] = this.address !== undefined ? this.address : <any>null;
+        data["phoneNumber"] = this.phoneNumber !== undefined ? this.phoneNumber : <any>null;
+        data["identityNumber"] = this.identityNumber !== undefined ? this.identityNumber : <any>null;
+        data["deliveryType"] = this.deliveryType !== undefined ? this.deliveryType : <any>null;
+        data["identityExpirationDate"] = this.identityExpirationDate !== undefined ? this.identityExpirationDate : <any>null;
+        data["deliveryLicenseType"] = this.deliveryLicenseType !== undefined ? this.deliveryLicenseType : <any>null;
+        data["drivingLicenseExpirationDate"] = this.drivingLicenseExpirationDate !== undefined ? this.drivingLicenseExpirationDate : <any>null;
+        data["vehiclePlateNumber"] = this.vehiclePlateNumber !== undefined ? this.vehiclePlateNumber : <any>null;
+        data["vehicleTypeId"] = this.vehicleTypeId !== undefined ? this.vehicleTypeId : <any>null;
+        data["vehicleBrandId"] = this.vehicleBrandId !== undefined ? this.vehicleBrandId : <any>null;
+        data["vehicleOwnerTypeId"] = this.vehicleOwnerTypeId !== undefined ? this.vehicleOwnerTypeId : <any>null;
+        data["vehicleLicenseExpirationDate"] = this.vehicleLicenseExpirationDate !== undefined ? this.vehicleLicenseExpirationDate : <any>null;
+        data["vehicleInsuranceExpirationDate"] = this.vehicleInsuranceExpirationDate !== undefined ? this.vehicleInsuranceExpirationDate : <any>null;
+        data["inSuranceExpirationDate"] = this.inSuranceExpirationDate !== undefined ? this.inSuranceExpirationDate : <any>null;
+        data["vehicleFrontImagePath"] = this.vehicleFrontImagePath !== undefined ? this.vehicleFrontImagePath : <any>null;
+        data["vehicleSideImagePath"] = this.vehicleSideImagePath !== undefined ? this.vehicleSideImagePath : <any>null;
+        data["vehicleFrontLicenseImagePath"] = this.vehicleFrontLicenseImagePath !== undefined ? this.vehicleFrontLicenseImagePath : <any>null;
+        data["vehicleBackLicenseImagePath"] = this.vehicleBackLicenseImagePath !== undefined ? this.vehicleBackLicenseImagePath : <any>null;
+        data["vehicleFrontInsuranceImagePath"] = this.vehicleFrontInsuranceImagePath !== undefined ? this.vehicleFrontInsuranceImagePath : <any>null;
+        data["vehicleBackInsuranceImagePath"] = this.vehicleBackInsuranceImagePath !== undefined ? this.vehicleBackInsuranceImagePath : <any>null;
+        data["personalImagePath"] = this.personalImagePath !== undefined ? this.personalImagePath : <any>null;
+        data["frontIdentityImagePath"] = this.frontIdentityImagePath !== undefined ? this.frontIdentityImagePath : <any>null;
+        data["backIdentityImagePath"] = this.backIdentityImagePath !== undefined ? this.backIdentityImagePath : <any>null;
+        data["frontDrivingLicenseImagePath"] = this.frontDrivingLicenseImagePath !== undefined ? this.frontDrivingLicenseImagePath : <any>null;
+        data["backDrivingLicenseImagePath"] = this.backDrivingLicenseImagePath !== undefined ? this.backDrivingLicenseImagePath : <any>null;
+        data["androidDevice"] = this.androidDevice !== undefined ? this.androidDevice : <any>null;
+        data["iosDevice"] = this.iosDevice !== undefined ? this.iosDevice : <any>null;
+        data["active"] = this.active !== undefined ? this.active : <any>null;
+        return data;
+    }
+}
+
+export class VehicleDto {
+    id!: number;
+    arabicName!: string;
+    englishName!: string;
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.arabicName = _data["arabicName"] !== undefined ? _data["arabicName"] : <any>null;
+            this.englishName = _data["englishName"] !== undefined ? _data["englishName"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): VehicleDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new VehicleDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["arabicName"] = this.arabicName !== undefined ? this.arabicName : <any>null;
+        data["englishName"] = this.englishName !== undefined ? this.englishName : <any>null;
+        return data;
+    }
+}
+
+export class PagedResultOfVehicleDto {
+    data!: VehicleDto[];
+    totalCount!: number;
+    totalPages!: number;
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data!.push(VehicleDto.fromJS(item));
+            }
+            else {
+                this.data = <any>null;
+            }
+            this.totalCount = _data["totalCount"] !== undefined ? _data["totalCount"] : <any>null;
+            this.totalPages = _data["totalPages"] !== undefined ? _data["totalPages"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): PagedResultOfVehicleDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultOfVehicleDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item.toJSON());
+        }
+        data["totalCount"] = this.totalCount !== undefined ? this.totalCount : <any>null;
+        data["totalPages"] = this.totalPages !== undefined ? this.totalPages : <any>null;
+        return data;
+    }
+}
+
+export class AddVehicleBrandCommand {
+    arabicName!: string;
+    englishName!: string;
+
+    init(_data?: any) {
+        if (_data) {
+            this.arabicName = _data["arabicName"] !== undefined ? _data["arabicName"] : <any>null;
+            this.englishName = _data["englishName"] !== undefined ? _data["englishName"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): AddVehicleBrandCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new AddVehicleBrandCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["arabicName"] = this.arabicName !== undefined ? this.arabicName : <any>null;
+        data["englishName"] = this.englishName !== undefined ? this.englishName : <any>null;
+        return data;
+    }
+}
+
+export class AddVehicleTypeCommand {
+    arabicName!: string;
+    englishName!: string;
+
+    init(_data?: any) {
+        if (_data) {
+            this.arabicName = _data["arabicName"] !== undefined ? _data["arabicName"] : <any>null;
+            this.englishName = _data["englishName"] !== undefined ? _data["englishName"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): AddVehicleTypeCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new AddVehicleTypeCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["arabicName"] = this.arabicName !== undefined ? this.arabicName : <any>null;
+        data["englishName"] = this.englishName !== undefined ? this.englishName : <any>null;
         return data;
     }
 }
