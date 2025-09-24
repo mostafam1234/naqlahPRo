@@ -1,0 +1,54 @@
+<div class="bg-white shadow-sm border-b border-neutral-200">
+  <div class="container mx-auto px-6 py-6">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center space-x-4 space-x-reverse">
+        <div
+          class="w-12 h-12 bg-primary-500 rounded-xl flex items-center justify-center"
+        >
+          <svg
+            class="w-6 h-6 text-white"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              [attr.d]="iconPath"
+            ></path>
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-3xl font-bold text-neutral-900">
+            {{ title | translate }}
+          </h1>
+          <p class="text-neutral-600 mt-2" *ngIf="subtitle">
+            {{ subtitle | translate }}
+          </p>
+        </div>
+      </div>
+      <div class="flex items-center" *ngIf="showBackButton">
+        <button
+          (click)="goBack()"
+          class="flex items-center px-4 py-2 bg-neutral-100 border border-neutral-300 rounded-xl text-neutral-700 hover:bg-neutral-200 transition-all duration-300 group"
+        >
+          {{ "COMMON.BACK" | translate }}
+          <svg
+            class="w-5 h-5 ml-2 mr-2 group-hover:-translate-x-1 transition-transform"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 19l-7-7 7-7"
+            ></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

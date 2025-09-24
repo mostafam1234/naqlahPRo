@@ -3,286 +3,208 @@ import { Component, HostListener } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { LanguageService } from 'src/app/Core/services/language.service';
+import { DeliveryManAdminClient, GetAllApprovedDeliveryMenDto, GetAllDeliveryMenRequestsDto } from 'src/app/Core/services/NaqlahClient';
+import { SubSink } from 'subsink/dist/subsink';
+import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
+import { DeliveryType } from 'src/app/Core/enums/delivery.enums';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-captain',
   standalone: true,
-  imports: [NgFor, NgClass, NgIf, TranslateModule, RouterModule,],
+  imports: [NgFor, NgClass, NgIf, TranslateModule, RouterModule, PageHeaderComponent, ReactiveFormsModule],
   templateUrl: './captain.component.html',
   styleUrl: './captain.component.css'
 })
 export class CaptainComponent {
-  lang: string = 'ar';
-  viewMode: 'cards' | 'table' = 'table';
-  constructor(
-    private languageService: LanguageService,
-    private translateService: TranslateService,
-    private router: Router) {}
+    lang: string = 'ar';
+    viewMode: 'cards' | 'table' = 'table';
+    allDeliveryMenRequests: GetAllApprovedDeliveryMenDto[] = [];
+    isLoading = false;
+    totalCount: number = 0;
+    totalPages: number = 0;
+    currentPage: number = 0;
+    itemsPerPage: number = 10;
 
-  activeTab = 'all';
-  currentPage = 1;
-  itemsPerPage = 9;
-  openDropdownId: number = null;
-  get language(){
-    return this.languageService.getLanguage();
-  }
-  captains = [
-    {
-      id:1,
-      name: 'أحمد يوسف',
-      email: 'ahmed.youssef@example.com',
-      location: 'القاهرة، مصر',
-      phone: '+20 100 123 4567',
-      avatar: 'https://i.pravatar.cc/150?img=1',
-      type: 'individual'
-    },
-    {
-      id: 2,
-      name: 'منى خليل',
-      email: 'mona.khalil@example.com',
-      location: 'الرياض، السعودية',
-      phone: '+966 50 234 5678',
-      avatar: 'https://i.pravatar.cc/150?img=2',
-      type: 'institution'
-    },
-    {
-      id: 3,
-      name: 'سارة علاء',
-      email: 'sara.alaa@example.com',
-      location: 'دبي، الإمارات',
-      phone: '+971 55 987 6543',
-      avatar: 'https://i.pravatar.cc/150?img=3',
-      type: 'individual'
-    },
-    {
-      id: 4,
-      name: 'علي فهد',
-      email: 'ali.fahd@example.com',
-      location: 'الكويت',
-      phone: '+965 600 11223',
-      avatar: 'https://i.pravatar.cc/150?img=4',
-      type: 'institution'
-    },
-    {
-      id: 5,
-      name: 'نورا سالم',
-      email: 'nora.salem@example.com',
-      location: 'بيروت، لبنان',
-      phone: '+961 3 556677',
-      avatar: 'https://i.pravatar.cc/150?img=5',
-      type: 'individual'
-    },
-    {
-      id: 6,
-      name: 'كريم منصور',
-      email: 'karim.mansour@example.com',
-      location: 'عمان، الأردن',
-      phone: '+962 79 332211',
-      avatar: 'https://i.pravatar.cc/150?img=6',
-      type:'individual'
-    },
-    {
-      id: 7,
-      name: 'ليلى عمر',
-      email: 'laila.omar@example.com',
-      location: 'تونس',
-      phone: '+216 98 123 456',
-      avatar: 'https://i.pravatar.cc/150?img=7',
-      type: 'institution'
-    },
-    {
-      id: 8,
-      name: 'عبدالرحيم عارف',
-      email: 'abdo.aref@example.com',
-      location: 'مصر - الغردقة',
-      phone: '+212 6 789 01234',
-      avatar: 'https://i.pravatar.cc/150?img=8',
-      type: 'institution'
-    },
-    {
-      id: 9,
-      name: 'معتز أحمد عادل',
-      email: 'moataz.ahmed@example.com',
-      location: 'السعودية - جدة',
-      phone: '+212 6 789 01234',
-      avatar: 'https://i.pravatar.cc/150?img=11',
-      type: 'individual'
-    },
-    {
-      id: 10,
-      name: 'معتز أحمد عادل',
-      email: 'moataz.ahmed@example.com',
-      location: 'السعودية - جدة',
-      phone: '+212 6 789 01234',
-      avatar: 'https://i.pravatar.cc/150?img=12',
-      type: 'individual'
-    },
-    {
-      id: 11,
-      name: 'معتز أحمد عادل',
-      email: 'moataz.ahmed@example.com',
-      location: 'السعودية - جدة',
-      phone: '+212 6 789 01234',
-      avatar: 'https://i.pravatar.cc/150?img=13',
-      type: 'individual'
-    },
-    {
-      id: 12,
-      name: 'معتز أحمد عادل',
-      email: 'moataz.ahmed@example.com',
-      location: 'السعودية - جدة',
-      phone: '+212 6 789 01234',
-      avatar: 'https://i.pravatar.cc/150?img=14',
-      type: 'individual'
-    },
-    {
-      id: 13,
-      name: 'معتز أحمد عادل',
-      email: 'moataz.ahmed@example.com',
-      location: 'السعودية - جدة',
-      phone: '+212 6 789 01234',
-      avatar: 'https://i.pravatar.cc/150?img=15',
-      type: 'individual'
-    },
-    {
-      id: 14,
-      name: 'معتز أحمد عادل',
-      email: 'moataz.ahmed@example.com',
-      location: 'السعودية - جدة',
-      phone: '+212 6 789 01234',
-      avatar: 'https://i.pravatar.cc/150?img=16',
-      type: 'individual'
-    },
-    {
-      id: 15,
-      name: 'معتز أحمد عادل',
-      email: 'moataz.ahmed@example.com',
-      location: 'السعودية - جدة',
-      phone: '+212 6 789 01234',
-      avatar: 'https://i.pravatar.cc/150?img=17',
-      type: 'individual'
-    },
-    {
-      id: 16,
-      name: 'معتز أحمد عادل',
-      email: 'moataz.ahmed@example.com',
-      location: 'السعودية - جدة',
-      phone: '+212 6 789 01234',
-      avatar: 'https://i.pravatar.cc/150?img=18',
-      type: 'individual'
-    },
-    {
-      id: 17,
-      name: 'معتز أحمد عادل',
-      email: 'moataz.ahmed@example.com',
-      location: 'السعودية - جدة',
-      phone: '+212 6 789 01234',
-      avatar: 'https://i.pravatar.cc/150?img=19',
-      type: 'individual'
-    },
-    {
-      id: 18,
-      name: 'معتز أحمد عادل',
-      email: 'moataz.ahmed@example.com',
-      location: 'السعودية - جدة',
-      phone: '+212 6 789 01234',
-      avatar: 'https://i.pravatar.cc/150?img=20',
-      type: 'individual'
-    },
-    {
-      id: 19,
-      name: 'معتز أحمد عادل',
-      email: 'moataz.ahmed@example.com',
-      location: 'السعودية - جدة',
-      phone: '+212 6 789 01234',
-      avatar: 'https://i.pravatar.cc/150?img=21',
-      type: 'individual'
-    },
-    {
-      id: 20,
-      name: 'معتز أحمد عادل',
-      email: 'moataz.ahmed@example.com',
-      location: 'السعودية - جدة',
-      phone: '+212 6 789 01234',
-      avatar: 'https://i.pravatar.cc/150?img=21',
-      type: 'individual'
-    },
-    {
-      id: 21,
-      name: 'معتز أحمد عادل',
-      email: 'moataz.ahmed@example.com',
-      location: 'السعودية - جدة',
-      phone: '+212 6 789 01234',
-      avatar: 'https://i.pravatar.cc/150?img=22',
-      type: 'individual'
-    },
-    {
-      id: 22,
-      name: 'معتز أحمد عادل',
-      email: 'moataz.ahmed@example.com',
-      location: 'السعودية - جدة',
-      phone: '+212 6 789 01234',
-      avatar: 'https://i.pravatar.cc/150?img=23',
-      type: 'individual'
-    },
-    {
-      id: 23,
-      name: 'معتز أحمد عادل',
-      email: 'moataz.ahmed@example.com',
-      location: 'السعودية - جدة',
-      phone: '+212 6 789 01234',
-      avatar: 'https://i.pravatar.cc/150?img=24',
-      type: 'individual'
-    },
-  ];
+    // Search and filter properties
+    searchControl = new FormControl('');
+    activeTab = 'all';
+    deliveryTypes = DeliveryType;
+    openDropdownId: number = null;
 
-  get filteredCaptains() {
-    if (this.activeTab === 'all') return this.captains;
-    return this.captains.filter(c => c.type === this.activeTab);
-  }
+    private sub = new SubSink();
 
-  get paginatedCaptains() {
-    const start = (this.currentPage - 1) * this.itemsPerPage;
-    return this.filteredCaptains.slice(start, start + this.itemsPerPage);
-  }
+    constructor(
+      private languageService: LanguageService,
+      private translateService: TranslateService,
+      private router: Router,
+      private deliveryManClient: DeliveryManAdminClient
+    ) {}
 
-  get totalPages() {
-    return Math.ceil(this.filteredCaptains.length / this.itemsPerPage);
-  }
+    get language(){
+      return this.languageService.getLanguage();
+    }
 
-  changePage(page: number) {
-    this.currentPage = page;
-  }
+    ngOnInit(){
+      this.GetAllDeliveryMenRequests();
 
-  setActiveTab(tab: string) {
-    this.activeTab = tab;
-    this.currentPage = 1;
-  }
+      // Setup search with debounce
+      this.sub.sink = this.searchControl.valueChanges
+        .pipe(
+          debounceTime(500),
+          distinctUntilChanged()
+        )
+        .subscribe(() => {
+          this.currentPage = 0;
+          this.GetAllDeliveryMenRequests();
+        });
+    }
 
-  toggleDropdown(index: number) {
-    this.openDropdownId = this.openDropdownId === index ? null : index;
-  }
+    GetAllDeliveryMenRequests(){
+      this.isLoading = true;
+      const skip = this.currentPage * this.itemsPerPage;
+      const searchTerm = this.searchControl.value || '';
 
-  editCaptain(captain: any) {
-    console.log('تعديل الكابتن:', captain);
-    this.openDropdownId = null;
-  }
+      // Get delivery type filter based on active tab
+      let deliveryTypeFilter: number | undefined = undefined;
+      if (this.activeTab === 'Citizen') {
+        deliveryTypeFilter = this.deliveryTypes.Citizen;
+      } else if (this.activeTab === 'Resident') {
+        deliveryTypeFilter = this.deliveryTypes.Resident;
+      }
 
-  deleteCaptain(captain: any) {
-    console.log('حذف الكابتن:', captain);
-    this.openDropdownId = null;
-  }
+      this.sub.sink = this.deliveryManClient
+        .getAllApprovedDeliveryMen(skip, this.itemsPerPage, deliveryTypeFilter, searchTerm)
+        .subscribe({
+          next: (response: any) => {
+            if (response.data && response.totalCount !== undefined) {
+              this.allDeliveryMenRequests = response.data;
+              this.totalCount = response.totalCount;
+              this.totalPages = response.totalPages || Math.ceil(this.totalCount / this.itemsPerPage);
+            } else {
+              this.allDeliveryMenRequests = response;
+            }
+            this.isLoading = false;
+          },
+          error: (error) => {
+            console.error('خطأ في جلب البيانات:', error);
+            this.isLoading = false;
+          }
+        });
+    }
 
-  previewCaptain(captain: any) {
-    console.log('معاينة الكابتن:', captain);
-    this.openDropdownId = null;
-  }
+    changePage(page: number) {
+      const backendPage = page - 1;
+      if (backendPage >= 0 && backendPage < this.totalPages) {
+        this.currentPage = backendPage;
+        this.GetAllDeliveryMenRequests();
+      }
+    }
 
- @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent) {
-    const target = event.target as HTMLElement;
-    if (!target.closest('.custom-card')) {
+    setActiveTab(tab: string) {
+      this.activeTab = tab;
+      this.currentPage = 0;
+      this.GetAllDeliveryMenRequests();
+    }
+
+    get displayCurrentPage(): number {
+      return this.currentPage + 1;
+    }
+
+    get visiblePages(): number[] {
+      const current = this.displayCurrentPage;
+      const total = this.totalPages;
+      const pages: number[] = [];
+
+      if (total <= 7) {
+        for (let i = 1; i <= total; i++) {
+          pages.push(i);
+        }
+      } else {
+        pages.push(1);
+
+        if (current <= 4) {
+          for (let i = 2; i <= 5; i++) {
+            pages.push(i);
+          }
+          pages.push(-1);
+          pages.push(total);
+        } else if (current >= total - 3) {
+          pages.push(-1);
+          for (let i = total - 4; i <= total; i++) {
+            pages.push(i);
+          }
+        } else {
+
+          pages.push(-1);
+          for (let i = current - 1; i <= current + 1; i++) {
+            pages.push(i);
+          }
+          pages.push(-1);
+          pages.push(total);
+        }
+      }
+
+      return pages;
+    }
+
+    toggleDropdown(index: number) {
+      this.openDropdownId = this.openDropdownId === index ? null : index;
+    }
+
+    editCaptain(captain: any) {
+      console.log('تعديل الكابتن:', captain);
       this.openDropdownId = null;
     }
+
+    deleteCaptain(captain: any) {
+      console.log('حذف الكابتن:', captain);
+      this.openDropdownId = null;
+    }
+
+    previewCaptain(captain: any) {
+      console.log('معاينة الكابتن:', captain);
+      this.router.navigate(['/admin/newCaptain/action', captain.deliveryManId]);
+      this.openDropdownId = null;
+    }
+
+    viewCaptainDetails(deliveryManId: number) {
+      this.router.navigate(['/admin/newCaptain/action', deliveryManId]);
+    }
+
+    @HostListener('document:click', ['$event'])
+    onDocumentClick(event: MouseEvent) {
+      const target = event.target as HTMLElement;
+      if (!target.closest('.custom-card')) {
+        this.openDropdownId = null;
+      }
+    }
+
+    get displayStartCount(): number {
+      if (this.totalCount === 0) return 0;
+      return (this.currentPage * this.itemsPerPage) + 1;
+    }
+
+    get displayEndCount(): number {
+      if (this.totalCount === 0) return 0;
+      const endCount = (this.currentPage + 1) * this.itemsPerPage;
+      return Math.min(endCount, this.totalCount);
+    }
+
+    getRowNumber(index: number): number {
+      return (this.currentPage * this.itemsPerPage) + index + 1;
+    }
+
+    getAbsoluteDifference(a: number, b: number): number {
+      return Math.abs(a - b);
+    }
+
+    goBack(): void {
+      window.history.back();
+    }
+
+    ngOnDestroy() {
+      this.sub.unsubscribe();
+    }
   }
-}

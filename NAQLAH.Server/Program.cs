@@ -36,7 +36,7 @@ namespace NAQLAH.Server
 
 
 
-            var keysFolder = Path.Combine(builder.Environment.ContentRootPath,"Keys");
+            var keysFolder = Path.Combine(builder.Environment.ContentRootPath, "Keys");
             builder.Services.AddDataProtection()
                             .PersistKeysToFileSystem(new DirectoryInfo(keysFolder));
 
@@ -66,20 +66,20 @@ namespace NAQLAH.Server
             builder.Services.AddLocalization(options => options.ResourcesPath = "Resources")
                    .Configure<RequestLocalizationOptions>(options =>
                    {
-                    var supportedCultures = new[] { new CultureInfo("en-US"), new CultureInfo("ar") };
-                    foreach (var culture in supportedCultures)
-                    {
-                      culture.DateTimeFormat.Calendar = new GregorianCalendar();
-                    }
+                       var supportedCultures = new[] { new CultureInfo("en-US"), new CultureInfo("ar") };
+                       foreach (var culture in supportedCultures)
+                       {
+                           culture.DateTimeFormat.Calendar = new GregorianCalendar();
+                       }
 
-                    options.DefaultRequestCulture = new RequestCulture(culture: "en-US",
-                                                                       uiCulture: "en-US");
-                    options.SupportedCultures = supportedCultures;
-                    options.SupportedUICultures = supportedCultures;
+                       options.DefaultRequestCulture = new RequestCulture(culture: "en-US",
+                                                                          uiCulture: "en-US");
+                       options.SupportedCultures = supportedCultures;
+                       options.SupportedUICultures = supportedCultures;
                    });
 
             builder.Services.AddOpenApiDocument(document =>
-            {   
+            {
                 document.Title = "Naqlah API";
             });
 
@@ -89,11 +89,15 @@ namespace NAQLAH.Server
             var app = builder.Build();
             app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
 
+            // Migration and seeding temporarily disabled for NSwag to work
+
             using (var scope = app.Services.CreateScope())
             {
+                
                 scope.ServiceProvider.GetRequiredService<NaqlahContext>().Database.Migrate();
                 await SeedDefaultUsers(scope);
             }
+
             async Task SeedDefaultUsers(IServiceScope scope)
             {
                 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();

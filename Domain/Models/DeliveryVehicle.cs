@@ -130,5 +130,19 @@ namespace Domain.Models
             return Result.Success();
 
         }
+
+        public void UpdateLicensePlateNumber(string licensePlateNumber)
+        {
+            if (!string.IsNullOrWhiteSpace(licensePlateNumber))
+            {
+                this.LicensePlateNumber = licensePlateNumber;
+            }
+        }
+
+        public void UpdateVehicleTypeAndBrand(int vehicleTypeId, int vehicleBrandId)
+        {
+            this.VehicleTypeId = vehicleTypeId;
+            this.VehicleBrandId = vehicleBrandId;
+        }
     }
 }
