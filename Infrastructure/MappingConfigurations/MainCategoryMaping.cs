@@ -15,10 +15,7 @@ namespace Infrastructure.MappingConfigurations
         {
             builder.ToTable("NA_MainCategory");
             builder.HasKey(x => x.Id);
-            builder.HasMany(x => x.CategorySizes)
-                   .WithOne()
-                   .HasForeignKey("MainCategoryId")
-                   .OnDelete(DeleteBehavior.Cascade);
+           
 
 
         }

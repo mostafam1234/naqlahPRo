@@ -23,8 +23,13 @@ namespace Domain.InterFaces
         DbSet<Renter> Renters { get; set; }
         DbSet<Assistant> Assistants { get; set; }
         DbSet<AssistanWork> AssistanWorks { get; set; }
+        DbSet<Order> Orders { get; set; }
         DbSet<DeliveryVehicle> DeliveryVehicles { get; set; }
         DbSet<DeliveryManLocation> DeliveryManLocations { get; set; }
+        DbSet<MainCategory> MainCategories { get; set; }
+        DbSet<OrderPackage> OrderPackages { get; set; }
+        DbSet<Region> Regions { get; set; }
+        DbSet<WalletTransctions> WalletTransctions { get; set; }
         Task<Result> SaveChangesAsyncWithResult();
     }
 }
