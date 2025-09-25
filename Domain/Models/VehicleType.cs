@@ -46,5 +46,11 @@ namespace Domain.Models
             });
 
         }
+
+        public void Update(string arabicName, string englishName)
+        {
+            ArabicName = arabicName;
+            EnglishName = englishName;
+        }
     }
 }

@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { DeliveryManAdminClient, GetDeliveryManRequestDetailsDto } from '../../../../../Core/services/NaqlahClient';
 import { LanguageService } from '../../../../../Core/services/language.service';
 import { ConfirmationDialogService } from '../../../../../shared/services/confirmation-dialog.service';
@@ -44,7 +44,6 @@ export class CaptainActionComponent implements OnInit, OnDestroy {
     private router: Router,
     private deliveryManClient: DeliveryManAdminClient,
     private languageService: LanguageService,
-    private translate: TranslateService,
     private confirmationService: ConfirmationDialogService
   ) {}
 
