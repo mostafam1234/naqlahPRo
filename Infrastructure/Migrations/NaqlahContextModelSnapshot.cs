@@ -96,6 +96,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("NA_Assistant", (string)null);
                 });
 
+
             modelBuilder.Entity("Domain.Models.CategorySize", b =>
                 {
                     b.Property<int>("Id")
@@ -130,6 +131,7 @@ namespace Infrastructure.Migrations
 
                     b.ToTable("NA_CategorySize", (string)null);
                 });
+
 
             modelBuilder.Entity("Domain.Models.City", b =>
                 {
@@ -563,6 +565,266 @@ namespace Infrastructure.Migrations
                     b.ToTable("NA_Neighborhood", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Models.Order", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("DeliveryManId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("OrderNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("OrderPackageId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderStatus")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderType")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Total")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("VehicleTypdId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("VehicleTypeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderPackageId");
+
+                    b.ToTable("NA_Order", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Models.OrderDetails", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ArabicCategoryName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EnglishCategoryName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("MainCategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MainCategoryId");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("NA_OrderDetails", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Models.OrderPackage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ArabicDescripton")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EnglishDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("MaxWeightInKiloGram")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("MinWeightInKiloGram")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("NA_OrderPackage", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Models.OrderPaymentMethod", b =>
+                {
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PaymentMethodId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("OrderPaymentStatus")
+                        .HasColumnType("int");
+
+                    b.HasKey("OrderId", "PaymentMethodId");
+
+                    b.HasIndex("PaymentMethodId");
+
+                    b.ToTable("NA_OrderPaymentMethod", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Models.OrderService", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("ArabicName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EnglishName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WorkId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("WorkId");
+
+                    b.ToTable("NA_OrderServices", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Models.OrderStatusHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderStatus")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("NA_OrderStatusHistory", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Models.OrderWayPoint", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CityId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDestination")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsOrgin")
+                        .HasColumnType("bit");
+
+                    b.Property<double>("Latitude")
+                        .HasColumnType("float");
+
+                    b.Property<int>("NeighborhoodId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrderWayPointsStatus")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PackImagePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("PickedUpDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("RegionId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("longitude")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CityId");
+
+                    b.HasIndex("NeighborhoodId");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("RegionId");
+
+                    b.ToTable("NA_OrderWayPoint", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Models.PaymentMethod", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ArabicName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EnglishName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("NA_PaymentMethod", (string)null);
+                });
+
+
             modelBuilder.Entity("Domain.Models.Region", b =>
                 {
                     b.Property<int>("Id")
@@ -886,6 +1148,21 @@ namespace Infrastructure.Migrations
                     b.ToTable("NA_UserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Models.VehiclTypeCategory", b =>
+                {
+                    b.Property<int>("VehicleTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MainCategoryId")
+                        .HasColumnType("int");
+
+                    b.HasKey("VehicleTypeId", "MainCategoryId");
+
+                    b.HasIndex("MainCategoryId");
+
+                    b.ToTable("NA_VehicleTypeCategory", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Models.VehicleBrand", b =>
                 {
                     b.Property<int>("Id")
@@ -923,9 +1200,48 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("IconImagePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("NA_VehicleType", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Models.WalletTransctions", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("ArabicDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("EnglishDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Withdraw")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("NA_WalletTransctions", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Models.Assistant", b =>
@@ -945,6 +1261,7 @@ namespace Infrastructure.Migrations
 
                     b.Navigation("DeliveryMan");
                 });
+
 
             modelBuilder.Entity("Domain.Models.CategorySize", b =>
                 {
@@ -1072,6 +1389,113 @@ namespace Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Domain.Models.Order", b =>
+                {
+                    b.HasOne("Domain.Models.OrderPackage", "OrderPackage")
+                        .WithMany()
+                        .HasForeignKey("OrderPackageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OrderPackage");
+                });
+
+            modelBuilder.Entity("Domain.Models.OrderDetails", b =>
+                {
+                    b.HasOne("Domain.Models.MainCategory", "MainCategory")
+                        .WithMany()
+                        .HasForeignKey("MainCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Models.Order", null)
+                        .WithMany("OrderDetails")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MainCategory");
+                });
+
+            modelBuilder.Entity("Domain.Models.OrderPaymentMethod", b =>
+                {
+                    b.HasOne("Domain.Models.Order", "Order")
+                        .WithMany("PaymentMethods")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Models.PaymentMethod", "PaymentMethod")
+                        .WithMany()
+                        .HasForeignKey("PaymentMethodId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("PaymentMethod");
+                });
+
+            modelBuilder.Entity("Domain.Models.OrderService", b =>
+                {
+                    b.HasOne("Domain.Models.Order", null)
+                        .WithMany("OrderServices")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Models.AssistanWork", "AssistanWork")
+                        .WithMany()
+                        .HasForeignKey("WorkId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AssistanWork");
+                });
+
+            modelBuilder.Entity("Domain.Models.OrderStatusHistory", b =>
+                {
+                    b.HasOne("Domain.Models.Order", null)
+                        .WithMany("OrderStatusHistories")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Models.OrderWayPoint", b =>
+                {
+                    b.HasOne("Domain.Models.City", "City")
+                        .WithMany()
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Models.Neighborhood", "Neighborhood")
+                        .WithMany()
+                        .HasForeignKey("NeighborhoodId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Models.Order", null)
+                        .WithMany("OrderWayPoints")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Models.Region", "Region")
+                        .WithMany()
+                        .HasForeignKey("RegionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("City");
+
+                    b.Navigation("Neighborhood");
+
+                    b.Navigation("Region");
+                });
+
+
             modelBuilder.Entity("Domain.Models.Renter", b =>
                 {
                     b.HasOne("Domain.Models.DeliveryVehicle", null)
@@ -1141,6 +1565,35 @@ namespace Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Domain.Models.VehiclTypeCategory", b =>
+                {
+                    b.HasOne("Domain.Models.MainCategory", "MainCategory")
+                        .WithMany()
+                        .HasForeignKey("MainCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Models.VehicleType", "VehicleType")
+                        .WithMany("VehicleTypeCategoies")
+                        .HasForeignKey("VehicleTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MainCategory");
+
+                    b.Navigation("VehicleType");
+                });
+
+            modelBuilder.Entity("Domain.Models.WalletTransctions", b =>
+                {
+                    b.HasOne("Domain.Models.Customer", null)
+                        .WithMany("WalletTransctions")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+
             modelBuilder.Entity("Domain.Models.City", b =>
                 {
                     b.Navigation("Neighborhoods");
@@ -1151,6 +1604,8 @@ namespace Infrastructure.Migrations
                     b.Navigation("EstablishMent");
 
                     b.Navigation("Individual");
+
+                    b.Navigation("WalletTransctions");
                 });
 
             modelBuilder.Entity("Domain.Models.DeliveryMan", b =>
@@ -1178,9 +1633,22 @@ namespace Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Domain.Models.Order", b =>
+                {
+                    b.Navigation("OrderDetails");
+
+                    b.Navigation("OrderServices");
+
+                    b.Navigation("OrderStatusHistories");
+
+                    b.Navigation("OrderWayPoints");
+
+                    b.Navigation("PaymentMethods");
+
             modelBuilder.Entity("Domain.Models.MainCategory", b =>
                 {
                     b.Navigation("CategorySizes");
+
                 });
 
             modelBuilder.Entity("Domain.Models.Region", b =>
@@ -1204,6 +1672,11 @@ namespace Infrastructure.Migrations
                     b.Navigation("Customer");
 
                     b.Navigation("DeliveryMan");
+                });
+
+            modelBuilder.Entity("Domain.Models.VehicleType", b =>
+                {
+                    b.Navigation("VehicleTypeCategoies");
                 });
 #pragma warning restore 612, 618
         }

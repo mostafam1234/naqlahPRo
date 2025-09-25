@@ -1,4 +1,6 @@
-﻿using Application.Features.CustomerSection.Feature.Regestration.Commands;
+﻿using Application.Features.CustomerSection.Feature.CustomerInfo.Dtos;
+using Application.Features.CustomerSection.Feature.CustomerInfo.Queries;
+using Application.Features.CustomerSection.Feature.Regestration.Commands;
 using Application.Features.CustomerSection.Feature.Regestration.Dtos;
 using Application.Features.DeliveryManSection.LogIn.Dtos;
 using Application.Features.DeliveryManSection.Regestration.Commands;
@@ -182,6 +184,23 @@ namespace Presentaion.Controllers
                 return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
             }
             return Ok();
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(CustomerInfoDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("GetCustomerInfo")]
+        public async Task<IActionResult> GetCustomerInfo()
+        {
+            var result = await mediator.Send(new GetCustomerInfoQuery
+            {
+            });
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+            return Ok(result.Value);
         }
     }
 }

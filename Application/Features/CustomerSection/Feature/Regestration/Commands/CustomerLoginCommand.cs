@@ -46,13 +46,13 @@ namespace Application.Features.CustomerSection.Feature.Regestration.Commands
                     return Result.Failure<CustomerLoginResponse>("Invalid User Name Or Passowrd");
                 }
 
-                if (!user.PhoneNumberConfirmed)
-                {
-                    return new CustomerLoginResponse
-                    {
-                        IsActive = false
-                    };
-                }
+                //if (!user.PhoneNumberConfirmed)
+                //{
+                //    return new CustomerLoginResponse
+                //    {
+                //        IsActive = false
+                //    };
+                //}
 
                 var acessToken = await userService.GetAcessToken(request.PhoneNmber, request.Password);
                 if (acessToken.IsFailure)

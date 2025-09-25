@@ -9,12 +9,13 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.MappingConfigurations
 {
-    public class CategorySizeMaping : IEntityTypeConfiguration<Domain.Models.CategorySize>
+    public class OrderHistoryStatusMaping : IEntityTypeConfiguration<OrderStatusHistory>
     {
-        public void Configure(EntityTypeBuilder<CategorySize> builder)
+        public void Configure(EntityTypeBuilder<OrderStatusHistory> builder)
         {
-            builder.ToTable("NA_CategorySize");
+            builder.ToTable("NA_OrderStatusHistory");
             builder.HasKey(x => x.Id);
+
         }
     }
 }

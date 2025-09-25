@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "naqlah-466918",
+  "private_key_id": "e37a4a9462add60fa8b18ba42c72fcd54d54320b",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDAhkEn/DtYZKzi\nRW3nsD3lJ6zqib9RknveT+LiStPX8N+x4TN8HjQyjmuMebJfChCIncebD5ozA5FZ\nuFkytZ+7ORRtnkf3g5k5oNkGNTCJG3GJLl+XoMhsvsB5QhwEwP3J5QXjveivPTlH\nCFwJbpRpyVWRuFXnVy1ja86yQev4GtVJK2r7H5mIjMWxeJs9CjcsWBtWWLciuK1u\nFSp6mhGqK4/oi2sXyIPY7LHdATWoDfYftg7itiLM625odo19gMvYW2wVEJfDd4lB\nyD1jh4ML0HYS//e9hxrFzNaQLJs4C9wERe54hlv8sgNvbn/8NwoIqxNiKRIe79EM\nlI14lwWNAgMBAAECggEAFgb2Svcgqhkgr6XOcJD5T+/laJM4jMJ0AihFNutlSAJi\n8aTowVVqVvN1CiY9WoLaB+t3dD4JgDczCN8e836UxzS9adpPdRn9LLsCwaNRyYoW\niCHCZaSLcee0OVtvPbr//nrB3P/0MKKSXFZwQ1L/z4etzuWWjIispICn7jy9HQ5v\n34rG7ko4a5QrU3FCvdZb1DEy1+6s1IB3R3uJuPnscshKgFyNodChszSF9qCC4+nK\n3RHZhCGkeJomZws9QxagXexlEEzF/D7wNnqdYsrmBfEzNVbWacO++opakEKiL2Yr\n2vEEwvfPBr6BQETYp6YwXy2MDQClNyuzYnkENbVDGQKBgQDzTQGIV56Wt9C6sNVw\nZH+rlehpAlq4KIXNTc+edDNCeT3VCY5IJeIpAFc59a10dK2ATcz9pGzen8yC2LFq\ng5z8UVfoMyQ120pmyjHBolKFqG+FeSRApScuiyUeMhKETBERw97iXyyoAu+flVUw\nyUyetBznDNC6Qzt5XKvxhyRKOQKBgQDKksXX+/wIMOHFudnYzzv4z/0z2ODFR/II\nFOiqxvzYie9z9FEU5nh2SL0rQFNr1TwFouhbIl7J9YjcRtkSv3GcCmXIZb+dDCwg\n/kxXdzaMrRc04dxWlTLJx4CVCTYc5Tl9im8HhkjLdFnkaQLSRqnKAAhmVncN7Eht\ns83abC/l9QKBgQDc/i1OMogSTpSBfu3gUOjGajvYZhMRA33Fpc/YFaQZ1Rac0zkx\nv3dV1sFkHAuZpAGUcRaprRhWfr+8eidsoG+PoDNA7nMNmEpUY4QeZdqfHQdvLUII\nlfqpBCqK6uB22sEGaeuhouFlGoWdZn8i+TVnUiKOm81b4oW7Drn/gMktwQKBgFsE\nU0xV9cmgXPDALndRtXp3ySZwfZ1mVAL5kgiZW6XXY/VPgtbHLrzGtegnANRkfJFz\nvr6j1L8dSR7f3kykI+Geclj2Dn/7piA04gwyjhnq85BZIuzsIGO09bsA5oVZINmd\nR4Gz/iUb4//Shuf/w+300dFZbCifT3Oq5AUNsv+5AoGBALNBnNqogreJNIuiu7Ai\nDHk9BRM+ZzKcqYXcV0GHl20GeeuldwJMEZnKmL8q1EG6cXTr41Bd0dwSexPp7qY2\n+k4kOwgNRVRIluUyKkEk6t7X/oUvZTnvK/3GBm0+fCrTIzTInoBgr/iDIzZA9hfQ\nRATPj5a6v5heYRdm3TntAS/r\n-----END PRIVATE KEY-----\n",
+  "client_email": "naqlah-web@naqlah-466918.iam.gserviceaccount.com",
+  "client_id": "110134043469726299178",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/naqlah-web%40naqlah-466918.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
