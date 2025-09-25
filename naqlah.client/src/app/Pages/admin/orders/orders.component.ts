@@ -4,10 +4,11 @@ import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { LanguageService } from 'src/app/Core/services/language.service';
 import * as L from 'leaflet';
+import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
 @Component({
   selector: 'app-orders',
   standalone: true,
-  imports: [NgClass, NgFor, NgIf],
+  imports: [NgClass, NgFor, NgIf, PageHeaderComponent],
   templateUrl: './orders.component.html',
   styleUrl: './orders.component.css'
 })

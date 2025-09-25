@@ -3,21 +3,10 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
-import { VehicleAdminClient } from 'src/app/Core/services/NaqlahClient';
+import { AddVehicleBrandCommand, AddVehicleTypeCommand, VehicleAdminClient, VehicleDto } from 'src/app/Core/services/NaqlahClient';
 import { SubSink } from 'subsink';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
-interface VehicleDto {
-  id: number;
-  arabicName: string;
-  englishName: string;
-}
-
-interface PagedResult {
-  data: VehicleDto[];
-  totalCount: number;
-  totalPages: number;
-}
 
 @Component({
   selector: 'app-vehicles',
@@ -30,6 +19,7 @@ export class VehiclesComponent implements OnInit, OnDestroy {
   // UI State
   activeTab: 'brands' | 'types' = 'brands';
   showModal = false;
+  showUpdateModal = false;
   editingItem: VehicleDto | null = null;
   isLoading = false;
 
@@ -119,13 +109,15 @@ export class VehiclesComponent implements OnInit, OnDestroy {
     this.editingItem = item;
     this.itemForm.patchValue({
       arabicName: item.arabicName,
-      englishName: item.englishName
+      englishName: item.englishName,
+
     });
-    this.showModal = true;
+    this.showUpdateModal = true;
   }
 
   closeModal(): void {
     this.showModal = false;
+    this.showUpdateModal = false;
     this.editingItem = null;
     this.itemForm.reset();
   }
@@ -136,19 +128,46 @@ export class VehiclesComponent implements OnInit, OnDestroy {
     const value = this.itemForm.value;
 
     let apiCall;
-    // if (this.activeTab === 'brands') {
-    //   const command: addVehicleBrandCommand = {
-    //     arabicName: value.arabicName,
-    //     englishName: value.englishName
-    //   };
-    //   apiCall = this.vehicleClient.addVehicleBrand();
-    // } else {
-    //   const command: AddVehicleTypeCommand = {
-    //     arabicName: value.arabicName,
-    //     englishName: value.englishName
-    //   };
-    //   apiCall = this.vehicleClient.addVehicleType();
-    // }
+    if (this.activeTab === 'brands') {
+      let command = new AddVehicleBrandCommand();
+      command.arabicName = value.arabicName;
+      command.englishName = value.englishName;
+      apiCall = this.vehicleClient.addVehicleBrand(command);
+    } else {
+      let command = new AddVehicleTypeCommand();
+      command.arabicName = value.arabicName;
+      command.englishName = value.englishName;
+      apiCall = this.vehicleClient.addVehicleType(command);
+     }
+
+    this.sub.sink = apiCall.subscribe({
+      next: () => {
+        this.closeModal();
+        this.loadItems();
+      },
+      error: (error) => {
+        console.error('Error saving item:', error);
+      }
+    });
+  }
+
+  update(): void {
+    if (this.itemForm.invalid) return;
+    const itemId = this.editingItem?.id;
+    const value = this.itemForm.value;
+
+    let apiCall;
+    if (this.activeTab === 'brands') {
+      let command = new AddVehicleBrandCommand();
+      command.arabicName = value.arabicName;
+      command.englishName = value.englishName;
+      apiCall = this.vehicleClient.addVehicleBrand(command);
+    } else {
+      let command = new AddVehicleTypeCommand();
+      command.arabicName = value.arabicName;
+      command.englishName = value.englishName;
+      apiCall = this.vehicleClient.addVehicleType(command);
+    }
 
     this.sub.sink = apiCall.subscribe({
       next: () => {
