@@ -1634,51 +1634,51 @@ namespace Infrastructure.Migrations
                 });
 
             modelBuilder.Entity("Domain.Models.Order", b =>
-                {
-                    b.Navigation("OrderDetails");
+            {
+                b.Navigation("OrderDetails");
 
-                    b.Navigation("OrderServices");
+                b.Navigation("OrderServices");
 
-                    b.Navigation("OrderStatusHistories");
+                b.Navigation("OrderStatusHistories");
 
-                    b.Navigation("OrderWayPoints");
+                b.Navigation("OrderWayPoints");
 
-                    b.Navigation("PaymentMethods");
+                b.Navigation("PaymentMethods");
 
-            modelBuilder.Entity("Domain.Models.MainCategory", b =>
-                {
-                    b.Navigation("CategorySizes");
+                modelBuilder.Entity("Domain.Models.MainCategory", b =>
+                    {
+                        b.Navigation("CategorySizes");
 
-                });
+                    });
 
-            modelBuilder.Entity("Domain.Models.Region", b =>
-                {
-                    b.Navigation("Cities");
-                });
+                modelBuilder.Entity("Domain.Models.Region", b =>
+                    {
+                        b.Navigation("Cities");
+                    });
 
-            modelBuilder.Entity("Domain.Models.Role", b =>
-                {
-                    b.Navigation("AspNetUserRoles");
-                });
+                modelBuilder.Entity("Domain.Models.Role", b =>
+                    {
+                        b.Navigation("AspNetUserRoles");
+                    });
 
-            modelBuilder.Entity("Domain.Models.User", b =>
-                {
-                    b.Navigation("AspNetUserClaims");
+                modelBuilder.Entity("Domain.Models.User", b =>
+                    {
+                        b.Navigation("AspNetUserClaims");
 
-                    b.Navigation("AspNetUserLogins");
+                        b.Navigation("AspNetUserLogins");
 
-                    b.Navigation("AspNetUserRoles");
+                        b.Navigation("AspNetUserRoles");
 
-                    b.Navigation("Customer");
+                        b.Navigation("Customer");
 
-                    b.Navigation("DeliveryMan");
-                });
+                        b.Navigation("DeliveryMan");
+                    });
 
-            modelBuilder.Entity("Domain.Models.VehicleType", b =>
-                {
-                    b.Navigation("VehicleTypeCategoies");
-                });
-#pragma warning restore 612, 618
+                modelBuilder.Entity("Domain.Models.VehicleType", b =>
+                    {
+                        b.Navigation("VehicleTypeCategoies");
+                    });
+            });
         }
     }
 }

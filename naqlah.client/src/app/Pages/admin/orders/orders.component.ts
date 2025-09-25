@@ -1,14 +1,15 @@
 import { NgClass, NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { LanguageService } from 'src/app/Core/services/language.service';
 import * as L from 'leaflet';
 import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
+
 @Component({
   selector: 'app-orders',
   standalone: true,
-  imports: [NgClass, NgFor, NgIf, PageHeaderComponent],
+  imports: [NgClass, NgFor, NgIf, PageHeaderComponent, TranslateModule],
   templateUrl: './orders.component.html',
   styleUrl: './orders.component.css'
 })
@@ -16,14 +17,15 @@ export class OrdersComponent {
 
   lang: string = 'ar';
   activeProgressTab: string = 'all';
-    constructor(
-      private languageService: LanguageService,
-      private translateService: TranslateService,
-      private router: Router) {}
+  
+  constructor(
+    private languageService: LanguageService,
+    private translateService: TranslateService,
+    private router: Router) {}
 
-    activeTab = 'all';
-    currentPage = 1;
-    itemsPerPage = 4;
+  activeTab = 'all';
+  currentPage = 1;
+  itemsPerPage = 4;
     ngAfterViewInit(): void {
       const map = L.map('map').setView([30.0444, 31.2357], 13); // القاهرة كمثال
 
@@ -189,6 +191,10 @@ export class OrdersComponent {
 
   changePage(page: number) {
     this.currentPage = page;
+  }
+
+  viewOrderDetails(orderId: number) {
+    this.router.navigate(['/admin/requests/details', orderId]);
   }
 
 }

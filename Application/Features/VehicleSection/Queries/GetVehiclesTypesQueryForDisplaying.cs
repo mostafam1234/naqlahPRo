@@ -12,13 +12,13 @@ using System.Threading.Tasks;
 
 namespace Application.Features.VehicleSection.Queries
 {
-    public sealed record GetVehiclesTypesQueryForDisplaying : IRequest<Result<PagedResult<VehicleDto>>>
+    public sealed record GetVehiclesTypesQueryForDisplaying : IRequest<Result<PagedResult<DeliveryManVehicleDto>>>
     {
         public int Skip { get; init; } = 0;
         public int Take { get; init; } = 10;
         public string? SearchTerm { get; init; }
 
-        private class GetVehiclesTypesQueryForDisplayingHandler : IRequestHandler<GetVehiclesTypesQueryForDisplaying, Result<PagedResult<VehicleDto>>>
+        private class GetVehiclesTypesQueryForDisplayingHandler : IRequestHandler<GetVehiclesTypesQueryForDisplaying, Result<PagedResult<DeliveryManVehicleDto>>>
         {
             private readonly INaqlahContext context;
             private readonly IUserSession userSession;
@@ -30,7 +30,7 @@ namespace Application.Features.VehicleSection.Queries
                 this.userSession = userSession;
             }
 
-            public async Task<Result<PagedResult<VehicleDto>>> Handle(GetVehiclesTypesQueryForDisplaying request, CancellationToken cancellationToken)
+            public async Task<Result<PagedResult<DeliveryManVehicleDto>>> Handle(GetVehiclesTypesQueryForDisplaying request, CancellationToken cancellationToken)
             {
                 var query = context.VehicleTypes.AsQueryable();
 
@@ -46,7 +46,7 @@ namespace Application.Features.VehicleSection.Queries
                 var types = await query
                     .Skip(request.Skip)
                     .Take(request.Take)
-                    .Select(x => new VehicleDto
+                    .Select(x => new DeliveryManVehicleDto
                     {
                         Id = x.Id,
                         ArabicName = x.ArabicName,
@@ -56,7 +56,7 @@ namespace Application.Features.VehicleSection.Queries
 
                 var totalPages = (int)Math.Ceiling((double)totalCount / request.Take);
 
-                var pagedResult = new PagedResult<VehicleDto>
+                var pagedResult = new PagedResult<DeliveryManVehicleDto>
                 {
                     Data = types,
                     TotalCount = totalCount,

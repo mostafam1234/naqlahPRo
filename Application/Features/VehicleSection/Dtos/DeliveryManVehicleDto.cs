@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application.Features.VehicleSection.Dtos
 {
-    public class VehicleDto
+    public class DeliveryManVehicleDto
     {
         public int Id { get; set; }
         public string ArabicName { get; set; }
