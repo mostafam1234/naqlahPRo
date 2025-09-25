@@ -13,13 +13,13 @@ using System.Threading.Tasks;
 
 namespace Application.Features.VehicleSection.Queries
 {
-    public sealed record GetVehiclesBrandsForDisplaying : IRequest<Result<PagedResult<VehicleDto>>>
+    public sealed record GetVehiclesBrandsForDisplaying : IRequest<Result<PagedResult<DeliveryManVehicleDto>>>
     {
         public int Skip { get; init; } = 0;
         public int Take { get; init; } = 10;
         public string? SearchTerm { get; init; }
 
-        private class GetVehiclesBrandsForDisplayingHandler : IRequestHandler<GetVehiclesBrandsForDisplaying, Result<PagedResult<VehicleDto>>>
+        private class GetVehiclesBrandsForDisplayingHandler : IRequestHandler<GetVehiclesBrandsForDisplaying, Result<PagedResult<DeliveryManVehicleDto>>>
         {
             private readonly INaqlahContext context;
 
@@ -28,7 +28,7 @@ namespace Application.Features.VehicleSection.Queries
                 this.context = context;
             }
 
-            public async Task<Result<PagedResult<VehicleDto>>> Handle(GetVehiclesBrandsForDisplaying request, CancellationToken cancellationToken)
+            public async Task<Result<PagedResult<DeliveryManVehicleDto>>> Handle(GetVehiclesBrandsForDisplaying request, CancellationToken cancellationToken)
             {
                 var query = context.VehicleBrands.AsQueryable();
 
@@ -44,7 +44,7 @@ namespace Application.Features.VehicleSection.Queries
                 var brands = await query
                     .Skip(request.Skip)
                     .Take(request.Take)
-                    .Select(x => new VehicleDto
+                    .Select(x => new DeliveryManVehicleDto
                     {
                         Id = x.Id,
                         ArabicName = x.ArabicName,
@@ -54,7 +54,7 @@ namespace Application.Features.VehicleSection.Queries
 
                 var totalPages = (int)Math.Ceiling((double)totalCount / request.Take);
 
-                var pagedResult = new PagedResult<VehicleDto>
+                var pagedResult = new PagedResult<DeliveryManVehicleDto>
                 {
                     Data = brands,
                     TotalCount = totalCount,

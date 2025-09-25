@@ -145,6 +145,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'requests/details/:id',
+        loadComponent: () =>
+          import('./Pages/admin/orders/order-details/order-details.component').then(
+            (m) => m.OrderDetailsComponent
+          ),
+      },
+      {
         path: 'requests/controlCaptainRequest',
         loadComponent: () =>
           import('./Pages/admin/orders/control-captain-orders/control-captain-orders.component').then(

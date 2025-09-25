@@ -31,6 +31,7 @@ namespace Domain.Models
             {
                 _VehicleTypeCategoies = (List<VehiclTypeCategory>)value.ToList();
             }
+        }
 
 
         public static Result<VehicleType> Instance(string arabicName, string englishName)

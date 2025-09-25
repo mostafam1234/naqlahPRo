@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
-import { AddVehicleBrandCommand, AddVehicleTypeCommand, VehicleAdminClient, VehicleDto } from 'src/app/Core/services/NaqlahClient';
+import { AddVehicleBrandCommand, AddVehicleTypeCommand, DeliveryManVehicleDto, VehicleAdminClient } from 'src/app/Core/services/NaqlahClient';
 import { SubSink } from 'subsink';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
@@ -20,7 +20,7 @@ export class VehiclesComponent implements OnInit, OnDestroy {
   activeTab: 'brands' | 'types' = 'brands';
   showModal = false;
   showUpdateModal = false;
-  editingItem: VehicleDto | null = null;
+  editingItem: DeliveryManVehicleDto | null = null;
   isLoading = false;
 
   // Form Controls
@@ -28,7 +28,7 @@ export class VehiclesComponent implements OnInit, OnDestroy {
   searchControl = new FormControl('');
 
   // Data
-  items: VehicleDto[] = [];
+  items: DeliveryManVehicleDto[] = [];
 
   // Pagination
   totalCount = 0;
@@ -105,7 +105,7 @@ export class VehiclesComponent implements OnInit, OnDestroy {
     this.showModal = true;
   }
 
-  openEdit(item: VehicleDto): void {
+  openEdit(item: DeliveryManVehicleDto): void {
     this.editingItem = item;
     this.itemForm.patchValue({
       arabicName: item.arabicName,

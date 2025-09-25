@@ -29,7 +29,7 @@ namespace Presentaion.Controllers.Admin
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(List<VehicleDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(List<DeliveryManVehicleDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
     [Route("GetVehiclesBrandLookup")]
     public async Task<IActionResult> GetVehiclesBrandLookup()
@@ -39,7 +39,7 @@ namespace Presentaion.Controllers.Admin
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(List<VehicleDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(List<DeliveryManVehicleDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
     [Route("GetVehiclesTypesLookup")]
     public async Task<IActionResult> GetVehiclesTypesLookup()
@@ -49,7 +49,7 @@ namespace Presentaion.Controllers.Admin
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(PagedResult<VehicleDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(PagedResult<DeliveryManVehicleDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
     [Route("GetVehiclesTypes")]
     public async Task<IActionResult> GetVehiclesTypes(int skip = 0, int take = 10, string searchterm = "")
@@ -64,7 +64,7 @@ namespace Presentaion.Controllers.Admin
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(PagedResult<VehicleDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(PagedResult<DeliveryManVehicleDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
     [Route("GetVehiclesBrands")]
     public async Task<IActionResult> GetVehiclesBrands(int skip = 0, int take = 10, string searchterm = "")
