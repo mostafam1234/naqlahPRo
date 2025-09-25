@@ -92,6 +92,23 @@ const routes: Routes = [
             (m) => m.EmployeeDetailsComponent
           ),
       },
+            {
+              path: 'vehicles',
+              loadComponent: () =>
+                import('./Pages/admin/vehicle/vehicles/vehicles.component').then(
+                  (m) => m.VehiclesComponent
+                ),
+              // children: [
+              //   {
+              //     path: 'brands',
+              //     loadComponent: () => import('./Pages/admin/vehicle/vehicle-brands/vehicle-brands.component').then(m => m.VehicleBrandsComponent)
+              //   },
+              //   {
+              //     path: 'types',
+              //     loadComponent: () => import('./Pages/admin/vehicle/vehicle-types/vehicle-types.component').then(m => m.VehicleTypesComponent)
+              //   }
+              // ]
+            },
       {
         path: 'newCaptain',
         loadComponent: () =>

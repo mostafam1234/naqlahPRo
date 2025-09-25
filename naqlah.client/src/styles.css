@@ -8,6 +8,26 @@
 
 body{
   margin: 0;
+}
+
+/* SweetAlert2 RTL Support */
+.swal-rtl {
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+.swal-rtl .swal2-title {
+  text-align: center !important;
+  font-family: 'Cairo', sans-serif !important;
+}
+
+.swal-rtl .swal2-content {
+  text-align: center !important;
+  font-family: 'Cairo', sans-serif !important;
+}
+
+.swal-rtl .swal2-actions {
+  flex-direction: row-reverse !important;
   padding: 0;
 }
 .custom-container {

@@ -1,0 +1,9 @@
+/* Scoped styles for vehicle brands component */
+.bg-grid-pattern {
+	background-image: linear-gradient(0deg, rgba(0,0,0,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.02) 1px, transparent 1px);
+	background-size: 20px 20px;
+}
+
+.rounded-xl { border-radius: 12px; }
+.rounded-lg { border-radius: 10px; }
+

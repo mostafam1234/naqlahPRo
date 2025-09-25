@@ -26,6 +26,49 @@
         "REVIEW":"مراجعة الرسائل"
       }
     },
+    "VEHICLES": "المركبات",
+    "VEHICLESMENUE": {
+      "BRANDS": "العلامات التجارية",
+      "TYPES": "أنواع المركبات",
+      "SUBTITLE": "إدارة ماركات وأنواع المركبات",
+      "BRANDS_DESC": "عرض وإدارة ماركات المركبات",
+      "TYPES_DESC": "عرض وإدارة أنواع المركبات",
+      "ADD_BUTTON": "إضافة نوع مركبة",
+      "ADD_BUTTON_BRAND": "إضافة ماركة مركبة",
+      "TABLE_TITLE": "قائمة أنواع المركبات",
+      "TABLE_TITLE_BRAND": "قائمة ماركات المركبات",
+      "ARABIC_NAME": "الاسم بالعربية",
+      "ENGLISH_NAME": "الاسم بالإنجليزية",
+      "ACTIONS": "الإجراءات",
+      "NO_DATA": "لا توجد أنواع مركبات مضافة بعد",
+      "NO_DATA_BRAND": "لا توجد ماركات مركبات مضافة بعد"
+    },
+    "PAGES": {
+      "VEHICLE_BRANDS": {
+        "ADD_MODAL": {
+          "TITLE": "إضافة ماركة مركبة جديدة"
+        },
+        "EDIT_MODAL": {
+          "TITLE": "تعديل ماركة المركبة"
+        },
+        "FORM": {
+          "ARABIC_NAME": "الاسم بالعربية",
+          "ENGLISH_NAME": "الاسم بالإنجليزية"
+        }
+      },
+      "VEHICLE_TYPES": {
+        "ADD_MODAL": {
+          "TITLE": "إضافة نوع مركبة جديد"
+        },
+        "EDIT_MODAL": {
+          "TITLE": "تعديل نوع المركبة"
+        },
+        "FORM": {
+          "ARABIC_NAME": "الاسم بالعربية",
+          "ENGLISH_NAME": "الاسم بالإنجليزية"
+        }
+      }
+    },
     "HEADER": {
       "SELECT_LANGUAGE": "اختر اللغة",
       "ARABIC": "عربي",
@@ -54,6 +97,213 @@
           "CARDHOLDER":"اسم حامل البطاقة"
         }
       }
+    },
+    "PAGES": {
+      "CAPTAIN_REQUESTS": {
+        "TITLE": "طلبات الكابتن",
+        "TABS": {
+          "ALL": "الكل",
+          "CITIZEN": "المواطنين",
+          "RESIDENT": "المقيمين"
+        },
+        "SEARCH_PLACEHOLDER": "البحث",
+        "LOADING": "جاري التحميل...",
+        "NO_REQUESTS": "لا توجد طلبات كابتن",
+        "NO_REQUESTS_DESC": "لم يتم العثور على أي طلبات في هذا القسم",
+        "TABLE": {
+          "NUMBER": "#",
+          "IMAGE": "الصورة",
+          "CAPTAIN_NAME": "اسم الكابتن",
+          "ADDRESS": "العنوان",
+          "PHONE": "رقم الهاتف",
+          "IDENTITY_NUMBER": "رقم الهوية الشخصية",
+          "TYPE": "النوع",
+          "STATUS": "حالة الطلب",
+          "ACTIONS": "الإجراءات",
+          "VIEW": "عرض",
+          "VIEW_DETAILS": "عرض التفاصيل والإجراءات"
+        },
+        "CARDS": {
+          "TYPE_LABEL": "النوع:",
+          "STATUS_LABEL": "الحالة:",
+          "ACTION_TOOLTIP": "الإجراء"
+        },
+        "PAGINATION": {
+          "SHOWING": "عرض",
+          "FROM": "-",
+          "OF": "من أصل",
+          "ITEMS": "عنصر",
+          "PAGE": "صفحة",
+          "FROM_PAGES": "من"
+        }
+        ,
+        "ACTIONS": {
+          "PREVIEW": "معاينة",
+          "EDIT": "تعديل",
+          "DELETE": "حذف"
+        }
+      },
+      "CAPTAIN_DETAILS": {
+        "HEADER": {
+          "TITLE": "إدارة الكباتن",
+          "SUBTITLE": "إدارة الكباتن الحاليين وإضافة كباتن جدد"
+        },
+        "TITLE": "تفاصيل الكابتن",
+        "BACK": "العودة",
+        "LOADING": "جاري التحميل...",
+        "ERROR": "حدث خطأ أثناء تحميل البيانات",
+        "IDENTITY_NUMBER_LABEL": "رقم الهوية:",
+        "ACTIONS": {
+          "APPROVE": "موافقة",
+          "SUSPEND": "تعليق",
+          "REJECT": "رفض",
+          "BLOCK": "حظر"
+        },
+        "SECTIONS": {
+          "CONTACT_INFO": "معلومات الاتصال",
+          "IDENTITY_INFO": "معلومات الهوية والرخص",
+          "VEHICLE_INFO": "معلومات المركبة",
+          "DOCUMENTS": "الوثائق والصور"
+        },
+        "FIELDS": {
+          "FULL_NAME": "الاسم الكامل",
+          "PHONE": "رقم الجوال",
+          "ADDRESS": "العنوان",
+          "DELIVERY_TYPE": "نوع الكابتن",
+          "DELIVERY_STATE": "حالة الكابتن",
+          "IDENTITY_NUMBER": "رقم الهوية",
+          "IDENTITY_EXPIRY": "تاريخ انتهاء الهوية",
+          "LICENSE_TYPE": "نوع رخصة القيادة",
+          "LICENSE_EXPIRY": "تاريخ انتهاء رخصة القيادة",
+          "PLATE_NUMBER": "رقم اللوحة",
+          "VEHICLE_TYPE": "نوع المركبة",
+          "VEHICLE_MODEL": "الموديل",
+          "VEHICLE_BRAND": "الماركة",
+          "VEHICLE_COLOR": "اللون",
+          "NOT_SPECIFIED": "غير محدد"
+        },
+        "DOCUMENTS_LABELS": {
+          "PERSONAL_IMAGE": "الصورة الشخصية",
+          "IDENTITY_IMAGES": "صور الهوية",
+          "LICENSE_IMAGES": "صور رخصة القيادة",
+          "FRONT_SIDE": "الوجه الأمامي",
+          "BACK_SIDE": "الوجه الخلفي",
+          "ADDITIONAL_INFO": "معلومات إضافية",
+          "ACTIVE_STATUS": "الحالة النشطة:",
+          "USER_ID": "معرف المستخدم:",
+          "VEHICLE_ID": "معرف المركبة:",
+          "ACTIVE": "نشط",
+          "INACTIVE": "غير نشط"
+        }
+      },
+      "ADD_CAPTAIN": {
+        "TITLE": "إضافة كابتن",
+        "HEADER_TITLE": "إضافة كابتن جديد",
+        "HEADER_SUBTITLE": "أدخل جميع البيانات المطلوبة",
+        "BACK": "عودة",
+        "CANCEL": "إلغاء",
+        "SUBMIT": "إضافة الكابتن",
+        "SUBMITTING": "جاري الإضافة...",
+        "REQUIRED_FIELDS_NOTE": "* الحقول المطلوبة",
+        "HEADER_ADD_BUTTON": "إضافة كابتن"
+      },
+      "ADD_CAPTAIN_FIELDS": {
+        "PERSONAL_INFO_TITLE": "البيانات الشخصية",
+        "PERSONAL_INFO_SUBTITLE": "المعلومات الأساسية للكابتن",
+        "IDENTITY_INFO_TITLE": "معلومات الهوية",
+        "IDENTITY_INFO_SUBTITLE": "بيانات الهوية الشخصية",
+        "DRIVING_LICENSE_TITLE": "رخصة القيادة",
+        "DRIVING_LICENSE_SUBTITLE": "بيانات رخصة القيادة",
+        "DRIVING_LICENSE_TYPE": "نوع رخصة القيادة",
+        "DRIVING_LICENSE_EXPIRY": "تاريخ انتهاء رخصة القيادة",
+        "FULL_NAME": "الاسم الكامل",
+        "FULL_NAME_PLACEHOLDER": "أدخل الاسم الكامل",
+        "PHONE_NUMBER": "رقم الهاتف",
+        "IDENTITY_NUMBER": "رقم الهوية",
+        "DELIVERY_TYPE": "نوع التوصيل",
+        "ADDRESS": "العنوان",
+        "ADDRESS_PLACEHOLDER": "أدخل العنوان التفصيلي",
+        "VEHICLE_INFO_TITLE": "معلومات المركبة",
+        "VEHICLE_INFO_SUBTITLE": "بيانات المركبة المستخدمة في التوصيل",
+        "DOCUMENTS_TITLE": "تحميل الوثائق والصور",
+        "DOCUMENTS_SUBTITLE": "الصور والمستندات المطلوبة",
+        "PERSONAL_IMAGE": "الصورة الشخصية",
+        "IDENTITY_IMAGES": "صور الهوية",
+        "DRIVING_LICENSE_IMAGES": "صور رخصة القيادة",
+        "DRIVING_LICENSE_BACK_LABEL": "(رخصة القيادة) الوجه الخلفي",
+        "DRIVING_LICENSE_FRONT_LABEL": "(رخصة القيادة) الوجه الأمامى",
+        "IDENTITY_FRONT_LABEL": "(صورة الهوية) الوجه الأمامي",
+        "IDENTITY_BACK_LABEL": "(صورة الهوية) الوجه الخلفي",
+        "VEHICLE_IMAGES_TITLE": "صور المركبة",
+        "VEHICLE_FRONT_LABEL": "صورة أمامية للمركبة",
+        "VEHICLE_SIDE_LABEL": "صورة جانبية للمركبة",
+        "VEHICLE_INSURANCE_FRONT_LABEL": "صورة تأمين أمامية",
+        "VEHICLE_INSURANCE_BACK_LABEL": "صورة تأمين خلفية",
+        "PLATE_NUMBER": "رقم اللوحة",
+        "VEHICLE_LICENSE_EXPIRY": "تاريخ انتهاء الرخصة",
+        "VEHICLE_INSURANCE_EXPIRY": "تاريخ انتهاء التأمين",
+        "OWNER_RESIDENT": "مقيم",
+        "OWNER_COMPANY": "شركة",
+        "OWNER_LEASE": "مستأجر",
+        "IDENTITY_FRONT_ALT": "الوجه الأمامي للهوية",
+        "IDENTITY_BACK_ALT": "الوجه الخلفي للهوية",
+        "DRIVING_LICENSE_FRONT_ALT": "الوجه الأمامي لرخصة القيادة",
+        "DRIVING_LICENSE_BACK_ALT": "الوجه الخلفي لرخصة القيادة",
+        "ALL_FIELDS_REQUIRED": "جميع الحقول مطلوبة"
+      }
+    },
+    "PAGESHEADER": {
+      "CAPTAIN_DETAILS": {
+        "TITLE": "إدارة الكباتن",
+        "SUBTITLE": "إدارة الكباتن الحاليين وإضافة كباتن جدد"
+      },
+      "CAPTAIN_REQUESTS": {
+        "TITLE": "طلبات الكابتن",
+        "SUBTITLE": "مراجعة وإدارة طلبات الكباتن"
+      },
+      "VEHICLES": {
+        "TITLE": "إدارة المركبات",
+        "SUBTITLE": "إدارة المركبات وتفاصيلها"
+      },
+      "DASHBOARD": {
+        "TITLE": "لوحة تحكم الإدارة",
+        "SUBTITLE": "نظرة عامة على المقاييس والأنشطة الرئيسية"
+      },
+      "BRANDS": {
+        "TITLE": "ماركات المركبات",
+        "SUBTITLE": "إدارة ماركات المركبات وتفاصيلها"
+      },
+    "TYPES": {
+      "TITLE": "أنواع المركبات",
+      "SUBTITLE": "إدارة أنواع المركبات وتفاصيلها"
+    },
+    "USERS": {
+      "TITLE": "إدارة المستخدمين",
+      "SUBTITLE": "إدارة المستخدمين وأدوارهم"
+    },
+    "ADD_CAPTAIN": {
+      "TITLE": "إضافة كابتن",
+      "SUBTITLE": "أدخل معلومات الكابتن وتفاصيل المركبة"
     }
+  }
+  },
+  "COMMON": {
+    "CHOOSE_IMAGE": "اختر صورة",
+    "DELETE": "حذف",
+    "BACK": "رجوع",
+    "EDIT": "تعديل",
+    "ADD": "إضافة",
+    "SAVE": "حفظ",
+    "CANCEL": "إلغاء",
+    "LOADING": "جاري التحميل",
+    "SEARCH_PLACEHOLDER": "ابحث هنا...",
+    "ITEMS": "عنصر",
+    "SHOWING": "عرض",
+    "TO": "إلى",
+    "OF": "من",
+    "RESULTS": "نتيجة"
+  },
+  "VALIDATION": {
+    "REQUIRED": "هذا الحقل مطلوب"
   }
 }

@@ -3,15 +3,15 @@
     "SIDEBAR": {
       "HOME": "Home Page",
       "USERS": "Users",
-      "USERSPAGE":{
-        "SYSTEMUSERS":"System User",
-        "CAPTAIN":"Captain",
-        "SERVICEREQUEST":"Service Request"
+      "USERSPAGE": {
+        "SYSTEMUSERS": "System User",
+        "CAPTAIN": "Captain",
+        "SERVICEREQUEST": "Service Request"
       },
       "HR": "HR Staff",
       "DATA_REVIEW": "Data Review",
       "REQUESTS": "Requests",
-      "CAPTAINREQUESTS":"Control Captain Requests",
+      "CAPTAINREQUESTS": "Control Captain Requests",
       "MESSAGES": "Messages",
       "TECH_SUPPORT": "Technical Support",
       "NOTIFICATIONS": "Notifications",
@@ -21,10 +21,27 @@
       "WALLET": "Wallet",
       "LEGAL": "Legal Affairs",
       "LOGOUT": "Logout",
-      "CHAT":{
-        "SERVIEREQUEST":"Service Request",
-        "REVIEW":"Chat Review"
+      "CHAT": {
+        "SERVIEREQUEST": "Service Request",
+        "REVIEW": "Chat Review"
       }
+    },
+    "VEHICLES": "Vehicles",
+    "VEHICLESMENUE": {
+      "BRANDS": "Brands",
+      "TYPES": "Vehicle Types",
+      "SUBTITLE": "Manage vehicle brands and types",
+      "BRANDS_DESC": "View and manage vehicle brands",
+      "TYPES_DESC": "View and manage vehicle types",
+      "ADD_BUTTON": "Add Vehicle Type",
+      "ADD_BUTTON_BRAND": "Add Vehicle Brand",
+      "TABLE_TITLE": "Vehicle Types List",
+      "TABLE_TITLE_BRAND": "Vehicle Brands List",
+      "ARABIC_NAME": "Arabic Name",
+      "ENGLISH_NAME": "English Name",
+      "ACTIONS": "Actions",
+      "NO_DATA": "No vehicle types added yet",
+      "NO_DATA_BRAND": "No vehicle brands added yet"
     },
     "HEADER": {
       "SELECT_LANGUAGE": "Select Language",
@@ -49,11 +66,273 @@
     "WALLET": {
       "CAPTAIN": {
         "PAYMENTCARD": {
-          "BALANCE":"BALANCE",
-          "VALIDTHRUE":"VALIDTHRUE",
-          "CARDHOLDER":"CARD HOLDER"
+          "BALANCE": "BALANCE",
+          "VALIDTHRUE": "VALIDTHRUE",
+          "CARDHOLDER": "CARD HOLDER"
         }
       }
+    },
+    "PAGES": {
+      "CAPTAIN_REQUESTS": {
+        "TITLE": "Captain Requests",
+        "TABS": {
+          "ALL": "All",
+          "CITIZEN": "Citizen",
+          "RESIDENT": "Resident"
+        },
+        "SEARCH_PLACEHOLDER": "Search",
+        "LOADING": "Loading...",
+        "NO_REQUESTS": "No Captain Requests",
+        "NO_REQUESTS_DESC": "No requests found in this section",
+        "TABLE": {
+          "NUMBER": "#",
+          "IMAGE": "Image",
+          "CAPTAIN_NAME": "Captain Name",
+          "ADDRESS": "Address",
+          "PHONE": "Phone Number",
+          "IDENTITY_NUMBER": "Identity Number",
+          "TYPE": "Type",
+          "STATUS": "Request Status",
+          "ACTIONS": "Actions",
+          "VIEW": "View",
+          "VIEW_DETAILS": "View Details and Actions"
+        },
+        "CARDS": {
+          "TYPE_LABEL": "Type:",
+          "STATUS_LABEL": "Status:",
+          "ACTION_TOOLTIP": "Action"
+        },
+        "PAGINATION": {
+          "SHOWING": "Showing",
+          "FROM": "-",
+          "OF": "of",
+          "ITEMS": "items",
+          "PAGE": "Page",
+          "FROM_PAGES": "from"
+        },
+        "ACTIONS": {
+          "PREVIEW": "Preview",
+          "EDIT": "Edit",
+          "DELETE": "Delete"
+        },
+        "DOCUMENTS": "Documents and Images",
+        "FIELDS": {
+          "FULL_NAME": "Full Name",
+          "PHONE": "Phone Number",
+          "ADDRESS": "Address",
+          "DELIVERY_TYPE": "Delivery Type",
+          "IDENTITY_NUMBER": "Identity Number",
+          "IDENTITY_EXPIRY": "Identity Expiry Date",
+          "LICENSE_TYPE": "Driving License Type",
+          "LICENSE_EXPIRY": "Driving License Expiry Date",
+          "PLATE_NUMBER": "Plate Number",
+          "VEHICLE_TYPE": "Vehicle Type",
+          "VEHICLE_MODEL": "Model",
+          "VEHICLE_BRAND": "Brand",
+          "VEHICLE_COLOR": "Color",
+          "NOT_SPECIFIED": "Not Specified"
+        },
+        "DOCUMENTS_LABELS": {
+          "PERSONAL_IMAGE": "Personal Image",
+          "IDENTITY_IMAGES": "Identity Images",
+          "LICENSE_IMAGES": "Driving License Images",
+          "FRONT_SIDE": "Front Side",
+          "BACK_SIDE": "Back Side",
+          "ADDITIONAL_INFO": "Additional Information",
+          "ACTIVE_STATUS": "Active Status:",
+          "USER_ID": "User ID:",
+          "VEHICLE_ID": "Vehicle ID:",
+          "ACTIVE": "Active",
+          "INACTIVE": "Inactive"
+        }
+      },
+      "CAPTAIN_DETAILS": {
+        "HEADER": {
+          "TITLE": "Captain Management",
+          "SUBTITLE": "Manage current captains and add new ones"
+        },
+        "TITLE": "Captain Details",
+        "BACK": "Back",
+        "LOADING": "Loading...",
+        "ERROR": "Error loading data",
+        "IDENTITY_NUMBER_LABEL": "Identity Number:",
+        "ACTIONS": {
+          "APPROVE": "Approve",
+          "SUSPEND": "Suspend",
+          "REJECT": "Reject",
+          "BLOCK": "Block"
+        },
+        "SECTIONS": {
+          "CONTACT_INFO": "Contact Information",
+          "IDENTITY_INFO": "Identity and License Information",
+          "VEHICLE_INFO": "Vehicle Information",
+          "DOCUMENTS": "Documents and Images"
+        },
+        "FIELDS": {
+          "FULL_NAME": "Full Name",
+          "PHONE": "Phone Number",
+          "ADDRESS": "Address",
+          "DELIVERY_TYPE": "Delivery Type",
+          "DELIVERY_STATE": "Delivery State",
+          "IDENTITY_NUMBER": "Identity Number",
+          "IDENTITY_EXPIRY": "Identity Expiry Date",
+          "LICENSE_TYPE": "Driving License Type",
+          "LICENSE_EXPIRY": "Driving License Expiry Date",
+          "PLATE_NUMBER": "Plate Number",
+          "VEHICLE_TYPE": "Vehicle Type",
+          "VEHICLE_MODEL": "Model",
+          "VEHICLE_BRAND": "Brand",
+          "VEHICLE_COLOR": "Color",
+          "NOT_SPECIFIED": "Not Specified"
+        },
+        "DOCUMENTS_LABELS": {
+          "PERSONAL_IMAGE": "Personal Image",
+          "IDENTITY_IMAGES": "Identity Images",
+          "LICENSE_IMAGES": "Driving License Images",
+          "FRONT_SIDE": "Front Side",
+          "BACK_SIDE": "Back Side",
+          "ADDITIONAL_INFO": "Additional Information",
+          "ACTIVE_STATUS": "Active Status:",
+          "USER_ID": "User ID:",
+          "VEHICLE_ID": "Vehicle ID:",
+          "ACTIVE": "Active",
+          "INACTIVE": "Inactive"
+        }
+      },
+      "ADD_CAPTAIN": {
+        "TITLE": "Add Captain",
+        "SUBTITLE": "Fill the captain information and vehicle details",
+        "HEADER_TITLE": "Add New Captain",
+        "HEADER_SUBTITLE": "Enter all required information",
+        "BACK": "Back",
+        "CANCEL": "Cancel",
+        "SUBMIT": "Submit",
+        "SUBMITTING": "Submitting...",
+        "REQUIRED_FIELDS_NOTE": "Fields marked with * are required",
+        "HEADER_ADD_BUTTON": "Add Captain"
+      }
+    ,
+    "ADD_CAPTAIN_FIELDS": {
+      "PERSONAL_INFO_TITLE": "Personal Information",
+      "PERSONAL_INFO_SUBTITLE": "Captain basic information",
+      "IDENTITY_INFO_TITLE": "Identity Information",
+      "IDENTITY_INFO_SUBTITLE": "Personal identity data",
+      "DRIVING_LICENSE_TITLE": "Driving License",
+      "DRIVING_LICENSE_SUBTITLE": "Driving license data",
+      "DRIVING_LICENSE_TYPE": "Driving License Type",
+      "DRIVING_LICENSE_EXPIRY": "Driving License Expiry Date",
+      "FULL_NAME": "Full Name",
+      "FULL_NAME_PLACEHOLDER": "Enter full name",
+      "PHONE_NUMBER": "Phone Number",
+      "IDENTITY_NUMBER": "Identity Number",
+      "DELIVERY_TYPE": "Delivery Type",
+      "ADDRESS": "Address",
+      "ADDRESS_PLACEHOLDER": "Enter full address",
+      "VEHICLE_INFO_TITLE": "Vehicle Information",
+      "VEHICLE_INFO_SUBTITLE": "Vehicle data used for deliveries",
+      "DOCUMENTS_TITLE": "Upload documents & images",
+      "DOCUMENTS_SUBTITLE": "Required documents and images",
+      "PERSONAL_IMAGE": "Personal Image",
+      "IDENTITY_IMAGES": "Identity Images",
+      "DRIVING_LICENSE_IMAGES": "Driving License Images",
+      "DRIVING_LICENSE_FRONT_LABEL": "Driving License Front",
+      "DRIVING_LICENSE_BACK_LABEL": "Driving License Back",
+      "IDENTITY_FRONT_LABEL": "Identity Front Image",
+      "IDENTITY_BACK_LABEL": "Identity Back Image",
+      "VEHICLE_IMAGES_TITLE": "Vehicle Images",
+      "VEHICLE_FRONT_LABEL": "Front vehicle image",
+      "VEHICLE_SIDE_LABEL": "Side vehicle image",
+      "VEHICLE_INSURANCE_FRONT_LABEL": "Front insurance image",
+      "VEHICLE_INSURANCE_BACK_LABEL": "Back insurance image",
+      "PLATE_NUMBER": "Plate Number",
+      "VEHICLE_LICENSE_EXPIRY": "Vehicle License Expiry Date",
+      "VEHICLE_INSURANCE_EXPIRY": "Vehicle Insurance Expiry Date",
+      "OWNER_RESIDENT": "Resident",
+      "OWNER_COMPANY": "Company",
+      "OWNER_LEASE": "Lease",
+      "IDENTITY_FRONT_ALT": "Identity front",
+      "IDENTITY_BACK_ALT": "Identity back",
+      "DRIVING_LICENSE_FRONT_ALT": "Driving license front",
+      "DRIVING_LICENSE_BACK_ALT": "Driving license back",
+      "ALL_FIELDS_REQUIRED": "All fields are required"
+    },
+    "VEHICLE_BRANDS": {
+      "ADD_MODAL": {
+        "TITLE": "Add New Vehicle Brand"
+      },
+      "EDIT_MODAL": {
+        "TITLE": "Edit Vehicle Brand"
+      },
+      "FORM": {
+        "ARABIC_NAME": "Arabic Name",
+        "ENGLISH_NAME": "English Name"
+      }
+    },
+    "VEHICLE_TYPES": {
+      "ADD_MODAL": {
+        "TITLE": "Add New Vehicle Type"
+      },
+      "EDIT_MODAL": {
+        "TITLE": "Edit Vehicle Type"
+      },
+      "FORM": {
+        "ARABIC_NAME": "Arabic Name",
+        "ENGLISH_NAME": "English Name"
+      }
     }
+  },
+  "PAGESHEADER": {
+    "CAPTAIN_DETAILS": {
+        "TITLE": "Captain Management",
+        "SUBTITLE": "Manage current captains and add new ones"
+    },
+    "CAPTAIN_REQUESTS": {
+        "TITLE": "Captain Requests",
+        "SUBTITLE": "Review and manage captain requests"
+    },
+    "VEHICLES": {
+      "TITLE": "Vehicle Management",
+      "SUBTITLE": "Manage vehicles and their details"
+    },
+    "DASHBOARD": {
+      "TITLE": "Admin Dashboard",
+      "SUBTITLE": "Overview of key metrics and activities"
+    },
+    "BRANDS": {
+      "TITLE": "Vehicle Brands",
+      "SUBTITLE": "Manage vehicle brands and their details"
+    },
+    "TYPES": {
+      "TITLE": "Vehicle Types",
+      "SUBTITLE": "Manage vehicle types and their details"
+    },
+    "USERS": {
+      "TITLE": "User Management",
+      "SUBTITLE": "Manage users and their roles"
+    },
+    "ADD_CAPTAIN": {
+      "TITLE": "Add Captain",
+      "SUBTITLE": "Fill the captain information and vehicle details"
+    }
+  }
+  },
+  "COMMON": {
+    "CHOOSE_IMAGE": "Choose image",
+    "DELETE": "Delete",
+    "BACK": "Back",
+    "EDIT": "Edit",
+    "ADD": "Add",
+    "SAVE": "Save",
+    "CANCEL": "Cancel",
+    "LOADING": "Loading",
+    "SEARCH_PLACEHOLDER": "Search here...",
+    "ITEMS": "items",
+    "SHOWING": "Showing",
+    "TO": "to",
+    "OF": "of",
+    "RESULTS": "results"
+  },
+  "VALIDATION": {
+    "REQUIRED": "This field is required"
   }
 }

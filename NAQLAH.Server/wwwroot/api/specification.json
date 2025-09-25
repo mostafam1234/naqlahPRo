@@ -1305,6 +1305,564 @@
                 "$ref": "#/components/schemas/DeliveryPersonalInfoRequest"
               }
             }
+
+    "/api/DeliveryManAdmin/GetAllDeliveryMenRequests": {
+      "get": {
+        "tags": [
+          "DeliveryManAdmin"
+        ],
+        "operationId": "DeliveryManAdmin_GetAllDeliveryMenRequests",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          },
+          {
+            "name": "deliveryTypeFilter",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            },
+            "x-position": 3
+          },
+          {
+            "name": "searchTerm",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": ""
+            },
+            "x-position": 4
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedGetAllDeliveryMenRequestsPaged"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/DeliveryManAdmin/GetDeliveryManDetails/{deliveryManId}": {
+      "get": {
+        "tags": [
+          "DeliveryManAdmin"
+        ],
+        "operationId": "DeliveryManAdmin_GetDeliveryManDetails",
+        "parameters": [
+          {
+            "name": "deliveryManId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetDeliveryManRequestDetailsDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/DeliveryManAdmin/UpdateDeliveryManState": {
+      "post": {
+        "tags": [
+          "DeliveryManAdmin"
+        ],
+        "operationId": "DeliveryManAdmin_UpdateDeliveryManState",
+        "parameters": [
+          {
+            "name": "deliveryManId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/DeliveryManAdmin/GetAllApprovedDeliveryMen": {
+      "get": {
+        "tags": [
+          "DeliveryManAdmin"
+        ],
+        "operationId": "DeliveryManAdmin_GetAllApprovedDeliveryMen",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            },
+            "x-position": 1
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            },
+            "x-position": 2
+          },
+          {
+            "name": "deliveryTypeFilter",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            },
+            "x-position": 3
+          },
+          {
+            "name": "searchTerm",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": ""
+            },
+            "x-position": 4
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedGetAllApprovedDeliveryMenPaged"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/DeliveryManAdmin/AddDeliveryMan": {
+      "post": {
+        "tags": [
+          "DeliveryManAdmin"
+        ],
+        "operationId": "DeliveryManAdmin_AddDeliveryMan",
+        "requestBody": {
+          "x-name": "deliveryManDto",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddDeliveryManDto"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/VehicleAdmin/GetVehiclesBrandLookup": {
+      "get": {
+        "tags": [
+          "VehicleAdmin"
+        ],
+        "operationId": "VehicleAdmin_GetVehiclesBrandLookup",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/VehicleDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/VehicleAdmin/GetVehiclesTypesLookup": {
+      "get": {
+        "tags": [
+          "VehicleAdmin"
+        ],
+        "operationId": "VehicleAdmin_GetVehiclesTypesLookup",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/VehicleDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/VehicleAdmin/GetVehiclesTypes": {
+      "get": {
+        "tags": [
+          "VehicleAdmin"
+        ],
+        "operationId": "VehicleAdmin_GetVehiclesTypes",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            },
+            "x-position": 1
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            },
+            "x-position": 2
+          },
+          {
+            "name": "searchterm",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": ""
+            },
+            "x-position": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfVehicleDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/VehicleAdmin/GetVehiclesBrands": {
+      "get": {
+        "tags": [
+          "VehicleAdmin"
+        ],
+        "operationId": "VehicleAdmin_GetVehiclesBrands",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            },
+            "x-position": 1
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            },
+            "x-position": 2
+          },
+          {
+            "name": "searchterm",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": ""
+            },
+            "x-position": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfVehicleDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/VehicleAdmin/AddVehicleBrand": {
+      "post": {
+        "tags": [
+          "VehicleAdmin"
+        ],
+        "operationId": "VehicleAdmin_AddVehicleBrand",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddVehicleBrandCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/VehicleAdmin/AddVehicleType": {
+      "post": {
+        "tags": [
+          "VehicleAdmin"
+        ],
+        "operationId": "VehicleAdmin_AddVehicleType",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddVehicleTypeCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HttpValidationProblemDetails": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ProblemDetails"
+
           },
           "required": true,
           "x-position": 1
@@ -3073,6 +3631,211 @@
           "frontInsuranceImagePath": {
             "type": "string"
           },
+
+          "backInsuranceImagePath": {
+            "type": "string"
+          },
+          "inSuranceExpirationDate": {
+            "type": "string"
+          },
+          "vehicleOwnerTypeId": {
+
+          "backIdentityImage": {
+            "type": "string"
+          },
+          "identityExpirationDate": {
+            "type": "string"
+          },
+          "maidTypeId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "DeliveryManInfoDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "personalImagePath": {
+            "type": "string"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "chatUrl": {
+            "type": "string"
+          }
+        }
+      },
+      "MaidTypeDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "DeliveryPersonalInfoRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "fullName": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "identityNumber": {
+            "type": "string"
+          },
+          "frontIdenitytImage": {
+            "type": "string"
+          },
+          "backIdenitytImage": {
+            "type": "string"
+          },
+          "personalImage": {
+            "type": "string"
+          },
+          "identityExpirationDate": {
+            "type": "string"
+          },
+          "drivingLicenseExpirationDate": {
+            "type": "string"
+          },
+          "deliveryTypeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "deliveryLicenseTypeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "frontDrivingLicenseImage": {
+            "type": "string"
+          },
+          "backDrivingLicenseImage": {
+            "type": "string"
+          }
+        }
+      },
+      "ResidentRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "citizenName": {
+            "type": "string"
+          },
+          "identityNumber": {
+            "type": "string"
+          },
+          "frontIdentityImage": {
+            "type": "string"
+          },
+          "backIdentityImage": {
+            "type": "string"
+          },
+          "bankAccountNumber": {
+            "type": "string"
+          }
+        }
+      },
+      "CompanyRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "companyName": {
+            "type": "string"
+          },
+          "commercialRecordNumber": {
+            "type": "string"
+          },
+          "recordImagePath": {
+            "type": "string"
+          },
+          "taxNumber": {
+            "type": "string"
+          },
+          "taxCertificateImage": {
+            "type": "string"
+          },
+          "bankAccountNumber": {
+            "type": "string"
+          }
+        }
+      },
+      "RenterRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "citizenName": {
+            "type": "string"
+          },
+          "identityNumber": {
+            "type": "string"
+          },
+          "frontIdentityImage": {
+            "type": "string"
+          },
+          "backIdentityImage": {
+            "type": "string"
+          },
+          "rentContractImage": {
+            "type": "string"
+          },
+          "bankAccountNumber": {
+            "type": "string"
+          }
+        }
+      },
+      "AddDeliveryVehicleRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "vehicleTypeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "vehicleBrandId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "licensePlateNumber": {
+            "type": "string"
+          },
+          "frontImagePath": {
+            "type": "string"
+          },
+          "sideImagePath": {
+            "type": "string"
+          },
+          "frontLicenseImagePath": {
+            "type": "string"
+          },
+          "backLicenseImagePath": {
+            "type": "string"
+          },
+          "licenseExpirationDate": {
+            "type": "string"
+          },
+          "frontInsuranceImagePath": {
+            "type": "string"
+          },
           "backInsuranceImagePath": {
             "type": "string"
           },
@@ -3111,6 +3874,91 @@
           }
         }
       },
+      "PagedGetAllDeliveryMenRequestsPaged": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetAllDeliveryMenRequestsDto"
+            }
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "currentPage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+
+      "VehicleBrandDto": {
+
+      "GetAllDeliveryMenRequestsDto": {
+
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "deliveryManId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+
+          }
+        }
+      },
+      "VehicleTypeDto": {
+
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "identityNumber": {
+            "type": "string"
+          },
+          "personalImagePath": {
+            "type": "string"
+          },
+          "deliveryType": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          }
+        }
+      },
+      "GetDeliveryManRequestDetailsDto": {
+
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "deliveryManId": {
+            "type": "integer",
+            "format": "int32"
+          },
+
+          "name": {
+            "type": "string"
+          }
+        }
+      },
       "PendingOrderDto": {
         "type": "object",
         "additionalProperties": false,
@@ -3118,10 +3966,15 @@
           "id": {
             "type": "integer",
             "format": "int32"
+
+          "fullName": {
+            "type": "string"
+
           },
           "orderNumber": {
             "type": "string"
           },
+
           "total": {
             "type": "number",
             "format": "decimal"
@@ -3280,10 +4133,146 @@
             "type": "string"
           },
           "neighborhoodEnglishName": {
+
+          "phoneNumber": {
+            "type": "string"
+          },
+          "identityNumber": {
+            "type": "string"
+          },
+          "identityExpirationDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "drivingLicenseExpirationDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "deliveryType": {
+            "type": "string"
+          },
+          "deliveryLicenseType": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "frontIdentityImagePath": {
+            "type": "string"
+          },
+          "backIdentityImagePath": {
+            "type": "string"
+          },
+          "frontDrivingLicenseImagePath": {
+            "type": "string"
+          },
+          "backDrivingLicenseImagePath": {
+            "type": "string"
+          },
+          "personalImagePath": {
+            "type": "string"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "androidDevice": {
+            "type": "string"
+          },
+          "iosDevice": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "vehicleId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "vehiclePlateNumber": {
+            "type": "string"
+          },
+          "vehicleType": {
+            "type": "string"
+          },
+          "vehicleColor": {
+            "type": "string"
+          },
+          "vehicleModel": {
             "type": "string"
           }
         }
       },
+      "PagedGetAllApprovedDeliveryMenPaged": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetAllApprovedDeliveryMenDto"
+            }
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "currentPage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "GetAllApprovedDeliveryMenDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "deliveryManId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "identityNumber": {
+            "type": "string"
+          },
+          "personalImagePath": {
+            "type": "string"
+          },
+          "deliveryType": {
+
+            "type": "string"
+          },
+          "state": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "active": {
+            "type": "boolean"
+          }
+        }
+      },
+
       "OrderDetailItemResponse": {
         "type": "object",
         "additionalProperties": false,
@@ -3309,13 +4298,53 @@
         "additionalProperties": false,
         "properties": {
           "id": {
+=======
+      "AddDeliveryManDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "fullName": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "identityNumber": {
+            "type": "string"
+          },
+          "deliveryType": {
             "type": "integer",
             "format": "int32"
+          },
+          "identityExpirationDate": {
+            "type": "string"
+          },
+          "deliveryLicenseType": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "drivingLicenseExpirationDate": {
+            "type": "string"
+          },
+          "vehiclePlateNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "vehicleTypeId": {
+
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
           },
           "workId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
+
           "arabicName": {
             "type": "string"
           },
@@ -3411,6 +4440,83 @@
         }
       },
       "CityDto": {
+
+          "vehicleOwnerTypeId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "vehicleLicenseExpirationDate": {
+            "type": "string",
+            "nullable": true
+          },
+          "vehicleInsuranceExpirationDate": {
+            "type": "string",
+            "nullable": true
+          },
+          "inSuranceExpirationDate": {
+            "type": "string",
+            "nullable": true
+          },
+          "vehicleFrontImagePath": {
+            "type": "string",
+            "nullable": true
+          },
+          "vehicleSideImagePath": {
+            "type": "string",
+            "nullable": true
+          },
+          "vehicleFrontLicenseImagePath": {
+            "type": "string",
+            "nullable": true
+          },
+          "vehicleBackLicenseImagePath": {
+            "type": "string",
+            "nullable": true
+          },
+          "vehicleFrontInsuranceImagePath": {
+            "type": "string",
+            "nullable": true
+          },
+          "vehicleBackInsuranceImagePath": {
+            "type": "string",
+            "nullable": true
+          },
+          "personalImagePath": {
+            "type": "string",
+            "nullable": true
+          },
+          "frontIdentityImagePath": {
+            "type": "string",
+            "nullable": true
+          },
+          "backIdentityImagePath": {
+            "type": "string",
+            "nullable": true
+          },
+          "frontDrivingLicenseImagePath": {
+            "type": "string",
+            "nullable": true
+          },
+          "backDrivingLicenseImagePath": {
+            "type": "string",
+            "nullable": true
+          },
+          "androidDevice": {
+            "type": "string",
+            "nullable": true
+          },
+          "iosDevice": {
+            "type": "string",
+            "nullable": true
+          },
+          "active": {
+            "type": "boolean"
+          }
+        }
+      },
+      "VehicleDto": {
+
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -3418,11 +4524,18 @@
             "type": "integer",
             "format": "int32"
           },
+
           "regionId": {
             "type": "integer",
             "format": "int32"
           },
           "name": {
+
+          "arabicName": {
+            "type": "string"
+          },
+          "englishName": {
+
             "type": "string"
           },
           "neighborhoods": {
@@ -3433,19 +4546,58 @@
           }
         }
       },
+
       "NeighborhoodDto": {
+
+      "PagedResultOfVehicleDto": {
+
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "id": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VehicleDto"
+            }
+          },
+          "totalCount": {
             "type": "integer",
             "format": "int32"
           },
+
           "cityId": {
             "type": "integer",
             "format": "int32"
           },
           "name": {
+
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "AddVehicleBrandCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "arabicName": {
+            "type": "string"
+          },
+          "englishName": {
+            "type": "string"
+          }
+        }
+      },
+      "AddVehicleTypeCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "arabicName": {
+            "type": "string"
+          },
+          "englishName": {
+
             "type": "string"
           }
         }

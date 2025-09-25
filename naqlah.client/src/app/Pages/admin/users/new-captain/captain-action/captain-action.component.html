@@ -1,94 +1,773 @@
-<section class="captain flex flex-col gap-[30px]">
-  <div class="flex justify-center">
-    <div class="bg-mainButtonBg mainButtonText py-4 px-8 rounded-xl shadow w-[100%] flex flex-wrap items-center justify-between gap-4">
-      <p class="font-bold text-[18px]">الكابتن / السيد أحمد محمود</p>
-      <div class="flex gap-[5px] flex-wrap">
-        <button
-          class="bg-white flex items-center justify-center text-black w-[100px] text-base py-2 rounded-full shadow transition-colors duration-200"
-        >
-          موافقة
-        </button>
-        <button
-          class="bg-white flex items-center justify-center text-black w-[100px] text-base py-2 rounded-full shadow transition-colors duration-200"
-        >
-          تعليق
-        </button>
-        <button
-          class="bg-white flex items-center justify-center text-black w-[100px] text-base py-2 rounded-full shadow transition-colors duration-200"
-        >
-          كومنت
-        </button>
-        <button
-          class="bg-white flex items-center justify-center text-black w-[100px] text-base py-2 rounded-full shadow transition-colors duration-200"
-        >
-          بلوك
-        </button>
+<div class="min-h-screen bg-gray-50 py-6">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header Section -->
+    <div class="mb-8">
+      <div class="flex items-center justify-between">
+        <div class="header-content" [class.rtl]="lang === 'ar'">
+          <button
+            (click)="goBack()"
+            class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
+          >
+            <svg
+              class="w-4 h-4"
+              [class.ml-2]="lang === 'ar'"
+              [class.mr-2]="lang === 'en'"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                [attr.d]="
+                  lang === 'ar'
+                    ? 'M10 19l-7-7m0 0l7-7m-7 7h18'
+                    : 'M14 5l7 7m0 0l-7 7m7-7H3'
+                "
+              ></path>
+            </svg>
+            {{ "ADMIN.PAGES.CAPTAIN_DETAILS.BACK" | translate }}
+          </button>
+          <h1 class="text-3xl font-bold text-gray-900">
+            {{ "ADMIN.PAGES.CAPTAIN_DETAILS.TITLE" | translate }}
+          </h1>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 p-4">
-        <!-- قسم الفورم -->
-    <div class="flex-1 bg-white p-4 rounded-xl shadow">
-      <form class="flex flex-col gap-4">
-        <div>
-          <label class="block text-sm mb-1">العنوان</label>
-          <input type="text" class="w-full rounded-md bg-gray-100 p-2 outline-none" placeholder="العنوان" />
-        </div>
-        <div>
-          <label class="block text-sm mb-1">رقم الجوال</label>
-          <input type="number" class="w-full rounded-md bg-gray-100 p-2 outline-none" placeholder="رقم الجوال" />
-        </div>
-        <div>
-          <label class="block text-sm mb-1">رقم الهوية</label>
-          <input type="text" class="w-full rounded-md bg-gray-100 p-2 outline-none" placeholder="رقم الهوية" />
-        </div>
-        <div>
-          <label class="block text-sm mb-1">تاريخ انتهاء الهوية</label>
-          <input type="date" class="w-full rounded-md bg-gray-100 p-2 outline-none" />
-        </div>
-        <div>
-          <label class="block text-sm mb-1">نوع رخصة القيادة</label>
-          <input type="text" class="w-full rounded-md bg-gray-100 p-2 outline-none" placeholder="نوع رخصة القيادة" />
-        </div>
-      </form>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="flex justify-center items-center py-12">
+      <div
+        class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"
+      ></div>
     </div>
-    <!-- قسم الصور -->
-      <div class="grid grid-cols-2 gap-4 bg-white p-4 rounded-xl shadow">
-        <div class="flex flex-col items-center gap-[12px]">
-          <span class="mt-1 text-sm">صورة الرخصة</span>
-          <div class="bg-teal-900 flex items-center justify-center rounded-lg w-full lg:w-[80%] aspect-video">
-            <svg width="67" height="67" viewBox="0 0 67 67" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M7.20248 53.0695L7.14665 53.1253C6.3929 51.4782 5.91832 49.6078 5.7229 47.542C5.91832 49.5799 6.44873 51.4224 7.20248 53.0695Z" fill="white"/>
-              <path d="M25.1249 28.9775C28.7944 28.9775 31.769 26.0028 31.769 22.3334C31.769 18.6639 28.7944 15.6892 25.1249 15.6892C21.4554 15.6892 18.4807 18.6639 18.4807 22.3334C18.4807 26.0028 21.4554 28.9775 25.1249 28.9775Z" fill="white"/>
-              <path d="M45.197 5.58325H21.8028C11.6412 5.58325 5.58325 11.6412 5.58325 21.8028V45.197C5.58325 48.2399 6.11367 50.892 7.14659 53.1253C9.54742 58.4295 14.6841 61.4166 21.8028 61.4166H45.197C55.3587 61.4166 61.4166 55.3587 61.4166 45.197V38.8041V21.8028C61.4166 11.6412 55.3587 5.58325 45.197 5.58325ZM56.8662 34.8958C54.6887 33.0253 51.1712 33.0253 48.9937 34.8958L37.3803 44.862C35.2028 46.7324 31.6853 46.7324 29.5078 44.862L28.5587 44.0803C26.5766 42.3495 23.422 42.182 21.1887 43.6895L10.7478 50.6966C10.1337 49.1333 9.77075 47.3187 9.77075 45.197V21.8028C9.77075 13.9303 13.9303 9.77075 21.8028 9.77075H45.197C53.0695 9.77075 57.2291 13.9303 57.2291 21.8028V35.2028L56.8662 34.8958Z" fill="white"/>
-            </svg>
-          </div>
-        </div>
 
-        <div class="flex flex-col items-center gap-[12px]">
-          <span class="mt-1 text-sm">صورة الهوية</span>
-          <div class="bg-teal-900 flex items-center justify-center rounded-lg w-full lg:w-[80%] aspect-video">
-            <svg width="67" height="67" viewBox="0 0 67 67" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M7.20248 53.0695L7.14665 53.1253C6.3929 51.4782 5.91832 49.6078 5.7229 47.542C5.91832 49.5799 6.44873 51.4224 7.20248 53.0695Z" fill="white"/>
-              <path d="M25.1249 28.9775C28.7944 28.9775 31.769 26.0028 31.769 22.3334C31.769 18.6639 28.7944 15.6892 25.1249 15.6892C21.4554 15.6892 18.4807 18.6639 18.4807 22.3334C18.4807 26.0028 21.4554 28.9775 25.1249 28.9775Z" fill="white"/>
-              <path d="M45.197 5.58325H21.8028C11.6412 5.58325 5.58325 11.6412 5.58325 21.8028V45.197C5.58325 48.2399 6.11367 50.892 7.14659 53.1253C9.54742 58.4295 14.6841 61.4166 21.8028 61.4166H45.197C55.3587 61.4166 61.4166 55.3587 61.4166 45.197V38.8041V21.8028C61.4166 11.6412 55.3587 5.58325 45.197 5.58325ZM56.8662 34.8958C54.6887 33.0253 51.1712 33.0253 48.9937 34.8958L37.3803 44.862C35.2028 46.7324 31.6853 46.7324 29.5078 44.862L28.5587 44.0803C26.5766 42.3495 23.422 42.182 21.1887 43.6895L10.7478 50.6966C10.1337 49.1333 9.77075 47.3187 9.77075 45.197V21.8028C9.77075 13.9303 13.9303 9.77075 21.8028 9.77075H45.197C53.0695 9.77075 57.2291 13.9303 57.2291 21.8028V35.2028L56.8662 34.8958Z" fill="white"/>
-            </svg>
-          </div>
-        </div>
+    <!-- Main Content -->
+    <div *ngIf="deliveryManDetails && !isLoading" class="space-y-6">
+      <!-- Captain Header Card -->
+      <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-8">
+          <div class="flex items-center justify-between">
+            <div class="profile-section" [class.rtl]="lang === 'ar'">
+              <div class="h-20 w-20 rounded-full bg-white p-2">
+                <img
+                  [src]="
+                    deliveryManDetails.personalImagePath ||
+                    './assets/images/user.png'
+                  "
+                  [alt]="deliveryManDetails.fullName"
+                  class="h-full w-full rounded-full object-cover"
+                  onerror="this.src='./assets/images/user.png'"
+                />
+              </div>
+              <div class="text-white">
+                <h2 class="text-2xl font-bold">
+                  {{ deliveryManDetails.fullName }}
+                </h2>
+                <p class="text-indigo-100">
+                  {{
+                    "ADMIN.PAGES.CAPTAIN_DETAILS.IDENTITY_NUMBER_LABEL"
+                      | translate
+                  }}
+                  {{ deliveryManDetails.identityNumber }}
+                </p>
+                <span
+                  class="inline-flex px-3 py-1 rounded-full text-xs font-medium mt-2"
+                  [ngClass]="getStateClass(deliveryManDetails.state)"
+                >
+                  {{ getStateLabel(deliveryManDetails.state) }}
+                </span>
+              </div>
+            </div>
 
-        <div class="col-span-2 flex justify-center">
-          <div class="mt-4 flex flex-col w-[50%] items-center gap-[12px]">
-            <span class="mt-1 text-sm">صورة الرخصة</span>
-            <div class="bg-teal-900 flex items-center justify-center rounded-lg w-[80%]  aspect-video">
-              <svg width="67" height="67" viewBox="0 0 67 67" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M7.20248 53.0695L7.14665 53.1253C6.3929 51.4782 5.91832 49.6078 5.7229 47.542C5.91832 49.5799 6.44873 51.4224 7.20248 53.0695Z" fill="white"/>
-                <path d="M25.1249 28.9775C28.7944 28.9775 31.769 26.0028 31.769 22.3334C31.769 18.6639 28.7944 15.6892 25.1249 15.6892C21.4554 15.6892 18.4807 18.6639 18.4807 22.3334C18.4807 26.0028 21.4554 28.9775 25.1249 28.9775Z" fill="white"/>
-                <path d="M45.197 5.58325H21.8028C11.6412 5.58325 5.58325 11.6412 5.58325 21.8028V45.197C5.58325 48.2399 6.11367 50.892 7.14659 53.1253C9.54742 58.4295 14.6841 61.4166 21.8028 61.4166H45.197C55.3587 61.4166 61.4166 55.3587 61.4166 45.197V38.8041V21.8028C61.4166 11.6412 55.3587 5.58325 45.197 5.58325ZM56.8662 34.8958C54.6887 33.0253 51.1712 33.0253 48.9937 34.8958L37.3803 44.862C35.2028 46.7324 31.6853 46.7324 29.5078 44.862L28.5587 44.0803C26.5766 42.3495 23.422 42.182 21.1887 43.6895L10.7478 50.6966C10.1337 49.1333 9.77075 47.3187 9.77075 45.197V21.8028C9.77075 13.9303 13.9303 9.77075 21.8028 9.77075H45.197C53.0695 9.77075 57.2291 13.9303 57.2291 21.8028V35.2028L56.8662 34.8958Z" fill="white"/>
-              </svg>
+            <!-- Action Buttons -->
+            <div class="action-buttons" [class.rtl]="lang === 'ar'">
+              <button
+                (click)="approveDeliveryMan()"
+                [disabled]="actionInProgress.approve || isLoading"
+                [class]="
+                  actionInProgress.approve
+                    ? 'bg-green-300 cursor-not-allowed text-white px-4 py-2 rounded-lg font-medium transition-colors'
+                    : 'bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-medium transition-colors transform hover:scale-105'
+                "
+              >
+                <span *ngIf="!actionInProgress.approve">
+                  {{
+                    "ADMIN.PAGES.CAPTAIN_DETAILS.ACTIONS.APPROVE" | translate
+                  }}
+                </span>
+                <span
+                  *ngIf="actionInProgress.approve"
+                  class="flex items-center"
+                >
+                  <svg
+                    class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      class="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      stroke-width="4"
+                    ></circle>
+                    <path
+                      class="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  جارِ الموافقة...
+                </span>
+              </button>
+
+              <button
+                (click)="suspendDeliveryMan()"
+                [disabled]="actionInProgress.suspend || isLoading"
+                [class]="
+                  actionInProgress.suspend
+                    ? 'bg-yellow-300 cursor-not-allowed text-white px-4 py-2 rounded-lg font-medium transition-colors'
+                    : 'bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg font-medium transition-colors transform hover:scale-105'
+                "
+              >
+                <span *ngIf="!actionInProgress.suspend">
+                  {{
+                    "ADMIN.PAGES.CAPTAIN_DETAILS.ACTIONS.SUSPEND" | translate
+                  }}
+                </span>
+                <span
+                  *ngIf="actionInProgress.suspend"
+                  class="flex items-center"
+                >
+                  <svg
+                    class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      class="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      stroke-width="4"
+                    ></circle>
+                    <path
+                      class="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  جارِ التعليق...
+                </span>
+              </button>
+
+              <button
+                (click)="rejectDeliveryMan()"
+                [disabled]="actionInProgress.reject || isLoading"
+                [class]="
+                  actionInProgress.reject
+                    ? 'bg-red-300 cursor-not-allowed text-white px-4 py-2 rounded-lg font-medium transition-colors'
+                    : 'bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium transition-colors transform hover:scale-105'
+                "
+              >
+                <span *ngIf="!actionInProgress.reject">
+                  {{ "ADMIN.PAGES.CAPTAIN_DETAILS.ACTIONS.REJECT" | translate }}
+                </span>
+                <span *ngIf="actionInProgress.reject" class="flex items-center">
+                  <svg
+                    class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      class="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      stroke-width="4"
+                    ></circle>
+                    <path
+                      class="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  جارِ الرفض...
+                </span>
+              </button>
+
+              <button
+                (click)="blockDeliveryMan()"
+                [disabled]="actionInProgress.block || isLoading"
+                [class]="
+                  actionInProgress.block
+                    ? 'bg-gray-300 cursor-not-allowed text-white px-4 py-2 rounded-lg font-medium transition-colors'
+                    : 'bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium transition-colors transform hover:scale-105'
+                "
+              >
+                <span *ngIf="!actionInProgress.block">
+                  {{ "ADMIN.PAGES.CAPTAIN_DETAILS.ACTIONS.BLOCK" | translate }}
+                </span>
+                <span *ngIf="actionInProgress.block" class="flex items-center">
+                  <svg
+                    class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      class="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      stroke-width="4"
+                    ></circle>
+                    <path
+                      class="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  جارِ الحظر...
+                </span>
+              </button>
             </div>
           </div>
         </div>
       </div>
-  </div>
 
-</section>
+      <!-- Details Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Personal Information -->
+        <div class="lg:col-span-2 space-y-6">
+          <!-- Contact Information Card -->
+          <div class="bg-white shadow-md rounded-lg p-6">
+            <h3
+              class="text-lg font-semibold text-gray-900 mb-4 flex items-center"
+            >
+              <svg
+                class="h-5 w-5 text-indigo-500"
+                [class.ml-2]="lang === 'ar'"
+                [class.mr-2]="lang === 'en'"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                ></path>
+              </svg>
+              {{
+                "ADMIN.PAGES.CAPTAIN_DETAILS.SECTIONS.CONTACT_INFO" | translate
+              }}
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-3">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">{{
+                    "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.FULL_NAME" | translate
+                  }}</label>
+                  <p class="text-gray-900 bg-gray-50 p-3 rounded-md">
+                    {{ deliveryManDetails.fullName }}
+                  </p>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">{{
+                    "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.PHONE" | translate
+                  }}</label>
+                  <p class="text-gray-900 bg-gray-50 p-3 rounded-md">
+                    {{ deliveryManDetails.phoneNumber }}
+                  </p>
+                </div>
+              </div>
+              <div class="space-y-3">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">{{
+                    "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.ADDRESS" | translate
+                  }}</label>
+                  <p class="text-gray-900 bg-gray-50 p-3 rounded-md">
+                    {{ deliveryManDetails.address }}
+                  </p>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">{{
+                    "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.DELIVERY_TYPE"
+                      | translate
+                  }}</label>
+                  <p class="text-gray-900 bg-gray-50 p-3 rounded-md">
+                    {{ deliveryManDetails.deliveryType }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Identity Information Card -->
+          <div class="bg-white shadow-md rounded-lg p-6">
+            <h3
+              class="text-lg font-semibold text-gray-900 mb-4 flex items-center"
+            >
+              <svg
+                class="h-5 w-5 text-blue-500"
+                [class.ml-2]="lang === 'ar'"
+                [class.mr-2]="lang === 'en'"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"
+                ></path>
+              </svg>
+              {{
+                "ADMIN.PAGES.CAPTAIN_DETAILS.SECTIONS.IDENTITY_INFO" | translate
+              }}
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-3">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">{{
+                    "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.IDENTITY_NUMBER"
+                      | translate
+                  }}</label>
+                  <p class="text-gray-900 bg-gray-50 p-3 rounded-md">
+                    {{ deliveryManDetails.identityNumber }}
+                  </p>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">{{
+                    "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.IDENTITY_EXPIRY"
+                      | translate
+                  }}</label>
+                  <p class="text-gray-900 bg-gray-50 p-3 rounded-md">
+                    {{ formatDate(deliveryManDetails.identityExpirationDate) }}
+                  </p>
+                </div>
+              </div>
+              <div class="space-y-3">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">{{
+                    "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.LICENSE_TYPE"
+                      | translate
+                  }}</label>
+                  <p class="text-gray-900 bg-gray-50 p-3 rounded-md">
+                    {{ deliveryManDetails.deliveryLicenseType }}
+                  </p>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">{{
+                    "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.LICENSE_EXPIRY"
+                      | translate
+                  }}</label>
+                  <p class="text-gray-900 bg-gray-50 p-3 rounded-md">
+                    {{
+                      formatDate(
+                        deliveryManDetails.drivingLicenseExpirationDate
+                      )
+                    }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Vehicle Information Card (if available) -->
+          <div
+            *ngIf="deliveryManDetails.vehicleId"
+            class="bg-white shadow-md rounded-lg p-6"
+          >
+            <h3
+              class="text-lg font-semibold text-gray-900 mb-4 flex items-center"
+            >
+              <svg
+                class="h-5 w-5 text-green-500"
+                [class.ml-2]="lang === 'ar'"
+                [class.mr-2]="lang === 'en'"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                ></path>
+              </svg>
+              {{
+                "ADMIN.PAGES.CAPTAIN_DETAILS.SECTIONS.VEHICLE_INFO" | translate
+              }}
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="space-y-3">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">{{
+                    "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.PLATE_NUMBER"
+                      | translate
+                  }}</label>
+                  <p class="text-gray-900 bg-gray-50 p-3 rounded-md">
+                    {{
+                      deliveryManDetails.vehiclePlateNumber ||
+                        ("ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.NOT_SPECIFIED"
+                          | translate)
+                    }}
+                  </p>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">{{
+                    "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.VEHICLE_TYPE"
+                      | translate
+                  }}</label>
+                  <p class="text-gray-900 bg-gray-50 p-3 rounded-md">
+                    {{
+                      deliveryManDetails.vehicleType ||
+                        ("ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.NOT_SPECIFIED"
+                          | translate)
+                    }}
+                  </p>
+                </div>
+              </div>
+              <div class="space-y-3">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">{{
+                    "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.VEHICLE_MODEL"
+                      | translate
+                  }}</label>
+                  <p class="text-gray-900 bg-gray-50 p-3 rounded-md">
+                    {{
+                      deliveryManDetails.vehicleModel ||
+                        ("ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.NOT_SPECIFIED"
+                          | translate)
+                    }}
+                  </p>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">{{
+                    "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.VEHICLE_MODEL"
+                      | translate
+                  }}</label>
+                  <p class="text-gray-900 bg-gray-50 p-3 rounded-md">
+                    {{
+                      deliveryManDetails.vehicleModel ||
+                        ("ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.NOT_SPECIFIED"
+                          | translate)
+                    }}
+                  </p>
+                </div>
+                <div *ngIf="deliveryManDetails.vehicleColor">
+                  <label class="block text-sm font-medium text-gray-700 mb-1">{{
+                    "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.VEHICLE_COLOR"
+                      | translate
+                  }}</label>
+                  <p class="text-gray-900 bg-gray-50 p-3 rounded-md">
+                    {{ deliveryManDetails.vehicleColor }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Documents Section -->
+        <div class="space-y-6">
+          <div class="bg-white shadow-md rounded-lg p-6">
+            <h3
+              class="text-lg font-semibold text-gray-900 mb-4 flex items-center"
+            >
+              <svg
+                class="h-5 w-5 text-purple-500"
+                [class.ml-2]="lang === 'ar'"
+                [class.mr-2]="lang === 'en'"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                ></path>
+              </svg>
+              {{ "ADMIN.PAGES.CAPTAIN_DETAILS.SECTIONS.DOCUMENTS" | translate }}
+            </h3>
+
+            <div class="space-y-4">
+              <!-- Personal Image -->
+              <div class="text-center">
+                <label class="block text-sm font-medium text-gray-700 mb-2">{{
+                  "ADMIN.PAGES.CAPTAIN_DETAILS.DOCUMENTS_LABELS.PERSONAL_IMAGE"
+                    | translate
+                }}</label>
+                <div
+                  class="mx-auto h-32 w-32 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center"
+                >
+                  <img
+                    *ngIf="deliveryManDetails.personalImagePath; else noImage"
+                    [src]="deliveryManDetails.personalImagePath"
+                    alt="الصورة الشخصية"
+                    class="h-full w-full object-cover"
+                    onerror="this.style.display='none'"
+                  />
+                  <ng-template #noImage>
+                    <svg
+                      class="h-12 w-12 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                      ></path>
+                    </svg>
+                  </ng-template>
+                </div>
+              </div>
+
+              <!-- Identity Images -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">{{
+                  "ADMIN.PAGES.CAPTAIN_DETAILS.DOCUMENTS_LABELS.IDENTITY_IMAGES"
+                    | translate
+                }}</label>
+                <div class="grid grid-cols-2 gap-2">
+                  <div class="text-center">
+                    <p class="text-xs text-gray-500 mb-1">
+                      {{
+                        "ADMIN.PAGES.CAPTAIN_DETAILS.DOCUMENTS_LABELS.FRONT_SIDE"
+                          | translate
+                      }}
+                    </p>
+                    <div
+                      class="h-24 w-full rounded bg-gray-100 flex items-center justify-center"
+                    >
+                      <img
+                        *ngIf="
+                          deliveryManDetails.frontIdentityImagePath;
+                          else noDoc
+                        "
+                        [src]="deliveryManDetails.frontIdentityImagePath"
+                        alt="الهوية - الوجه الأمامي"
+                        class="h-full w-full object-cover rounded"
+                        onerror="this.style.display='none'"
+                      />
+                      <ng-template #noDoc>
+                        <svg
+                          class="h-8 w-8 text-gray-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                          ></path>
+                        </svg>
+                      </ng-template>
+                    </div>
+                  </div>
+                  <div class="text-center">
+                    <p class="text-xs text-gray-500 mb-1">
+                      {{
+                        "ADMIN.PAGES.CAPTAIN_DETAILS.DOCUMENTS_LABELS.BACK_SIDE"
+                          | translate
+                      }}
+                    </p>
+                    <div
+                      class="h-24 w-full rounded bg-gray-100 flex items-center justify-center"
+                    >
+                      <img
+                        *ngIf="
+                          deliveryManDetails.backIdentityImagePath;
+                          else noDoc2
+                        "
+                        [src]="deliveryManDetails.backIdentityImagePath"
+                        alt="الهوية - الوجه الخلفي"
+                        class="h-full w-full object-cover rounded"
+                        onerror="this.style.display='none'"
+                      />
+                      <ng-template #noDoc2>
+                        <svg
+                          class="h-8 w-8 text-gray-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                          ></path>
+                        </svg>
+                      </ng-template>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- License Images -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">{{
+                  "ADMIN.PAGES.CAPTAIN_DETAILS.DOCUMENTS_LABELS.LICENSE_IMAGES"
+                    | translate
+                }}</label>
+                <div class="grid grid-cols-2 gap-2">
+                  <div class="text-center">
+                    <p class="text-xs text-gray-500 mb-1">
+                      {{
+                        "ADMIN.PAGES.CAPTAIN_DETAILS.DOCUMENTS_LABELS.FRONT_SIDE"
+                          | translate
+                      }}
+                    </p>
+                    <div
+                      class="h-24 w-full rounded bg-gray-100 flex items-center justify-center"
+                    >
+                      <img
+                        *ngIf="
+                          deliveryManDetails.frontDrivingLicenseImagePath;
+                          else noLicense
+                        "
+                        [src]="deliveryManDetails.frontDrivingLicenseImagePath"
+                        alt="رخصة القيادة - الوجه الأمامي"
+                        class="h-full w-full object-cover rounded"
+                        onerror="this.style.display='none'"
+                      />
+                      <ng-template #noLicense>
+                        <svg
+                          class="h-8 w-8 text-gray-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                          ></path>
+                        </svg>
+                      </ng-template>
+                    </div>
+                  </div>
+                  <div class="text-center">
+                    <p class="text-xs text-gray-500 mb-1">
+                      {{
+                        "ADMIN.PAGES.CAPTAIN_DETAILS.DOCUMENTS_LABELS.BACK_SIDE"
+                          | translate
+                      }}
+                    </p>
+                    <div
+                      class="h-24 w-full rounded bg-gray-100 flex items-center justify-center"
+                    >
+                      <img
+                        *ngIf="
+                          deliveryManDetails.backDrivingLicenseImagePath;
+                          else noLicense2
+                        "
+                        [src]="deliveryManDetails.backDrivingLicenseImagePath"
+                        alt="رخصة القيادة - الوجه الخلفي"
+                        class="h-full w-full object-cover rounded"
+                        onerror="this.style.display='none'"
+                      />
+                      <ng-template #noLicense2>
+                        <svg
+                          class="h-8 w-8 text-gray-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                          ></path>
+                        </svg>
+                      </ng-template>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Status Information -->
+              <div class="border-t pt-4">
+                <h4 class="text-sm font-medium text-gray-700 mb-2">
+                  {{
+                    "ADMIN.PAGES.CAPTAIN_DETAILS.DOCUMENTS_LABELS.ADDITIONAL_INFO"
+                      | translate
+                  }}
+                </h4>
+                <div class="space-y-2 text-sm">
+                  <div class="flex justify-between">
+                    <span class="text-gray-500">{{
+                      "ADMIN.PAGES.CAPTAIN_DETAILS.DOCUMENTS_LABELS.ACTIVE_STATUS"
+                        | translate
+                    }}</span>
+                    <span
+                      class="font-medium"
+                      [class]="
+                        deliveryManDetails.active
+                          ? 'text-green-600'
+                          : 'text-red-600'
+                      "
+                    >
+                      {{
+                        deliveryManDetails.active
+                          ? ("ADMIN.PAGES.CAPTAIN_DETAILS.DOCUMENTS_LABELS.ACTIVE"
+                            | translate)
+                          : ("ADMIN.PAGES.CAPTAIN_DETAILS.DOCUMENTS_LABELS.INACTIVE"
+                            | translate)
+                      }}
+                    </span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-500">{{
+                      "ADMIN.PAGES.CAPTAIN_DETAILS.DOCUMENTS_LABELS.USER_ID"
+                        | translate
+                    }}</span>
+                    <span class="font-medium"
+                      >#{{ deliveryManDetails.userId }}</span
+                    >
+                  </div>
+                  <div
+                    *ngIf="deliveryManDetails.vehicleId"
+                    class="flex justify-between"
+                  >
+                    <span class="text-gray-500">{{
+                      "ADMIN.PAGES.CAPTAIN_DETAILS.DOCUMENTS_LABELS.VEHICLE_ID"
+                        | translate
+                    }}</span>
+                    <span class="font-medium"
+                      >#{{ deliveryManDetails.vehicleId }}</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
