@@ -5,6 +5,8 @@ using Application.Features.DeliveryManSection.Regestration.Qureies;
 using Application.Features.VehicleSection.Commands;
 using Application.Features.VehicleSection.Dtos;
 using Application.Features.VehicleSection.Queries;
+using Application.Shared.Dtos;
+using Domain.InterFaces;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,10 +24,12 @@ namespace Presentaion.Controllers.Admin
   public class VehicleAdminController : ControllerBase
   {
     private readonly IMediator mediator;
+    private readonly IUserSession userSession;
 
-    public VehicleAdminController(IMediator mediator)
+    public VehicleAdminController(IMediator mediator, IUserSession userSession)
     {
       this.mediator = mediator;
+      this.userSession = userSession;
     }
 
     [HttpGet]

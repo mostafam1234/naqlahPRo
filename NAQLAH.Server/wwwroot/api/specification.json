@@ -2058,6 +2058,204 @@
         }
       }
     },
+    "/api/OrderAdmin/GetAllOrders": {
+      "get": {
+        "tags": [
+          "OrderAdmin"
+        ],
+        "operationId": "OrderAdmin_GetAllOrders",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            },
+            "x-position": 1
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            },
+            "x-position": 2
+          },
+          {
+            "name": "searchTerm",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
+          },
+          {
+            "name": "statusFilter",
+            "in": "query",
+            "schema": {
+              "oneOf": [
+                {
+                  "nullable": true,
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/OrderStatus"
+                    }
+                  ]
+                }
+              ]
+            },
+            "x-position": 4
+          },
+          {
+            "name": "customerTypeFilter",
+            "in": "query",
+            "schema": {
+              "oneOf": [
+                {
+                  "nullable": true,
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/CustomerType"
+                    }
+                  ]
+                }
+              ]
+            },
+            "x-position": 5
+          },
+          {
+            "name": "fromDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-position": 6
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-position": 7
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfGetAllOrdersDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/OrderAdmin/GetOrderDetails": {
+      "get": {
+        "tags": [
+          "OrderAdmin"
+        ],
+        "operationId": "OrderAdmin_GetOrderDetails",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetOrderDetailsForAdminDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/OrderAdmin/CancelOrder": {
+      "post": {
+        "tags": [
+          "OrderAdmin"
+        ],
+        "operationId": "OrderAdmin_CancelOrder",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/VehicleAdmin/GetVehiclesBrandLookup": {
       "get": {
         "tags": [
@@ -4324,6 +4522,398 @@
           },
           "active": {
             "type": "boolean"
+          }
+        }
+      },
+      "PagedResultOfGetAllOrdersDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetAllOrdersDto"
+            }
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "GetAllOrdersDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "orderNumber": {
+            "type": "string"
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "$ref": "#/components/schemas/OrderStatus"
+          },
+          "statusName": {
+            "type": "string"
+          },
+          "orderType": {
+            "$ref": "#/components/schemas/OrderType"
+          },
+          "orderTypeName": {
+            "type": "string"
+          },
+          "total": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "customerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "customerName": {
+            "type": "string"
+          },
+          "customerPhone": {
+            "type": "string"
+          },
+          "customerType": {
+            "$ref": "#/components/schemas/CustomerType"
+          },
+          "customerTypeName": {
+            "type": "string"
+          },
+          "deliveryManId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "deliveryManName": {
+            "type": "string"
+          },
+          "deliveryManPhone": {
+            "type": "string"
+          },
+          "assignedDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "completedDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "wayPoints": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderWayPointAdminDto"
+            }
+          }
+        }
+      },
+      "OrderWayPointAdminDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "isOrigin": {
+            "type": "boolean"
+          },
+          "isDestination": {
+            "type": "boolean"
+          },
+          "status": {
+            "$ref": "#/components/schemas/OrderWayPointsStatus"
+          },
+          "statusName": {
+            "type": "string"
+          },
+          "pickedUpDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "address": {
+            "type": "string"
+          },
+          "regionName": {
+            "type": "string"
+          },
+          "cityName": {
+            "type": "string"
+          },
+          "neighborhoodName": {
+            "type": "string"
+          }
+        }
+      },
+      "GetOrderDetailsForAdminDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "orderNumber": {
+            "type": "string"
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "$ref": "#/components/schemas/OrderStatus"
+          },
+          "statusName": {
+            "type": "string"
+          },
+          "orderType": {
+            "$ref": "#/components/schemas/OrderType"
+          },
+          "orderTypeName": {
+            "type": "string"
+          },
+          "total": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "customerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "customerName": {
+            "type": "string"
+          },
+          "customerPhone": {
+            "type": "string"
+          },
+          "customerType": {
+            "$ref": "#/components/schemas/CustomerType"
+          },
+          "customerTypeName": {
+            "type": "string"
+          },
+          "deliveryManId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "deliveryManName": {
+            "type": "string"
+          },
+          "deliveryManPhone": {
+            "type": "string"
+          },
+          "vehicleTypeId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "vehicleTypeName": {
+            "type": "string"
+          },
+          "vehiclePlate": {
+            "type": "string"
+          },
+          "wayPoints": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderWayPointAdminDto"
+            }
+          },
+          "orderPackage": {
+            "$ref": "#/components/schemas/OrderPackageDto"
+          },
+          "orderCategories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderCategoryAdminDto"
+            }
+          },
+          "orderServices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderServiceAdminDto"
+            }
+          },
+          "orderPaymentMethods": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderPaymentMethodAdminDto"
+            }
+          },
+          "statusHistory": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderStatusHistoryDto"
+            }
+          },
+          "assignedDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "completedDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "OrderPackageDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "arabicDescription": {
+            "type": "string"
+          },
+          "englishDescription": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "minWeightInKg": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "maxWeightInKg": {
+            "type": "number",
+            "format": "decimal"
+          }
+        }
+      },
+      "OrderCategoryAdminDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "categoryId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "categoryName": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "price": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "totalPrice": {
+            "type": "number",
+            "format": "decimal"
+          }
+        }
+      },
+      "OrderServiceAdminDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "serviceId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "serviceName": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number",
+            "format": "decimal"
+          }
+        }
+      },
+      "OrderPaymentMethodAdminDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "paymentMethodId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "paymentMethodName": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "paymentStatus": {
+            "$ref": "#/components/schemas/OrderPaymentStatus"
+          },
+          "paymentStatusName": {
+            "type": "string"
+          }
+        }
+      },
+      "OrderPaymentStatus": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "Pending",
+          "Captured",
+          "Failed",
+          "Cancelled"
+        ],
+        "enum": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "OrderStatusHistoryDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/OrderStatus"
+          },
+          "statusName": {
+            "type": "string"
+          },
+          "creationDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "description": {
+            "type": "string"
           }
         }
       },

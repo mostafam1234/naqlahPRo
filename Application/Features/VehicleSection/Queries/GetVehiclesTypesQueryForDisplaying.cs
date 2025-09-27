@@ -1,5 +1,6 @@
 ﻿using Application.Features.VehicleSection.Dtos;
 using Application.Features.VehicleSection.Queries;
+using Application.Shared.Dtos;
 using CSharpFunctionalExtensions;
 using Domain.InterFaces;
 using MediatR;

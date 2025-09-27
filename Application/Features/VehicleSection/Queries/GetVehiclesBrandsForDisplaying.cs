@@ -1,5 +1,6 @@
 ﻿using Application.Features.DeliveryManSection.Regestration.Dtos;
 using Application.Features.VehicleSection.Dtos;
+using Application.Shared.Dtos;
 using CSharpFunctionalExtensions;
 using Domain.Enums;
 using Domain.InterFaces;
@@ -64,12 +65,5 @@ namespace Application.Features.VehicleSection.Queries
                 return Result.Success(pagedResult);
             }
         }
-    }
-
-    public class PagedResult<T>
-    {
-        public List<T> Data { get; set; } = new();
-        public int TotalCount { get; set; }
-        public int TotalPages { get; set; }
     }
 }

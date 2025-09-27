@@ -1,10 +1,10 @@
-﻿using Domain.Enums;
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 
 namespace Application.Features.AdminSection.OrderFeature.Dtos
 {
-    public class GetAllOrdersDto
+    public class GetOrderDetailsForAdminDto
     {
         public int Id { get; set; }
         public string OrderNumber { get; set; } = string.Empty;
@@ -27,13 +27,31 @@ namespace Application.Features.AdminSection.OrderFeature.Dtos
         public string DeliveryManName { get; set; } = string.Empty;
         public string DeliveryManPhone { get; set; } = string.Empty;
 
+        // Vehicle Information
+        public int? VehicleTypeId { get; set; }
+        public string VehicleTypeName { get; set; } = string.Empty;
+        public string VehiclePlate { get; set; } = string.Empty;
+
+        // Route Information
+        public List<OrderWayPointAdminDto> WayPoints { get; set; } = new();
+
+        // Package Information
+        public OrderPackageDto OrderPackage { get; set; } = new();
+
+        // Order Categories/Items
+        public List<OrderCategoryAdminDto> OrderCategories { get; set; } = new();
+
+        // Order Services
+        public List<OrderServiceAdminDto> OrderServices { get; set; } = new();
+
+        // Payment Information
+        public List<OrderPaymentMethodAdminDto> OrderPaymentMethods { get; set; } = new();
+
+        // Status History
+        public List<OrderStatusHistoryDto> StatusHistory { get; set; } = new();
+
         // Additional Info
         public DateTime? AssignedDate { get; set; }
         public DateTime? CompletedDate { get; set; }
-
-        // WayPoints Information
-        public List<OrderWayPointAdminDto> WayPoints { get; set; } = new List<OrderWayPointAdminDto>();
     }
-
-
 }
