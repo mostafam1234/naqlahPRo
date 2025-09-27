@@ -4,75 +4,17 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import Swal from 'sweetalert2';
-import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
 import * as L from 'leaflet';
-
-interface OrderDetails {
-  number: string;
-  status: 'pending' | 'assigned' | 'in-progress' | 'completed' | 'cancelled';
-  orderType: 'delivery' | 'pickup' | 'round-trip';
-  createdAt: Date;
-  from: string;
-  fromAddress: string;
-  fromCoordinates: { lat: number; lng: number; };
-  to: string;
-  toAddress: string;
-  toCoordinates: { lat: number; lng: number; };
-  distance: number;
-  pickupTime: Date;
-  deliveryTime: Date;
-  customerName: string;
-  customerPhone: string;
-  customerType: 'individual' | 'institution';
-  totalAmount: number;
-  
-  // Order Package Information
-  orderPackage: {
-    arabicDescription: string;
-    englishDescription: string;
-    minWeightInKg: number;
-    maxWeightInKg: number;
-  };
-  
-  // Order Categories/Items
-  orderItems: Array<{
-    id: number;
-    arabicCategoryName: string;
-    englishCategoryName: string;
-  }>;
-  
-  // Order Services
-  orderServices: Array<{
-    id: number;
-    arabicName: string;
-    englishName: string;
-    price: number;
-  }>;
-  
-  // Payment Information
-  paymentInfo: {
-    paymentMethodId: number;
-    paymentMethodName: string;
-    amount: number;
-    paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded';
-  };
-  
-  captain: {
-    name: string;
-    phone: string;
-    vehicleType: string;
-    vehiclePlate: string;
-  };
-  beforeLoadingPhoto?: string;
-  afterDeliveryPhoto?: string;
-  lastLocationUpdate?: Date;
-}
-
-interface StatusHistoryEvent {
-  status: 'pending' | 'assigned' | 'in-progress' | 'completed' | 'cancelled';
-  timestamp: Date;
-  description: string;
-}
+import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
+import {
+  OrderAdminClient,
+  GetOrderDetailsForAdminDto,
+  OrderStatus,
+  CustomerType,
+  OrderType
+} from 'src/app/Core/services/NaqlahClient';
+import { catchError, finalize } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 interface TimelineEvent {
   title: string;
@@ -89,23 +31,24 @@ interface TimelineEvent {
   styleUrls: ['./order-details.component.css']
 })
 export class OrderDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
-  orderDetails: OrderDetails | null = null;
+  orderDetails: GetOrderDetailsForAdminDto | null = null;
   orderTimeline: TimelineEvent[] = [];
   isLoading = true;
-  orderId: string = '';
-  private map?: L.Map;
-  
+  orderId: number = 0;
+  private map: L.Map | null = null;
+
   private routeSubscription?: Subscription;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private orderClient: OrderAdminClient
   ) {}
 
   ngOnInit(): void {
     this.routeSubscription = this.route.params.subscribe(params => {
-      this.orderId = params['id'];
+      this.orderId = +params['id']; // Convert to number
       this.loadOrderDetails();
     });
   }
@@ -117,177 +60,91 @@ export class OrderDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private loadOrderDetails(): void {
+    if (!this.orderId) {
+      console.error('No order ID provided');
+      this.router.navigate(['/admin/orders']);
+      return;
+    }
+
     this.isLoading = true;
-    
-    // Simulate API call - replace with actual service call
-    setTimeout(() => {
-      this.orderDetails = {
-        number: this.orderId,
-        status: 'assigned',
-        orderType: 'delivery',
-        createdAt: new Date('2024-01-15T10:30:00'),
-        from: 'الرياض',
-        fromAddress: 'شارع الملك فهد، حي العليا، الرياض',
-        fromCoordinates: { lat: 24.7136, lng: 46.6753 }, // Riyadh coordinates
-        to: 'جدة',
-        toAddress: 'شارع الأمير سلطان، حي الشرفية، جدة',
-        toCoordinates: { lat: 21.5433, lng: 39.1728 }, // Jeddah coordinates
-        distance: 950,
-        pickupTime: new Date('2024-01-15T14:00:00'),
-        deliveryTime: new Date('2024-01-16T08:00:00'),
-        customerName: 'أحمد محمد السالم',
-        customerPhone: '+966501234567',
-        customerType: 'individual',
-        totalAmount: 1250,
-        
-        // Order Package Information
-        orderPackage: {
-          arabicDescription: 'حزمة التوصيل السريع - حتى 50 كيلوجرام',
-          englishDescription: 'Express Delivery Package - Up to 50 KG',
-          minWeightInKg: 1,
-          maxWeightInKg: 50
-        },
-        
-        // Order Categories/Items
-        orderItems: [
-          {
-            id: 1,
-            arabicCategoryName: 'إلكترونيات',
-            englishCategoryName: 'Electronics'
-          },
-          {
-            id: 2,
-            arabicCategoryName: 'ملابس',
-            englishCategoryName: 'Clothing'
-          }
-        ],
-        
-        // Order Services
-        orderServices: [
-          {
-            id: 1,
-            arabicName: 'توصيل سريع',
-            englishName: 'Express Delivery',
-            price: 50
-          },
-          {
-            id: 2,
-            arabicName: 'تأمين الشحنة',
-            englishName: 'Cargo Insurance',
-            price: 25
-          },
-          {
-            id: 3,
-            arabicName: 'التعامل مع العناصر الهشة',
-            englishName: 'Fragile Item Handling',
-            price: 30
-          }
-        ],
-        
-        // Payment Information
-        paymentInfo: {
-          paymentMethodId: 1,
-          paymentMethodName: 'بطاقة ائتمان',
-          amount: 1250,
-          paymentStatus: 'paid'
-        },
-        
-        captain: {
-          name: 'محمد أحمد العلي',
-          phone: '+966507654321',
-          vehicleType: 'شاحنة صغيرة',
-          vehiclePlate: 'أ ب ج 1234'
-        },
-        beforeLoadingPhoto: './assets/images/sample-before-loading.jpg',
-        lastLocationUpdate: new Date()
-      };
 
-      this.generateTimeline();
-      this.isLoading = false;
-      this.initializeMap();
-    }, 1000);
+    this.orderClient.getOrderDetails(this.orderId)
+      .pipe(
+        catchError(error => {
+          console.error('Error loading order details:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'خطأ',
+            text: 'حدث خطأ في تحميل تفاصيل الطلب',
+            confirmButtonText: 'موافق'
+          });
+          return of(null);
+        }),
+        finalize(() => {
+          this.isLoading = false;
+        })
+      )
+      .subscribe(response => {
+        if (response) {
+          this.orderDetails = response;
+          setTimeout(() => this.initializeMapWithRealData(), 500);
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'خطأ',
+            text: 'لم يتم العثور على الطلب',
+            confirmButtonText: 'موافق'
+          }).then(() => {
+            this.router.navigate(['/admin/orders']);
+          });
+
+        }
+      });
   }
 
-  private generateTimeline(): void {
-    if (!this.orderDetails) return;
 
-    this.orderTimeline = [
-      {
-        title: this.translate.instant('ADMIN.PAGES.ORDERS.DETAILS.TIMELINE.ORDER_CREATED'),
-        description: this.translate.instant('ADMIN.PAGES.ORDERS.DETAILS.TIMELINE.ORDER_CREATED_DESC'),
-        timestamp: this.orderDetails.createdAt,
-        status: 'completed'
-      },
-      {
-        title: this.translate.instant('ADMIN.PAGES.ORDERS.DETAILS.TIMELINE.CAPTAIN_ASSIGNED'),
-        description: this.translate.instant('ADMIN.PAGES.ORDERS.DETAILS.TIMELINE.CAPTAIN_ASSIGNED_DESC', { name: this.orderDetails.captain.name }),
-        timestamp: new Date(this.orderDetails.createdAt.getTime() + 15 * 60 * 1000), // 15 minutes later
-        status: 'completed'
-      },
-      {
-        title: this.translate.instant('ADMIN.PAGES.ORDERS.DETAILS.TIMELINE.EN_ROUTE_PICKUP'),
-        description: this.translate.instant('ADMIN.PAGES.ORDERS.DETAILS.TIMELINE.EN_ROUTE_PICKUP_DESC'),
-        timestamp: new Date(this.orderDetails.createdAt.getTime() + 30 * 60 * 1000), // 30 minutes later
-        status: this.orderDetails.status === 'in-progress' ? 'current' : 'completed'
-      },
-      {
-        title: this.translate.instant('ADMIN.PAGES.ORDERS.DETAILS.TIMELINE.PICKUP_COMPLETED'),
-        description: this.translate.instant('ADMIN.PAGES.ORDERS.DETAILS.TIMELINE.PICKUP_COMPLETED_DESC'),
-        timestamp: this.orderDetails.pickupTime,
-        status: this.orderDetails.status === 'completed' ? 'completed' : 'pending'
-      },
-      {
-        title: this.translate.instant('ADMIN.PAGES.ORDERS.DETAILS.TIMELINE.DELIVERY_COMPLETED'),
-        description: this.translate.instant('ADMIN.PAGES.ORDERS.DETAILS.TIMELINE.DELIVERY_COMPLETED_DESC'),
-        timestamp: this.orderDetails.deliveryTime,
-        status: this.orderDetails.status === 'completed' ? 'completed' : 'pending'
-      }
-    ];
-  }
-
-  getStatusText(status?: string): string {
+  getStatusText(status?: OrderStatus): string {
     if (!status) return '';
-    
-    const statusMap: { [key: string]: string } = {
-      'pending': this.translate.instant('ADMIN.PAGES.ORDERS.TABS.PENDING'),
-      'in-progress': this.translate.instant('ADMIN.PAGES.ORDERS.TABS.IN_PROGRESS'),
-      'completed': this.translate.instant('ADMIN.PAGES.ORDERS.TABS.COMPLETED'),
-      'cancelled': this.translate.instant('ADMIN.PAGES.ORDERS.TABS.CANCELLED')
-    };
-    
-    return statusMap[status] || status;
+
+    switch (status) {
+      case OrderStatus.Pending:
+        return this.translate.instant('ADMIN.PAGES.ORDERS.TABS.PENDING');
+      case OrderStatus.Assigned:
+        return this.translate.instant('ADMIN.PAGES.ORDERS.TABS.ASSIGNED');
+      case OrderStatus.Completed:
+        return this.translate.instant('ADMIN.PAGES.ORDERS.TABS.COMPLETED');
+      case OrderStatus.Cancelled:
+        return this.translate.instant('ADMIN.PAGES.ORDERS.TABS.CANCELLED');
+      default:
+        return 'غير معروف';
+    }
   }
 
-  getCustomerTypeText(type?: string): string {
-    if (!type) return '';
-    
-    const typeMap: { [key: string]: string } = {
-      'individual': this.translate.instant('ADMIN.PAGES.ORDERS.DETAILS.CUSTOMER_TYPE.INDIVIDUAL'),
-      'institution': this.translate.instant('ADMIN.PAGES.ORDERS.DETAILS.CUSTOMER_TYPE.INSTITUTION')
-    };
-    
-    return typeMap[type] || type;
-  }
+  getStatusColorClass(status?: OrderStatus): string {
+    if (!status) return 'bg-gray-100 text-gray-800';
 
-  getPaymentStatusText(status?: string): string {
-    if (!status) return '';
-    
-    const statusMap: { [key: string]: string } = {
-      'pending': this.translate.instant('ADMIN.PAGES.ORDERS.DETAILS.PAYMENT_STATUS.PENDING'),
-      'paid': this.translate.instant('ADMIN.PAGES.ORDERS.DETAILS.PAYMENT_STATUS.PAID'),
-      'failed': this.translate.instant('ADMIN.PAGES.ORDERS.DETAILS.PAYMENT_STATUS.FAILED'),
-      'refunded': this.translate.instant('ADMIN.PAGES.ORDERS.DETAILS.PAYMENT_STATUS.REFUNDED')
-    };
-    
-    return statusMap[status] || status;
+    switch (status) {
+      case OrderStatus.Pending:
+        return 'bg-yellow-100 text-yellow-800';
+      case OrderStatus.Assigned:
+        return 'bg-blue-100 text-blue-800';
+      case OrderStatus.Completed:
+        return 'bg-green-100 text-green-800';
+      case OrderStatus.Cancelled:
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
   }
 
   canCancelOrder(): boolean {
-    return this.orderDetails?.status === 'pending' || this.orderDetails?.status === 'in-progress';
+    return this.orderDetails?.status === OrderStatus.Pending || this.orderDetails?.status === OrderStatus.Assigned;
   }
 
   async cancelOrder(): Promise<void> {
-    if (!this.canCancelOrder()) return;
+    if (!this.canCancelOrder()) {
+      return;
+    }
 
     const result = await Swal.fire({
       title: this.translate.instant('ADMIN.PAGES.ORDERS.DETAILS.CANCEL_CONFIRM.TITLE'),
@@ -302,40 +159,34 @@ export class OrderDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
     });
 
     if (result.isConfirmed) {
-      try {
-        // Simulate API call to cancel order
-        // await this.orderService.cancelOrder(this.orderId);
-        
-        // Show success message
-        await Swal.fire({
-          title: this.translate.instant('ADMIN.PAGES.ORDERS.DETAILS.CANCEL_SUCCESS.TITLE'),
-          text: this.translate.instant('ADMIN.PAGES.ORDERS.DETAILS.CANCEL_SUCCESS.TEXT'),
-          icon: 'success',
-          confirmButtonText: this.translate.instant('ADMIN.PAGES.ORDERS.DETAILS.CANCEL_SUCCESS.OK')
-        });
-
-        // Update order status
-        if (this.orderDetails) {
-          this.orderDetails.status = 'cancelled';
-        }
-
-        // Navigate back to orders list
-        this.router.navigate(['/admin/orders']);
-        
-      } catch (error) {
-        // Show error message
-        await Swal.fire({
-          title: this.translate.instant('ADMIN.PAGES.ORDERS.DETAILS.CANCEL_ERROR.TITLE'),
-          text: this.translate.instant('ADMIN.PAGES.ORDERS.DETAILS.CANCEL_ERROR.TEXT'),
-          icon: 'error',
-          confirmButtonText: this.translate.instant('ADMIN.PAGES.ORDERS.DETAILS.CANCEL_ERROR.OK')
-        });
-      }
+      this.cancelOrderFromAdmin();
     }
   }
 
-  viewOrderDetails(orderNumber: string): void {
-    this.router.navigate(['/admin/orders/details', orderNumber]);
+  cancelOrderFromAdmin(){
+    this.orderClient.cancelOrder(this.orderId).subscribe({
+      next: (res) => {
+        Swal.fire({
+          title: 'تم إلغاء الطلب',
+          text: 'تم إلغاء الطلب بنجاح',
+          icon: 'success',
+          confirmButtonText: 'موافق',
+          timer: 3000
+        }).then(() => {
+          this.loadOrderDetails();
+        });
+
+      },
+      error: (err) => {
+        Swal.fire({
+          title: 'خطأ',
+          text: err?.message || 'حدث خطأ أثناء إلغاء الطلب',
+          icon: 'error',
+          confirmButtonText: 'موافق',
+          timer: 3000
+        });
+      }
+    });
   }
 
   goBack(): void {
@@ -343,108 +194,284 @@ export class OrderDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // Map will be initialized after data is loaded in loadOrderDetails
+    console.log('ngAfterViewInit called');
+    // Wait for DOM to be fully rendered
+    setTimeout(() => {
+      console.log('Attempting to initialize map with real data');
+      this.initializeMapWithRealData();
+    }, 500);
   }
 
-  private initializeMap(): void {
-    if (!this.orderDetails) return;
+  private initializeMapWithRealData(): void {
+    console.log('Initializing map with real waypoints data');
 
-    // Initialize Leaflet map
-    this.map = L.map('orderMap', {
-      center: [
-        (this.orderDetails.fromCoordinates.lat + this.orderDetails.toCoordinates.lat) / 2,
-        (this.orderDetails.fromCoordinates.lng + this.orderDetails.toCoordinates.lng) / 2
-      ],
-      zoom: 6,
-      attributionControl: true
-    });
+    // Check if we have waypoints data from the backend
+    if (!this.orderDetails?.wayPoints || this.orderDetails.wayPoints.length === 0) {
+      console.log('No waypoints data available, using default map');
+      return;
+    }
 
-    // Add tile layer (OpenStreetMap)
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
-    }).addTo(this.map);
+    console.log('WayPoints from backend:', this.orderDetails.wayPoints);
 
-    // Custom pickup icon (green)
-    const pickupIcon = L.divIcon({
-      className: 'custom-pickup-marker',
-      html: `<div class="bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold shadow-lg">
-               <i class="fas fa-arrow-up"></i>
-             </div>`,
-      iconSize: [32, 32],
-      iconAnchor: [16, 16]
-    });
+    const mapContainer = document.getElementById('orderMap');
+    if (!mapContainer) {
+      console.error('Map container not found!');
+      return;
+    }
 
-    // Custom delivery icon (red)
-    const deliveryIcon = L.divIcon({
-      className: 'custom-delivery-marker',
-      html: `<div class="bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold shadow-lg">
-               <i class="fas fa-arrow-down"></i>
-             </div>`,
-      iconSize: [32, 32],
-      iconAnchor: [16, 16]
-    });
+    try {
+      // If map already exists, clear it
+      if (this.map) {
+        this.map.remove();
+      }
 
-    // Add pickup marker
-    const pickupMarker = L.marker(
-      [this.orderDetails.fromCoordinates.lat, this.orderDetails.fromCoordinates.lng],
-      { icon: pickupIcon }
-    ).addTo(this.map);
+      // Configure Leaflet default icon path
+      delete (L.Icon.Default.prototype as any)._getIconUrl;
+      L.Icon.Default.mergeOptions({
+        iconRetinaUrl: 'assets/leaflet/images/marker-icon-2x.png',
+        iconUrl: 'assets/leaflet/images/marker-icon.png',
+        shadowUrl: 'assets/leaflet/images/marker-shadow.png'
+      });
 
-    // Add delivery marker
-    const deliveryMarker = L.marker(
-      [this.orderDetails.toCoordinates.lat, this.orderDetails.toCoordinates.lng],
-      { icon: deliveryIcon }
-    ).addTo(this.map);
+      // Get origin and destination from real data
+      const originWayPoint = this.orderDetails.wayPoints.find(wp => wp.isOrigin);
+      const destinationWayPoint = this.orderDetails.wayPoints.find(wp => wp.isDestination);
 
-    // Add popups with location info
-    pickupMarker.bindPopup(`
-      <div class="text-sm">
-        <div class="font-bold text-green-600 mb-1">${this.translate.instant('ADMIN.PAGES.ORDERS.DETAILS.MAP.PICKUP_LOCATION')}</div>
-        <div class="font-semibold">${this.orderDetails.from}</div>
-        <div class="text-gray-600 text-xs">${this.orderDetails.fromAddress}</div>
-      </div>
-    `);
+      console.log('Origin WayPoint:', originWayPoint);
+      console.log('Destination WayPoint:', destinationWayPoint);
 
-    deliveryMarker.bindPopup(`
-      <div class="text-sm">
-        <div class="font-bold text-red-600 mb-1">${this.translate.instant('ADMIN.PAGES.ORDERS.DETAILS.MAP.DELIVERY_LOCATION')}</div>
-        <div class="font-semibold">${this.orderDetails.to}</div>
-        <div class="text-gray-600 text-xs">${this.orderDetails.toAddress}</div>
-      </div>
-    `);
+      if (!originWayPoint || !destinationWayPoint) {
+          console.log('Origin or destination waypoint not found');
+          return;
+      }
 
-    // Add route line between pickup and delivery
-    const routeLine = L.polyline([
-      [this.orderDetails.fromCoordinates.lat, this.orderDetails.fromCoordinates.lng],
-      [this.orderDetails.toCoordinates.lat, this.orderDetails.toCoordinates.lng]
-    ], {
-      color: '#3b82f6',
-      weight: 4,
-      opacity: 0.8,
-      dashArray: '10,10'
-    }).addTo(this.map);
+      // Validate coordinates
+      if (!originWayPoint.latitude || !originWayPoint.longitude ||
+          !destinationWayPoint.latitude || !destinationWayPoint.longitude) {
+        console.log('Invalid coordinates in waypoints');
+        return;
+      }
 
-    // Add route popup with distance info
-    const midpoint = [
-      (this.orderDetails.fromCoordinates.lat + this.orderDetails.toCoordinates.lat) / 2,
-      (this.orderDetails.fromCoordinates.lng + this.orderDetails.toCoordinates.lng) / 2
-    ];
+      // Calculate center point between origin and destination using REAL coordinates
+      const centerLat = (originWayPoint.latitude + destinationWayPoint.latitude) / 2;
+      const centerLng = (originWayPoint.longitude + destinationWayPoint.longitude) / 2;
 
-    L.circleMarker(midpoint as [number, number], {
-      radius: 6,
-      color: '#3b82f6',
-      fillColor: '#dbeafe',
-      fillOpacity: 0.8,
-      weight: 2
-    }).addTo(this.map).bindPopup(`
-      <div class="text-sm text-center">
-        <div class="font-bold text-blue-600">${this.translate.instant('ADMIN.PAGES.ORDERS.DETAILS.MAP.ROUTE_INFO')}</div>
-        <div class="text-gray-600">${this.orderDetails.distance} ${this.translate.instant('ADMIN.PAGES.ORDERS.DETAILS.MAP.KILOMETERS')}</div>
-      </div>
-    `);
+      console.log(`Using real coordinates - Center: ${centerLat}, ${centerLng}`);
+      console.log(`Origin: ${originWayPoint.latitude}, ${originWayPoint.longitude}`);
+      console.log(`Destination: ${destinationWayPoint.latitude}, ${destinationWayPoint.longitude}`);
 
-    // Fit map bounds to show both markers
-    const group = new L.FeatureGroup([pickupMarker, deliveryMarker]);
-    this.map.fitBounds(group.getBounds().pad(0.1));
+      // Initialize map with REAL coordinates from backend
+      this.map = L.map('orderMap', {
+        zoomControl: true,
+        scrollWheelZoom: true,
+        doubleClickZoom: true,
+        attributionControl: true
+      }).setView([centerLat, centerLng], 12);
+
+      // Use beautiful tile layer
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '© OpenStreetMap © CartoDB',
+        subdomains: 'abcd',
+        maxZoom: 19
+      }).addTo(this.map);
+
+      // Create custom icons
+      const startIcon = L.divIcon({
+        html: `
+          <div style="
+            background: linear-gradient(135deg, #10b981, #059669);
+            width: 40px;
+            height: 40px;
+            border-radius: 50% 50% 50% 0;
+            border: 3px solid white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            transform: rotate(-45deg);
+          ">
+            <span style="transform: rotate(45deg);">🚀</span>
+          </div>
+        `,
+        className: 'custom-div-icon',
+        iconSize: [40, 40],
+        iconAnchor: [20, 40]
+      });
+
+      const endIcon = L.divIcon({
+        html: `
+          <div style="
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            width: 40px;
+            height: 40px;
+            border-radius: 50% 50% 50% 0;
+            border: 3px solid white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            transform: rotate(-45deg);
+          ">
+            <span style="transform: rotate(45deg);">🎯</span>
+          </div>
+        `,
+        className: 'custom-div-icon',
+        iconSize: [40, 40],
+        iconAnchor: [20, 40]
+      });
+
+      // Add markers with REAL coordinates and addresses from backend
+      const startMarker = L.marker([originWayPoint.latitude, originWayPoint.longitude], { icon: startIcon }).addTo(this.map);
+      startMarker.bindPopup(`
+        <div style="text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; direction: rtl;">
+          <div style="background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 10px; border-radius: 8px 8px 0 0; margin: -10px -10px 10px -10px;">
+            <strong>🚀 نقطة الاستلام</strong>
+          </div>
+          <div style="padding: 5px;">
+            <p style="margin: 5px 0; color: #374151;"><strong>العنوان:</strong> ${originWayPoint.address || 'غير محدد'}</p>
+            <p style="margin: 5px 0; color: #6b7280; font-size: 12px;">إحداثيات: ${originWayPoint.latitude.toFixed(4)}, ${originWayPoint.longitude.toFixed(4)}</p>
+            ${originWayPoint.regionName ? '<p style="margin: 5px 0; color: #6b7280; font-size: 12px;">المنطقة: ' + originWayPoint.regionName + '</p>' : ''}
+            ${originWayPoint.pickedUpDate ? '<p style="margin: 5px 0; color: #10b981; font-size: 12px;">✓ تم الاستلام</p>' : '<p style="margin: 5px 0; color: #f59e0b; font-size: 12px;">⏳ في الانتظار</p>'}
+          </div>
+        </div>
+      `, {
+        maxWidth: 300,
+        className: 'custom-popup'
+      });
+
+      const endMarker = L.marker([destinationWayPoint.latitude, destinationWayPoint.longitude], { icon: endIcon }).addTo(this.map);
+      endMarker.bindPopup(`
+        <div style="text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; direction: rtl;">
+          <div style="background: linear-gradient(135deg, #dc2626, #b91c1c); color: white; padding: 10px; border-radius: 8px 8px 0 0; margin: -10px -10px 10px -10px;">
+            <strong>🎯 نقطة التسليم</strong>
+          </div>
+          <div style="padding: 5px;">
+            <p style="margin: 5px 0; color: #374151;"><strong>العنوان:</strong> ${destinationWayPoint.address || 'غير محدد'}</p>
+            <p style="margin: 5px 0; color: #6b7280; font-size: 12px;">إحداثيات: ${destinationWayPoint.latitude.toFixed(4)}, ${destinationWayPoint.longitude.toFixed(4)}</p>
+            ${destinationWayPoint.regionName ? '<p style="margin: 5px 0; color: #6b7280; font-size: 12px;">المنطقة: ' + destinationWayPoint.regionName + '</p>' : ''}
+            ${destinationWayPoint.status === 3 ? '<p style="margin: 5px 0; color: #10b981; font-size: 12px;">✓ تم التسليم</p>' : '<p style="margin: 5px 0; color: #f59e0b; font-size: 12px;">⏳ في الانتظار</p>'}
+          </div>
+        </div>
+      `, {
+        maxWidth: 300,
+        className: 'custom-popup'
+      });
+
+      // Create route from all waypoints in order using REAL coordinates
+      const routeCoordinates: [number, number][] = [];
+
+      // Add origin first
+      if (originWayPoint.latitude && originWayPoint.longitude) {
+        routeCoordinates.push([originWayPoint.latitude, originWayPoint.longitude]);
+      }
+
+      // Add intermediate waypoints
+      const intermediateWayPoints = this.orderDetails.wayPoints.filter(wp => !wp.isOrigin && !wp.isDestination);
+      intermediateWayPoints.forEach(wp => {
+        if (wp.latitude && wp.longitude) {
+          routeCoordinates.push([wp.latitude, wp.longitude]);
+        }
+      });
+
+      // Add destination last
+      if (destinationWayPoint.latitude && destinationWayPoint.longitude) {
+        routeCoordinates.push([destinationWayPoint.latitude, destinationWayPoint.longitude]);
+      }
+
+      console.log('Route coordinates from backend:', routeCoordinates);
+
+      // Draw the route using REAL coordinates
+      if (routeCoordinates.length > 1) {
+        const mainRoute = L.polyline(routeCoordinates, {
+          color: '#3b82f6',
+          weight: 6,
+          opacity: 0.8,
+          lineCap: 'round',
+          lineJoin: 'round'
+        }).addTo(this.map);
+
+        // Add shadow effect
+        L.polyline(routeCoordinates, {
+          color: '#1e40af',
+          weight: 8,
+          opacity: 0.3,
+          lineCap: 'round',
+          lineJoin: 'round'
+        }).addTo(this.map);
+      }
+
+      // Add intermediate waypoints if any using REAL coordinates
+      intermediateWayPoints.forEach((wp, index) => {
+        if (wp.latitude && wp.longitude) {
+          const intermediateIcon = L.divIcon({
+            html: `
+              <div style="
+                background: linear-gradient(135deg, #f59e0b, #d97706);
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                border: 2px solid white;
+                box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: white;
+                font-weight: bold;
+                font-size: 14px;
+              ">
+                ${index + 1}
+              </div>
+            `,
+            className: 'intermediate-waypoint',
+            iconSize: [32, 32],
+            iconAnchor: [16, 16]
+          });
+
+          const intermediateMarker = L.marker([wp.latitude, wp.longitude], { icon: intermediateIcon }).addTo(this.map);
+          intermediateMarker.bindPopup(`
+            <div style="text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; direction: rtl;">
+              <div style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; padding: 8px; border-radius: 6px 6px 0 0; margin: -8px -8px 8px -8px;">
+                <strong>📍 نقطة وسطية ${index + 1}</strong>
+              </div>
+              <div style="padding: 5px;">
+                <p style="margin: 5px 0; color: #374151;"><strong>العنوان:</strong> ${wp.address || 'غير محدد'}</p>
+                <p style="margin: 5px 0; color: #6b7280; font-size: 12px;">إحداثيات: ${wp.latitude.toFixed(4)}, ${wp.longitude.toFixed(4)}</p>
+                ${wp.regionName ? '<p style="margin: 5px 0; color: #6b7280; font-size: 12px;">المنطقة: ' + wp.regionName + '</p>' : ''}
+              </div>
+            </div>
+          `, {
+            maxWidth: 280,
+            className: 'custom-popup'
+          });
+        }
+      });
+
+      // Fit map to show all markers using REAL coordinates
+      const allMarkers = [startMarker, endMarker];
+      const group = L.featureGroup(allMarkers);
+      this.map.fitBounds(group.getBounds(), {
+        padding: [30, 30],
+        maxZoom: 15
+      });
+
+      // Add loaded class to remove loading animation
+      setTimeout(() => {
+        const mapContainer = document.querySelector('.map-container');
+        if (mapContainer) {
+          mapContainer.classList.add('loaded');
+        }
+      }, 100);
+
+      console.log('Map initialized successfully with REAL DATA from backend');
+    } catch (error) {
+      console.error('Error initializing map with real data:', error);
+      // Fallback to default map
+    }
   }
 }

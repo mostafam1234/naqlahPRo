@@ -22,14 +22,14 @@ namespace Domain.Models
         public int Id { get; private set; }
         public string OrderNumber { get; set; }
         public int CustomerId { get; private set; }
-        public int? VehicleTypeId { get;private set; }
-        public int? DeliveryManId { get;private set; }
-        public int OrderPackageId { get;private set; }
+        public int? VehicleTypeId { get; private set; }
+        public int? DeliveryManId { get; private set; }
+        public int OrderPackageId { get; private set; }
         public OrderType OrderType { get; private set; }
         public OrderStatus OrderStatus { get; private set; }
-        public int VehicleTypdId { get;private set; }
+        public int VehicleTypdId { get; private set; }
         public decimal Total { get; private set; }
-        public OrderPackage OrderPackage { get;private set; }
+        public OrderPackage OrderPackage { get; private set; }
         private List<OrderDetails> _OrderDetails { get; set; }
         public IReadOnlyList<OrderDetails> OrderDetails
         {
@@ -104,7 +104,7 @@ namespace Domain.Models
                                            DateTime nowDate,
                                            List<OrderDetails> orderDetails,
                                            List<OrderWayPoint> orderWayPoints,
-                                           List<OrderService>orderServices)
+                                           List<OrderService> orderServices)
         {
             const int MinOrderWayPointsCount = 2;
             var fixedTotal = 100;
@@ -123,7 +123,7 @@ namespace Domain.Models
                 return Result.Failure<Order>("At least two order way points are required");
             }
 
-            var orderPaymentMethod = OrderPaymentMethod.Instance(paymentMethodId,fixedTotal);
+            var orderPaymentMethod = OrderPaymentMethod.Instance(paymentMethodId, fixedTotal);
             var orderStatusHistory = OrderStatusHistory.Create(OrderStatus.Pending, nowDate);
 
             var order = new Order
@@ -250,6 +250,22 @@ namespace Domain.Models
             {
                 wayPoint.MarkAsCompleted(nowDate);
             }
+
+            return Result.Success();
+        }
+
+        public Result CancelOrder(DateTime nowDate)
+        {
+            if (this.OrderStatus == OrderStatus.Cancelled)
+            {
+                return Result.Failure("Order is already cancelled");
+            }
+
+            this.OrderStatus = OrderStatus.Cancelled;
+
+            // Add status history for cancellation
+            var statusHistory = OrderStatusHistory.Create(OrderStatus.Cancelled, nowDate);
+            this._OrderStatusHistories.Add(statusHistory);
 
             return Result.Success();
         }
