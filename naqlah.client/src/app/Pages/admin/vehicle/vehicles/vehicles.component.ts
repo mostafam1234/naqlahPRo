@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
-import { AddVehicleBrandCommand, AddVehicleTypeCommand, DeliveryManVehicleDto, VehicleAdminClient } from 'src/app/Core/services/NaqlahClient';
+import { AddVehicleBrandCommand, AddVehicleTypeCommand, DeliveryManVehicleDto, UpdateVehicleBrandCommand, UpdateVehicleTypeCommand, VehicleAdminClient } from 'src/app/Core/services/NaqlahClient';
 import { SubSink } from 'subsink';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
@@ -158,15 +158,17 @@ export class VehiclesComponent implements OnInit, OnDestroy {
 
     let apiCall;
     if (this.activeTab === 'brands') {
-      let command = new AddVehicleBrandCommand();
+      let command = new UpdateVehicleBrandCommand();
+      command.vehicleBrandId = itemId!;
       command.arabicName = value.arabicName;
       command.englishName = value.englishName;
-      apiCall = this.vehicleClient.addVehicleBrand(command);
+      apiCall = this.vehicleClient.updateVehicleBrand(command);
     } else {
-      let command = new AddVehicleTypeCommand();
+      let command = new UpdateVehicleTypeCommand();
+      command.vehicleTypeId = itemId!;
       command.arabicName = value.arabicName;
       command.englishName = value.englishName;
-      apiCall = this.vehicleClient.addVehicleType(command);
+      apiCall = this.vehicleClient.updateVehicleType(command);
     }
 
     this.sub.sink = apiCall.subscribe({

@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SubSink } from 'subsink';
 import Swal from 'sweetalert2';
-import { AddDeliveryManDto, DeliveryManAdminClient } from 'src/app/Core/services/NaqlahClient';
+import { AddDeliveryManDto, DeliveryManAdminClient, DeliveryManVehicleDto } from 'src/app/Core/services/NaqlahClient';
 import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
 
 // Import types and enums
@@ -63,8 +63,8 @@ export class AddCaptainComponent implements OnInit, OnDestroy {
   ];
 
   // Vehicle options (will be loaded from API)
-  vehicleTypes: any[] = [];
-  vehicleBrands: any[] = [];
+  vehicleTypes: DeliveryManVehicleDto[] = [];
+  vehicleBrands: DeliveryManVehicleDto[] = [];
 
   private subs = new SubSink();
 
