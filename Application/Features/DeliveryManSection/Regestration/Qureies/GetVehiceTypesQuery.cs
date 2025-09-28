@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Application.Features.DeliveryManSection.Regestration.Qureies
 {
-    public sealed record GetVehiceTypesQuery:IRequest<Result<List<VehicleTypeDto>>>
+    public sealed record GetVehiceTypesQuery : IRequest<Result<List<VehicleTypeDto>>>
     {
         private class GetVehiceTypesQueryHandler :
             IRequestHandler<GetVehiceTypesQuery, Result<List<VehicleTypeDto>>>
@@ -35,7 +35,7 @@ namespace Application.Features.DeliveryManSection.Regestration.Qureies
                                            Name = userSession.LanguageId == (int)Language.Arabic ?
                                            x.ArabicName : x.EnglishName
                                        }).ToListAsync();
-                return vehicleTypes;
+                return Result.Success(vehicleTypes);
             }
         }
     }

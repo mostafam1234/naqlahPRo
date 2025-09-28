@@ -6,17 +6,15 @@ import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SubSink } from 'subsink';
 import Swal from 'sweetalert2';
-import { AddDeliveryManDto, DeliveryManAdminClient, DeliveryManVehicleDto } from 'src/app/Core/services/NaqlahClient';
+import { AddDeliveryManDto, DeliveryManAdminClient, DeliveryManVehicleDto, VehicleAdminClient } from 'src/app/Core/services/NaqlahClient';
 import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
-
-// Import types and enums
 import { DeliveryType, DeliveryLicenseType, VehicleOwnerType } from 'src/app/Core/enums/delivery.enums';
 
 @Component({
   selector: 'app-add-captain',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, TranslateModule, PageHeaderComponent],
-  providers: [DatePipe],
+  providers: [DatePipe, DeliveryManAdminClient, VehicleAdminClient],
   templateUrl: './add-captain.component.html',
   styleUrl: './add-captain.component.css'
 })
@@ -62,7 +60,6 @@ export class AddCaptainComponent implements OnInit, OnDestroy {
     { value: DeliveryLicenseType.Private, label: 'رخصة خاصة' },
   ];
 
-  // Vehicle options (will be loaded from API)
   vehicleTypes: DeliveryManVehicleDto[] = [];
   vehicleBrands: DeliveryManVehicleDto[] = [];
 
@@ -73,17 +70,43 @@ export class AddCaptainComponent implements OnInit, OnDestroy {
     private router: Router,
     private translate: TranslateService,
     private deliveryManClient: DeliveryManAdminClient,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private vehicleClient: VehicleAdminClient
   ) {
     this.initializeForm();
   }
 
   ngOnInit(): void {
     this.lang = localStorage.getItem('language') || 'ar';
+    this.GetVehicleTypesLookUp();
+    this.GetVehicleBrandsLookUp();
   }
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
+  }
+
+  GetVehicleBrandsLookUp(): void {
+    debugger;
+    this.subs.sink = this.vehicleClient.getVehiclesBrandLookup().subscribe({
+      next: (brands) => {
+        this.vehicleBrands = brands;
+      },
+      error: (err) => {
+        console.error('Error fetching vehicle brands:', err);
+      }
+    });
+  }
+
+  GetVehicleTypesLookUp(): void {
+    this.subs.sink = this.vehicleClient.getVehiclesTypesLookup().subscribe({
+      next: (types) => {
+        this.vehicleTypes = types;
+      },
+      error: (err) => {
+        console.error('Error fetching vehicle types:', err);
+      }
+    });
   }
 
   private initializeForm(): void {
