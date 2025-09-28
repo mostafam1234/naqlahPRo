@@ -2529,6 +2529,92 @@
           }
         }
       }
+    },
+    "/api/VehicleAdmin/UpdateVehicleType": {
+      "post": {
+        "tags": [
+          "VehicleAdmin"
+        ],
+        "operationId": "VehicleAdmin_UpdateVehicleType",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateVehicleTypeCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/VehicleAdmin/UpdateVehicleBrand": {
+      "post": {
+        "tags": [
+          "VehicleAdmin"
+        ],
+        "operationId": "VehicleAdmin_UpdateVehicleBrand",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateVehicleBrandCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -4969,6 +5055,38 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
+          "arabicName": {
+            "type": "string"
+          },
+          "englishName": {
+            "type": "string"
+          }
+        }
+      },
+      "UpdateVehicleTypeCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "vehicleTypeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "arabicName": {
+            "type": "string"
+          },
+          "englishName": {
+            "type": "string"
+          }
+        }
+      },
+      "UpdateVehicleBrandCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "vehicleBrandId": {
+            "type": "integer",
+            "format": "int32"
+          },
           "arabicName": {
             "type": "string"
           },

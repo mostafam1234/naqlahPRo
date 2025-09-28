@@ -23,104 +23,143 @@ namespace Presentaion.Controllers.Admin
   [Route("api/[controller]")]
   public class VehicleAdminController : ControllerBase
   {
-    private readonly IMediator mediator;
-    private readonly IUserSession userSession;
+        private readonly IMediator mediator;
+        private readonly IUserSession userSession;
 
-    public VehicleAdminController(IMediator mediator, IUserSession userSession)
-    {
-      this.mediator = mediator;
-      this.userSession = userSession;
+        public VehicleAdminController(IMediator mediator, IUserSession userSession)
+        {
+          this.mediator = mediator;
+          this.userSession = userSession;
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(List<DeliveryManVehicleDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("GetVehiclesBrandLookup")]
+        public async Task<IActionResult> GetVehiclesBrandLookup()
+        {
+          var result = await mediator.Send(new GetVehicleBrandQuery());
+          return Ok(result.Value);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(List<DeliveryManVehicleDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("GetVehiclesTypesLookup")]
+        public async Task<IActionResult> GetVehiclesTypesLookup()
+        {
+          var result = await mediator.Send(new GetVehiceTypesQuery());
+          return Ok(result.Value);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(PagedResult<DeliveryManVehicleDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("GetVehiclesTypes")]
+        public async Task<IActionResult> GetVehiclesTypes(int skip = 0, int take = 10, string searchterm = "")
+        {
+          var result = await mediator.Send(new GetVehiclesTypesQueryForDisplaying
+          {
+            Skip = skip,
+            Take = take,
+            SearchTerm = searchterm ?? string.Empty
+          });
+          return Ok(result.Value);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(PagedResult<DeliveryManVehicleDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("GetVehiclesBrands")]
+        public async Task<IActionResult> GetVehiclesBrands(int skip = 0, int take = 10, string searchterm = "")
+        {
+          var result = await mediator.Send(new GetVehiclesBrandsForDisplaying
+          {
+            Skip = skip,
+            Take = take,
+            SearchTerm = searchterm ?? string.Empty
+          });
+          return Ok(result.Value);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("AddVehicleBrand")]
+        public async Task<IActionResult> AddVehicleBrand(AddVehicleBrandCommand command)
+        {
+          var result = await mediator.Send(new AddVehicleBrandCommand
+          {
+            ArabicName = command.ArabicName,
+            EnglishName = command.EnglishName
+          });
+
+          if (result.IsSuccess)
+          {
+            return Ok(result.Value);
+          }
+
+          return BadRequest(result.Error);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("AddVehicleType")]
+        public async Task<IActionResult> AddVehicleType(AddVehicleTypeCommand command)
+        {
+          var result = await mediator.Send(new AddVehicleTypeCommand
+          {
+            ArabicName = command.ArabicName,
+            EnglishName = command.EnglishName
+          });
+
+          if (result.IsSuccess)
+          {
+            return Ok(result.Value);
+          }
+
+          return BadRequest(result.Error);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("UpdateVehicleType")]
+        public async Task<IActionResult> UpdateVehicleType(UpdateVehicleTypeCommand command)
+        {
+            var result = await mediator.Send(new UpdateVehicleTypeCommand
+            {
+                ArabicName = command.ArabicName,
+                EnglishName = command.EnglishName
+            });
+
+            if (result.IsSuccess)
+            {
+                return Ok(result.Value);
+            }
+
+            return BadRequest(result.Error);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("UpdateVehicleBrand")]
+        public async Task<IActionResult> UpdateVehicleBrand(UpdateVehicleBrandCommand command)
+        {
+            var result = await mediator.Send(new UpdateVehicleBrandCommand
+            {
+                ArabicName = command.ArabicName,
+                EnglishName = command.EnglishName
+            });
+
+            if (result.IsSuccess)
+            {
+                return Ok(result.Value);
+            }
+
+            return BadRequest(result.Error);
+        }
     }
-
-    [HttpGet]
-    [ProducesResponseType(typeof(List<DeliveryManVehicleDto>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
-    [Route("GetVehiclesBrandLookup")]
-    public async Task<IActionResult> GetVehiclesBrandLookup()
-    {
-      var result = await mediator.Send(new GetVehicleBrandQuery());
-      return Ok(result.Value);
-    }
-
-    [HttpGet]
-    [ProducesResponseType(typeof(List<DeliveryManVehicleDto>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
-    [Route("GetVehiclesTypesLookup")]
-    public async Task<IActionResult> GetVehiclesTypesLookup()
-    {
-      var result = await mediator.Send(new GetVehiceTypesQuery());
-      return Ok(result.Value);
-    }
-
-    [HttpGet]
-    [ProducesResponseType(typeof(PagedResult<DeliveryManVehicleDto>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
-    [Route("GetVehiclesTypes")]
-    public async Task<IActionResult> GetVehiclesTypes(int skip = 0, int take = 10, string searchterm = "")
-    {
-      var result = await mediator.Send(new GetVehiclesTypesQueryForDisplaying
-      {
-        Skip = skip,
-        Take = take,
-        SearchTerm = searchterm ?? string.Empty
-      });
-      return Ok(result.Value);
-    }
-
-    [HttpGet]
-    [ProducesResponseType(typeof(PagedResult<DeliveryManVehicleDto>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
-    [Route("GetVehiclesBrands")]
-    public async Task<IActionResult> GetVehiclesBrands(int skip = 0, int take = 10, string searchterm = "")
-    {
-      var result = await mediator.Send(new GetVehiclesBrandsForDisplaying
-      {
-        Skip = skip,
-        Take = take,
-        SearchTerm = searchterm ?? string.Empty
-      });
-      return Ok(result.Value);
-    }
-
-    [HttpPost]
-    [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
-    [Route("AddVehicleBrand")]
-    public async Task<IActionResult> AddVehicleBrand(AddVehicleBrandCommand command)
-    {
-      var result = await mediator.Send(new AddVehicleBrandCommand
-      {
-        ArabicName = command.ArabicName,
-        EnglishName = command.EnglishName
-      });
-
-      if (result.IsSuccess)
-      {
-        return Ok(result.Value);
-      }
-
-      return BadRequest(result.Error);
-    }
-
-    [HttpPost]
-    [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
-    [Route("AddVehicleType")]
-    public async Task<IActionResult> AddVehicleType(AddVehicleTypeCommand command)
-    {
-      var result = await mediator.Send(new AddVehicleTypeCommand
-      {
-        ArabicName = command.ArabicName,
-        EnglishName = command.EnglishName
-      });
-
-      if (result.IsSuccess)
-      {
-        return Ok(result.Value);
-      }
-
-      return BadRequest(result.Error);
-    }
-
-  }
 }

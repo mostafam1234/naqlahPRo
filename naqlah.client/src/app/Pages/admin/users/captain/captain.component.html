@@ -186,7 +186,6 @@
             </div>
           </div>
 
-          <!-- Simple Add Button -->
           <a
             routerLink="add-captain"
             class="flex items-center space-x-2 space-x-reverse bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-xl font-medium transition-colors duration-200"
@@ -211,7 +210,6 @@
         </div>
       </div>
 
-      <!-- Simple Cards Grid -->
       <div
         class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-6"
         *ngIf="viewMode === 'cards'"
@@ -220,7 +218,6 @@
           *ngFor="let captain of allDeliveryMenRequests; let i = index"
           class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200"
         >
-          <!-- Simple Card Header -->
           <div class="bg-gray-50 border-b border-gray-200 p-4">
             <div class="flex items-center justify-between">
               <div class="flex items-center space-x-3 space-x-reverse">

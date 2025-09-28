@@ -8,8 +8,6 @@ import { SubSink } from 'subsink';
 import Swal from 'sweetalert2';
 import { AddDeliveryManDto, DeliveryManAdminClient, DeliveryManVehicleDto, VehicleAdminClient } from 'src/app/Core/services/NaqlahClient';
 import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
-
-// Import types and enums
 import { DeliveryType, DeliveryLicenseType, VehicleOwnerType } from 'src/app/Core/enums/delivery.enums';
 
 @Component({
