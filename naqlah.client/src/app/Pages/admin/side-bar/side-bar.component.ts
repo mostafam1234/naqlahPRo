@@ -1,5 +1,5 @@
 import { NgClass, NgIf } from '@angular/common';
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -11,6 +11,7 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrl: './side-bar.component.css'
 })
 export class SideBarComponent {
+  
   appearSideBarNav: boolean = false;
   @Output() dataEmitter: EventEmitter<any> = new EventEmitter();
   openDropdown: string | null = null;
@@ -29,5 +30,9 @@ export class SideBarComponent {
     } else if (menu == 'category') {
       this.router.navigate(['/admin/categoriesControl']);
     }
+  }
+
+  logout(): void {
+    this.router.navigate(['/login']);
   }
 }

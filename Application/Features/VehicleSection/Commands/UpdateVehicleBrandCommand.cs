@@ -25,7 +25,7 @@ namespace Application.Features.VehicleSection.Commands
             }
             public async Task<Result<int>> Handle(UpdateVehicleBrandCommand request, CancellationToken cancellationToken)
             {
-                var VehicleBrand = await _context.VehicleBrands.FirstOrDefaultAsync(x => request.VehicleBrandId == x.Id );
+                var VehicleBrand = await _context.VehicleBrands.AsTracking().FirstOrDefaultAsync(x => request.VehicleBrandId == x.Id );
                 if (VehicleBrand == null)
                 {
                     return Result.Failure<int>("Vehicle Brand Not Found");

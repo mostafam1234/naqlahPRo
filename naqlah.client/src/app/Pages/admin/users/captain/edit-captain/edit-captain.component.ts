@@ -2,6 +2,7 @@ import { NgClass, NgFor, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { ImageService } from 'src/app/Core/services/image.service';
 
 @Component({
   selector: 'app-edit-captain',
@@ -14,7 +15,7 @@ export class EditCaptainComponent {
   captainForm: FormGroup;
   imagePreview: string | ArrayBuffer | null = null;
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private imageService: ImageService) {
     this.captainForm = this.fb.group({
       nameAr: ['', Validators.required],
       nameEn: ['', Validators.required],
@@ -25,17 +26,12 @@ export class EditCaptainComponent {
     });
   }
 
-  onImageSelected(event: Event) {
-    const file = (event.target as HTMLInputElement).files?.[0];
-    if (file) {
-      this.captainForm.patchValue({ image: file });
+  async onImageSelected(event: Event) {
+    const result = await this.imageService.handleImageUpload(event);
+    if (result?.success) {
+      this.captainForm.patchValue({ image: result.base64 });
       this.captainForm.get('image')?.updateValueAndValidity();
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        this.imagePreview = reader.result;
-      };
-      reader.readAsDataURL(file);
+      this.imagePreview = result.preview || null;
     }
   }
 

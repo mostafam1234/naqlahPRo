@@ -19,8 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\AdminSection\OrderFeature\Commands\" />
-    <Folder Include="Features\CustomerSection\Feature\Order\Queries\" />
     <Folder Include="Features\CustomerSection\Feature\Regestration\Queries\" />
     <Folder Include="Features\DeliveryManSection\CurrentDeliveryMen\Dtos\" />
     <Folder Include="Features\DeliveryManSection\Regestration\Validators\" />

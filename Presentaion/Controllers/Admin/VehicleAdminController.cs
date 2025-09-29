@@ -1,4 +1,6 @@
-﻿using Application.Features.DeliveryManSection.NewRequests.Dtos;
+﻿using Application.Features.CustomerSection.Feature.MainCategory.Dtos;
+using Application.Features.CustomerSection.Feature.MainCategory.Queries;
+using Application.Features.DeliveryManSection.NewRequests.Dtos;
 using Application.Features.DeliveryManSection.NewRequests.Queries;
 using Application.Features.DeliveryManSection.Regestration.Dtos;
 using Application.Features.DeliveryManSection.Regestration.Qureies;
@@ -33,7 +35,7 @@ namespace Presentaion.Controllers.Admin
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(List<DeliveryManVehicleDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<VehicleTypeDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
         [Route("GetVehiclesBrandLookup")]
         public async Task<IActionResult> GetVehiclesBrandLookup()
@@ -43,12 +45,26 @@ namespace Presentaion.Controllers.Admin
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(List<DeliveryManVehicleDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<VehicleTypeDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
         [Route("GetVehiclesTypesLookup")]
         public async Task<IActionResult> GetVehiclesTypesLookup()
         {
           var result = await mediator.Send(new GetVehiceTypesQuery());
+          return Ok(result.Value);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(List<ActiveCategoryDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("GetMainCategoriesLookup")]
+        public async Task<IActionResult> GetMainCategoriesLookup()
+        {
+          var result = await mediator.Send(new GetActiveCategoriesQuery());
+          if (result.IsFailure)
+          {
+            return BadRequest(result.Error);
+          }
           return Ok(result.Value);
         }
 
@@ -111,7 +127,9 @@ namespace Presentaion.Controllers.Admin
           var result = await mediator.Send(new AddVehicleTypeCommand
           {
             ArabicName = command.ArabicName,
-            EnglishName = command.EnglishName
+            EnglishName = command.EnglishName,
+            IconBase64 = command.IconBase64,
+            MainCategoryIds = command.MainCategoryIds
           });
 
           if (result.IsSuccess)
@@ -130,8 +148,11 @@ namespace Presentaion.Controllers.Admin
         {
             var result = await mediator.Send(new UpdateVehicleTypeCommand
             {
+                VehicleTypeId = command.VehicleTypeId,
                 ArabicName = command.ArabicName,
-                EnglishName = command.EnglishName
+                EnglishName = command.EnglishName,
+                IconBase64 = command.IconBase64,
+                MainCategoryIds = command.MainCategoryIds
             });
 
             if (result.IsSuccess)
@@ -150,8 +171,47 @@ namespace Presentaion.Controllers.Admin
         {
             var result = await mediator.Send(new UpdateVehicleBrandCommand
             {
+                VehicleBrandId = command.VehicleBrandId,
                 ArabicName = command.ArabicName,
                 EnglishName = command.EnglishName
+            });
+
+            if (result.IsSuccess)
+            {
+                return Ok(result.Value);
+            }
+
+            return BadRequest(result.Error);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("DeleteVehicleType")]
+        public async Task<IActionResult> DeleteVehicleType(int vehicleTypeId)
+        {
+            var result = await mediator.Send(new DeleteVehicleTypeCommand
+            {
+                VehicleTypeId = vehicleTypeId
+            });
+
+            if (result.IsSuccess)
+            {
+                return Ok(result.Value);
+            }
+
+            return BadRequest(result.Error);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("DeleteVehicleBrand")]
+        public async Task<IActionResult> DeleteVehicleBrand(int vehicleBrandId)
+        {
+            var result = await mediator.Send(new DeleteVehicleBrandCommand
+            {
+                VehicleBrandId = vehicleBrandId
             });
 
             if (result.IsSuccess)

@@ -3,9 +3,11 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
-import { AddVehicleBrandCommand, AddVehicleTypeCommand, DeliveryManVehicleDto, UpdateVehicleBrandCommand, UpdateVehicleTypeCommand, VehicleAdminClient } from 'src/app/Core/services/NaqlahClient';
+import { AddVehicleBrandCommand, AddVehicleTypeCommand, DeliveryManVehicleDto, UpdateVehicleBrandCommand, UpdateVehicleTypeCommand, VehicleAdminClient, ActiveCategoryDto, MainCategoryAdminLookupDto } from 'src/app/Core/services/NaqlahClient';
 import { SubSink } from 'subsink';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import Swal from 'sweetalert2';
+import { ImageService } from 'src/app/Core/services/image.service';
 
 
 @Component({
@@ -29,6 +31,9 @@ export class VehiclesComponent implements OnInit, OnDestroy {
 
   // Data
   items: DeliveryManVehicleDto[] = [];
+  mainCategories: MainCategoryAdminLookupDto[] = [];
+  selectedIconFile: File | null = null;
+  iconPreview: string | null = null;
 
   // Pagination
   totalCount = 0;
@@ -40,17 +45,21 @@ export class VehiclesComponent implements OnInit, OnDestroy {
 
   constructor(
     private fb: FormBuilder,
-    private vehicleClient: VehicleAdminClient
+    private vehicleClient: VehicleAdminClient,
+    private imageService: ImageService
   ) {
     this.itemForm = this.fb.group({
       arabicName: ['', [Validators.required, Validators.maxLength(100)]],
-      englishName: ['', [Validators.required, Validators.maxLength(100)]]
+      englishName: ['', [Validators.required, Validators.maxLength(100)]],
+      iconBase64: [''],
+      mainCategoryIds: [[], []]
     });
   }
 
   ngOnInit(): void {
     this.loadItems();
     this.setupSearch();
+    this.loadMainCategories();
   }
 
   ngOnDestroy(): void {
@@ -92,6 +101,59 @@ export class VehiclesComponent implements OnInit, OnDestroy {
     });
   }
 
+  loadMainCategories(): void {
+    this.sub.sink = this.vehicleClient.getMainCategoriesLookup().subscribe({
+      next: (categories) => {
+        this.mainCategories = categories;
+      },
+      error: (error) => {
+        console.error('Error loading main categories:', error);
+      }
+    });
+  }
+
+  async onIconFileSelected(event: any): Promise<void> {
+    const result = await this.imageService.handleImageUpload(event, {
+      maxSizeMB: 3,
+      showErrorAlert: true
+    });
+
+    if (result?.success) {
+      this.iconPreview = result.preview || null;
+      this.itemForm.patchValue({ iconBase64: result.base64 });
+    }
+  }
+
+  clearIcon(): void {
+    this.selectedIconFile = null;
+    this.iconPreview = null;
+    this.itemForm.patchValue({ iconBase64: '' });
+  }
+
+  onCategoryChange(categoryId: number, event: any): void {
+    const currentIds = this.itemForm.get('mainCategoryIds')?.value || [];
+    
+    if (event.target.checked) {
+      // Add category if not exists
+      if (!currentIds.includes(categoryId)) {
+        currentIds.push(categoryId);
+      }
+    } else {
+      // Remove category
+      const index = currentIds.indexOf(categoryId);
+      if (index > -1) {
+        currentIds.splice(index, 1);
+      }
+    }
+    
+    this.itemForm.patchValue({ mainCategoryIds: currentIds });
+  }
+
+  isMainCategorySelected(categoryId: number): boolean {
+    const currentIds = this.itemForm.get('mainCategoryIds')?.value || [];
+    return currentIds.includes(categoryId);
+  }
+
   setActiveTab(tab: 'brands' | 'types'): void {
     this.activeTab = tab;
     this.currentPage = 0;
@@ -102,16 +164,21 @@ export class VehiclesComponent implements OnInit, OnDestroy {
   openAdd(): void {
     this.editingItem = null;
     this.itemForm.reset();
+    this.clearIcon();
     this.showModal = true;
   }
 
   openEdit(item: DeliveryManVehicleDto): void {
+    debugger
     this.editingItem = item;
     this.itemForm.patchValue({
       arabicName: item.arabicName,
       englishName: item.englishName,
-
+      mainCategoryIds: [] // TODO: Update when DTO is updated
     });
+    
+    this.clearIcon(); // TODO: Set icon preview when DTO is updated
+    
     this.showUpdateModal = true;
   }
 
@@ -120,6 +187,7 @@ export class VehiclesComponent implements OnInit, OnDestroy {
     this.showUpdateModal = false;
     this.editingItem = null;
     this.itemForm.reset();
+    this.clearIcon();
   }
 
   submit(): void {
@@ -137,21 +205,38 @@ export class VehiclesComponent implements OnInit, OnDestroy {
       let command = new AddVehicleTypeCommand();
       command.arabicName = value.arabicName;
       command.englishName = value.englishName;
+      command.iconBase64 = value.iconBase64;
+      command.mainCategoryIds = value.mainCategoryIds;
       apiCall = this.vehicleClient.addVehicleType(command);
      }
 
     this.sub.sink = apiCall.subscribe({
       next: () => {
         this.closeModal();
-        this.loadItems();
+        Swal.fire({
+          title: 'تمت إضافة المركبة',
+          text: 'تمت إضافة المركبة بنجاح',
+          icon: 'success',
+          confirmButtonText: 'موافق',
+          timer: 3000
+        }).then(() => {
+          this.loadItems();
+        });
       },
       error: (error) => {
-        console.error('Error saving item:', error);
+        Swal.fire({
+          title: 'خطأ',
+          text: error?.message || 'حدث خطأ أثناء إضافة المركبة',
+          icon: 'error',
+          confirmButtonText: 'موافق',
+          timer: 3000
+        });
       }
     });
   }
 
   update(): void {
+    debugger;
     if (this.itemForm.invalid) return;
     const itemId = this.editingItem?.id;
     const value = this.itemForm.value;
@@ -159,25 +244,84 @@ export class VehiclesComponent implements OnInit, OnDestroy {
     let apiCall;
     if (this.activeTab === 'brands') {
       let command = new UpdateVehicleBrandCommand();
-      command.vehicleBrandId = itemId!;
+      command.vehicleBrandId = itemId;
       command.arabicName = value.arabicName;
       command.englishName = value.englishName;
       apiCall = this.vehicleClient.updateVehicleBrand(command);
     } else {
       let command = new UpdateVehicleTypeCommand();
-      command.vehicleTypeId = itemId!;
+      command.vehicleTypeId = itemId;
       command.arabicName = value.arabicName;
       command.englishName = value.englishName;
+      command.iconBase64 = value.iconBase64;
+      command.mainCategoryIds = value.mainCategoryIds;
       apiCall = this.vehicleClient.updateVehicleType(command);
     }
 
     this.sub.sink = apiCall.subscribe({
       next: () => {
         this.closeModal();
-        this.loadItems();
+        Swal.fire({
+          title: 'تم تحديث الطلب',
+          text: 'تم تحديث الطلب بنجاح',
+          icon: 'success',
+          confirmButtonText: 'موافق',
+          timer: 3000
+        }).then(() => {
+          this.loadItems();
+        });
       },
       error: (error) => {
-        console.error('Error saving item:', error);
+        Swal.fire({
+          title: 'خطأ',
+          text: error?.message || 'حدث خطأ أثناء إلغاء الطلب',
+          icon: 'error',
+          confirmButtonText: 'موافق',
+          timer: 3000
+        });
+      }
+    });
+  }
+
+  confirmDelete(itemId: number): void {
+    let ApiCall;
+    if (this.activeTab === 'brands') {
+      ApiCall = this.vehicleClient.deleteVehicleBrand(itemId);
+    } else {
+      ApiCall = this.vehicleClient.deleteVehicleType(itemId);
+    }
+    
+    Swal.fire({
+      title: 'هل أنت متأكد؟',
+      text: 'سيتم حذف هذا العنصر بشكل دائم',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'نعم، احذف',
+      cancelButtonText: 'إلغاء'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.sub.sink = ApiCall.subscribe({
+          next: () => {
+            Swal.fire({
+              title: 'تم الحذف',
+              text: 'تم حذف العنصر بنجاح',
+              icon: 'success',
+              confirmButtonText: 'موافق',
+              timer: 3000
+            }).then(() => {
+              this.loadItems();
+            });
+          },
+          error: (error) => {
+            Swal.fire({
+              title: 'خطأ',
+              text: error?.message || 'حدث خطأ أثناء إلغاء الطلب',
+              icon: 'error',
+              confirmButtonText: 'موافق',
+              timer: 3000
+            });
+          }
+        });
       }
     });
   }

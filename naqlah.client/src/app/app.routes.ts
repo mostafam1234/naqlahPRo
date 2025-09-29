@@ -1,6 +1,8 @@
 import { provideRouter, Routes } from '@angular/router';
 import { AdminLayoutComponent } from './Layouts/admin-layout/admin-layout.component';
 import { LandingPageLayoutComponent } from './Layouts/landing-page-layout/landing-page-layout.component';
+import { authGuard } from './shared/services/auth.guard';
+import { roleGuardGuard } from './shared/services/role-guard.guard';
 
 const routes: Routes = [
   { path:'', redirectTo:'/home', pathMatch:'full' },
@@ -28,6 +30,8 @@ const routes: Routes = [
   {
     path: 'admin',
     component: AdminLayoutComponent,
+    canActivate: [authGuard, roleGuardGuard],
+    data: { expectedRole: 'Admin' },
     children: [
       {
         path: 'home',

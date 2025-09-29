@@ -1,6 +1,7 @@
 import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ImageService } from 'src/app/Core/services/image.service';
 
 
 interface Contact {
@@ -42,7 +43,7 @@ export class SreviceRequestChatComponent {
   newMessage = '';
   isMobile = false;
   isMenuVisible = false;
-  selectedFile: File | null = null;
+  selectedFile: string | null = null;
   previewImage: string | null = null;
   imagePreviewUrl: string | null = null;
   searchQuery = '';
@@ -155,7 +156,7 @@ export class SreviceRequestChatComponent {
 
 
 
-  constructor() {
+  constructor(private imageService: ImageService) {
     this.checkScreenSize();
     this.initializeConversations();
     this.updateFilteredContacts(); // Initialize filtered contacts
@@ -357,16 +358,16 @@ export class SreviceRequestChatComponent {
     }
   }
 
-  onFileSelected(event: any) {
-    const file = event.target.files[0];
-    if (file && file.type.startsWith('image/')) {
-      this.selectedFile = file;
+  async onFileSelected(event: any) {
+    const result = await this.imageService.handleImageUpload(event, {
+      maxSizeMB: 5,
+      allowedTypes: ['image/png', 'image/jpg', 'image/jpeg'],
+      showErrorAlert: true
+    });
 
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.previewImage = e.target.result;
-      };
-      reader.readAsDataURL(file);
+    if (result?.success) {
+      this.selectedFile = result.base64; // Store base64 instead of File object
+      this.previewImage = result.preview || null;
     }
   }
 

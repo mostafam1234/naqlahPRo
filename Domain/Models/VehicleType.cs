@@ -34,24 +34,86 @@ namespace Domain.Models
         }
 
 
-        public static Result<VehicleType> Instance(string arabicName, string englishName)
+        public static Result<VehicleType> Instance(string arabicName, string englishName, string iconImagePath, List<int> mainCategoryIds)
         {
             if (string.IsNullOrWhiteSpace(arabicName) || string.IsNullOrWhiteSpace(englishName))
             {
                 return Result.Failure<VehicleType>("Invalid Vehicle Type Name");
             }
-            return Result.Success(new VehicleType()
+
+            if (string.IsNullOrWhiteSpace(iconImagePath))
+            {
+                return Result.Failure<VehicleType>("Icon is required");
+            }
+
+            if (mainCategoryIds == null || !mainCategoryIds.Any())
+            {
+                return Result.Failure<VehicleType>("At least one main category is required");
+            }
+            
+            var vehicleType = new VehicleType()
             {
                 ArabicName = arabicName,
-                EnglishName = englishName
-            });
+                EnglishName = englishName,
+                IconImagePath = iconImagePath,
+                _VehicleTypeCategoies = new List<VehiclTypeCategory>()
+            };
 
+            // Add main categories
+            foreach (var categoryId in mainCategoryIds)
+            {
+                vehicleType._VehicleTypeCategoies.Add(new VehiclTypeCategory
+                {
+                    VehicleType = vehicleType,
+                    MainCategoryId = categoryId
+                });
+            }
+
+            return Result.Success(vehicleType);
         }
 
         public void Update(string arabicName, string englishName)
         {
             ArabicName = arabicName;
             EnglishName = englishName;
+        }
+
+        public Result Update(string arabicName, string englishName, string iconImagePath, List<int> mainCategoryIds)
+        {
+            if (string.IsNullOrWhiteSpace(arabicName) || string.IsNullOrWhiteSpace(englishName))
+            {
+                return Result.Failure("Invalid Vehicle Type Name");
+            }
+
+            if (string.IsNullOrWhiteSpace(iconImagePath))
+            {
+                return Result.Failure("Icon is required");
+            }
+
+            if (mainCategoryIds == null || !mainCategoryIds.Any())
+            {
+                return Result.Failure("At least one main category is required");
+            }
+
+            ArabicName = arabicName;
+            EnglishName = englishName;
+            IconImagePath = iconImagePath;
+
+            // Clear existing categories
+            _VehicleTypeCategoies.Clear();
+
+            // Add new categories
+            foreach (var categoryId in mainCategoryIds)
+            {
+                _VehicleTypeCategoies.Add(new VehiclTypeCategory
+                {
+                    VehicleType = this,
+                    VehicleTypeId = this.Id,
+                    MainCategoryId = categoryId
+                });
+            }
+
+            return Result.Success();
         }
     }
 }

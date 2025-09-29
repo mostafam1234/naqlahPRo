@@ -15,22 +15,65 @@ namespace Application.Features.VehicleSection.Commands
         public int VehicleTypeId { get; set; }
         public string ArabicName { get; set; } = string.Empty;
         public string EnglishName { get; set; } = string.Empty;
+        public string? IconBase64 { get; set; }
+        public List<int> MainCategoryIds { get; set; } = new List<int>();
 
         private class UpdateVehicleTypeCommandHandler : IRequestHandler<UpdateVehicleTypeCommand, Result<int>>
         {
             private readonly INaqlahContext _context;
-            public UpdateVehicleTypeCommandHandler(INaqlahContext context)
+            private readonly IMediaUploader _mediaUploader;
+            
+            public UpdateVehicleTypeCommandHandler(INaqlahContext context, IMediaUploader mediaUploader)
             {
                 _context = context;
+                _mediaUploader = mediaUploader;
             }
+            
             public async Task<Result<int>> Handle(UpdateVehicleTypeCommand request, CancellationToken cancellationToken)
             {
-                var vehicleType = await _context.VehicleTypes.FirstOrDefaultAsync(x => request.VehicleTypeId == x.Id);
+                var vehicleType = await _context.VehicleTypes
+                    .Include(vt => vt.VehicleTypeCategoies)
+                    .AsTracking()
+                    .FirstOrDefaultAsync(x => request.VehicleTypeId == x.Id);
+                    
                 if (vehicleType == null)
                 {
                     return Result.Failure<int>("Vehicle Type Not Found");
                 }
-                vehicleType.Update(request.ArabicName, request.EnglishName);
+
+                // Validation
+                if (request.MainCategoryIds == null || !request.MainCategoryIds.Any())
+                {
+                    return Result.Failure<int>("At least one main category is required");
+                }
+
+                string iconPath = vehicleType.IconImagePath;
+                
+                // Handle icon upload if provided
+                if (!string.IsNullOrWhiteSpace(request.IconBase64))
+                {
+                    try
+                    {
+                        iconPath = await _mediaUploader.UploadFromBase64(request.IconBase64, "vehicle-types");
+                    }
+                    catch (Exception ex)
+                    {
+                        return Result.Failure<int>($"Failed to upload icon: {ex.Message}");
+                    }
+                }
+
+                // Check if we have an icon (either existing or new)
+                if (string.IsNullOrWhiteSpace(iconPath))
+                {
+                    return Result.Failure<int>("Icon is required");
+                }
+
+                var updateResult = vehicleType.Update(request.ArabicName, request.EnglishName, iconPath, request.MainCategoryIds);
+                if (updateResult.IsFailure)
+                {
+                    return Result.Failure<int>(updateResult.Error);
+                }
+                
                 var result = await _context.SaveChangesAsyncWithResult();
                 if (result.IsSuccess)
                 {

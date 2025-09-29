@@ -23,17 +23,25 @@ namespace Application.Features.VehicleSection.Queries
         {
             private readonly INaqlahContext context;
             private readonly IUserSession userSession;
+            readonly IReadFromAppSetting config;
+            private const string VehicleFolderPrefix = "vehicle-types";
 
             public GetVehiclesTypesQueryForDisplayingHandler(INaqlahContext context,
-                                                            IUserSession userSession)
+                                                            IUserSession userSession,
+                                                            IReadFromAppSetting config)
             {
+                this.config = config;
                 this.context = context;
                 this.userSession = userSession;
             }
 
             public async Task<Result<PagedResult<DeliveryManVehicleDto>>> Handle(GetVehiclesTypesQueryForDisplaying request, CancellationToken cancellationToken)
             {
-                var query = context.VehicleTypes.AsQueryable();
+                var baseUrl = config.GetValue<string>("apiBaseUrl");
+                var query = context.VehicleTypes
+                    .Include(vt => vt.VehicleTypeCategoies)
+                        .ThenInclude(vtc => vtc.MainCategory)
+                    .AsQueryable();
 
                 // Apply search filter if provided
                 if (!string.IsNullOrWhiteSpace(request.SearchTerm))
@@ -52,6 +60,13 @@ namespace Application.Features.VehicleSection.Queries
                         Id = x.Id,
                         ArabicName = x.ArabicName,
                         EnglishName = x.EnglishName,
+                        IconImagePath = $"{baseUrl}/ImageBank/{VehicleFolderPrefix}/{x.IconImagePath}",
+                        MainCategories = x.VehicleTypeCategoies.Select(vtc => new MainCategoryInfo
+                        {
+                            Id = vtc.MainCategory.Id,
+                            ArabicName = vtc.MainCategory.ArabicName,
+                            EnglishName = vtc.MainCategory.EnglishName
+                        }).ToList()
                     })
                     .ToListAsync(cancellationToken);
 
