@@ -4,6 +4,7 @@ using Application.Features.AdminSection.MainCategoryFeatures.Queries;
 using Application.Features.AdminSection.OrderFeature.Dtos;
 using Application.Features.AdminSection.OrderFeature.Queries;
 using Application.Features.VehicleSection.Commands;
+using Application.Shared.Dtos;
 using Domain.InterFaces;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -30,7 +31,7 @@ namespace Presentaion.Controllers.Admin
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(List<MainCategoryAdminDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PagedResult<MainCategoryAdminDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
         [Route("GetAllMainCategories")]
         public async Task<IActionResult> GetAllMainCategories([FromQuery] int skip = 0,
@@ -45,7 +46,12 @@ namespace Presentaion.Controllers.Admin
                 SearchTerm = searchTerm
             });
 
-            return Ok(result);
+            if (result.IsSuccess)
+            {
+                return Ok(result.Value);
+            }
+
+            return BadRequest(result.Error);
         }
 
         [HttpGet]

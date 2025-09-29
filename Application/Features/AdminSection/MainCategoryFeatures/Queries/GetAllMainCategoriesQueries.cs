@@ -13,20 +13,20 @@ using System.Threading.Tasks;
 
 namespace Application.Features.AdminSection.MainCategoryFeatures.Queries
 {
-    public sealed record GetAllMainCategoriesQueries: IRequest<PagedResult<MainCategoryAdminDto>>
+    public sealed record GetAllMainCategoriesQueries: IRequest<Result<PagedResult<MainCategoryAdminDto>>>
     {
         public int Skip { get; init; } = 0;
         public int Take { get; init; } = 10;
         public string? SearchTerm { get; init; }
 
-        private class GetAllMainCategoriesQueriesHandler : IRequestHandler<GetAllMainCategoriesQueries, PagedResult<MainCategoryAdminDto>>
+        private class GetAllMainCategoriesQueriesHandler : IRequestHandler<GetAllMainCategoriesQueries, Result<PagedResult<MainCategoryAdminDto>>>
         {
             private readonly INaqlahContext _context;
             public GetAllMainCategoriesQueriesHandler(INaqlahContext context)
             {
                 _context = context;
             }
-            public async Task<PagedResult<MainCategoryAdminDto>> Handle(GetAllMainCategoriesQueries request, CancellationToken cancellationToken)
+            public async Task<Result<PagedResult<MainCategoryAdminDto>>> Handle(GetAllMainCategoriesQueries request, CancellationToken cancellationToken)
             {
                 var query = _context.MainCategories.AsQueryable();
 
@@ -58,7 +58,7 @@ namespace Application.Features.AdminSection.MainCategoryFeatures.Queries
                     TotalPages = totalPages
                 };
 
-                return pagedResult;
+                return Result.Success(pagedResult);
             }
         }
 

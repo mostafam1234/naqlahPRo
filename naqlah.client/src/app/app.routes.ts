@@ -30,8 +30,8 @@ const routes: Routes = [
   {
     path: 'admin',
     component: AdminLayoutComponent,
-    canActivate: [authGuard, roleGuardGuard],
-    data: { expectedRole: 'Admin' },
+    //canActivate: [authGuard, roleGuardGuard],
+    //data: { expectedRole: 'Admin' },
     children: [
       {
         path: 'home',
@@ -125,6 +125,13 @@ const routes: Routes = [
         loadComponent: () =>
           import('./Pages/admin/users/new-captain/captain-action/captain-action.component').then(
             (m) => m.CaptainActionComponent
+          ),
+      },
+      {
+        path: 'main-categories',
+        loadComponent: () =>
+          import('./Pages/admin/main-category/main-category.component').then(
+            (m) => m.MainCategoryComponent
           ),
       },
       {

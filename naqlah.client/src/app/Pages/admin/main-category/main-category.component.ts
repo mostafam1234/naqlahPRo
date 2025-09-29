@@ -76,7 +76,9 @@ export class MainCategoryComponent implements OnInit, OnDestroy {
 
     this.sub.sink = this.mainCategoryClient.getAllMainCategories(skip, this.itemsPerPage, searchTerm).subscribe({
       next: (response: any) => {
+        console.log('Full response:', response);
         this.items = response.data;
+        console.log(this.items)
         this.totalCount = response.totalCount;
         this.totalPages = response.totalPages;
         this.isLoading = false;
@@ -87,7 +89,7 @@ export class MainCategoryComponent implements OnInit, OnDestroy {
       }
     });
   }
-
+    
   openAdd(): void {
     this.editingItem = null;
     this.itemForm.reset();
