@@ -2969,6 +2969,130 @@ export class RegionClient {
 @Injectable({
     providedIn: 'root'
 })
+export class AdminUserClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ?? "";
+    }
+
+    loginAdmin(command: LoginAdminCommand): Observable<AdminResponse> {
+        let url_ = this.baseUrl + "/api/AdminUser/LoginAdmin";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processLoginAdmin(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processLoginAdmin(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<AdminResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<AdminResponse>;
+        }));
+    }
+
+    protected processLoginAdmin(response: HttpResponseBase): Observable<AdminResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AdminResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    logout(): Observable<void> {
+        let url_ = this.baseUrl + "/api/AdminUser/Logout";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processLogout(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processLogout(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processLogout(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
 export class DeliveryManAdminClient {
     private http: HttpClient;
     private baseUrl: string;
@@ -3317,7 +3441,7 @@ export class MainCategoryAdminClient {
         this.baseUrl = baseUrl ?? "";
     }
 
-    getAllMainCategories(skip?: number | undefined, take?: number | undefined, searchTerm?: string | null | undefined): Observable<MainCategoryAdminDto[]> {
+    getAllMainCategories(skip?: number | undefined, take?: number | undefined, searchTerm?: string | null | undefined): Observable<PagedResultOfMainCategoryAdminDto> {
         let url_ = this.baseUrl + "/api/MainCategoryAdmin/GetAllMainCategories?";
         if (skip === null)
             throw new Error("The parameter 'skip' cannot be null.");
@@ -3346,14 +3470,14 @@ export class MainCategoryAdminClient {
                 try {
                     return this.processGetAllMainCategories(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<MainCategoryAdminDto[]>;
+                    return _observableThrow(e) as any as Observable<PagedResultOfMainCategoryAdminDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<MainCategoryAdminDto[]>;
+                return _observableThrow(response_) as any as Observable<PagedResultOfMainCategoryAdminDto>;
         }));
     }
 
-    protected processGetAllMainCategories(response: HttpResponseBase): Observable<MainCategoryAdminDto[]> {
+    protected processGetAllMainCategories(response: HttpResponseBase): Observable<PagedResultOfMainCategoryAdminDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -3364,14 +3488,7 @@ export class MainCategoryAdminClient {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(MainCategoryAdminDto.fromJS(item));
-            }
-            else {
-                result200 = <any>null;
-            }
+            result200 = PagedResultOfMainCategoryAdminDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status === 400) {
@@ -7178,6 +7295,90 @@ export class NeighborhoodDto {
     }
 }
 
+export class AdminResponse {
+    isActive!: boolean;
+    tokenResponse!: TokenAdminResponse;
+
+    init(_data?: any) {
+        if (_data) {
+            this.isActive = _data["isActive"] !== undefined ? _data["isActive"] : <any>null;
+            this.tokenResponse = _data["tokenResponse"] ? TokenAdminResponse.fromJS(_data["tokenResponse"]) : <any>null;
+        }
+    }
+
+    static fromJS(data: any): AdminResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new AdminResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["isActive"] = this.isActive !== undefined ? this.isActive : <any>null;
+        data["tokenResponse"] = this.tokenResponse ? this.tokenResponse.toJSON() : <any>null;
+        return data;
+    }
+}
+
+export class TokenAdminResponse {
+    accessToken!: string;
+    expiresIn!: number;
+    refreshToken!: string;
+    role!: string;
+
+    init(_data?: any) {
+        if (_data) {
+            this.accessToken = _data["accessToken"] !== undefined ? _data["accessToken"] : <any>null;
+            this.expiresIn = _data["expiresIn"] !== undefined ? _data["expiresIn"] : <any>null;
+            this.refreshToken = _data["refreshToken"] !== undefined ? _data["refreshToken"] : <any>null;
+            this.role = _data["role"] !== undefined ? _data["role"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): TokenAdminResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new TokenAdminResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["accessToken"] = this.accessToken !== undefined ? this.accessToken : <any>null;
+        data["expiresIn"] = this.expiresIn !== undefined ? this.expiresIn : <any>null;
+        data["refreshToken"] = this.refreshToken !== undefined ? this.refreshToken : <any>null;
+        data["role"] = this.role !== undefined ? this.role : <any>null;
+        return data;
+    }
+}
+
+export class LoginAdminCommand {
+    userName!: string;
+    password!: string;
+
+    init(_data?: any) {
+        if (_data) {
+            this.userName = _data["userName"] !== undefined ? _data["userName"] : <any>null;
+            this.password = _data["password"] !== undefined ? _data["password"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): LoginAdminCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new LoginAdminCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userName"] = this.userName !== undefined ? this.userName : <any>null;
+        data["password"] = this.password !== undefined ? this.password : <any>null;
+        return data;
+    }
+}
+
 export class PagedGetAllDeliveryMenRequestsPaged {
     data!: GetAllDeliveryMenRequestsDto[];
     totalCount!: number;
@@ -7559,6 +7760,46 @@ export class AddDeliveryManDto {
         data["androidDevice"] = this.androidDevice !== undefined ? this.androidDevice : <any>null;
         data["iosDevice"] = this.iosDevice !== undefined ? this.iosDevice : <any>null;
         data["active"] = this.active !== undefined ? this.active : <any>null;
+        return data;
+    }
+}
+
+export class PagedResultOfMainCategoryAdminDto {
+    data!: MainCategoryAdminDto[];
+    totalCount!: number;
+    totalPages!: number;
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data!.push(MainCategoryAdminDto.fromJS(item));
+            }
+            else {
+                this.data = <any>null;
+            }
+            this.totalCount = _data["totalCount"] !== undefined ? _data["totalCount"] : <any>null;
+            this.totalPages = _data["totalPages"] !== undefined ? _data["totalPages"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): PagedResultOfMainCategoryAdminDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultOfMainCategoryAdminDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item.toJSON());
+        }
+        data["totalCount"] = this.totalCount !== undefined ? this.totalCount : <any>null;
+        data["totalPages"] = this.totalPages !== undefined ? this.totalPages : <any>null;
         return data;
     }
 }

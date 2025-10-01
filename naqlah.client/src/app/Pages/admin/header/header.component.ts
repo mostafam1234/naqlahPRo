@@ -4,6 +4,8 @@ import { Component, EventEmitter, Output, Renderer2, HostListener, ElementRef } 
 import { Router, RouterModule } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { LanguageService } from 'src/app/Core/services/language.service';
+import { AuthService } from 'src/app/shared/services/auth.service';
+import { AdminUserClient } from 'src/app/Core/services/NaqlahClient';
 import { NotificationsComponent } from '../notifications/notifications.component';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 
@@ -11,6 +13,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
   selector: 'app-header',
   standalone: true,
   imports: [CommonModule, TranslateModule, RouterModule, NotificationsComponent],
+  providers: [AdminUserClient], // تغيير من OrderAdminClient إلى AdminUserClient
   templateUrl: './header.component.html',
   animations: [
     // الأنيميشن الموحد لكل الـ dropdowns
@@ -56,6 +59,7 @@ export class HeaderComponent {
   isMenuOpen: boolean = false;
   activePath: string = '/admin';
   isLogging: boolean = false;
+  isLoggingOut: boolean = false; // إضافة loading state لتسجيل الخروج
   appearSideBarNav: boolean = false;
 
   // Dropdown States
@@ -135,7 +139,9 @@ export class HeaderComponent {
     private translateService: TranslateService,
     private router: Router,
     private location: Location,
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
+    private authService: AuthService,
+    private adminUserClient: AdminUserClient // تغيير من orderAdminClient إلى adminUserClient
   ) {}
 
   ngOnInit() {
@@ -300,13 +306,30 @@ export class HeaderComponent {
     this.dataEmitter.emit(this.appearSideBarNav);
   }
 
+  // تحديث دالة logout لاستخدام AdminUserClient بدلاً من OrderAdminClient
   logout() {
-    console.log('Logging out...');
+    console.log('🔄 بدء عملية تسجيل الخروج...');
+    this.isLoggingOut = true;
     this.closeAllDropdowns();
-    // Add your logout logic here
-    // this.authService.logout();
-    // this.router.navigate(['/login']);
+
+    this.adminUserClient.logout().subscribe({
+      next: (response) => {
+        console.log('✅ تم تسجيل الخروج من الخادم:', response);
+        this.completeLogout();
+      },
+      error: (error) => {
+        console.warn('⚠️ خطأ في تسجيل الخروج من الخادم، لكن سنكمل العملية:', error);
+        this.completeLogout();
+      }
+    });
   }
+
+  private completeLogout() {
+    this.authService.logout();
+    this.isLoggingOut = false;
+    
+    console.log('✅ تم تسجيل الخروج بنجاح');
+      }
 
   // Prevent dropdown close when clicking inside
   onDropdownClick(event: Event): void {

@@ -10,6 +10,7 @@ using Application.Features.VehicleSection.Queries;
 using Application.Shared.Dtos;
 using Domain.InterFaces;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Presentaion.Reponse;
@@ -23,6 +24,7 @@ namespace Presentaion.Controllers.Admin
 {
   [ApiController]
   [Route("api/[controller]")]
+  [Authorize]
   public class VehicleAdminController : ControllerBase
   {
         private readonly IMediator mediator;

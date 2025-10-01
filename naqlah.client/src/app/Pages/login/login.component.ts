@@ -1,134 +1,172 @@
-import { CommonModule, NgIf } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
-import { Component } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
-import { TranslateService } from '@ngx-translate/core/lib/translate.service';
-import { catchError, EMPTY } from 'rxjs';
-import { Client, LoginRequest } from 'src/app/Core/services/NaqlahClient';
-import { AppConfigService } from 'src/app/shared/services/AppConfigService';
-import { AuthService } from 'src/app/shared/services/auth.service';
-import Swal from 'sweetalert2';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { AuthService } from '../../shared/services/auth.service';
+import { LoginAdminCommand } from '../../Core/services/NaqlahClient';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-    imports: [
-    ReactiveFormsModule,
-    CommonModule,
-    FormsModule,
-  ],
-  providers: [AuthService, AppConfigService, Client],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrls: ['./login.component.css']
 })
-export class LoginComponent {
-  loginFormGroup: FormGroup;
-  errorMessage: string = '';
-  error: boolean = false;
-  isSubmitting: boolean = false;
-  showPassword: boolean = false;
+export class LoginComponent implements OnInit {
+  loginFormGroup!: FormGroup;
+  isLoading = false;
+  isSubmitting = false;
+  errorMessage = '';
+  showPassword = false;
 
   constructor(
-    private authServices: AuthService,
-    private userClinet: Client,
-  ) {
-    this.loginFormGroup = new FormGroup({
-      userName: new FormControl('', [
-        Validators.required,
-        Validators.email
-      ]),
-      password: new FormControl('', [
-        Validators.required,
-        Validators.minLength(6)
-      ]),
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    this.loginFormGroup = this.fb.group({
+      userName: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(4)]]
     });
   }
 
-  // Toggle password visibility
-  togglePasswordVisibility() {
+  // دالة تسجيل الدخول مع debugging والـ redirect
+  LogIn(formValue: any): void {
+    if (this.loginFormGroup.invalid) {
+      this.loginFormGroup.markAllAsTouched();
+      return;
+    }
+
+    this.isSubmitting = true;
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    const credentials = new LoginAdminCommand();
+    credentials.userName = formValue.userName;
+    credentials.password = formValue.password;
+
+    console.log('🔄 بدء تسجيل الدخول...');
+    console.log('📧 البريد الإلكتروني:', credentials.userName);
+
+    this.authService.Login(credentials).subscribe({
+      next: (response) => {
+        console.log('✅ تم تسجيل الدخول بنجاح!');
+        console.log('📦 الاستجابة:', response);
+        
+        // انتظار قصير لضمان حفظ التوكن
+        setTimeout(() => {
+          // فحص التوكن والدور
+          const token = this.authService.getAccessToken();
+          const userRole = this.authService.GetUserRole();
+          const isAuthenticated = this.authService.isAuthenticated();
+          
+          console.log('=== تحليل نتائج تسجيل الدخول ===');
+          console.log('🔐 يوجد توكن:', !!token);
+          console.log('👤 دور المستخدم:', userRole);
+          console.log('🔒 حالة التوثيق:', isAuthenticated);
+          console.log('=====================================');
+
+          // التحقق من الدور وإعادة التوجيه
+          if (token && isAuthenticated) {
+            if (userRole === 'Admin') {
+              console.log('✅ المستخدم أدمن - إعادة توجيه لـ Admin Panel');
+              this.router.navigate(['/admin/home']).then(() => {
+                console.log('🚀 تم إعادة التوجيه بنجاح');
+              });
+            } else if (userRole) {
+              console.warn(`⚠️ المستخدم له دور "${userRole}" وليس Admin`);
+              this.errorMessage = `غير مصرح لك بالدخول كأدمن. دورك الحالي: ${userRole}`;
+              this.authService.logout();
+            } else {
+              console.warn('⚠️ لم يتم العثور على دور للمستخدم');
+              this.errorMessage = 'لم يتم العثور على دور للمستخدم في النظام';
+              this.authService.logout();
+            }
+          } else {
+            console.error('❌ مشكلة في التوكن أو التوثيق');
+            this.errorMessage = 'مشكلة في حفظ بيانات تسجيل الدخول';
+          }
+          
+          this.isSubmitting = false;
+          this.isLoading = false;
+        }, 100); // انتظار 100ms
+      },
+      error: (error) => {
+        console.error('❌ فشل تسجيل الدخول:', error);
+        console.error('📋 تفاصيل الخطأ الكاملة:', JSON.stringify(error, null, 2));
+        
+        // استخراج رسالة الخطأ
+        let errorMsg = 'فشل في تسجيل الدخول';
+        
+        if (error.error?.error) {
+          errorMsg = error.error.error;
+        } else if (error.error?.message) {
+          errorMsg = error.error.message;
+        } else if (error.message) {
+          errorMsg = error.message;
+        } else if (error.errorMessage) {
+          errorMsg = error.errorMessage;
+        }
+        
+        this.errorMessage = errorMsg;
+        this.isSubmitting = false;
+        this.isLoading = false;
+      }
+    });
+  }
+
+  // دالة إظهار/إخفاء كلمة المرور
+  togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
 
-  // Get field error message
+  // Helper methods للـ template
+  hasFieldError(fieldName: string): boolean {
+    const field = this.loginFormGroup.get(fieldName);
+    return !!(field && field.invalid && (field.dirty || field.touched));
+  }
+
   getFieldError(fieldName: string): string {
     const field = this.loginFormGroup.get(fieldName);
-    if (field && field.errors && field.touched) {
-      if (field.errors['required']) {
-        return fieldName === 'userName' ? 'البريد الإلكتروني مطلوب' : 'كلمة المرور مطلوبة';
-      }
-      if (field.errors['email']) {
-        return 'يرجى إدخال بريد إلكتروني صحيح';
-      }
-      if (field.errors['minlength']) {
-        return 'كلمة المرور يجب أن تكون على الأقل 6 أحرف';
-      }
+    if (field?.errors?.['required']) {
+      return 'هذا الحقل مطلوب';
+    }
+    if (field?.errors?.['email']) {
+      return 'يرجى إدخال بريد إلكتروني صحيح';
+    }
+    if (field?.errors?.['minlength']) {
+      return 'كلمة المرور يجب أن تكون 4 أحرف على الأقل';
     }
     return '';
   }
 
-  // Check if field has error
-  hasFieldError(fieldName: string): boolean {
-    const field = this.loginFormGroup.get(fieldName);
-    return !!(field && field.errors && field.touched);
+  // Helper methods for template (compatibility)
+  isFieldInvalid(fieldName: string): boolean {
+    return this.hasFieldError(fieldName);
   }
 
-  LogIn(formValues: any) {
-    // Check form validation before submitting
-    if (this.loginFormGroup.invalid) {
-      // Mark all fields as touched to show validation errors
-      Object.keys(this.loginFormGroup.controls).forEach(key => {
-        this.loginFormGroup.get(key)?.markAsTouched();
-      });
-      return;
+  // دالة تسجيل الدخول القديمة (للتوافق)
+  onSubmit(): void {
+    this.LogIn(this.loginFormGroup.value);
+  }
+
+  // دالة للاختبار - يمكن حذفها لاحقاً
+  testCurrentToken(): void {
+    const token = this.authService.getAccessToken();
+    const isAuth = this.authService.isAuthenticated();
+    const userRole = this.authService.GetUserRole();
+    
+    console.log('=== اختبار التوكن الحالي ===');
+    console.log('🔐 التوكن موجود:', !!token);
+    console.log('🔒 مُوثق:', isAuth);
+    console.log('👤 الدور:', userRole);
+    console.log('===========================');
+    
+    if (token) {
+      const payload = this.authService['parseJwt'](token);
+      console.log('📋 محتوى التوكن:', payload);
     }
-
-    // Clear previous errors and start loading
-    this.error = false;
-    this.errorMessage = '';
-    this.isSubmitting = true;
-
-    var email = formValues.userName;
-    var password = formValues.password;
-    var loginRequest = new LoginRequest();
-    loginRequest.email = email;
-    loginRequest.password = password;
-
-    console.log('🔐 Attempting login:', { email, password: '***' });
-
-    this.userClinet.postLogin(loginRequest).subscribe(
-      (success) => {
-        this.authServices
-          .Login(loginRequest)
-          .pipe(
-            catchError((err) => {
-              console.error('❌ Login failed:', err);
-              this.errorMessage = 'البريد الإلكتروني أو كلمة المرور غير صحيحة';
-              this.error = true;
-              this.isSubmitting = false;
-              return EMPTY;
-            })
-          )
-          .subscribe((data) => {
-            console.log('✅ Login successful, redirecting...');
-            this.isSubmitting = false;
-            window.location.href = '/admin';
-          });
-      },
-      (error) => {
-        console.error('Login error:', error);
-        this.isSubmitting = false;
-        this.error = true;
-        this.errorMessage = 'البريد الإلكتروني أو كلمة المرور غير صحيحة';
-        
-        Swal.fire({
-          title: 'خطأ في تسجيل الدخول',
-          text: this.errorMessage,
-          icon: 'error',
-          confirmButtonText: 'حسناً',
-          confirmButtonColor: '#ef4444'
-        });
-      }
-    );
   }
 }

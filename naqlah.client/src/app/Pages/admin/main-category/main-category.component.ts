@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormControl, FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
 import { MainCategoryAdminClient, MainCategoryAdminDto, AddMainAdminCategory, UpdateMainAdminCategory } from 'src/app/Core/services/NaqlahClient';
@@ -11,7 +11,7 @@ import Swal from 'sweetalert2';
 @Component({
   selector: 'app-main-category',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslateModule, PageHeaderComponent],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, TranslateModule, PageHeaderComponent],
   providers: [MainCategoryAdminClient],
   templateUrl: './main-category.component.html',
   styleUrls: ['./main-category.component.css']
@@ -30,6 +30,27 @@ export class MainCategoryComponent implements OnInit, OnDestroy {
   // Data
   items: MainCategoryAdminDto[] = [];
 
+  // Multi-Select Properties
+  isMultiSelectOpen = false;
+  serviceSearchTerm = '';
+  selectedServices: any[] = [];
+  availableServices: any[] = [
+    { id: 1, name: 'نقل البضائع' },
+    { id: 2, name: 'توصيل الطلبات' },
+    { id: 3, name: 'النقل السريع' },
+    { id: 4, name: 'النقل المبرد' },
+    { id: 5, name: 'نقل الأثاث' },
+    { id: 6, name: 'التوصيل المجدول' }
+  ];
+
+  // Image Upload Properties
+  selectedImagePreview: string | null = null;
+  selectedImageName = '';
+  selectedImageSize = 0;
+  selectedImageFile: File | null = null;
+  isDragOver = false;
+  imageError = '';
+
   // Pagination
   totalCount = 0;
   totalPages = 0;
@@ -44,13 +65,24 @@ export class MainCategoryComponent implements OnInit, OnDestroy {
   ) {
     this.itemForm = this.fb.group({
       arabicName: ['', [Validators.required, Validators.maxLength(100)]],
-      englishName: ['', [Validators.required, Validators.maxLength(100)]]
+      englishName: ['', [Validators.required, Validators.maxLength(100)]],
+      services: [[], [Validators.required]]
     });
   }
 
   ngOnInit(): void {
     this.loadItems();
     this.setupSearch();
+    this.setupDocumentClick();
+  }
+
+  private setupDocumentClick(): void {
+    document.addEventListener('click', (event) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest('.multi-select-container')) {
+        this.isMultiSelectOpen = false;
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -89,10 +121,14 @@ export class MainCategoryComponent implements OnInit, OnDestroy {
       }
     });
   }
-    
+
   openAdd(): void {
     this.editingItem = null;
     this.itemForm.reset();
+    this.selectedServices = [];
+    this.isMultiSelectOpen = false;
+    this.serviceSearchTerm = '';
+    this.removeImage();
     this.showModal = true;
   }
 
@@ -110,6 +146,14 @@ export class MainCategoryComponent implements OnInit, OnDestroy {
     this.showUpdateModal = false;
     this.editingItem = null;
     this.itemForm.reset();
+
+    // Reset multi-select
+    this.selectedServices = [];
+    this.isMultiSelectOpen = false;
+    this.serviceSearchTerm = '';
+
+    // Reset image upload
+    this.removeImage();
   }
 
   submit(): void {
@@ -146,8 +190,9 @@ export class MainCategoryComponent implements OnInit, OnDestroy {
   }
 
   update(): void {
+    debugger;
     if (this.itemForm.invalid) return;
-    
+
     const itemId = this.editingItem?.id;
     const value = this.itemForm.value;
     const command = new UpdateMainAdminCategory();
@@ -275,5 +320,115 @@ export class MainCategoryComponent implements OnInit, OnDestroy {
 
   goBack(): void {
     window.history.back();
+  }
+
+  // Multi-Select Methods
+  toggleMultiSelect(): void {
+    this.isMultiSelectOpen = !this.isMultiSelectOpen;
+  }
+
+  get filteredServices(): any[] {
+    if (!this.serviceSearchTerm) {
+      return this.availableServices;
+    }
+    return this.availableServices.filter(service =>
+      service.name.toLowerCase().includes(this.serviceSearchTerm.toLowerCase())
+    );
+  }
+
+  isServiceSelected(service: any): boolean {
+    return this.selectedServices.some(selected => selected.id === service.id);
+  }
+
+  toggleService(service: any): void {
+    const index = this.selectedServices.findIndex(selected => selected.id === service.id);
+    if (index > -1) {
+      this.selectedServices.splice(index, 1);
+    } else {
+      this.selectedServices.push(service);
+    }
+    this.itemForm.patchValue({ services: this.selectedServices });
+  }
+
+  removeService(service: any, event: Event): void {
+    event.stopPropagation();
+    const index = this.selectedServices.findIndex(selected => selected.id === service.id);
+    if (index > -1) {
+      this.selectedServices.splice(index, 1);
+      this.itemForm.patchValue({ services: this.selectedServices });
+    }
+  }
+
+  // Image Upload Methods
+  onImageSelect(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      this.handleImageFile(file);
+    }
+  }
+
+  onDragOver(event: DragEvent): void {
+    event.preventDefault();
+    this.isDragOver = true;
+  }
+
+  onDragLeave(event: DragEvent): void {
+    event.preventDefault();
+    this.isDragOver = false;
+  }
+
+  onDrop(event: DragEvent): void {
+    event.preventDefault();
+    this.isDragOver = false;
+    const files = event.dataTransfer?.files;
+    if (files && files.length > 0) {
+      this.handleImageFile(files[0]);
+    }
+  }
+
+  private handleImageFile(file: File): void {
+    this.imageError = '';
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      this.imageError = 'يرجى اختيار ملف صورة صحيح';
+      return;
+    }
+
+    // Validate file size (2MB)
+    if (file.size > 2 * 1024 * 1024) {
+      this.imageError = 'حجم الصورة يجب أن يكون أقل من 2 ميجابايت';
+      return;
+    }
+
+    this.selectedImageFile = file;
+    this.selectedImageName = file.name;
+    this.selectedImageSize = file.size;
+
+    // Create preview
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      this.selectedImagePreview = e.target?.result as string;
+    };
+    reader.readAsDataURL(file);
+
+    this.itemForm.patchValue({ image: file });
+  }
+
+  removeImage(): void {
+    this.selectedImageFile = null;
+    this.selectedImagePreview = null;
+    this.selectedImageName = '';
+    this.selectedImageSize = 0;
+    this.imageError = '';
+    this.itemForm.patchValue({ image: null });
+  }
+
+  formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 }

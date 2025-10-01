@@ -7,6 +7,7 @@ using Application.Features.VehicleSection.Commands;
 using Application.Shared.Dtos;
 using Domain.InterFaces;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Presentaion.Reponse;
@@ -20,6 +21,7 @@ namespace Presentaion.Controllers.Admin
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class MainCategoryAdminController: ControllerBase
     {
         private readonly IMediator mediator;
@@ -117,6 +119,7 @@ namespace Presentaion.Controllers.Admin
         {
             var result = await mediator.Send(new UpdateMainAdminCategory
             {
+                Id = command.Id,
                 ArabicName = command.ArabicName,
                 EnglishName = command.EnglishName
             });

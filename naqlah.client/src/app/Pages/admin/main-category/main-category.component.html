@@ -1,31 +1,41 @@
-<div class="min-h-screen bg-neutral-50">
+<div class="min-h-screen">
   <div class="container mx-auto max-w-7xl">
     <!-- Page Header -->
-    <app-page-header [title]="'الفئات الرئيسية' | translate"
-                     [subtitle]="'إدارة الفئات الرئيسية للمنتجات' | translate"
-                     [showBackButton]="true"
-                     iconPath="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-                     (onBackClick)="goBack()">
+    <app-page-header
+      [title]="'الفئات الرئيسية' | translate"
+      [subtitle]="'إدارة الفئات الرئيسية للمنتجات' | translate"
+      [showBackButton]="true"
+      iconPath="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+      (onBackClick)="goBack()"
+    >
     </app-page-header>
 
     <!-- Search and Actions Bar -->
     <div class="bg-white rounded-xl shadow-sm border border-neutral-200 mb-6">
       <div class="p-6">
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div
+          class="flex flex-col lg:flex-row lg:items-center justify-between gap-4"
+        >
           <!-- Search -->
           <div class="relative flex-1 max-w-md">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <div
+              class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+            >
               <i class="bi bi-search text-neutral-400"></i>
             </div>
-            <input type="text"
-                   [formControl]="searchControl"
-                   placeholder="البحث في الفئات الرئيسية..."
-                   class="block w-full pl-10 pr-3 py-2.5 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 text-sm" />
+            <input
+              type="text"
+              [formControl]="searchControl"
+              placeholder="البحث في الفئات الرئيسية..."
+              class="block w-full pl-10 pr-3 py-2.5 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 text-sm"
+            />
           </div>
 
           <!-- Add Button -->
-          <button (click)="openAdd()"
-                  class="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 active:bg-primary-800 text-white px-4 py-2.5 rounded-lg shadow-sm transition-all duration-200 text-sm font-medium">
+          <button
+            (click)="openAdd()"
+            class="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 active:bg-primary-800 text-white px-4 py-2.5 rounded-lg shadow-sm transition-all duration-200 text-sm font-medium"
+          >
             <i class="bi bi-plus-lg"></i>
             <span>إضافة فئة جديدة</span>
           </button>
@@ -34,14 +44,18 @@
     </div>
 
     <!-- Content Card -->
-    <div class="bg-white rounded-xl shadow-sm border border-neutral-200 overflow-hidden">
+    <div
+      class="bg-white rounded-xl shadow-sm border border-neutral-200 overflow-hidden"
+    >
       <!-- Header -->
       <div class="px-6 py-4 border-b border-neutral-200 bg-neutral-50/50">
         <div class="flex items-center justify-between">
           <h3 class="font-semibold text-neutral-900 text-lg">
             الفئات الرئيسية
           </h3>
-          <span class="text-sm text-neutral-500 bg-neutral-100 px-3 py-1 rounded-full">
+          <span
+            class="text-sm text-neutral-500 bg-neutral-100 px-3 py-1 rounded-full"
+          >
             {{ totalCount }} عنصر
           </span>
         </div>
@@ -49,10 +63,10 @@
 
       <!-- Loading State -->
       <div *ngIf="isLoading" class="p-12 text-center">
-        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
-        <p class="mt-2 text-sm text-neutral-500">
-          جاري التحميل...
-        </p>
+        <div
+          class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"
+        ></div>
+        <p class="mt-2 text-sm text-neutral-500">جاري التحميل...</p>
       </div>
 
       <!-- Table -->
@@ -60,23 +74,33 @@
         <table class="min-w-full divide-y divide-neutral-200">
           <thead class="bg-neutral-50">
             <tr>
-              <th class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">
+              <th
+                class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider"
+              >
                 #
               </th>
-              <th class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">
+              <th
+                class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider"
+              >
                 الاسم بالعربية
               </th>
-              <th class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">
+              <th
+                class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider"
+              >
                 الاسم بالإنجليزية
               </th>
-              <th class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">
+              <th
+                class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider"
+              >
                 الإجراءات
               </th>
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-neutral-200">
-            <tr *ngFor="let item of items; let i = index"
-                class="hover:bg-neutral-50 transition-colors duration-150">
+            <tr
+              *ngFor="let item of items; let i = index"
+              class="hover:bg-neutral-50 transition-colors duration-150"
+            >
               <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-900">
                 {{ currentPage * itemsPerPage + i + 1 }}
               </td>
@@ -92,16 +116,40 @@
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-right">
                 <div class="inline-flex items-center gap-2">
-                  <button (click)="openEdit(item)"
-                          class="flex items-center justify-center w-8 h-8 bg-yellow-100 text-yellow-600 rounded-lg hover:bg-yellow-200 transition-colors">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536M9 13l6.364-6.364a2 2 0 112.828 2.828L11.828 16H9v-2.828z"></path>
+                  <button
+                    (click)="openEdit(item)"
+                    class="flex items-center justify-center w-8 h-8 bg-yellow-100 text-yellow-600 rounded-lg hover:bg-yellow-200 transition-colors"
+                  >
+                    <svg
+                      class="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15.232 5.232l3.536 3.536M9 13l6.364-6.364a2 2 0 112.828 2.828L11.828 16H9v-2.828z"
+                      ></path>
                     </svg>
                   </button>
-                  <button class="flex items-center justify-center w-8 h-8 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
-                        (click)="confirmDelete(item.id)">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                  <button
+                    class="flex items-center justify-center w-8 h-8 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
+                    (click)="confirmDelete(item.id)"
+                  >
+                    <svg
+                      class="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M6 18L18 6M6 6l12 12"
+                      ></path>
                     </svg>
                   </button>
                 </div>
@@ -114,9 +162,7 @@
                 <div class="text-neutral-400 mb-2">
                   <i class="bi bi-inbox text-4xl"></i>
                 </div>
-                <p class="text-sm text-neutral-500">
-                  لا توجد فئات رئيسية
-                </p>
+                <p class="text-sm text-neutral-500">لا توجد فئات رئيسية</p>
               </td>
             </tr>
           </tbody>
@@ -124,8 +170,10 @@
       </div>
 
       <!-- Pagination -->
-      <div *ngIf="!isLoading && totalPages > 1"
-           class="px-6 py-4 border-t border-neutral-200 bg-neutral-50/30">
+      <div
+        *ngIf="!isLoading && totalPages > 1"
+        class="px-6 py-4 border-t border-neutral-200 bg-neutral-50/30"
+      >
         <div class="flex items-center justify-between">
           <!-- Results Info -->
           <div class="text-sm text-neutral-700">
@@ -141,29 +189,49 @@
           <!-- Pagination Controls -->
           <nav class="flex items-center gap-1">
             <!-- Previous Button -->
-            <button [disabled]="displayCurrentPage === 1"
-                    (click)="changePage(displayCurrentPage - 1)"
-                    [class]="displayCurrentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-neutral-100'"
-                    class="px-3 py-2 text-sm font-medium text-neutral-700 bg-white border border-neutral-300 rounded-lg transition-colors duration-150">
+            <button
+              [disabled]="displayCurrentPage === 1"
+              (click)="changePage(displayCurrentPage - 1)"
+              [class]="
+                displayCurrentPage === 1
+                  ? 'opacity-50 cursor-not-allowed'
+                  : 'hover:bg-neutral-100'
+              "
+              class="px-3 py-2 text-sm font-medium text-neutral-700 bg-white border border-neutral-300 rounded-lg transition-colors duration-150"
+            >
               <i class="bi bi-chevron-left"></i>
             </button>
 
             <!-- Page Numbers -->
             <ng-container *ngFor="let page of visiblePages">
-              <button *ngIf="page !== -1"
-                      (click)="changePage(page)"
-                      [class]="page === displayCurrentPage ? 'bg-primary-600 text-white border-primary-600' : 'bg-white text-neutral-700 border-neutral-300 hover:bg-neutral-100'"
-                      class="px-3 py-2 text-sm font-medium border rounded-lg transition-colors duration-150">
+              <button
+                *ngIf="page !== -1"
+                (click)="changePage(page)"
+                [class]="
+                  page === displayCurrentPage
+                    ? 'bg-primary-600 text-white border-primary-600'
+                    : 'bg-white text-neutral-700 border-neutral-300 hover:bg-neutral-100'
+                "
+                class="px-3 py-2 text-sm font-medium border rounded-lg transition-colors duration-150"
+              >
                 {{ page }}
               </button>
-              <span *ngIf="page === -1" class="px-2 py-2 text-neutral-500">...</span>
+              <span *ngIf="page === -1" class="px-2 py-2 text-neutral-500"
+                >...</span
+              >
             </ng-container>
 
             <!-- Next Button -->
-            <button [disabled]="displayCurrentPage === totalPages"
-                    (click)="changePage(displayCurrentPage + 1)"
-                    [class]="displayCurrentPage === totalPages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-neutral-100'"
-                    class="px-3 py-2 text-sm font-medium text-neutral-700 bg-white border border-neutral-300 rounded-lg transition-colors duration-150">
+            <button
+              [disabled]="displayCurrentPage === totalPages"
+              (click)="changePage(displayCurrentPage + 1)"
+              [class]="
+                displayCurrentPage === totalPages
+                  ? 'opacity-50 cursor-not-allowed'
+                  : 'hover:bg-neutral-100'
+              "
+              class="px-3 py-2 text-sm font-medium text-neutral-700 bg-white border border-neutral-300 rounded-lg transition-colors duration-150"
+            >
               <i class="bi bi-chevron-right"></i>
             </button>
           </nav>
@@ -173,8 +241,10 @@
   </div>
 
   <!-- Add Modal -->
-  <div *ngIf="showModal"
-       class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+  <div
+    *ngIf="showModal"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
+  >
     <div class="bg-white rounded-xl shadow-xl w-full max-w-lg">
       <!-- Modal Header -->
       <div class="px-6 py-4 border-b border-neutral-200">
@@ -182,27 +252,39 @@
           <h3 class="text-lg font-semibold text-neutral-900">
             إضافة فئة رئيسية جديدة
           </h3>
-          <button (click)="closeModal()"
-                  class="text-neutral-400 hover:text-neutral-600 transition-colors duration-150">
+          <button
+            (click)="closeModal()"
+            class="text-neutral-400 hover:text-neutral-600 transition-colors duration-150"
+          >
             <i class="bi bi-x-lg"></i>
           </button>
         </div>
       </div>
 
       <!-- Modal Body -->
-      <form [formGroup]="itemForm" (ngSubmit)="submit()" class="p-6 space-y-4">
+      <form [formGroup]="itemForm" (ngSubmit)="submit()" class="p-6 space-y-5">
         <!-- Arabic Name -->
         <div>
           <label class="block text-sm font-medium text-neutral-700 mb-2">
             الاسم بالعربية <span class="text-red-500">*</span>
           </label>
-          <input formControlName="arabicName"
-                 type="text"
-                 placeholder="أدخل الاسم بالعربية"
-                 class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
-                 [class.border-red-500]="itemForm.get('arabicName')?.touched && itemForm.get('arabicName')?.invalid" />
-          <div *ngIf="itemForm.get('arabicName')?.touched && itemForm.get('arabicName')?.invalid"
-               class="mt-1 text-xs text-red-600">
+          <input
+            formControlName="arabicName"
+            type="text"
+            placeholder="أدخل الاسم بالعربية"
+            class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
+            [class.border-red-500]="
+              itemForm.get('arabicName')?.touched &&
+              itemForm.get('arabicName')?.invalid
+            "
+          />
+          <div
+            *ngIf="
+              itemForm.get('arabicName')?.touched &&
+              itemForm.get('arabicName')?.invalid
+            "
+            class="mt-1 text-xs text-red-600"
+          >
             الاسم بالعربية مطلوب
           </div>
         </div>
@@ -212,29 +294,240 @@
           <label class="block text-sm font-medium text-neutral-700 mb-2">
             الاسم بالإنجليزية <span class="text-red-500">*</span>
           </label>
-          <input formControlName="englishName"
-                 type="text"
-                 placeholder="أدخل الاسم بالإنجليزية"
-                 class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
-                 [class.border-red-500]="itemForm.get('englishName')?.touched && itemForm.get('englishName')?.invalid" />
-          <div *ngIf="itemForm.get('englishName')?.touched && itemForm.get('englishName')?.invalid"
-               class="mt-1 text-xs text-red-600">
+          <input
+            formControlName="englishName"
+            type="text"
+            placeholder="أدخل الاسم بالإنجليزية"
+            class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
+            [class.border-red-500]="
+              itemForm.get('englishName')?.touched &&
+              itemForm.get('englishName')?.invalid
+            "
+          />
+          <div
+            *ngIf="
+              itemForm.get('englishName')?.touched &&
+              itemForm.get('englishName')?.invalid
+            "
+            class="mt-1 text-xs text-red-600"
+          >
             الاسم بالإنجليزية مطلوب
+          </div>
+        </div>
+
+        <!-- Multi-Select with Search -->
+        <div>
+          <label class="block text-sm font-medium text-neutral-700 mb-2">
+            الخدمات المتاحة <span class="text-red-500">*</span>
+          </label>
+          <div class="relative multi-select-container">
+            <!-- Selected Items Display -->
+            <div
+              class="w-full min-h-[40px] px-3 py-2 border border-neutral-300 rounded-lg focus-within:ring-2 focus-within:ring-primary-500 focus-within:border-primary-500 bg-white cursor-pointer"
+              (click)="toggleMultiSelect()"
+            >
+              <div
+                class="flex flex-wrap gap-1"
+                *ngIf="selectedServices.length > 0; else placeholderTemplate"
+              >
+                <span
+                  *ngFor="let service of selectedServices"
+                  class="inline-flex items-center px-2 py-1 text-xs font-medium text-primary-700 bg-primary-50 rounded-md border border-primary-200"
+                >
+                  {{ service.name }}
+                  <button
+                    type="button"
+                    (click)="removeService(service, $event)"
+                    class="ml-1 text-primary-500 hover:text-primary-700"
+                  >
+                    <i class="bi bi-x text-xs"></i>
+                  </button>
+                </span>
+              </div>
+              <ng-template #placeholderTemplate>
+                <span class="text-neutral-500">اختر الخدمات المتاحة...</span>
+              </ng-template>
+              <div class="absolute left-3 top-1/2 transform -translate-y-1/2">
+                <i
+                  class="bi bi-chevron-down text-neutral-400 transition-transform duration-200"
+                  [class.rotate-180]="isMultiSelectOpen"
+                ></i>
+              </div>
+            </div>
+
+            <!-- Dropdown Menu -->
+            <div
+              *ngIf="isMultiSelectOpen"
+              class="absolute z-10 w-full mt-1 bg-white border border-neutral-300 rounded-lg shadow-lg max-h-60 overflow-hidden"
+            >
+              <!-- Search Input -->
+              <div class="p-3 border-b border-neutral-200">
+                <div class="relative">
+                  <input
+                    type="text"
+                    [(ngModel)]="serviceSearchTerm"
+                    [ngModelOptions]="{ standalone: true }"
+                    placeholder="البحث في الخدمات..."
+                    class="w-full pl-8 pr-3 py-2 text-sm border border-neutral-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  />
+                  <i
+                    class="bi bi-search absolute left-2.5 top-1/2 transform -translate-y-1/2 text-neutral-400 text-sm"
+                  ></i>
+                </div>
+              </div>
+
+              <!-- Options List -->
+              <div class="max-h-40 overflow-y-auto">
+                <label
+                  *ngFor="let service of filteredServices"
+                  class="flex items-center px-3 py-2 hover:bg-neutral-50 cursor-pointer border-b border-neutral-100 last:border-b-0"
+                >
+                  <input
+                    type="checkbox"
+                    [checked]="isServiceSelected(service)"
+                    (change)="toggleService(service)"
+                    class="w-4 h-4 text-primary-600 border-neutral-300 rounded focus:ring-primary-500"
+                  />
+                  <span class="mr-2 text-sm text-neutral-700">{{
+                    service.name
+                  }}</span>
+                </label>
+
+                <!-- No Results -->
+                <div
+                  *ngIf="filteredServices.length === 0"
+                  class="px-3 py-4 text-center text-sm text-neutral-500"
+                >
+                  لا توجد نتائج للبحث
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            *ngIf="
+              itemForm.get('services')?.touched &&
+              itemForm.get('services')?.invalid
+            "
+            class="mt-1 text-xs text-red-600"
+          >
+            يرجى اختيار خدمة واحدة على الأقل
+          </div>
+        </div>
+
+        <!-- Image Upload Section -->
+        <div>
+          <label class="block text-sm font-medium text-neutral-700 mb-2">
+            صورة الفئة <span class="text-red-500">*</span>
+          </label>
+
+          <!-- Upload Area -->
+          <div
+            class="border-2 border-dashed border-neutral-300 rounded-lg p-4 hover:border-primary-400 transition-colors duration-200"
+            [class.border-primary-500]="isDragOver"
+            [class.bg-primary-50]="isDragOver"
+            (dragover)="onDragOver($event)"
+            (dragleave)="onDragLeave($event)"
+            (drop)="onDrop($event)"
+          >
+            <!-- Upload Button -->
+            <div class="text-center" *ngIf="!selectedImagePreview">
+              <div class="flex flex-col items-center">
+                <div
+                  class="w-12 h-12 bg-neutral-100 rounded-full flex items-center justify-center mb-3"
+                >
+                  <i
+                    class="bi bi-cloud-upload-fill text-xl text-neutral-400"
+                  ></i>
+                </div>
+                <h3 class="text-sm font-medium text-neutral-700 mb-1">
+                  رفع صورة الفئة
+                </h3>
+                <p class="text-xs text-neutral-500 mb-3">
+                  اسحب وأفلت الصورة هنا أو
+                </p>
+                <label
+                  class="inline-flex items-center px-3 py-2 text-xs font-medium text-primary-600 bg-primary-50 border border-primary-200 rounded-md hover:bg-primary-100 cursor-pointer transition-colors duration-200"
+                >
+                  <i class="bi bi-plus-circle ml-1"></i>
+                  اختر صورة
+                  <input
+                    type="file"
+                    class="hidden"
+                    accept="image/*"
+                    (change)="onImageSelect($event)"
+                  />
+                </label>
+                <p class="text-xs text-neutral-400 mt-2">
+                  PNG, JPG, GIF حتى 2MB
+                </p>
+              </div>
+            </div>
+
+            <!-- Image Preview -->
+            <div *ngIf="selectedImagePreview" class="relative">
+              <div class="flex items-start space-x-3 space-x-reverse">
+                <div class="flex-shrink-0">
+                  <img
+                    [src]="selectedImagePreview"
+                    alt="معاينة الصورة"
+                    class="w-16 h-16 object-cover rounded-lg border border-neutral-200"
+                  />
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-neutral-900 truncate">
+                    {{ selectedImageName }}
+                  </p>
+                  <p class="text-xs text-neutral-500">
+                    {{ formatFileSize(selectedImageSize) }}
+                  </p>
+                  <div class="mt-2 flex items-center space-x-2 space-x-reverse">
+                    <label
+                      class="inline-flex items-center px-2 py-1 text-xs font-medium text-primary-600 bg-primary-50 border border-primary-200 rounded hover:bg-primary-100 cursor-pointer transition-colors duration-200"
+                    >
+                      <i class="bi bi-arrow-repeat ml-1"></i>
+                      تغيير
+                      <input
+                        type="file"
+                        class="hidden"
+                        accept="image/*"
+                        (change)="onImageSelect($event)"
+                      />
+                    </label>
+                    <button
+                      type="button"
+                      (click)="removeImage()"
+                      class="inline-flex items-center px-2 py-1 text-xs font-medium text-red-600 bg-red-50 border border-red-200 rounded hover:bg-red-100 transition-colors duration-200"
+                    >
+                      <i class="bi bi-trash ml-1"></i>
+                      حذف
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="imageError" class="mt-1 text-xs text-red-600">
+            {{ imageError }}
           </div>
         </div>
 
         <!-- Modal Actions -->
         <div class="flex justify-end gap-3 pt-4">
-          <button type="button"
-                  (click)="closeModal()"
-                  class="px-4 py-2 text-sm font-medium text-neutral-700 bg-neutral-100 hover:bg-neutral-200 rounded-lg transition-colors duration-200">
+          <button
+            type="button"
+            (click)="closeModal()"
+            class="px-4 py-2 text-sm font-medium text-neutral-700 bg-neutral-100 hover:bg-neutral-200 rounded-lg transition-colors duration-200"
+          >
             إلغاء
           </button>
-          <button type="submit"
-                  [disabled]="itemForm.invalid"
-                  [class.opacity-50]="itemForm.invalid"
-                  [class.cursor-not-allowed]="itemForm.invalid"
-                  class="px-4 py-2 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors duration-200 disabled:hover:bg-primary-600">
+          <button
+            type="submit"
+            [disabled]="itemForm.invalid"
+            [class.opacity-50]="itemForm.invalid"
+            [class.cursor-not-allowed]="itemForm.invalid"
+            class="px-4 py-2 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors duration-200 disabled:hover:bg-primary-600"
+          >
             إضافة
           </button>
         </div>
@@ -243,8 +536,10 @@
   </div>
 
   <!-- Edit Modal -->
-  <div *ngIf="showUpdateModal"
-       class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+  <div
+    *ngIf="showUpdateModal"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
+  >
     <div class="bg-white rounded-xl shadow-xl w-full max-w-lg">
       <!-- Modal Header -->
       <div class="px-6 py-4 border-b border-neutral-200">
@@ -252,27 +547,39 @@
           <h3 class="text-lg font-semibold text-neutral-900">
             تعديل الفئة الرئيسية
           </h3>
-          <button (click)="closeModal()"
-                  class="text-neutral-400 hover:text-neutral-600 transition-colors duration-150">
+          <button
+            (click)="closeModal()"
+            class="text-neutral-400 hover:text-neutral-600 transition-colors duration-150"
+          >
             <i class="bi bi-x-lg"></i>
           </button>
         </div>
       </div>
 
       <!-- Modal Body -->
-      <form [formGroup]="itemForm" (ngSubmit)="update()" class="p-6 space-y-4">
+      <form [formGroup]="itemForm" (ngSubmit)="update()" class="p-6 space-y-5">
         <!-- Arabic Name -->
         <div>
           <label class="block text-sm font-medium text-neutral-700 mb-2">
             الاسم بالعربية <span class="text-red-500">*</span>
           </label>
-          <input formControlName="arabicName"
-                 type="text"
-                 placeholder="أدخل الاسم بالعربية"
-                 class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
-                 [class.border-red-500]="itemForm.get('arabicName')?.touched && itemForm.get('arabicName')?.invalid" />
-          <div *ngIf="itemForm.get('arabicName')?.touched && itemForm.get('arabicName')?.invalid"
-               class="mt-1 text-xs text-red-600">
+          <input
+            formControlName="arabicName"
+            type="text"
+            placeholder="أدخل الاسم بالعربية"
+            class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
+            [class.border-red-500]="
+              itemForm.get('arabicName')?.touched &&
+              itemForm.get('arabicName')?.invalid
+            "
+          />
+          <div
+            *ngIf="
+              itemForm.get('arabicName')?.touched &&
+              itemForm.get('arabicName')?.invalid
+            "
+            class="mt-1 text-xs text-red-600"
+          >
             الاسم بالعربية مطلوب
           </div>
         </div>
@@ -282,29 +589,240 @@
           <label class="block text-sm font-medium text-neutral-700 mb-2">
             الاسم بالإنجليزية <span class="text-red-500">*</span>
           </label>
-          <input formControlName="englishName"
-                 type="text"
-                 placeholder="أدخل الاسم بالإنجليزية"
-                 class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
-                 [class.border-red-500]="itemForm.get('englishName')?.touched && itemForm.get('englishName')?.invalid" />
-          <div *ngIf="itemForm.get('englishName')?.touched && itemForm.get('englishName')?.invalid"
-               class="mt-1 text-xs text-red-600">
+          <input
+            formControlName="englishName"
+            type="text"
+            placeholder="أدخل الاسم بالإنجليزية"
+            class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
+            [class.border-red-500]="
+              itemForm.get('englishName')?.touched &&
+              itemForm.get('englishName')?.invalid
+            "
+          />
+          <div
+            *ngIf="
+              itemForm.get('englishName')?.touched &&
+              itemForm.get('englishName')?.invalid
+            "
+            class="mt-1 text-xs text-red-600"
+          >
             الاسم بالإنجليزية مطلوب
+          </div>
+        </div>
+
+        <!-- Multi-Select with Search -->
+        <div>
+          <label class="block text-sm font-medium text-neutral-700 mb-2">
+            الخدمات المتاحة <span class="text-red-500">*</span>
+          </label>
+          <div class="relative multi-select-container">
+            <!-- Selected Items Display -->
+            <div
+              class="w-full min-h-[40px] px-3 py-2 border border-neutral-300 rounded-lg focus-within:ring-2 focus-within:ring-primary-500 focus-within:border-primary-500 bg-white cursor-pointer"
+              (click)="toggleMultiSelect()"
+            >
+              <div
+                class="flex flex-wrap gap-1"
+                *ngIf="selectedServices.length > 0; else placeholderTemplate"
+              >
+                <span
+                  *ngFor="let service of selectedServices"
+                  class="inline-flex items-center px-2 py-1 text-xs font-medium text-primary-700 bg-primary-50 rounded-md border border-primary-200"
+                >
+                  {{ service.name }}
+                  <button
+                    type="button"
+                    (click)="removeService(service, $event)"
+                    class="ml-1 text-primary-500 hover:text-primary-700"
+                  >
+                    <i class="bi bi-x text-xs"></i>
+                  </button>
+                </span>
+              </div>
+              <ng-template #placeholderTemplate>
+                <span class="text-neutral-500">اختر الخدمات المتاحة...</span>
+              </ng-template>
+              <div class="absolute left-3 top-1/2 transform -translate-y-1/2">
+                <i
+                  class="bi bi-chevron-down text-neutral-400 transition-transform duration-200"
+                  [class.rotate-180]="isMultiSelectOpen"
+                ></i>
+              </div>
+            </div>
+
+            <!-- Dropdown Menu -->
+            <div
+              *ngIf="isMultiSelectOpen"
+              class="absolute z-10 w-full mt-1 bg-white border border-neutral-300 rounded-lg shadow-lg max-h-60 overflow-hidden"
+            >
+              <!-- Search Input -->
+              <div class="p-3 border-b border-neutral-200">
+                <div class="relative">
+                  <input
+                    type="text"
+                    [(ngModel)]="serviceSearchTerm"
+                    [ngModelOptions]="{ standalone: true }"
+                    placeholder="البحث في الخدمات..."
+                    class="w-full pl-8 pr-3 py-2 text-sm border border-neutral-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  />
+                  <i
+                    class="bi bi-search absolute left-2.5 top-1/2 transform -translate-y-1/2 text-neutral-400 text-sm"
+                  ></i>
+                </div>
+              </div>
+
+              <!-- Options List -->
+              <div class="max-h-40 overflow-y-auto">
+                <label
+                  *ngFor="let service of filteredServices"
+                  class="flex items-center px-3 py-2 hover:bg-neutral-50 cursor-pointer border-b border-neutral-100 last:border-b-0"
+                >
+                  <input
+                    type="checkbox"
+                    [checked]="isServiceSelected(service)"
+                    (change)="toggleService(service)"
+                    class="w-4 h-4 text-primary-600 border-neutral-300 rounded focus:ring-primary-500"
+                  />
+                  <span class="mr-2 text-sm text-neutral-700">{{
+                    service.name
+                  }}</span>
+                </label>
+
+                <!-- No Results -->
+                <div
+                  *ngIf="filteredServices.length === 0"
+                  class="px-3 py-4 text-center text-sm text-neutral-500"
+                >
+                  لا توجد نتائج للبحث
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            *ngIf="
+              itemForm.get('services')?.touched &&
+              itemForm.get('services')?.invalid
+            "
+            class="mt-1 text-xs text-red-600"
+          >
+            يرجى اختيار خدمة واحدة على الأقل
+          </div>
+        </div>
+
+        <!-- Image Upload Section -->
+        <div>
+          <label class="block text-sm font-medium text-neutral-700 mb-2">
+            صورة الفئة <span class="text-red-500">*</span>
+          </label>
+
+          <!-- Upload Area -->
+          <div
+            class="border-2 border-dashed border-neutral-300 rounded-lg p-4 hover:border-primary-400 transition-colors duration-200"
+            [class.border-primary-500]="isDragOver"
+            [class.bg-primary-50]="isDragOver"
+            (dragover)="onDragOver($event)"
+            (dragleave)="onDragLeave($event)"
+            (drop)="onDrop($event)"
+          >
+            <!-- Upload Button -->
+            <div class="text-center" *ngIf="!selectedImagePreview">
+              <div class="flex flex-col items-center">
+                <div
+                  class="w-12 h-12 bg-neutral-100 rounded-full flex items-center justify-center mb-3"
+                >
+                  <i
+                    class="bi bi-cloud-upload-fill text-xl text-neutral-400"
+                  ></i>
+                </div>
+                <h3 class="text-sm font-medium text-neutral-700 mb-1">
+                  رفع صورة الفئة
+                </h3>
+                <p class="text-xs text-neutral-500 mb-3">
+                  اسحب وأفلت الصورة هنا أو
+                </p>
+                <label
+                  class="inline-flex items-center px-3 py-2 text-xs font-medium text-primary-600 bg-primary-50 border border-primary-200 rounded-md hover:bg-primary-100 cursor-pointer transition-colors duration-200"
+                >
+                  <i class="bi bi-plus-circle ml-1"></i>
+                  اختر صورة
+                  <input
+                    type="file"
+                    class="hidden"
+                    accept="image/*"
+                    (change)="onImageSelect($event)"
+                  />
+                </label>
+                <p class="text-xs text-neutral-400 mt-2">
+                  PNG, JPG, GIF حتى 2MB
+                </p>
+              </div>
+            </div>
+
+            <!-- Image Preview -->
+            <div *ngIf="selectedImagePreview" class="relative">
+              <div class="flex items-start space-x-3 space-x-reverse">
+                <div class="flex-shrink-0">
+                  <img
+                    [src]="selectedImagePreview"
+                    alt="معاينة الصورة"
+                    class="w-16 h-16 object-cover rounded-lg border border-neutral-200"
+                  />
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-neutral-900 truncate">
+                    {{ selectedImageName }}
+                  </p>
+                  <p class="text-xs text-neutral-500">
+                    {{ formatFileSize(selectedImageSize) }}
+                  </p>
+                  <div class="mt-2 flex items-center space-x-2 space-x-reverse">
+                    <label
+                      class="inline-flex items-center px-2 py-1 text-xs font-medium text-primary-600 bg-primary-50 border border-primary-200 rounded hover:bg-primary-100 cursor-pointer transition-colors duration-200"
+                    >
+                      <i class="bi bi-arrow-repeat ml-1"></i>
+                      تغيير
+                      <input
+                        type="file"
+                        class="hidden"
+                        accept="image/*"
+                        (change)="onImageSelect($event)"
+                      />
+                    </label>
+                    <button
+                      type="button"
+                      (click)="removeImage()"
+                      class="inline-flex items-center px-2 py-1 text-xs font-medium text-red-600 bg-red-50 border border-red-200 rounded hover:bg-red-100 transition-colors duration-200"
+                    >
+                      <i class="bi bi-trash ml-1"></i>
+                      حذف
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="imageError" class="mt-1 text-xs text-red-600">
+            {{ imageError }}
           </div>
         </div>
 
         <!-- Modal Actions -->
         <div class="flex justify-end gap-3 pt-4">
-          <button type="button"
-                  (click)="closeModal()"
-                  class="px-4 py-2 text-sm font-medium text-neutral-700 bg-neutral-100 hover:bg-neutral-200 rounded-lg transition-colors duration-200">
+          <button
+            type="button"
+            (click)="closeModal()"
+            class="px-4 py-2 text-sm font-medium text-neutral-700 bg-neutral-100 hover:bg-neutral-200 rounded-lg transition-colors duration-200"
+          >
             إلغاء
           </button>
-          <button type="submit"
-                  [disabled]="itemForm.invalid"
-                  [class.opacity-50]="itemForm.invalid"
-                  [class.cursor-not-allowed]="itemForm.invalid"
-                  class="px-4 py-2 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors duration-200 disabled:hover:bg-primary-600">
+          <button
+            type="submit"
+            [disabled]="itemForm.invalid"
+            [class.opacity-50]="itemForm.invalid"
+            [class.cursor-not-allowed]="itemForm.invalid"
+            class="px-4 py-2 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors duration-200 disabled:hover:bg-primary-600"
+          >
             حفظ التغييرات
           </button>
         </div>
