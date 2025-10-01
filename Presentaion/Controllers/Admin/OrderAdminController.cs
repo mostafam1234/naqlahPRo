@@ -13,11 +13,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Presentaion.Controllers.Admin
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class OrderAdminController : ControllerBase
     {
         private readonly IMediator mediator;

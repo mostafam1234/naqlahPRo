@@ -1783,6 +1783,71 @@
         }
       }
     },
+    "/api/AdminUser/LoginAdmin": {
+      "post": {
+        "tags": [
+          "AdminUser"
+        ],
+        "operationId": "AdminUser_LoginAdmin",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginAdminCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/AdminUser/Logout": {
+      "post": {
+        "tags": [
+          "AdminUser"
+        ],
+        "operationId": "AdminUser_Logout",
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/DeliveryManAdmin/GetAllDeliveryMenRequests": {
       "get": {
         "tags": [
@@ -2101,10 +2166,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/MainCategoryAdminDto"
-                  }
+                  "$ref": "#/components/schemas/PagedResultOfMainCategoryAdminDto"
                 }
               }
             }
@@ -4625,6 +4687,49 @@
           }
         }
       },
+      "AdminResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "isActive": {
+            "type": "boolean"
+          },
+          "tokenResponse": {
+            "$ref": "#/components/schemas/TokenAdminResponse"
+          }
+        }
+      },
+      "TokenAdminResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "accessToken": {
+            "type": "string"
+          },
+          "expiresIn": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "refreshToken": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          }
+        }
+      },
+      "LoginAdminCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userName": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
       "PagedGetAllDeliveryMenRequestsPaged": {
         "type": "object",
         "additionalProperties": false,
@@ -4950,6 +5055,26 @@
           },
           "active": {
             "type": "boolean"
+          }
+        }
+      },
+      "PagedResultOfMainCategoryAdminDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MainCategoryAdminDto"
+            }
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
