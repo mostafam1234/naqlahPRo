@@ -1,19 +1,20 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormControl, FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
 import { AddVehicleBrandCommand, AddVehicleTypeCommand, DeliveryManVehicleDto, UpdateVehicleBrandCommand, UpdateVehicleTypeCommand, VehicleAdminClient, ActiveCategoryDto, MainCategoryAdminLookupDto } from 'src/app/Core/services/NaqlahClient';
 import { SubSink } from 'subsink';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import Swal from 'sweetalert2';
 import { ImageService } from 'src/app/Core/services/image.service';
+import { ToasterService } from 'src/app/Core/services/toaster.service';
+import { ConfirmationModalComponent } from 'src/app/shared/components/confirmation-modal/confirmation-modal.component';
 
 
 @Component({
   selector: 'app-vehicles',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslateModule, PageHeaderComponent],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, TranslateModule, PageHeaderComponent, ConfirmationModalComponent],
   templateUrl: './vehicles.component.html',
   styleUrls: ['./vehicles.component.css']
 })
@@ -35,17 +36,35 @@ export class VehiclesComponent implements OnInit, OnDestroy {
   selectedIconFile: File | null = null;
   iconPreview: string | null = null;
 
+  // Multi-Select Properties for Categories
+  isCategoryMultiSelectOpen = false;
+  categorySearchTerm = '';
+  selectedCategories: MainCategoryAdminLookupDto[] = [];
+
+  // Image Upload Properties
+  selectedIconName = '';
+  selectedIconSize = 0;
+  isDragOver = false;
+  iconError = '';
+
   // Pagination
   totalCount = 0;
   totalPages = 0;
   currentPage = 0;
   itemsPerPage = 10;
 
+  // Confirmation Modal
+  showConfirmModal = false;
+  confirmationTitle = '';
+  confirmationMessage = '';
+  private pendingAction?: () => void;
+
   private sub = new SubSink();
 
   constructor(
     private fb: FormBuilder,
     private vehicleClient: VehicleAdminClient,
+    private toasterService: ToasterService,
     private imageService: ImageService
   ) {
     this.itemForm = this.fb.group({
@@ -60,6 +79,16 @@ export class VehiclesComponent implements OnInit, OnDestroy {
     this.loadItems();
     this.setupSearch();
     this.loadMainCategories();
+    this.setupDocumentClick();
+  }
+
+  private setupDocumentClick(): void {
+    document.addEventListener('click', (event) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest('.multi-select-container')) {
+        this.isCategoryMultiSelectOpen = false;
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -89,6 +118,8 @@ export class VehiclesComponent implements OnInit, OnDestroy {
 
     this.sub.sink = apiCall.subscribe({
       next: (response: any) => {
+        console.log('API Response:', response);
+        console.log('Items data:', response.data);
         this.items = response.data;
         this.totalCount = response.totalCount;
         this.totalPages = response.totalPages;
@@ -164,20 +195,47 @@ export class VehiclesComponent implements OnInit, OnDestroy {
   openAdd(): void {
     this.editingItem = null;
     this.itemForm.reset();
-    this.clearIcon();
+    this.selectedCategories = [];
+    this.isCategoryMultiSelectOpen = false;
+    this.categorySearchTerm = '';
+    this.removeIcon();
     this.showModal = true;
   }
 
   openEdit(item: DeliveryManVehicleDto): void {
     debugger
     this.editingItem = item;
+    
+    this.selectedCategories = item.mainCategories?.map(cat => {
+      const lookupDto = new MainCategoryAdminLookupDto();
+      lookupDto.id = cat.id;
+      lookupDto.name = (cat as any).name || cat.arabicName;
+      return lookupDto;
+    }) || [];
+    
+    // Extract all category IDs for form
+    const categoryIds = item.mainCategories?.map(cat => cat.id) || [];
+    
     this.itemForm.patchValue({
       arabicName: item.arabicName,
       englishName: item.englishName,
-      mainCategoryIds: [] // TODO: Update when DTO is updated
+      mainCategoryIds: categoryIds,
+      iconBase64: '' // Start with empty, will be set if user uploads new image
     });
     
-    this.clearIcon(); // TODO: Set icon preview when DTO is updated
+    // Reset multi-select state
+    this.isCategoryMultiSelectOpen = false;
+    this.categorySearchTerm = '';
+    
+    // Set icon preview if available
+    if (item.iconImagePath && this.activeTab === 'types') {
+      this.iconPreview = item.iconImagePath;
+      this.selectedIconName = 'صورة محفوظة';
+      this.selectedIconSize = 0; // We don't know the size from backend
+      this.iconError = '';
+    } else {
+      this.removeIcon();
+    }
     
     this.showUpdateModal = true;
   }
@@ -187,7 +245,14 @@ export class VehiclesComponent implements OnInit, OnDestroy {
     this.showUpdateModal = false;
     this.editingItem = null;
     this.itemForm.reset();
-    this.clearIcon();
+
+    // Reset multi-select
+    this.selectedCategories = [];
+    this.isCategoryMultiSelectOpen = false;
+    this.categorySearchTerm = '';
+
+    // Reset image upload
+    this.removeIcon();
   }
 
   submit(): void {
@@ -213,24 +278,11 @@ export class VehiclesComponent implements OnInit, OnDestroy {
     this.sub.sink = apiCall.subscribe({
       next: () => {
         this.closeModal();
-        Swal.fire({
-          title: 'تمت إضافة المركبة',
-          text: 'تمت إضافة المركبة بنجاح',
-          icon: 'success',
-          confirmButtonText: 'موافق',
-          timer: 3000
-        }).then(() => {
-          this.loadItems();
-        });
+        this.toasterService.success('تمت الإضافة بنجاح', 'تمت إضافة المركبة بنجاح');
+        this.loadItems();
       },
       error: (error) => {
-        Swal.fire({
-          title: 'خطأ',
-          text: error?.message || 'حدث خطأ أثناء إضافة المركبة',
-          icon: 'error',
-          confirmButtonText: 'موافق',
-          timer: 3000
-        });
+        this.toasterService.error('خطأ', error?.message || 'حدث خطأ أثناء إضافة المركبة');
       }
     });
   }
@@ -253,7 +305,8 @@ export class VehiclesComponent implements OnInit, OnDestroy {
       command.vehicleTypeId = itemId;
       command.arabicName = value.arabicName;
       command.englishName = value.englishName;
-      command.iconBase64 = value.iconBase64;
+      // Only send iconBase64 if user uploaded a new image
+      command.iconBase64 = value.iconBase64 || null;
       command.mainCategoryIds = value.mainCategoryIds;
       apiCall = this.vehicleClient.updateVehicleType(command);
     }
@@ -261,67 +314,36 @@ export class VehiclesComponent implements OnInit, OnDestroy {
     this.sub.sink = apiCall.subscribe({
       next: () => {
         this.closeModal();
-        Swal.fire({
-          title: 'تم تحديث الطلب',
-          text: 'تم تحديث الطلب بنجاح',
-          icon: 'success',
-          confirmButtonText: 'موافق',
-          timer: 3000
-        }).then(() => {
-          this.loadItems();
-        });
+        this.toasterService.success('تم التحديث بنجاح', 'تم تحديث المركبة بنجاح');
+        this.loadItems();
       },
       error: (error) => {
-        Swal.fire({
-          title: 'خطأ',
-          text: error?.message || 'حدث خطأ أثناء إلغاء الطلب',
-          icon: 'error',
-          confirmButtonText: 'موافق',
-          timer: 3000
-        });
+        this.toasterService.error('خطأ', error?.message || 'حدث خطأ أثناء التحديث');
       }
     });
   }
 
   confirmDelete(itemId: number): void {
-    let ApiCall;
-    if (this.activeTab === 'brands') {
-      ApiCall = this.vehicleClient.deleteVehicleBrand(itemId);
-    } else {
-      ApiCall = this.vehicleClient.deleteVehicleType(itemId);
-    }
+    const itemType = this.activeTab === 'brands' ? 'الماركة' : 'نوع المركبة';
     
-    Swal.fire({
-      title: 'هل أنت متأكد؟',
-      text: 'سيتم حذف هذا العنصر بشكل دائم',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'نعم، احذف',
-      cancelButtonText: 'إلغاء'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.sub.sink = ApiCall.subscribe({
-          next: () => {
-            Swal.fire({
-              title: 'تم الحذف',
-              text: 'تم حذف العنصر بنجاح',
-              icon: 'success',
-              confirmButtonText: 'موافق',
-              timer: 3000
-            }).then(() => {
-              this.loadItems();
-            });
-          },
-          error: (error) => {
-            Swal.fire({
-              title: 'خطأ',
-              text: error?.message || 'حدث خطأ أثناء إلغاء الطلب',
-              icon: 'error',
-              confirmButtonText: 'موافق',
-              timer: 3000
-            });
-          }
-        });
+    this.confirmationTitle = 'تأكيد الحذف';
+    this.confirmationMessage = `هل أنت متأكد من حذف ${itemType}؟`;
+    this.pendingAction = () => this.performDelete(itemId);
+    this.showConfirmModal = true;
+  }
+
+  private performDelete(itemId: number): void {
+    const apiCall = this.activeTab === 'brands'
+      ? this.vehicleClient.deleteVehicleBrand(itemId)
+      : this.vehicleClient.deleteVehicleType(itemId);
+    
+    this.sub.sink = apiCall.subscribe({
+      next: () => {
+        this.toasterService.success('تم الحذف بنجاح', 'تم حذف العنصر بنجاح');
+        this.loadItems();
+      },
+      error: (error) => {
+        this.toasterService.error('خطأ', error?.message || 'حدث خطأ أثناء الحذف');
       }
     });
   }
@@ -412,10 +434,133 @@ export class VehiclesComponent implements OnInit, OnDestroy {
   }
 
   get modalTitleAdd(): string {
-    return this.activeTab === 'brands' ? 'ADMIN.PAGES.VEHICLE_BRANDS.ADD_MODAL.TITLE' : 'ADMIN.PAGES.VEHICLE_TYPES.ADD_MODAL.TITLE';
+    return this.activeTab === 'brands' ? 'ADMIN.PAGES.VEHICLES.ADD_BRAND_VEHICLE' : 'ADMIN.PAGES.VEHICLES.ADD_TYPE_VEHICLE';
   }
 
   get modalTitleEdit(): string {
-    return this.activeTab === 'brands' ? 'ADMIN.PAGES.VEHICLE_BRANDS.EDIT_MODAL.TITLE' : 'ADMIN.PAGES.VEHICLE_TYPES.EDIT_MODAL.TITLE';
+    return this.activeTab === 'brands' ? 'ADMIN.PAGES.VEHICLES.EDIT_BRAND_VEHICLE' : 'ADMIN.PAGES.VEHICLES.EDIT_TYPE_VEHICLE';
+  }
+
+  // Multi-Select Methods
+  toggleMultiSelect(): void {
+    this.isCategoryMultiSelectOpen = !this.isCategoryMultiSelectOpen;
+  }
+
+  get filteredCategories(): MainCategoryAdminLookupDto[] {
+    if (!this.categorySearchTerm) {
+      return this.mainCategories;
+    }
+    return this.mainCategories.filter(category =>
+      category.name?.toLowerCase().includes(this.categorySearchTerm.toLowerCase())
+    );
+  }
+
+  isCategorySelected(category: MainCategoryAdminLookupDto): boolean {
+    return this.selectedCategories.some(selected => selected.id === category.id);
+  }
+
+  toggleCategory(category: MainCategoryAdminLookupDto): void {
+    const index = this.selectedCategories.findIndex(selected => selected.id === category.id);
+    if (index > -1) {
+      this.selectedCategories.splice(index, 1);
+    } else {
+      this.selectedCategories.push(category);
+    }
+    this.itemForm.patchValue({ mainCategoryIds: this.selectedCategories.map(c => c.id) });
+  }
+
+  removeCategory(category: MainCategoryAdminLookupDto, event: Event): void {
+    event.stopPropagation();
+    const index = this.selectedCategories.findIndex(selected => selected.id === category.id);
+    if (index > -1) {
+      this.selectedCategories.splice(index, 1);
+      this.itemForm.patchValue({ mainCategoryIds: this.selectedCategories.map(c => c.id) });
+    }
+  }
+
+  // Image Upload Methods
+  onIconSelect(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      this.handleIconFile(file);
+    }
+  }
+
+  onDragOver(event: DragEvent): void {
+    event.preventDefault();
+    this.isDragOver = true;
+  }
+
+  onDragLeave(event: DragEvent): void {
+    event.preventDefault();
+    this.isDragOver = false;
+  }
+
+  onDrop(event: DragEvent): void {
+    event.preventDefault();
+    this.isDragOver = false;
+    const files = event.dataTransfer?.files;
+    if (files && files.length > 0) {
+      this.handleIconFile(files[0]);
+    }
+  }
+
+  private handleIconFile(file: File): void {
+    this.iconError = '';
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      this.iconError = 'يرجى اختيار ملف صورة صحيح';
+      return;
+    }
+
+    // Validate file size (2MB)
+    if (file.size > 2 * 1024 * 1024) {
+      this.iconError = 'حجم الصورة يجب أن يكون أقل من 2 ميجابايت';
+      return;
+    }
+
+    this.selectedIconFile = file;
+    this.selectedIconName = file.name;
+    this.selectedIconSize = file.size;
+
+    // Create preview
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      this.iconPreview = e.target?.result as string;
+      this.itemForm.patchValue({ iconBase64: this.iconPreview });
+    };
+    reader.readAsDataURL(file);
+  }
+
+  removeIcon(): void {
+    this.selectedIconFile = null;
+    this.iconPreview = null;
+    this.selectedIconName = '';
+    this.selectedIconSize = 0;
+    this.iconError = '';
+    this.itemForm.patchValue({ iconBase64: '' });
+  }
+
+  formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  }
+
+  // Confirmation Modal Methods
+  onConfirmationConfirmed(): void {
+    this.showConfirmModal = false;
+    if (this.pendingAction) {
+      this.pendingAction();
+      this.pendingAction = undefined;
+    }
+  }
+
+  onConfirmationCancelled(): void {
+    this.showConfirmModal = false;
+    this.pendingAction = undefined;
   }
 }

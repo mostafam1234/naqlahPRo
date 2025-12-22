@@ -3,9 +3,10 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
-import Swal from 'sweetalert2';
 import * as L from 'leaflet';
 import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
+import { ToasterService } from 'src/app/Core/services/toaster.service';
+import { ConfirmationModalComponent } from 'src/app/shared/components/confirmation-modal/confirmation-modal.component';
 import {
   OrderAdminClient,
   GetOrderDetailsForAdminDto,
@@ -26,7 +27,7 @@ interface TimelineEvent {
 @Component({
   selector: 'app-order-details',
   standalone: true,
-  imports: [CommonModule, TranslateModule, PageHeaderComponent],
+  imports: [CommonModule, TranslateModule, PageHeaderComponent, ConfirmationModalComponent],
   templateUrl: './order-details.component.html',
   styleUrls: ['./order-details.component.css']
 })
@@ -37,13 +38,20 @@ export class OrderDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
   orderId: number = 0;
   private map: L.Map | null = null;
 
+  // Confirmation modal properties
+  showConfirmation = false;
+  confirmationTitle = '';
+  confirmationMessage = '';
+  private pendingAction?: () => void;
+
   private routeSubscription?: Subscription;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private translate: TranslateService,
-    private orderClient: OrderAdminClient
+    private orderClient: OrderAdminClient,
+    private toasterService: ToasterService
   ) {}
 
   ngOnInit(): void {
@@ -72,12 +80,7 @@ export class OrderDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
       .pipe(
         catchError(error => {
           console.error('Error loading order details:', error);
-          Swal.fire({
-            icon: 'error',
-            title: 'خطأ',
-            text: 'حدث خطأ في تحميل تفاصيل الطلب',
-            confirmButtonText: 'موافق'
-          });
+          this.toasterService.error('خطأ', 'حدث خطأ في تحميل تفاصيل الطلب');
           return of(null);
         }),
         finalize(() => {
@@ -89,15 +92,8 @@ export class OrderDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
           this.orderDetails = response;
           setTimeout(() => this.initializeMapWithRealData(), 500);
         } else {
-          Swal.fire({
-            icon: 'error',
-            title: 'خطأ',
-            text: 'لم يتم العثور على الطلب',
-            confirmButtonText: 'موافق'
-          }).then(() => {
-            this.router.navigate(['/admin/orders']);
-          });
-
+          this.toasterService.error('خطأ', 'لم يتم العثور على الطلب');
+          this.router.navigate(['/admin/orders']);
         }
       });
   }
@@ -138,53 +134,30 @@ export class OrderDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   canCancelOrder(): boolean {
-    return this.orderDetails?.status === OrderStatus.Pending || this.orderDetails?.status === OrderStatus.Assigned;
+    return this.orderDetails?.status === OrderStatus.Pending;
   }
 
-  async cancelOrder(): Promise<void> {
-    if (!this.canCancelOrder()) {
-      return;
-    }
-
-    const result = await Swal.fire({
-      title: this.translate.instant('ADMIN.PAGES.ORDERS.DETAILS.CANCEL_CONFIRM.TITLE'),
-      text: this.translate.instant('ADMIN.PAGES.ORDERS.DETAILS.CANCEL_CONFIRM.TEXT'),
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#dc2626',
-      cancelButtonColor: '#6b7280',
-      confirmButtonText: this.translate.instant('ADMIN.PAGES.ORDERS.DETAILS.CANCEL_CONFIRM.CONFIRM'),
-      cancelButtonText: this.translate.instant('ADMIN.PAGES.ORDERS.DETAILS.CANCEL_CONFIRM.CANCEL'),
-      reverseButtons: true
-    });
-
-    if (result.isConfirmed) {
-      this.cancelOrderFromAdmin();
-    }
+  cancelOrder(): void {
+    this.confirmationTitle = 'تأكيد إلغاء الطلب';
+    this.confirmationMessage = 'هل أنت متأكد من إلغاء هذا الطلب؟';
+    this.pendingAction = () => this.cancelOrderFromAdmin();
+    this.showConfirmation = true;
   }
 
-  cancelOrderFromAdmin(){
+  cancelOrderFromAdmin(): void {
     this.orderClient.cancelOrder(this.orderId).subscribe({
       next: (res) => {
-        Swal.fire({
-          title: 'تم إلغاء الطلب',
-          text: 'تم إلغاء الطلب بنجاح',
-          icon: 'success',
-          confirmButtonText: 'موافق',
-          timer: 3000
-        }).then(() => {
-          this.loadOrderDetails();
-        });
-
+        this.toasterService.success('تم إلغاء الطلب', 'تم إلغاء الطلب بنجاح');
+        this.loadOrderDetails();
       },
       error: (err) => {
-        Swal.fire({
-          title: 'خطأ',
-          text: err?.message || 'حدث خطأ أثناء إلغاء الطلب',
-          icon: 'error',
-          confirmButtonText: 'موافق',
-          timer: 3000
-        });
+        console.log('🔍 Full Error Object:', err);
+        console.log('🔍 err.error:', err?.error);
+        console.log('🔍 err.message:', err?.message);
+        console.log('🔍 err.status:', err?.status);
+        
+        const errorMessage = err?.error?.error || err?.error || 'يمكن إلغاء الطلبات المعلقة فقط';
+        this.toasterService.error('خطأ', errorMessage);
       }
     });
   }
@@ -473,5 +446,19 @@ export class OrderDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
       console.error('Error initializing map with real data:', error);
       // Fallback to default map
     }
+  }
+
+  // Confirmation modal methods
+  onConfirmationConfirmed(): void {
+    this.showConfirmation = false;
+    if (this.pendingAction) {
+      this.pendingAction();
+      this.pendingAction = undefined;
+    }
+  }
+
+  onConfirmationCancelled(): void {
+    this.showConfirmation = false;
+    this.pendingAction = undefined;
   }
 }

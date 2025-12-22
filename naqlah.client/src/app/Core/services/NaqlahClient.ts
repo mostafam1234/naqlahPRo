@@ -8526,12 +8526,14 @@ export class MainCategoryInfo {
     id!: number;
     arabicName!: string;
     englishName!: string;
+    name!: string;
 
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
             this.arabicName = _data["arabicName"] !== undefined ? _data["arabicName"] : <any>null;
             this.englishName = _data["englishName"] !== undefined ? _data["englishName"] : <any>null;
+            this.name = _data["name"] !== undefined ? _data["name"] : <any>null;
         }
     }
 
@@ -8547,6 +8549,7 @@ export class MainCategoryInfo {
         data["id"] = this.id !== undefined ? this.id : <any>null;
         data["arabicName"] = this.arabicName !== undefined ? this.arabicName : <any>null;
         data["englishName"] = this.englishName !== undefined ? this.englishName : <any>null;
+        data["name"] = this.name !== undefined ? this.name : <any>null;
         return data;
     }
 }

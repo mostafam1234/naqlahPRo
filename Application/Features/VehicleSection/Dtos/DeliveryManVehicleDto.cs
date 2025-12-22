@@ -20,5 +20,6 @@ namespace Application.Features.VehicleSection.Dtos
         public int Id { get; set; }
         public string ArabicName { get; set; } = string.Empty;
         public string EnglishName { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
     }
 }

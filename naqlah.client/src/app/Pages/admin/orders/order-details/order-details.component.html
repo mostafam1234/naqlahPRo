@@ -66,7 +66,6 @@
               </span>
               <button
                 (click)="cancelOrder()"
-                *ngIf="canCancelOrder()"
                 class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center space-x-2 space-x-reverse"
               >
                 <svg
@@ -662,3 +661,12 @@
     </div>
   </div>
 </div>
+
+<!-- Confirmation Modal -->
+<app-confirmation-modal
+  [show]="showConfirmation"
+  [title]="confirmationTitle"
+  [message]="confirmationMessage"
+  (confirmed)="onConfirmationConfirmed()"
+  (cancelled)="onConfirmationCancelled()">
+</app-confirmation-modal>

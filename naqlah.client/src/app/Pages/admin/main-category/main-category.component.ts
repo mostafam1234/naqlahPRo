@@ -6,12 +6,13 @@ import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-
 import { MainCategoryAdminClient, MainCategoryAdminDto, AddMainAdminCategory, UpdateMainAdminCategory } from 'src/app/Core/services/NaqlahClient';
 import { SubSink } from 'subsink';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import Swal from 'sweetalert2';
+import { ToasterService } from 'src/app/Core/services/toaster.service';
+import { ConfirmationModalComponent } from 'src/app/shared/components/confirmation-modal/confirmation-modal.component';
 
 @Component({
   selector: 'app-main-category',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, TranslateModule, PageHeaderComponent],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, TranslateModule, PageHeaderComponent, ConfirmationModalComponent],
   providers: [MainCategoryAdminClient],
   templateUrl: './main-category.component.html',
   styleUrls: ['./main-category.component.css']
@@ -57,11 +58,18 @@ export class MainCategoryComponent implements OnInit, OnDestroy {
   currentPage = 0;
   itemsPerPage = 10;
 
+  // Confirmation Modal
+  showConfirmModal = false;
+  confirmationTitle = '';
+  confirmationMessage = '';
+  private pendingAction?: () => void;
+
   private sub = new SubSink();
 
   constructor(
     private fb: FormBuilder,
-    private mainCategoryClient: MainCategoryAdminClient
+    private mainCategoryClient: MainCategoryAdminClient,
+    private toasterService: ToasterService
   ) {
     this.itemForm = this.fb.group({
       arabicName: ['', [Validators.required, Validators.maxLength(100)]],
@@ -159,6 +167,19 @@ export class MainCategoryComponent implements OnInit, OnDestroy {
   submit(): void {
     if (this.itemForm.invalid) return;
 
+    // يمكنك إضافة confirmation للإضافة إذا أردت:
+    // this.showConfirmation(
+    //   'تأكيد الإضافة',
+    //   'هل أنت متأكد من إضافة هذه الفئة؟',
+    //   () => this.performAdd(),
+    //   'primary'
+    // );
+    
+    // أو مباشرة:
+    this.performAdd();
+  }
+
+  private performAdd(): void {
     const value = this.itemForm.value;
     const command = new AddMainAdminCategory();
     command.arabicName = value.arabicName;
@@ -167,24 +188,11 @@ export class MainCategoryComponent implements OnInit, OnDestroy {
     this.sub.sink = this.mainCategoryClient.addMainCategoryAdmin(command).subscribe({
       next: () => {
         this.closeModal();
-        Swal.fire({
-          title: 'تمت إضافة الفئة',
-          text: 'تمت إضافة الفئة الرئيسية بنجاح',
-          icon: 'success',
-          confirmButtonText: 'موافق',
-          timer: 3000
-        }).then(() => {
-          this.loadItems();
-        });
+        this.toasterService.success('تمت الإضافة بنجاح', 'تمت إضافة الفئة الرئيسية بنجاح');
+        this.loadItems();
       },
       error: (error) => {
-        Swal.fire({
-          title: 'خطأ',
-          text: error?.message || 'حدث خطأ أثناء إضافة الفئة',
-          icon: 'error',
-          confirmButtonText: 'موافق',
-          timer: 3000
-        });
+        this.toasterService.error('خطأ', error?.message || 'حدث خطأ أثناء إضافة الفئة');
       }
     });
   }
@@ -203,60 +211,30 @@ export class MainCategoryComponent implements OnInit, OnDestroy {
     this.sub.sink = this.mainCategoryClient.updateMainCategoryAdmin(command).subscribe({
       next: () => {
         this.closeModal();
-        Swal.fire({
-          title: 'تم تحديث الفئة',
-          text: 'تم تحديث الفئة الرئيسية بنجاح',
-          icon: 'success',
-          confirmButtonText: 'موافق',
-          timer: 3000
-        }).then(() => {
-          this.loadItems();
-        });
+        this.toasterService.success('تم التحديث بنجاح', 'تم تحديث الفئة الرئيسية بنجاح');
+        this.loadItems();
       },
       error: (error) => {
-        Swal.fire({
-          title: 'خطأ',
-          text: error?.message || 'حدث خطأ أثناء تحديث الفئة',
-          icon: 'error',
-          confirmButtonText: 'موافق',
-          timer: 3000
-        });
+        this.toasterService.error('خطأ', error?.message || 'حدث خطأ أثناء تحديث الفئة');
       }
     });
   }
 
   confirmDelete(itemId: number): void {
-    Swal.fire({
-      title: 'هل أنت متأكد؟',
-      text: 'سيتم حذف هذه الفئة بشكل دائم',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'نعم، احذف',
-      cancelButtonText: 'إلغاء'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.sub.sink = this.mainCategoryClient.deleteMainCategoryAdmin(itemId).subscribe({
-          next: () => {
-            Swal.fire({
-              title: 'تم الحذف',
-              text: 'تم حذف الفئة بنجاح',
-              icon: 'success',
-              confirmButtonText: 'موافق',
-              timer: 3000
-            }).then(() => {
-              this.loadItems();
-            });
-          },
-          error: (error) => {
-            Swal.fire({
-              title: 'خطأ',
-              text: error?.message || 'حدث خطأ أثناء حذف الفئة',
-              icon: 'error',
-              confirmButtonText: 'موافق',
-              timer: 3000
-            });
-          }
-        });
+    this.confirmationTitle = 'تأكيد الحذف';
+    this.confirmationMessage = 'هل أنت متأكد من حذف هذه الفئة؟';
+    this.pendingAction = () => this.performDelete(itemId);
+    this.showConfirmModal = true;
+  }
+
+  private performDelete(itemId: number): void {
+    this.sub.sink = this.mainCategoryClient.deleteMainCategoryAdmin(itemId).subscribe({
+      next: () => {
+        this.toasterService.success('تم الحذف بنجاح', 'تم حذف الفئة بنجاح');
+        this.loadItems();
+      },
+      error: (error) => {
+        this.toasterService.error('خطأ', error?.message || 'حدث خطأ أثناء حذف الفئة');
       }
     });
   }
@@ -430,5 +408,19 @@ export class MainCategoryComponent implements OnInit, OnDestroy {
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  }
+
+  // Confirmation Modal Methods
+  onConfirmationConfirmed(): void {
+    this.showConfirmModal = false;
+    if (this.pendingAction) {
+      this.pendingAction();
+      this.pendingAction = undefined;
+    }
+  }
+
+  onConfirmationCancelled(): void {
+    this.showConfirmModal = false;
+    this.pendingAction = undefined;
   }
 }

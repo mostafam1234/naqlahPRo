@@ -79,6 +79,7 @@
         "TABS": {
           "ALL": "All Orders",
           "PENDING": "Pending",
+          "ASSIGNED": "Assigned",
           "CONFIRMED": "Confirmed",
           "IN_PROGRESS": "In Progress",
           "COMPLETED": "Completed",
@@ -393,29 +394,21 @@
       "DRIVING_LICENSE_BACK_ALT": "Driving license back",
       "ALL_FIELDS_REQUIRED": "All fields are required"
     },
-    "VEHICLE_BRANDS": {
-      "ADD_MODAL": {
-        "TITLE": "Add New Vehicle Brand"
-      },
-      "EDIT_MODAL": {
-        "TITLE": "Edit Vehicle Brand"
-      },
-      "FORM": {
-        "ARABIC_NAME": "Arabic Name",
-        "ENGLISH_NAME": "English Name"
-      }
-    },
-    "VEHICLE_TYPES": {
-      "ADD_MODAL": {
-        "TITLE": "Add New Vehicle Type"
-      },
-      "EDIT_MODAL": {
-        "TITLE": "Edit Vehicle Type"
-      },
-      "FORM": {
-        "ARABIC_NAME": "Arabic Name",
-        "ENGLISH_NAME": "English Name"
-      }
+    "VEHICLES": {
+      "ADD_BRAND_VEHICLE": "Add Vehicle Brand",
+      "ADD_TYPE_VEHICLE": "Add Vehicle Type",
+      "EDIT_TYPE_VEHICLE": "Edit Vehicle Type",
+      "EDIT_BRAND_VEHICLE": "Edit Vehicle Brand",
+      "ARABIC_NAME": "Arabic Name",
+      "ENGLISH_NAME": "English Name",
+      "ACTIONS": "Actions",
+      "NO_DATA": "No vehicle types added yet",
+      "NO_DATA_BRAND": "No vehicle brands added yet",
+      "ADD": "Add",
+      "EDIT": "Edit",
+      "DELETE": "Delete",
+      "CANCEL": "Cancel",
+      "SAVE": "Save"
     }
   },
   "PAGESHEADER": {

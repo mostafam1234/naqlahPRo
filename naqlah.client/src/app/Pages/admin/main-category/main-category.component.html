@@ -829,4 +829,13 @@
       </form>
     </div>
   </div>
+
+  <!-- Confirmation Modal -->
+  <app-confirmation-modal
+    [show]="showConfirmModal"
+    [title]="confirmationTitle"
+    [message]="confirmationMessage"
+    (confirmed)="onConfirmationConfirmed()"
+    (cancelled)="onConfirmationCancelled()"
+  ></app-confirmation-modal>
 </div>

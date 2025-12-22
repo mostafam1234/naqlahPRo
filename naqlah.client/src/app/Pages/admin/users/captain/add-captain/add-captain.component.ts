@@ -132,21 +132,21 @@ export class AddCaptainComponent implements OnInit, OnDestroy {
       vehicleTypeId: ['', Validators.required],
       vehicleBrandId: ['', Validators.required],
       vehiclePlateNumber: ['', Validators.required],
-      vehicleFrontImagePath: ['', Validators.required],
-      vehicleSideImagePath: ['', Validators.required],
-      vehicleFrontLicenseImagePath: ['', Validators.required],
-      vehicleBackLicenseImagePath: ['', Validators.required],
-      vehicleLicenseExpirationDate: ['', Validators.required],
-      vehicleFrontInsuranceImagePath: ['', Validators.required],
-      vehicleBackInsuranceImagePath: ['', Validators.required],
-      vehicleInsuranceExpirationDate: ['', Validators.required],
+      vehicleFrontImagePath: [''],
+      vehicleSideImagePath: [''],
+      vehicleFrontLicenseImagePath: [''],
+      vehicleBackLicenseImagePath: [''],
+      vehicleLicenseExpirationDate: [''],
+      vehicleFrontInsuranceImagePath: [''],
+      vehicleBackInsuranceImagePath: [''],
+      vehicleInsuranceExpirationDate: [''],
       vehicleOwnerTypeId: [VehicleOwnerType.Resident, Validators.required],
 
-      personalImagePath: ['', Validators.required],
-      frontIdentityImagePath: ['', Validators.required],
-      backIdentityImagePath: ['', Validators.required],
-      frontDrivingLicenseImagePath: ['', Validators.required],
-      backDrivingLicenseImagePath: ['', Validators.required]
+      personalImagePath: [''],
+      frontIdentityImagePath: [''],
+      backIdentityImagePath: [''],
+      frontDrivingLicenseImagePath: [''],
+      backDrivingLicenseImagePath: ['']
     });
   }
 

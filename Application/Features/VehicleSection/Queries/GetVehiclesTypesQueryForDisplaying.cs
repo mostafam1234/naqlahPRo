@@ -65,7 +65,8 @@ namespace Application.Features.VehicleSection.Queries
                         {
                             Id = vtc.MainCategory.Id,
                             ArabicName = vtc.MainCategory.ArabicName,
-                            EnglishName = vtc.MainCategory.EnglishName
+                            EnglishName = vtc.MainCategory.EnglishName,
+                            Name = userSession.LanguageId == 1 ? vtc.MainCategory.ArabicName : vtc.MainCategory.EnglishName
                         }).ToList()
                     })
                     .ToListAsync(cancellationToken);
