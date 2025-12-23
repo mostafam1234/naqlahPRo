@@ -2072,7 +2072,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/VehicleDto2"
+                    "$ref": "#/components/schemas/VehicleDto"
                   }
                 }
               }
@@ -2105,7 +2105,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/VehicleDto2"
+                    "$ref": "#/components/schemas/VehicleDto"
                   }
                 }
               }
@@ -2863,12 +2863,12 @@
           "matchingVehicles": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/VehicleDto"
+              "$ref": "#/components/schemas/OrderVehicleDto"
             }
           }
         }
       },
-      "VehicleDto": {
+      "OrderVehicleDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -4327,7 +4327,7 @@
           }
         }
       },
-      "VehicleDto2": {
+      "VehicleDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -4350,7 +4350,7 @@
           "data": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/VehicleDto2"
+              "$ref": "#/components/schemas/VehicleDto"
             }
           },
           "totalCount": {

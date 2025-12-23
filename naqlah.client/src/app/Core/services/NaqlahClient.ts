@@ -3317,7 +3317,7 @@ export class VehicleAdminClient {
         this.baseUrl = baseUrl ?? "";
     }
 
-    getVehiclesBrandLookup(): Observable<VehicleDto2[]> {
+    getVehiclesBrandLookup(): Observable<VehicleDto[]> {
         let url_ = this.baseUrl + "/api/VehicleAdmin/GetVehiclesBrandLookup";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -3336,14 +3336,14 @@ export class VehicleAdminClient {
                 try {
                     return this.processGetVehiclesBrandLookup(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<VehicleDto2[]>;
+                    return _observableThrow(e) as any as Observable<VehicleDto[]>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<VehicleDto2[]>;
+                return _observableThrow(response_) as any as Observable<VehicleDto[]>;
         }));
     }
 
-    protected processGetVehiclesBrandLookup(response: HttpResponseBase): Observable<VehicleDto2[]> {
+    protected processGetVehiclesBrandLookup(response: HttpResponseBase): Observable<VehicleDto[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -3357,7 +3357,7 @@ export class VehicleAdminClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(VehicleDto2.fromJS(item));
+                    result200!.push(VehicleDto.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -3379,7 +3379,7 @@ export class VehicleAdminClient {
         return _observableOf(null as any);
     }
 
-    getVehiclesTypesLookup(): Observable<VehicleDto2[]> {
+    getVehiclesTypesLookup(): Observable<VehicleDto[]> {
         let url_ = this.baseUrl + "/api/VehicleAdmin/GetVehiclesTypesLookup";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -3398,14 +3398,14 @@ export class VehicleAdminClient {
                 try {
                     return this.processGetVehiclesTypesLookup(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<VehicleDto2[]>;
+                    return _observableThrow(e) as any as Observable<VehicleDto[]>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<VehicleDto2[]>;
+                return _observableThrow(response_) as any as Observable<VehicleDto[]>;
         }));
     }
 
-    protected processGetVehiclesTypesLookup(response: HttpResponseBase): Observable<VehicleDto2[]> {
+    protected processGetVehiclesTypesLookup(response: HttpResponseBase): Observable<VehicleDto[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -3419,7 +3419,7 @@ export class VehicleAdminClient {
             if (Array.isArray(resultData200)) {
                 result200 = [] as any;
                 for (let item of resultData200)
-                    result200!.push(VehicleDto2.fromJS(item));
+                    result200!.push(VehicleDto.fromJS(item));
             }
             else {
                 result200 = <any>null;
@@ -4579,7 +4579,7 @@ export class EstablishmentRepresentativeDto {
 
 export class CreateOrderResponseDto {
     orderId!: number;
-    matchingVehicles!: VehicleDto[];
+    matchingVehicles!: OrderVehicleDto[];
 
     init(_data?: any) {
         if (_data) {
@@ -4587,7 +4587,7 @@ export class CreateOrderResponseDto {
             if (Array.isArray(_data["matchingVehicles"])) {
                 this.matchingVehicles = [] as any;
                 for (let item of _data["matchingVehicles"])
-                    this.matchingVehicles!.push(VehicleDto.fromJS(item));
+                    this.matchingVehicles!.push(OrderVehicleDto.fromJS(item));
             }
             else {
                 this.matchingVehicles = <any>null;
@@ -4614,7 +4614,7 @@ export class CreateOrderResponseDto {
     }
 }
 
-export class VehicleDto {
+export class OrderVehicleDto {
     id!: number;
     name!: string;
     price!: number;
@@ -4629,9 +4629,9 @@ export class VehicleDto {
         }
     }
 
-    static fromJS(data: any): VehicleDto {
+    static fromJS(data: any): OrderVehicleDto {
         data = typeof data === 'object' ? data : {};
-        let result = new VehicleDto();
+        let result = new OrderVehicleDto();
         result.init(data);
         return result;
     }
@@ -6727,7 +6727,7 @@ export class AddDeliveryManDto {
     }
 }
 
-export class VehicleDto2 {
+export class VehicleDto {
     id!: number;
     arabicName!: string;
     englishName!: string;
@@ -6740,9 +6740,9 @@ export class VehicleDto2 {
         }
     }
 
-    static fromJS(data: any): VehicleDto2 {
+    static fromJS(data: any): VehicleDto {
         data = typeof data === 'object' ? data : {};
-        let result = new VehicleDto2();
+        let result = new VehicleDto();
         result.init(data);
         return result;
     }
@@ -6757,7 +6757,7 @@ export class VehicleDto2 {
 }
 
 export class PagedResultOfVehicleDto {
-    data!: VehicleDto2[];
+    data!: VehicleDto[];
     totalCount!: number;
     totalPages!: number;
 
@@ -6766,7 +6766,7 @@ export class PagedResultOfVehicleDto {
             if (Array.isArray(_data["data"])) {
                 this.data = [] as any;
                 for (let item of _data["data"])
-                    this.data!.push(VehicleDto2.fromJS(item));
+                    this.data!.push(VehicleDto.fromJS(item));
             }
             else {
                 this.data = <any>null;
