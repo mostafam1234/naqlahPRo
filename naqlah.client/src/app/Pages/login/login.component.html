@@ -1,52 +1,164 @@
-<div class="bg-gray-50" dir="rtl">
-  <div class="min-h-screen flex flex-col items-center justify-center py-6 px-4">
-    <div class="max-w-[480px] w-full">
-      <a routerLink="home"><img
-        src="../../../assets/images/car2.png" alt="logo" class="w-13 mb-8 mx-auto block" />
-      </a>
-      <div class="p-6 sm:p-8 rounded-2xl bg-white border border-gray-200 shadow-sm">
-        <h1 class="text-slate-900 text-center text-3xl font-semibold" dir="rtl">تسجيل الدخول</h1>
-        <form class="mt-12 space-y-6">
-          <div>
-            <label class="text-slate-900 text-sm font-medium mb-3 block">إسم المستخدم</label>
-            <div class="relative flex items-center">
-              <input name="username" type="text" required class="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 pr-8 rounded-md outline-blue-600" placeholder="Enter user name" />
-              <svg xmlns="http://www.w3.org/2000/svg" fill="#bbb" stroke="#bbb" class="w-4 h-4 absolute left-4" viewBox="0 0 24 24">
-                <circle cx="10" cy="7" r="6" data-original="#000000"></circle>
-                <path d="M14 15H6a5 5 0 0 0-5 5 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 5 5 0 0 0-5-5zm8-4h-2.59l.3-.29a1 1 0 0 0-1.42-1.42l-2 2a1 1 0 0 0 0 1.42l2 2a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42l-.3-.29H22a1 1 0 0 0 0-2z" data-original="#000000"></path>
-              </svg>
-            </div>
-          </div>
-          <div>
-            <label class="text-slate-900 text-sm font-medium mb-3 block">كلمة المرور</label>
-            <div class="relative flex items-center">
-              <input name="password" type="password" required class="w-full text-slate-900 text-sm border border-slate-300 px-4 py-3 pr-8 rounded-md outline-blue-600" placeholder="Enter password" />
-              <svg xmlns="http://www.w3.org/2000/svg" fill="#bbb" stroke="#bbb" class="w-4 h-4 absolute left-4 cursor-pointer" viewBox="0 0 128 128">
-                <path d="M64 104C22.127 104 1.367 67.496.504 65.943a4 4 0 0 1 0-3.887C1.367 60.504 22.127 24 64 24s62.633 36.504 63.496 38.057a4 4 0 0 1 0 3.887C126.633 67.496 105.873 104 64 104zM8.707 63.994C13.465 71.205 32.146 96 64 96c31.955 0 50.553-24.775 55.293-31.994C114.535 56.795 95.854 32 64 32 32.045 32 13.447 56.775 8.707 63.994zM64 88c-13.234 0-24-10.766-24-24s10.766-24 24-24 24 10.766 24 24-10.766 24-24 24zm0-40c-8.822 0-16 7.178-16 16s7.178 16 16 16 16-7.178 16-16-7.178-16-16-16z" data-original="#000000"></path>
-              </svg>
-            </div>
-          </div>
-          <div class="flex flex-wrap items-center justify-between gap-4">
-            <div class="flex items-center">
-              <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 shrink-0 text-blue-600 focus:ring-blue-500 border-slate-300 rounded" />
-              <label for="remember-me" class="mr-3 block text-sm text-slate-900">
-                تذكرنى
-              </label>
-            </div>
-            <div class="text-sm">
-              <a routerLink="" class="text-blue-600 hover:underline font-semibold">
-                نسيت كلمة المرور ؟
-              </a>
-            </div>
+
+<!-- Modern Professional Login Page -->
+<div class="min-h-screen bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center p-4" dir="rtl">
+  <div class="w-full max-w-6xl mx-auto">
+    <div class="grid lg:grid-cols-2 gap-8 items-center">
+      
+      <!-- Right Side - Image/Branding -->
+      <div class="hidden lg:flex flex-col items-center justify-center p-8">
+        <div class="relative">
+          <div class="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-full blur-3xl"></div>
+          <img src="../../../assets/images/Login.svg" alt="Login Illustration" 
+               class="relative z-10 max-w-full h-auto drop-shadow-2xl">
+        </div>
+        <div class="text-center mt-8">
+          <h2 class="text-3xl font-bold text-gray-800 mb-4">مرحباً بعودتك</h2>
+          <p class="text-gray-600 text-lg">قم بتسجيل الدخول للوصول إلى لوحة التحكم</p>
+        </div>
+      </div>
+
+      <!-- Left Side - Login Form -->
+      <div class="w-full max-w-md mx-auto lg:mx-0">
+        <!-- Glass Card Effect -->
+        <div class="backdrop-blur-xl bg-white/80 border border-white/20 rounded-3xl shadow-2xl p-8">
+          
+          <!-- Header -->
+          <div class="text-center mb-8">
+            <img src="../../../assets/images/car.png" alt="Logo" class="mx-auto h-[100px] mb-4">
+            <h1 class="text-2xl font-bold text-gray-800 mb-2">تسجيل الدخول</h1>
+            <p class="text-gray-600">أدخل بياناتك للوصول إلى حسابك</p>
           </div>
 
-          <div class="!mt-12">
-            <button type="button" class="w-full py-2 px-4 text-[15px] font-medium tracking-wide rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none cursor-pointer">
-              تسجيل الدخول
+          <!-- Form -->
+          <form [formGroup]="loginFormGroup" (ngSubmit)="LogIn(loginFormGroup.value)" class="space-y-6">
+            
+            <!-- Global Error Message -->
+            <div *ngIf="errorMessage" class="relative">
+              <div class="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center space-x-3 space-x-reverse">
+                <div class="flex-shrink-0">
+                  <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                  </svg>
+                </div>
+                <div class="text-red-700 text-sm font-medium">{{ errorMessage }}</div>
+              </div>
+            </div>
+
+            <!-- Email Field -->
+            <div class="space-y-2">
+              <label for="email" class="block text-sm font-semibold text-gray-700">البريد الإلكتروني</label>
+              <div class="relative">
+                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                  <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"/>
+                  </svg>
+                </div>
+                <input
+                  formControlName="userName"
+                  id="email"
+                  type="email"
+                  placeholder="admin@example.com"
+                  [class]="'w-full pr-10 pl-4 py-3 border rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:border-transparent ' +
+                           (hasFieldError('userName') ? 
+                           'border-red-300 bg-red-50 focus:ring-red-500' : 
+                           'border-gray-300 bg-white focus:ring-blue-500 hover:border-gray-400')"
+                />
+              </div>
+              <div *ngIf="hasFieldError('userName')" class="flex items-center space-x-1 space-x-reverse text-red-600 text-sm">
+                <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                </svg>
+                <span>{{ getFieldError('userName') }}</span>
+              </div>
+            </div>
+
+            <!-- Password Field -->
+            <div class="space-y-2">
+              <label for="password" class="block text-sm font-semibold text-gray-700">كلمة المرور</label>
+              <div class="relative">
+                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                  <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                  </svg>
+                </div>
+                <input
+                  formControlName="password"
+                  id="password"
+                  [type]="showPassword ? 'text' : 'password'"
+                  placeholder="••••••••"
+                  [class]="'w-full pr-10 pl-12 py-3 border rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:border-transparent ' +
+                           (hasFieldError('password') ? 
+                           'border-red-300 bg-red-50 focus:ring-red-500' : 
+                           'border-gray-300 bg-white focus:ring-blue-500 hover:border-gray-400')"
+                />
+                <button
+                  type="button"
+                  (click)="togglePasswordVisibility()"
+                  class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <svg *ngIf="!showPassword" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                  </svg>
+                  <svg *ngIf="showPassword" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L12 12m-3-3l6.364 6.364M21 21l-3.6-3.6"/>
+                  </svg>
+                </button>
+              </div>
+              <div *ngIf="hasFieldError('password')" class="flex items-center space-x-1 space-x-reverse text-red-600 text-sm">
+                <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                </svg>
+                <span>{{ getFieldError('password') }}</span>
+              </div>
+            </div>
+
+            <!-- Forgot Password -->
+            <div class="text-left">
+              <a href="#" class="text-sm text-blue-600 hover:text-blue-800 transition-colors font-medium">
+                نسيت كلمة المرور؟
+              </a>
+            </div>
+
+            <!-- Login Button -->
+            <button
+              type="submit"
+              [disabled]="isSubmitting"
+              [class]="'w-full py-3 px-4 rounded-xl font-semibold text-white transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 ' +
+                       (isSubmitting ? 
+                       'bg-gray-400 cursor-not-allowed' : 
+                       'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 focus:ring-blue-500 shadow-lg hover:shadow-xl')"
+            >
+              <span *ngIf="!isSubmitting" class="flex items-center justify-center space-x-2 space-x-reverse">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
+                </svg>
+                <span>تسجيل الدخول</span>
+              </span>
+              <span *ngIf="isSubmitting" class="flex items-center justify-center space-x-2 space-x-reverse">
+                <svg class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>جارِ تسجيل الدخول...</span>
+              </span>
             </button>
+
+          </form>
+
+          <!-- Footer -->
+          <div class="mt-8 text-center">
+            <p class="text-xs text-gray-500">
+              بتسجيل الدخول، أنت توافق على 
+              <a href="#" class="text-blue-600 hover:underline">شروط الخدمة</a>
+              و
+              <a href="#" class="text-blue-600 hover:underline">سياسة الخصوصية</a>
+            </p>
           </div>
-        </form>
+
+        </div>
       </div>
+
     </div>
   </div>
 </div>

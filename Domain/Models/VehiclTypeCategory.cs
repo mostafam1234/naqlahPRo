@@ -8,7 +8,7 @@ namespace Domain.Models
 {
     public class VehiclTypeCategory
     {
-        private VehiclTypeCategory()
+        public VehiclTypeCategory()
         {
             
         }

@@ -16,6 +16,7 @@
       "TECH_SUPPORT": "Technical Support",
       "NOTIFICATIONS": "Notifications",
       "CATEGORY_CONTROL": "Category Control",
+      "MAIN_CATEGORIES": "Main Categories",
       "COMPLAINTS": "Complaints",
       "INVOICES": "Invoices",
       "WALLET": "Wallet",
@@ -73,6 +74,129 @@
       }
     },
     "PAGES": {
+      "ORDERS": {
+        "TITLE": "Orders Management",
+        "TABS": {
+          "ALL": "All Orders",
+          "PENDING": "Pending",
+          "ASSIGNED": "Assigned",
+          "CONFIRMED": "Confirmed",
+          "IN_PROGRESS": "In Progress",
+          "COMPLETED": "Completed",
+          "CANCELLED": "Cancelled"
+        },
+        "SEARCH_PLACEHOLDER": "Search orders...",
+        "LOADING": "Loading orders...",
+        "NO_ORDERS": "No Orders Found",
+        "NO_ORDERS_DESC": "No orders found in this section",
+        "CARD": {
+          "FROM": "From",
+          "TO": "To",
+          "CUSTOMER": "Customer",
+          "CAPTAIN": "Captain",
+          "ORDER_NUMBER": "Order #",
+          "VIEW_DETAILS": "View Details",
+          "CHAT": "Chat",
+          "CALL": "Call"
+        },
+        "DETAILS": {
+          "TITLE": "Order Details",
+          "BACK": "Back to Orders",
+          "CANCEL_ORDER": "Cancel Order",
+          "ORDER_OVERVIEW": "Order Overview",
+          "ORDER_NUMBER": "Order Number",
+          "STATUS": "Status",
+          "CREATED_DATE": "Created Date",
+          "ESTIMATED_DELIVERY": "Estimated Delivery",
+          "ROUTE_INFO": "Route Information",
+          "FROM_LOCATION": "From Location",
+          "TO_LOCATION": "To Location",
+          "PICKUP_LOCATION": "Pickup Location",
+          "DELIVERY_LOCATION": "Delivery Location",
+          "DELIVERY_TIME": "Delivery Time",
+          "KM": "km",
+          "CUSTOMER_NAME": "Customer Name",
+          "CUSTOMER_PHONE": "Customer Phone",
+          "CUSTOMER_TYPE": {
+            "LABEL": "Customer Type",
+            "INDIVIDUAL": "Individual",
+            "INSTITUTION": "Institution"
+          },
+          "ORDER_TOTAL": "Order Total",
+          "CURRENCY": "SAR",
+          "DISTANCE": "Distance",
+          "ESTIMATED_TIME": "Estimated Time",
+          "CUSTOMER_INFO": "Customer Information",
+          "NAME": "Name",
+          "PHONE": "Phone",
+          "EMAIL": "Email",
+          "CAPTAIN_INFO": "Captain Information",
+          "CAPTAIN_NAME": "Captain Name",
+          "CAPTAIN_PHONE": "Captain Phone",
+          "VEHICLE_INFO": "Vehicle Information",
+          "LIVE_TRACKING": "Live Tracking",
+          "PHOTO_DOCUMENTATION": "Photo Documentation",
+          "ORDER_TIMELINE": "Order Timeline",
+          "TIMELINE": {
+            "ORDER_CREATED": "Order Created",
+            "ORDER_CREATED_DESC": "Your order has been successfully placed and is being processed",
+            "CAPTAIN_ASSIGNED": "Captain Assigned",
+            "CAPTAIN_ASSIGNED_DESC": "A captain has been assigned to your order",
+            "EN_ROUTE_PICKUP": "En Route to Pickup",
+            "EN_ROUTE_PICKUP_DESC": "Captain is heading to the pickup location",
+            "PICKUP_COMPLETED": "Pickup Completed", 
+            "PICKUP_COMPLETED_DESC": "Items have been picked up successfully",
+            "DELIVERY_COMPLETED": "Delivery Completed",
+            "DELIVERY_COMPLETED_DESC": "Order has been delivered successfully"
+          },
+          "BEFORE_LOADING_PHOTO": "Before Loading Photo",
+          "AFTER_DELIVERY_PHOTO": "After Delivery Photo",
+          "NOT_UPLOADED_YET": "Not uploaded yet",
+          "UPLOADED": "Uploaded",
+          "CAPTAIN_STATUS": "Captain Status",
+          "LAST_UPDATED": "Last Updated",
+          "VEHICLE_TYPE": "Vehicle Type",
+          "VEHICLE_PLATE": "Vehicle Plate",
+          "MAP": {
+            "PICKUP_LOCATION": "Pickup Location",
+            "DELIVERY_LOCATION": "Delivery Location",
+            "ROUTE_INFO": "Route Information",
+            "KILOMETERS": "kilometers"
+          },
+          "ORDER_PACKAGE": {
+            "TITLE": "Package Information",
+            "DESCRIPTION": "Package Description",
+            "WEIGHT_RANGE": "Weight Range",
+            "KG": "kilograms"
+          },
+          "ORDER_ITEMS": {
+            "TITLE": "Order Categories"
+          },
+          "ORDER_SERVICES": {
+            "TITLE": "Additional Services"
+          },
+          "PAYMENT_INFO": {
+            "TITLE": "Payment Information",
+            "METHOD": "Payment Method",
+            "AMOUNT": "Amount",
+            "STATUS": "Payment Status"
+          },
+          "PAYMENT_STATUS": {
+            "PENDING": "Pending Payment",
+            "PAID": "Paid",
+            "FAILED": "Payment Failed",
+            "REFUNDED": "Refunded"
+          },
+          "CANCEL_CONFIRMATION": {
+            "TITLE": "Cancel Order",
+            "TEXT": "Are you sure you want to cancel this order? This action cannot be undone.",
+            "CONFIRM": "Yes, Cancel",
+            "CANCEL": "No, Keep Order"
+          },
+          "CANCEL_SUCCESS": "Order has been cancelled successfully",
+          "CANCEL_ERROR": "Failed to cancel order. Please try again."
+        }
+      },
       "CAPTAIN_REQUESTS": {
         "TITLE": "Captain Requests",
         "TABS": {
@@ -199,6 +323,20 @@
           "INACTIVE": "Inactive"
         }
       },
+      "ORDER_DETAILS": {
+        "TIMELINE": {
+          "ORDER_CREATED": "Order Created",
+          "ORDER_CREATED_DESC": "Your order has been successfully placed and is being processed",
+          "CAPTAIN_ASSIGNED": "Captain Assigned",
+          "CAPTAIN_ASSIGNED_DESC": "A captain has been assigned to your order",
+          "EN_ROUTE_PICKUP": "En Route to Pickup",
+          "EN_ROUTE_PICKUP_DESC": "Captain is heading to the pickup location",
+          "PICKUP_COMPLETED": "Pickup Completed",
+          "PICKUP_COMPLETED_DESC": "Items have been picked up successfully",
+          "DELIVERY_COMPLETED": "Delivery Completed",
+          "DELIVERY_COMPLETED_DESC": "Order has been delivered successfully"
+        }
+      },
       "ADD_CAPTAIN": {
         "TITLE": "Add Captain",
         "SUBTITLE": "Fill the captain information and vehicle details",
@@ -256,29 +394,21 @@
       "DRIVING_LICENSE_BACK_ALT": "Driving license back",
       "ALL_FIELDS_REQUIRED": "All fields are required"
     },
-    "VEHICLE_BRANDS": {
-      "ADD_MODAL": {
-        "TITLE": "Add New Vehicle Brand"
-      },
-      "EDIT_MODAL": {
-        "TITLE": "Edit Vehicle Brand"
-      },
-      "FORM": {
-        "ARABIC_NAME": "Arabic Name",
-        "ENGLISH_NAME": "English Name"
-      }
-    },
-    "VEHICLE_TYPES": {
-      "ADD_MODAL": {
-        "TITLE": "Add New Vehicle Type"
-      },
-      "EDIT_MODAL": {
-        "TITLE": "Edit Vehicle Type"
-      },
-      "FORM": {
-        "ARABIC_NAME": "Arabic Name",
-        "ENGLISH_NAME": "English Name"
-      }
+    "VEHICLES": {
+      "ADD_BRAND_VEHICLE": "Add Vehicle Brand",
+      "ADD_TYPE_VEHICLE": "Add Vehicle Type",
+      "EDIT_TYPE_VEHICLE": "Edit Vehicle Type",
+      "EDIT_BRAND_VEHICLE": "Edit Vehicle Brand",
+      "ARABIC_NAME": "Arabic Name",
+      "ENGLISH_NAME": "English Name",
+      "ACTIONS": "Actions",
+      "NO_DATA": "No vehicle types added yet",
+      "NO_DATA_BRAND": "No vehicle brands added yet",
+      "ADD": "Add",
+      "EDIT": "Edit",
+      "DELETE": "Delete",
+      "CANCEL": "Cancel",
+      "SAVE": "Save"
     }
   },
   "PAGESHEADER": {

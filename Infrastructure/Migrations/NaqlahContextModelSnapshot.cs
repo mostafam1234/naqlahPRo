@@ -214,6 +214,77 @@ namespace Infrastructure.Migrations
             });
 
             modelBuilder.Entity("Domain.Models.DeliveryMan", b =>
+                {
+                    b.Navigation("Assistants");
+
+                    b.Navigation("DeliveryManLocation")
+                        .IsRequired();
+
+                    b.Navigation("Vehicle");
+                });
+
+            modelBuilder.Entity("Domain.Models.DeliveryVehicle", b =>
+                {
+                    b.Navigation("Company");
+
+                    b.Navigation("Renter");
+
+                    b.Navigation("Resident");
+                });
+
+            modelBuilder.Entity("Domain.Models.EstablishMent", b =>
+                {
+                    b.Navigation("EstablishMentRepresentitive")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Models.Order", b =>
+            {
+                b.Navigation("OrderDetails");
+
+                b.Navigation("OrderServices");
+
+                b.Navigation("OrderStatusHistories");
+
+                b.Navigation("OrderWayPoints");
+
+                b.Navigation("PaymentMethods");
+
+                modelBuilder.Entity("Domain.Models.MainCategory", b =>
+                    {
+                        b.Navigation("CategorySizes");
+
+                    });
+
+                modelBuilder.Entity("Domain.Models.Region", b =>
+                    {
+                        b.Navigation("Cities");
+                    });
+
+                modelBuilder.Entity("Domain.Models.Role", b =>
+                    {
+                        b.Navigation("AspNetUserRoles");
+                    });
+
+                modelBuilder.Entity("Domain.Models.User", b =>
+                    {
+                        b.Navigation("AspNetUserClaims");
+
+                        b.Navigation("AspNetUserLogins");
+
+                        b.Navigation("AspNetUserRoles");
+
+                        b.Navigation("Customer");
+
+                        b.Navigation("DeliveryMan");
+                    });
+
+                modelBuilder.Entity("Domain.Models.VehicleType", b =>
+                    {
+                        b.Navigation("VehicleTypeCategoies");
+                    });
+            });
+
             {
                 b.Navigation("User");
                 b.Navigation("Assistants");

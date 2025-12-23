@@ -1,6 +1,7 @@
 import { provideRouter, Routes } from '@angular/router';
 import { AdminLayoutComponent } from './Layouts/admin-layout/admin-layout.component';
 import { LandingPageLayoutComponent } from './Layouts/landing-page-layout/landing-page-layout.component';
+import { authGuard } from './shared/services/auth.guard';
 
 const routes: Routes = [
   { path:'', redirectTo:'/home', pathMatch:'full' },
@@ -28,6 +29,8 @@ const routes: Routes = [
   {
     path: 'admin',
     component: AdminLayoutComponent,
+    canActivate: [authGuard],
+    data: { expectedRole: 'Admin' },
     children: [
       {
         path: 'home',
@@ -124,6 +127,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'main-categories',
+        loadComponent: () =>
+          import('./Pages/admin/main-category/main-category.component').then(
+            (m) => m.MainCategoryComponent
+          ),
+      },
+      {
         path: 'wallet/captain',
         loadComponent: () =>
           import('./Pages/admin/wallet/wallet-captain/wallet-captain.component').then(
@@ -142,6 +152,13 @@ const routes: Routes = [
         loadComponent: () =>
           import('./Pages/admin/orders/orders.component').then(
             (m) => m.OrdersComponent
+          ),
+      },
+      {
+        path: 'requests/details/:id',
+        loadComponent: () =>
+          import('./Pages/admin/orders/order-details/order-details.component').then(
+            (m) => m.OrderDetailsComponent
           ),
       },
       {

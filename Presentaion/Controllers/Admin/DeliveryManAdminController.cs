@@ -21,6 +21,7 @@ namespace Presentaion.Controllers.Admin
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class DeliveryManAdminController : ControllerBase
     {
         private readonly IMediator mediator;

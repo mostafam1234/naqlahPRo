@@ -1,0 +1,306 @@
+/* Order Details Component Styles */
+
+.bg-grid-pattern {
+  background-image: radial-gradient(circle, #e5e7eb 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .5;
+  }
+}
+
+/* Status indicators */
+.status-pending {
+  background-color: #fef3c7;
+  color: #92400e;
+  border-color: #fde68a;
+}
+
+.status-in-progress {
+  background-color: #dbeafe;
+  color: #1e40af;
+  border-color: #93c5fd;
+}
+
+.status-completed {
+  background-color: #dcfce7;
+  color: #166534;
+  border-color: #86efac;
+}
+
+.status-cancelled {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border-color: #fca5a5;
+}
+
+/* Gradient backgrounds */
+.gradient-header {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+/* Photo upload areas */
+.photo-upload-area {
+  transition: all 0.3s ease;
+}
+
+.photo-upload-area:hover {
+  border-color: #6b7280;
+  background-color: #f9fafb;
+}
+
+/* Map container */
+#orderMap {
+  min-height: 256px;
+}
+
+/* Timeline styles */
+.timeline-line {
+  position: absolute;
+  left: 1rem;
+  top: 2rem;
+  bottom: -1rem;
+  width: 2px;
+  background-color: #e5e7eb;
+}
+
+.timeline-line::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -1px;
+  width: 4px;
+  height: 50%;
+  background-color: #10b981;
+}
+
+/* Custom scrollbar */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f1f5f9;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  #orderMap {
+    height: 200px;
+  }
+}
+
+/* Leaflet Map Styles */
+#orderMap {
+  min-height: 300px;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+}
+
+/* Custom marker styles */
+.custom-pickup-marker,
+.custom-delivery-marker {
+  background: transparent;
+  border: none;
+}
+
+.custom-pickup-marker div {
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.custom-delivery-marker div {
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Leaflet popup customization */
+.leaflet-popup-content-wrapper {
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Enhanced Map Styles */
+#orderMap {
+  height: 400px !important;
+  width: 100% !important;
+  z-index: 1;
+  border-radius: 12px;
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.leaflet-container {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%) !important;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.leaflet-control-zoom {
+  border-radius: 10px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  border: none !important;
+}
+
+.leaflet-control-zoom a {
+  border-radius: 10px !important;
+  border: none !important;
+  background: white !important;
+  color: #374151 !important;
+  font-weight: bold !important;
+  transition: all 0.2s ease !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: #3b82f6 !important;
+  color: white !important;
+  transform: scale(1.1) !important;
+}
+
+.leaflet-control-scale {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-radius: 8px !important;
+  backdrop-filter: blur(10px) !important;
+  border: none !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+  direction: rtl !important;
+  text-align: center !important;
+  border-radius: 12px !important;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 12px !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+  border: none !important;
+  overflow: hidden !important;
+}
+
+.leaflet-popup-tip {
+  background: white !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.custom-popup .leaflet-popup-close-button {
+  color: #6b7280 !important;
+  font-size: 18px !important;
+  font-weight: bold !important;
+  padding: 8px !important;
+}
+
+.custom-popup .leaflet-popup-close-button:hover {
+  color: #dc2626 !important;
+  transform: scale(1.1) !important;
+}
+
+/* Custom icons animations */
+.custom-div-icon {
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+.arrow-icon {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Ensure map container has proper dimensions */
+.map-container {
+  height: 400px;
+  width: 100%;
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Loading animation for map */
+.map-container::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 40px;
+  height: 40px;
+  margin: -20px 0 0 -20px;
+  border: 4px solid #e5e7eb;
+  border-top: 4px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  z-index: 1000;
+}
+
+.map-container.loaded::before {
+  display: none;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* RTL support for popups */
+[dir="rtl"] .leaflet-popup-content {
+  text-align: right;
+}

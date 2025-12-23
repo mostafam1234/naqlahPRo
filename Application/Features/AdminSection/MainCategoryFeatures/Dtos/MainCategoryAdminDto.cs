@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Features.VehicleSection.Dtos
+namespace Application.Features.AdminSection.MainCategoryFeatures.Dtos
 {
-    public class VehicleDto
+    public class MainCategoryAdminDto
     {
         public int Id { get; set; }
         public string ArabicName { get; set; }

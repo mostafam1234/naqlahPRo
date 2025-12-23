@@ -20,8 +20,7 @@ import { PublicFooterComponent } from 'src/app/Pages/landing-page/public-footer/
     HeaderComponent,
     CommonModule,
     NgIf,
-    NgClass,
-    PublicFooterComponent
+    NgClass
   ],
   templateUrl: './admin-layout.component.html',
   styleUrl: './admin-layout.component.css'

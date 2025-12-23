@@ -1,4 +1,4 @@
-using Application.DependencyInjection;
+﻿using Application.DependencyInjection;
 using Domain.Models;
 using NAQLAH.Server.ApiDependencyInjection;
 using Hangfire;

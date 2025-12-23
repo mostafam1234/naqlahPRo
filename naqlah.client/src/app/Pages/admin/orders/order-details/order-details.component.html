@@ -1,0 +1,672 @@
+<div class="min-h-screen bg-neutral-50" *ngIf="!isLoading">
+  <!-- Background Pattern -->
+  <div class="absolute inset-0 bg-grid-pattern opacity-5"></div>
+
+  <div class="relative">
+    <!-- Page Header Component -->
+    <app-page-header
+      title="{{ 'ADMIN.PAGES.ORDERS.DETAILS.TITLE' | translate }}"
+      subtitle="{{ 'ADMIN.PAGES.ORDERS.DETAILS.SUBTITLE' | translate }}"
+      [showBackButton]="true"
+      iconPath="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+    >
+    </app-page-header>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="container mx-auto px-6 py-8">
+      <div class="text-center py-8">
+        <div
+          class="inline-flex items-center px-4 py-2 font-semibold leading-6 text-sm shadow rounded-md text-blue-500 bg-blue-100"
+        >
+          <svg
+            class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-500"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              class="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            ></circle>
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
+          </svg>
+          جاري تحميل البيانات...
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content Container -->
+    <div class="container mx-auto px-6 py-8" *ngIf="!isLoading && orderDetails">
+      <!-- Order Overview Card -->
+      <div
+        class="bg-white border border-gray-200 rounded-xl shadow-sm mb-6 overflow-hidden"
+      >
+        <div class="bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h1 class="text-xl font-bold text-white">
+                طلب رقم #{{ orderDetails.id }}
+              </h1>
+            </div>
+            <div class="flex items-center space-x-2 space-x-reverse">
+              <span
+                [ngClass]="getStatusColorClass(orderDetails.status)"
+                class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium"
+              >
+                <div class="w-2 h-2 bg-current rounded-full mr-1 ml-1"></div>
+                {{ getStatusText(orderDetails.status) }}
+              </span>
+              <button
+                (click)="cancelOrder()"
+                class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center space-x-2 space-x-reverse"
+              >
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  ></path>
+                </svg>
+                <span>إلغاء الطلب</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Order Information Panel -->
+        <div class="space-y-6">
+          <!-- Customer Information -->
+          <div
+            class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden"
+          >
+            <div class="bg-gray-50 border-b border-gray-200 px-6 py-4">
+              <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+                <svg
+                  class="w-5 h-5 text-blue-600 mr-3"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  ></path>
+                </svg>
+                معلومات العميل
+              </h2>
+            </div>
+            <div class="p-6">
+              <div class="space-y-4">
+                <div>
+                  <label class="text-sm font-medium text-gray-500"
+                    >اسم العميل</label
+                  >
+                  <p class="text-lg font-semibold text-gray-900">
+                    {{ orderDetails.customerName || "غير محدد" }}
+                  </p>
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-gray-500"
+                    >رقم الهاتف</label
+                  >
+                  <p class="text-lg font-semibold text-gray-900">
+                    {{ orderDetails.customerPhone || "غير محدد" }}
+                  </p>
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-gray-500"
+                    >نوع العميل</label
+                  >
+                  <p class="text-lg font-semibold text-gray-900">
+                    {{ orderDetails.customerTypeName }}
+                  </p>
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-gray-500"
+                    >المبلغ الكلي</label
+                  >
+                  <p class="text-lg font-bold text-green-600">
+                    {{ orderDetails.total }} ريال
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Delivery Man Information -->
+          <div
+            class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden"
+            *ngIf="orderDetails.deliveryManName"
+          >
+            <div class="bg-gray-50 border-b border-gray-200 px-6 py-4">
+              <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+                <svg
+                  class="w-5 h-5 text-blue-600 mr-3"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
+                </svg>
+                معلومات المندوب
+              </h2>
+            </div>
+            <div class="p-6">
+              <div class="space-y-4">
+                <div>
+                  <label class="text-sm font-medium text-gray-500"
+                    >اسم المندوب</label
+                  >
+                  <p class="text-lg font-semibold text-gray-900">
+                    {{ orderDetails.deliveryManName }}
+                  </p>
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-gray-500"
+                    >رقم الهاتف</label
+                  >
+                  <p class="text-lg font-semibold text-gray-900">
+                    {{ orderDetails.deliveryManPhone || "غير محدد" }}
+                  </p>
+                </div>
+                <div *ngIf="orderDetails.vehicleTypeName">
+                  <label class="text-sm font-medium text-gray-500"
+                    >نوع المركبة</label
+                  >
+                  <p class="text-lg font-semibold text-gray-900">
+                    {{ orderDetails.vehicleTypeName }}
+                  </p>
+                </div>
+                <div *ngIf="orderDetails.vehiclePlate">
+                  <label class="text-sm font-medium text-gray-500"
+                    >رقم اللوحة</label
+                  >
+                  <p class="text-lg font-semibold text-gray-900">
+                    {{ orderDetails.vehiclePlate }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Order Package Information -->
+          <div
+            class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden"
+            *ngIf="orderDetails.orderPackage"
+          >
+            <div class="bg-gray-50 border-b border-gray-200 px-6 py-4">
+              <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+                <svg
+                  class="w-5 h-5 text-blue-600 mr-3"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                  ></path>
+                </svg>
+                معلومات الحزمة
+              </h2>
+            </div>
+            <div class="p-6">
+              <div class="space-y-4">
+                <div>
+                  <label class="text-sm font-medium text-gray-500"
+                    >وصف الحزمة</label
+                  >
+                  <p class="text-lg font-semibold text-gray-900">
+                    {{ orderDetails.orderPackage.description }}
+                  </p>
+                </div>
+                <div>
+                  <label class="text-sm font-medium text-gray-500">الوزن</label>
+                  <p class="text-lg font-semibold text-gray-900">
+                    من {{ orderDetails.orderPackage.minWeightInKg }} إلى
+                    {{ orderDetails.orderPackage.maxWeightInKg }} كيلوجرام
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Timeline and Additional Info -->
+        <div class="space-y-6">
+          <!-- Route Information and Map -->
+          <div
+            class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden"
+          >
+            <div class="bg-gray-50 border-b border-gray-200 px-6 py-4">
+              <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+                <div
+                  class="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-lg mr-3"
+                >
+                  <svg
+                    class="w-5 h-5 text-blue-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    ></path>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                    ></path>
+                  </svg>
+                </div>
+                <div>
+                  <span class="text-gray-900">خريطة الرحلة التفاعلية</span>
+                  <p class="text-sm font-normal text-gray-500 mt-1">
+                    تتبع مسار التوصيل ونقاط الوقوف
+                  </p>
+                </div>
+              </h2>
+            </div>
+            <div class="p-6 space-y-6">
+              <!-- Interactive Map -->
+              <div class="map-container">
+                <div id="orderMap"></div>
+              </div>
+
+              <!-- Route Points List -->
+              <div
+                class="space-y-4"
+                *ngIf="
+                  orderDetails.wayPoints && orderDetails.wayPoints.length > 0
+                "
+              >
+                <div
+                  *ngFor="let waypoint of orderDetails.wayPoints; let i = index"
+                  class="flex items-start space-x-4 space-x-reverse"
+                >
+                  <div
+                    class="flex items-center justify-center w-10 h-10 rounded-full flex-shrink-0"
+                    [ngClass]="{
+                      'bg-green-100': waypoint.isOrigin,
+                      'bg-red-100': waypoint.isDestination,
+                      'bg-blue-100':
+                        !waypoint.isOrigin && !waypoint.isDestination
+                    }"
+                  >
+                    <div
+                      class="w-3 h-3 rounded-full"
+                      [ngClass]="{
+                        'bg-green-600': waypoint.isOrigin,
+                        'bg-red-600': waypoint.isDestination,
+                        'bg-blue-600':
+                          !waypoint.isOrigin && !waypoint.isDestination
+                      }"
+                    ></div>
+                  </div>
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between mb-1">
+                      <span class="text-sm font-medium text-gray-900">
+                        <span *ngIf="waypoint.isOrigin">نقطة الانطلاق</span>
+                        <span *ngIf="waypoint.isDestination">نقطة التسليم</span>
+                        <span
+                          *ngIf="!waypoint.isOrigin && !waypoint.isDestination"
+                          >نقطة وسيطة {{ i + 1 }}</span
+                        >
+                      </span>
+                      <span
+                        class="text-xs px-2 py-1 rounded-full"
+                        [ngClass]="{
+                          'bg-green-100 text-green-800': waypoint.status === 3,
+                          'bg-yellow-100 text-yellow-800':
+                            waypoint.status === 1,
+                          'bg-blue-100 text-blue-800': waypoint.status === 2
+                        }"
+                      >
+                        {{ waypoint.statusName }}
+                      </span>
+                    </div>
+                    <p class="text-sm text-gray-600">
+                      {{ waypoint.address }}
+                    </p>
+                    <p
+                      class="text-xs text-gray-500 mt-1"
+                      *ngIf="waypoint.pickedUpDate"
+                    >
+                      تم الاستلام:
+                      {{ waypoint.pickedUpDate | date : "dd/MM/yyyy HH:mm" }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div
+                *ngIf="
+                  !orderDetails.wayPoints || orderDetails.wayPoints.length === 0
+                "
+                class="text-center py-4 text-gray-500"
+              >
+                لا توجد نقاط توصيل محددة
+              </div>
+            </div>
+          </div>
+
+          <!-- Order Categories -->
+          <div
+            class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden"
+            *ngIf="
+              orderDetails.orderCategories &&
+              orderDetails.orderCategories.length > 0
+            "
+          >
+            <div class="bg-gray-50 border-b border-gray-200 px-6 py-4">
+              <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+                <svg
+                  class="w-5 h-5 text-blue-600 mr-3"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 11H5m14-4H3m16 8H7m12 4H9"
+                  ></path>
+                </svg>
+                فئات الطلب
+              </h2>
+            </div>
+            <div class="p-6">
+              <div class="grid grid-cols-1 gap-3">
+                <div
+                  *ngFor="let category of orderDetails.orderCategories"
+                  class="flex items-center p-3 bg-gray-50 rounded-lg"
+                >
+                  <div
+                    class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-lg mr-3"
+                  >
+                    <svg
+                      class="w-5 h-5 text-blue-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 11H5m14-4H3m16 8H7m12 4H9"
+                      ></path>
+                    </svg>
+                  </div>
+                  <div class="flex-1">
+                    <p class="font-medium text-gray-900">
+                      {{ category.categoryName }}
+                    </p>
+                    <p class="text-sm text-gray-600">الفئة</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Order Services -->
+          <div
+            class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden"
+            *ngIf="
+              orderDetails.orderServices &&
+              orderDetails.orderServices.length > 0
+            "
+          >
+            <div class="bg-gray-50 border-b border-gray-200 px-6 py-4">
+              <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+                <svg
+                  class="w-5 h-5 text-blue-600 mr-3"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5H7a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                  ></path>
+                </svg>
+                الخدمات الإضافية
+              </h2>
+            </div>
+            <div class="p-6">
+              <div class="space-y-3">
+                <div
+                  *ngFor="let service of orderDetails.orderServices"
+                  class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                >
+                  <div class="flex items-center">
+                    <div
+                      class="flex items-center justify-center w-10 h-10 bg-green-100 rounded-lg mr-3"
+                    >
+                      <svg
+                        class="w-5 h-5 text-green-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M5 13l4 4L19 7"
+                        ></path>
+                      </svg>
+                    </div>
+                    <div>
+                      <p class="font-medium text-gray-900">
+                        {{ service.serviceName }}
+                      </p>
+                      <p class="text-sm text-gray-600">الخدمة</p>
+                    </div>
+                  </div>
+                  <div class="text-right">
+                    <p class="font-bold text-green-600">
+                      {{ service.price }} ريال
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Payment Methods -->
+          <div
+            class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden"
+            *ngIf="
+              orderDetails.orderPaymentMethods &&
+              orderDetails.orderPaymentMethods.length > 0
+            "
+          >
+            <div class="bg-gray-50 border-b border-gray-200 px-6 py-4">
+              <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+                <svg
+                  class="w-5 h-5 text-blue-600 mr-3"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                  ></path>
+                </svg>
+                طرق الدفع
+              </h2>
+            </div>
+            <div class="p-6">
+              <div class="space-y-3">
+                <div
+                  *ngFor="let payment of orderDetails.orderPaymentMethods"
+                  class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                >
+                  <div class="flex items-center">
+                    <div
+                      class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-lg mr-3"
+                    >
+                      <svg
+                        class="w-5 h-5 text-blue-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+                        ></path>
+                      </svg>
+                    </div>
+                    <div>
+                      <p class="font-medium text-gray-900">
+                        {{ payment.paymentMethodName }}
+                      </p>
+                      <span
+                        class="text-xs px-2 py-1 rounded-full"
+                        [ngClass]="{
+                          'bg-green-100 text-green-800':
+                            payment.paymentStatus === 2,
+                          'bg-yellow-100 text-yellow-800':
+                            payment.paymentStatus === 1,
+                          'bg-red-100 text-red-800': payment.paymentStatus === 3
+                        }"
+                      >
+                        {{ payment.paymentStatusName }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="text-right">
+                    <p class="font-bold text-green-600">
+                      {{ payment.amount }} ريال
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Status History -->
+          <div
+            class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden"
+            *ngIf="
+              orderDetails.statusHistory &&
+              orderDetails.statusHistory.length > 0
+            "
+          >
+            <div class="bg-gray-50 border-b border-gray-200 px-6 py-4">
+              <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+                <svg
+                  class="w-5 h-5 text-blue-600 mr-3"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
+                </svg>
+                تاريخ الطلب
+              </h2>
+            </div>
+            <div class="p-6">
+              <div class="space-y-4">
+                <div
+                  *ngFor="
+                    let history of orderDetails.statusHistory;
+                    let last = last
+                  "
+                  class="flex items-start space-x-4 space-x-reverse"
+                >
+                  <div
+                    class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full flex-shrink-0"
+                  >
+                    <svg
+                      class="w-5 h-5 text-blue-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M5 13l4 4L19 7"
+                      ></path>
+                    </svg>
+                  </div>
+                  <div
+                    class="flex-1"
+                    [ngClass]="{ 'pb-4 border-b border-gray-200': !last }"
+                  >
+                    <div class="flex items-center justify-between mb-1">
+                      <span class="font-medium text-gray-900">{{
+                        history.statusName
+                      }}</span>
+                      <span class="text-xs text-gray-500">{{
+                        history.creationDate | date : "dd/MM/yyyy HH:mm"
+                      }}</span>
+                    </div>
+                    <p class="text-sm text-gray-600">
+                      {{ history.description }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Confirmation Modal -->
+<app-confirmation-modal
+  [show]="showConfirmation"
+  [title]="confirmationTitle"
+  [message]="confirmationMessage"
+  (confirmed)="onConfirmationConfirmed()"
+  (cancelled)="onConfirmationCancelled()">
+</app-confirmation-modal>

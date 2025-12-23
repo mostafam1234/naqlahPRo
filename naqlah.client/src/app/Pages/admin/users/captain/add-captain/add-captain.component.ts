@@ -6,17 +6,16 @@ import { Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SubSink } from 'subsink';
 import Swal from 'sweetalert2';
-import { AddDeliveryManDto, DeliveryManAdminClient } from 'src/app/Core/services/NaqlahClient';
+import { AddDeliveryManDto, DeliveryManAdminClient, DeliveryManVehicleDto, VehicleAdminClient, VehicleTypeDto } from 'src/app/Core/services/NaqlahClient';
 import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
-
-// Import types and enums
 import { DeliveryType, DeliveryLicenseType, VehicleOwnerType } from 'src/app/Core/enums/delivery.enums';
+import { ImageService } from 'src/app/Core/services/image.service';
 
 @Component({
   selector: 'app-add-captain',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, TranslateModule, PageHeaderComponent],
-  providers: [DatePipe],
+  providers: [DatePipe, DeliveryManAdminClient, VehicleAdminClient],
   templateUrl: './add-captain.component.html',
   styleUrl: './add-captain.component.css'
 })
@@ -53,8 +52,8 @@ export class AddCaptainComponent implements OnInit, OnDestroy {
 
   // Enums for templates
   deliveryTypes = [
-    { value: DeliveryType.Resident, label: 'مواطن' },
-    { value: DeliveryType.Citizen, label: 'مقيم' }
+    { value: DeliveryType.Resident, label: 'مقيم' },
+    { value: DeliveryType.Citizen, label: 'مواطن' }
   ];
 
   deliveryLicenseTypes = [
@@ -62,9 +61,8 @@ export class AddCaptainComponent implements OnInit, OnDestroy {
     { value: DeliveryLicenseType.Private, label: 'رخصة خاصة' },
   ];
 
-  // Vehicle options (will be loaded from API)
-  vehicleTypes: any[] = [];
-  vehicleBrands: any[] = [];
+  vehicleTypes: VehicleTypeDto[] = [];
+  vehicleBrands: VehicleTypeDto[] = [];
 
   private subs = new SubSink();
 
@@ -73,17 +71,44 @@ export class AddCaptainComponent implements OnInit, OnDestroy {
     private router: Router,
     private translate: TranslateService,
     private deliveryManClient: DeliveryManAdminClient,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private vehicleClient: VehicleAdminClient,
+    private imageService: ImageService
   ) {
     this.initializeForm();
   }
 
   ngOnInit(): void {
     this.lang = localStorage.getItem('language') || 'ar';
+    this.GetVehicleTypesLookUp();
+    this.GetVehicleBrandsLookUp();
   }
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
+  }
+
+  GetVehicleBrandsLookUp(): void {
+    debugger;
+    this.subs.sink = this.vehicleClient.getVehiclesBrandLookup().subscribe({
+      next: (brands) => {
+        this.vehicleBrands = brands;
+      },
+      error: (err) => {
+        console.error('Error fetching vehicle brands:', err);
+      }
+    });
+  }
+
+  GetVehicleTypesLookUp(): void {
+    this.subs.sink = this.vehicleClient.getVehiclesTypesLookup().subscribe({
+      next: (types) => {
+        this.vehicleTypes = types;
+      },
+      error: (err) => {
+        console.error('Error fetching vehicle types:', err);
+      }
+    });
   }
 
   private initializeForm(): void {
@@ -107,193 +132,120 @@ export class AddCaptainComponent implements OnInit, OnDestroy {
       vehicleTypeId: ['', Validators.required],
       vehicleBrandId: ['', Validators.required],
       vehiclePlateNumber: ['', Validators.required],
-      vehicleFrontImagePath: ['', Validators.required],
-      vehicleSideImagePath: ['', Validators.required],
-      vehicleFrontLicenseImagePath: ['', Validators.required],
-      vehicleBackLicenseImagePath: ['', Validators.required],
-      vehicleLicenseExpirationDate: ['', Validators.required],
-      vehicleFrontInsuranceImagePath: ['', Validators.required],
-      vehicleBackInsuranceImagePath: ['', Validators.required],
-      vehicleInsuranceExpirationDate: ['', Validators.required],
+      vehicleFrontImagePath: [''],
+      vehicleSideImagePath: [''],
+      vehicleFrontLicenseImagePath: [''],
+      vehicleBackLicenseImagePath: [''],
+      vehicleLicenseExpirationDate: [''],
+      vehicleFrontInsuranceImagePath: [''],
+      vehicleBackInsuranceImagePath: [''],
+      vehicleInsuranceExpirationDate: [''],
       vehicleOwnerTypeId: [VehicleOwnerType.Resident, Validators.required],
 
-      personalImagePath: ['', Validators.required],
-      frontIdentityImagePath: ['', Validators.required],
-      backIdentityImagePath: ['', Validators.required],
-      frontDrivingLicenseImagePath: ['', Validators.required],
-      backDrivingLicenseImagePath: ['', Validators.required]
+      personalImagePath: [''],
+      frontIdentityImagePath: [''],
+      backIdentityImagePath: [''],
+      frontDrivingLicenseImagePath: [''],
+      backDrivingLicenseImagePath: ['']
     });
   }
 
   // Image upload handlers
-  onImageSelected(event: Event, imageType: string): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0]) {
-      const file = input.files[0];
+  async onImageSelected(event: Event, imageType: string): Promise<void> {
+    const result = await this.imageService.handleImageUpload(event, {
+      maxSizeMB: 5,
+      showErrorAlert: true
+    });
 
-      // Validate file type
-      if (!this.isValidImageFile(file)) {
-        Swal.fire({
-          title: 'خطأ',
-          text: 'يرجى اختيار ملف صورة صالح (PNG, JPG, JPEG)',
-          icon: 'error',
-          confirmButtonText: 'موافق'
-        });
-        return;
-      }
+    if (!result?.success) {
+      return;
+    }
 
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        Swal.fire({
-          title: 'خطأ',
-          text: 'حجم الملف كبير جداً. يرجى اختيار ملف أصغر من 5 ميجابايت',
-          icon: 'error',
-          confirmButtonText: 'موافق'
-        });
-        return;
-      }
+    // Set preview
+    this.setImagePreview(imageType, result.preview || null);
 
-      // Create preview and store base64 in form control so backend can upload it
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const result = e.target?.result as string;
-
-        // set preview
-        switch (imageType) {
-          case 'personal':
-            this.imagesPreviews.personalImage = result;
-            break;
-          case 'frontIdentity':
-            this.imagesPreviews.frontIdentityImage = result;
-            break;
-          case 'backIdentity':
-            this.imagesPreviews.backIdentityImage = result;
-            break;
-          case 'frontDrivingLicense':
-            this.imagesPreviews.frontDrivingLicenseImage = result;
-            break;
-          case 'backDrivingLicense':
-            this.imagesPreviews.backDrivingLicenseImage = result;
-            break;
-          // Vehicle images
-          case 'vehicleFront':
-            this.imagesPreviews.vehicleFrontImage = result;
-            break;
-          case 'vehicleSide':
-            this.imagesPreviews.vehicleSideImage = result;
-            break;
-          case 'vehicleFrontLicense':
-            this.imagesPreviews.vehicleFrontLicenseImage = result;
-            break;
-          case 'vehicleBackLicense':
-            this.imagesPreviews.vehicleBackLicenseImage = result;
-            break;
-          case 'vehicleFrontInsurance':
-            this.imagesPreviews.vehicleFrontInsuranceImage = result;
-            break;
-          case 'vehicleBackInsurance':
-            this.imagesPreviews.vehicleBackInsuranceImage = result;
-            break;
-        }
-
-        // Determine the form field name for this imageType and patch the base64 data
-        let fieldName = '';
-        switch (imageType) {
-          case 'personal':
-            fieldName = 'personalImagePath';
-            break;
-          case 'frontIdentity':
-            fieldName = 'frontIdentityImagePath';
-            break;
-          case 'backIdentity':
-            fieldName = 'backIdentityImagePath';
-            break;
-          case 'frontDrivingLicense':
-            fieldName = 'frontDrivingLicenseImagePath';
-            break;
-          case 'backDrivingLicense':
-            fieldName = 'backDrivingLicenseImagePath';
-            break;
-          case 'vehicleFront':
-            fieldName = 'vehicleFrontImagePath';
-            break;
-          case 'vehicleSide':
-            fieldName = 'vehicleSideImagePath';
-            break;
-          case 'vehicleFrontLicense':
-            fieldName = 'vehicleFrontLicenseImagePath';
-            break;
-          case 'vehicleBackLicense':
-            fieldName = 'vehicleBackLicenseImagePath';
-            break;
-          case 'vehicleFrontInsurance':
-            fieldName = 'vehicleFrontInsuranceImagePath';
-            break;
-          case 'vehicleBackInsurance':
-            fieldName = 'vehicleBackInsuranceImagePath';
-            break;
-        }
-
-        if (fieldName) {
-          this.captainForm.patchValue({ [fieldName]: result });
-        }
-      };
-      reader.readAsDataURL(file);
+    // Set form value with Base64
+    const fieldName = this.getFormFieldName(imageType);
+    if (fieldName) {
+      this.captainForm.patchValue({ [fieldName]: result.base64 });
     }
   }
 
-  private isValidImageFile(file: File): boolean {
-    const validTypes = ['image/png', 'image/jpg', 'image/jpeg'];
-    return validTypes.includes(file.type);
+  private setImagePreview(imageType: string, preview: string | null): void {
+    switch (imageType) {
+      case 'personal':
+        this.imagesPreviews.personalImage = preview;
+        break;
+      case 'frontIdentity':
+        this.imagesPreviews.frontIdentityImage = preview;
+        break;
+      case 'backIdentity':
+        this.imagesPreviews.backIdentityImage = preview;
+        break;
+      case 'frontDrivingLicense':
+        this.imagesPreviews.frontDrivingLicenseImage = preview;
+        break;
+      case 'backDrivingLicense':
+        this.imagesPreviews.backDrivingLicenseImage = preview;
+        break;
+      case 'vehicleFront':
+        this.imagesPreviews.vehicleFrontImage = preview;
+        break;
+      case 'vehicleSide':
+        this.imagesPreviews.vehicleSideImage = preview;
+        break;
+      case 'vehicleFrontLicense':
+        this.imagesPreviews.vehicleFrontLicenseImage = preview;
+        break;
+      case 'vehicleBackLicense':
+        this.imagesPreviews.vehicleBackLicenseImage = preview;
+        break;
+      case 'vehicleFrontInsurance':
+        this.imagesPreviews.vehicleFrontInsuranceImage = preview;
+        break;
+      case 'vehicleBackInsurance':
+        this.imagesPreviews.vehicleBackInsuranceImage = preview;
+        break;
+    }
+  }
+
+  private getFormFieldName(imageType: string): string {
+    switch (imageType) {
+      case 'personal':
+        return 'personalImagePath';
+      case 'frontIdentity':
+        return 'frontIdentityImagePath';
+      case 'backIdentity':
+        return 'backIdentityImagePath';
+      case 'frontDrivingLicense':
+        return 'frontDrivingLicenseImagePath';
+      case 'backDrivingLicense':
+        return 'backDrivingLicenseImagePath';
+      case 'vehicleFront':
+        return 'vehicleFrontImagePath';
+      case 'vehicleSide':
+        return 'vehicleSideImagePath';
+      case 'vehicleFrontLicense':
+        return 'vehicleFrontLicenseImagePath';
+      case 'vehicleBackLicense':
+        return 'vehicleBackLicenseImagePath';
+      case 'vehicleFrontInsurance':
+        return 'vehicleFrontInsuranceImagePath';
+      case 'vehicleBackInsurance':
+        return 'vehicleBackInsuranceImagePath';
+      default:
+        return '';
+    }
   }
 
   removeImage(imageType: string): void {
-    switch (imageType) {
-      case 'personal':
-        this.imagesPreviews.personalImage = null;
-        this.captainForm.patchValue({ personalImagePath: '' });
-        break;
-      case 'frontIdentity':
-        this.imagesPreviews.frontIdentityImage = null;
-        this.captainForm.patchValue({ frontIdentityImagePath: '' });
-        break;
-      case 'backIdentity':
-        this.imagesPreviews.backIdentityImage = null;
-        this.captainForm.patchValue({ backIdentityImagePath: '' });
-        break;
-      case 'frontDrivingLicense':
-        this.imagesPreviews.frontDrivingLicenseImage = null;
-        this.captainForm.patchValue({ frontDrivingLicenseImagePath: '' });
-        break;
-      case 'backDrivingLicense':
-        this.imagesPreviews.backDrivingLicenseImage = null;
-        this.captainForm.patchValue({ backDrivingLicenseImagePath: '' });
-        break;
-      // Vehicle images
-      case 'vehicleFront':
-        this.imagesPreviews.vehicleFrontImage = null;
-        this.captainForm.patchValue({ vehicleFrontImagePath: '' });
-        break;
-      case 'vehicleSide':
-        this.imagesPreviews.vehicleSideImage = null;
-        this.captainForm.patchValue({ vehicleSideImagePath: '' });
-        break;
-      case 'vehicleFrontLicense':
-        this.imagesPreviews.vehicleFrontLicenseImage = null;
-        this.captainForm.patchValue({ vehicleFrontLicenseImagePath: '' });
-        break;
-      case 'vehicleBackLicense':
-        this.imagesPreviews.vehicleBackLicenseImage = null;
-        this.captainForm.patchValue({ vehicleBackLicenseImagePath: '' });
-        break;
-      case 'vehicleFrontInsurance':
-        this.imagesPreviews.vehicleFrontInsuranceImage = null;
-        this.captainForm.patchValue({ vehicleFrontInsuranceImagePath: '' });
-        break;
-      case 'vehicleBackInsurance':
-        this.imagesPreviews.vehicleBackInsuranceImage = null;
-        this.captainForm.patchValue({ vehicleBackInsuranceImagePath: '' });
-        break;
+    // Clear preview
+    this.setImagePreview(imageType, null);
+    
+    // Clear form value
+    const fieldName = this.getFormFieldName(imageType);
+    if (fieldName) {
+      this.captainForm.patchValue({ [fieldName]: '' });
     }
   }
 

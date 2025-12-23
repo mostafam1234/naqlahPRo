@@ -18,8 +18,13 @@ namespace Domain.InterFaces
         Task<Result<TokenResponse>> GetAcessToken(string userName,
                                                   string Password);
 
+        Task<Result<TokenAdminResponse>> GetAdminAccessToken(string email, string password);
+
         Task<Result> CheckUserPassword(string userName,
                                        string password);
+
+        Task<Result> CheckAdminUserPassword(string userName,
+                                            string password);
 
         Task<Result<int>> CreateCustomerUserAsEstablishMent(string phoneNumber,
                                                             string name,

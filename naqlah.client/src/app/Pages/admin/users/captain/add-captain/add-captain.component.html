@@ -504,7 +504,7 @@
                       class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
                     >
                       <option *ngFor="let t of vehicleTypes" [value]="t.id">
-                        {{ t.arabicName || t.englishName }}
+                        {{ t.name }}
                       </option>
                     </select>
                   </div>
@@ -518,7 +518,7 @@
                       class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
                     >
                       <option *ngFor="let b of vehicleBrands" [value]="b.id">
-                        {{ b.arabicName || b.englishName }}
+                        {{ b.name }}
                       </option>
                     </select>
                   </div>

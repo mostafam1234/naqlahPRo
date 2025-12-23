@@ -1,7 +1,7 @@
 import { NgClass, NgFor, NgIf } from '@angular/common';
 import { Component, HostListener } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { LanguageService } from 'src/app/Core/services/language.service';
 @Component({
   selector: 'app-systme-users',
@@ -15,7 +15,6 @@ export class SystmeUsersComponent {
   viewMode: 'cards' | 'table' = 'table';
   constructor(
     private languageService: LanguageService,
-    private translateService: TranslateService,
     private router: Router) {}
 
   activeTab = 'all';

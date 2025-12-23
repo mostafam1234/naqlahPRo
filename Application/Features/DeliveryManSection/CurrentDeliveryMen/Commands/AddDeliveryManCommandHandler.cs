@@ -47,57 +47,57 @@ namespace Application.Features.DeliveryManSection.CurrentDeliveryMen.Commands
             var vehicleFrontInsuranceImagePath = ""; var vehicleBackInsuranceImagePath = "";
             
             // Upload delivery man images
-            if (request.DeliveryMan.FrontIdentityImagePath != null)
+            if (!string.IsNullOrEmpty(request.DeliveryMan.FrontIdentityImagePath))
             {
                 frontIdenitytImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.FrontIdentityImagePath, deliveryFolder);
             }
-            if(request.DeliveryMan.BackIdentityImagePath != null)
+            if(!string.IsNullOrEmpty(request.DeliveryMan.BackIdentityImagePath))
             {
                 backIdenitytImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.BackIdentityImagePath, deliveryFolder);
             }
 
-            if(request.DeliveryMan.PersonalImagePath != null)
+            if(!string.IsNullOrEmpty(request.DeliveryMan.PersonalImagePath))
             {
                 personalImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.PersonalImagePath, deliveryFolder);
             }
 
-            if(request.DeliveryMan.FrontDrivingLicenseImagePath != null)
+            if(!string.IsNullOrEmpty(request.DeliveryMan.FrontDrivingLicenseImagePath))
             {
                 frontLicenseImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.FrontDrivingLicenseImagePath, deliveryFolder);
             }
 
-            if (request.DeliveryMan.BackDrivingLicenseImagePath != null)
+            if (!string.IsNullOrEmpty(request.DeliveryMan.BackDrivingLicenseImagePath))
             {
                 backLicenseImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.BackDrivingLicenseImagePath, deliveryFolder);
             }
             
             // Upload vehicle images
-            if (request.DeliveryMan.VehicleFrontImagePath != null)
+            if (!string.IsNullOrEmpty(request.DeliveryMan.VehicleFrontImagePath))
             {
                 vehicleFrontImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.VehicleFrontImagePath, deliveryFolder);
             }
             
-            if (request.DeliveryMan.VehicleSideImagePath != null)
+            if (!string.IsNullOrEmpty(request.DeliveryMan.VehicleSideImagePath))
             {
                 vehicleSideImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.VehicleSideImagePath, deliveryFolder);
             }
             
-            if (request.DeliveryMan.VehicleFrontLicenseImagePath != null)
+            if (!string.IsNullOrEmpty(request.DeliveryMan.VehicleFrontLicenseImagePath))
             {
                 vehicleFrontLicenseImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.VehicleFrontLicenseImagePath, deliveryFolder);
             }
             
-            if (request.DeliveryMan.VehicleBackLicenseImagePath != null)
+            if (!string.IsNullOrEmpty(request.DeliveryMan.VehicleBackLicenseImagePath))
             {
                 vehicleBackLicenseImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.VehicleBackLicenseImagePath, deliveryFolder);
             }
             
-            if (request.DeliveryMan.VehicleFrontInsuranceImagePath != null)
+            if (!string.IsNullOrEmpty(request.DeliveryMan.VehicleFrontInsuranceImagePath))
             {
                 vehicleFrontInsuranceImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.VehicleFrontInsuranceImagePath, deliveryFolder);
             }
             
-            if (request.DeliveryMan.VehicleBackInsuranceImagePath != null)
+            if (!string.IsNullOrEmpty(request.DeliveryMan.VehicleBackInsuranceImagePath))
             {
                 vehicleBackInsuranceImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.VehicleBackInsuranceImagePath, deliveryFolder);
             }
