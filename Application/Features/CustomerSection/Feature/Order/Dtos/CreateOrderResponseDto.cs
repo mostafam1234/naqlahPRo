@@ -10,15 +10,15 @@ namespace Application.Features.CustomerSection.Feature.Order.Dtos
     {
         public CreateOrderResponseDto()
         {
-            this.MatchingVehicles = new List<VehicleDto>();
+            this.MatchingVehicles = new List<OrderVehicleDto>();
         }
         public int OrderId { get; set; }
-        public List<VehicleDto> MatchingVehicles { get; set; }
+        public List<OrderVehicleDto> MatchingVehicles { get; set; }
     }
 
-    public class VehicleDto
+    public class OrderVehicleDto
     {
-        public VehicleDto()
+        public OrderVehicleDto()
         {
             this.Name = string.Empty;
             this.IconPath = string.Empty;

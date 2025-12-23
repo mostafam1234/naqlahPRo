@@ -182,7 +182,7 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
                 return random.Next(100000, 999999).ToString();
             }
 
-            private async Task<List<VehicleDto>> GetMatchingVehicles(List<int> mainCategoryIds)
+            private async Task<List<OrderVehicleDto>> GetMatchingVehicles(List<int> mainCategoryIds)
             {
                 var languageId = userSession.LanguageId;
                 
@@ -191,7 +191,7 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
                     .Include(vt => vt.VehicleTypeCategoies)
                     .Where(vt => mainCategoryIds.All(categoryId => 
                         vt.VehicleTypeCategoies.Any(vtc => vtc.MainCategoryId == categoryId)))
-                    .Select(vt => new VehicleDto
+                    .Select(vt => new OrderVehicleDto
                     {
                         Id = vt.Id,
                         Name = languageId == (int)Domain.Enums.Language.Arabic ? 
