@@ -4,8 +4,10 @@ using Domain.Enums;
 using Domain.InterFaces;
 using Domain.Models;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,28 +17,93 @@ namespace Application.Features.DeliveryManSection.CurrentDeliveryMen.Commands
     {
         private readonly INaqlahContext _context;
         private readonly IMediaUploader mediaUploader;
+        private readonly IUserService userService;
         private const string DeliveryFolderPrefix = "DeliveryMan";
 
-        public AddDeliveryManCommandHandler(INaqlahContext context, IMediaUploader mediaUploader)
+        public AddDeliveryManCommandHandler(INaqlahContext context, IMediaUploader mediaUploader, IUserService userService)
         {
             _context = context;
             this.mediaUploader = mediaUploader;
+            this.userService = userService;
         }
 
         public async Task<Result<int>> Handle(AddDeliveryManCommand request, CancellationToken cancellationToken)
         {
-            var deliveryMan = new DeliveryMan();
+            // Validate required user fields
+            if (string.IsNullOrWhiteSpace(request.DeliveryMan.Email))
+            {
+                return Result.Failure<int>("Email is required");
+            }
+
+            if (string.IsNullOrWhiteSpace(request.DeliveryMan.Password))
+            {
+                return Result.Failure<int>("Password is required");
+            }
+
+            // Step 1: Create user account first (this also creates a basic DeliveryMan)
+            var createUserResult = await userService.CreateDeliveryUser(
+                request.DeliveryMan.PhoneNumber,
+                request.DeliveryMan.Email,
+                request.DeliveryMan.FullName,
+                request.DeliveryMan.Password
+            );
+
+            if (createUserResult.IsFailure)
+            {
+                return Result.Failure<int>(createUserResult.Error);
+            }
+
+            var userId = createUserResult.Value;
+
+            // Step 2: Load the user with delivery man from context
+            var user = await _context.Users
+                .Include(u => u.DeliveryMan)
+                .FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
+
+            if (user == null || user.DeliveryMan == null)
+            {
+                return Result.Failure<int>("Failed to load created user or delivery man");
+            }
+
+            var deliveryMan = user.DeliveryMan;
+            // Note: deliveryMan is already tracked by EF Core since it was loaded with Include
+
+            // Step 3: Parse dates
             DateTime identityExpirationDate;
             DateTime licenceExpirationDate;
-            DateTime vehicleLicenseExpirationDate;
-            DateTime vehicleInsuranceExpirationDate;
+            DateTime vehicleLicenseExpirationDate = DateTime.MinValue;
+            DateTime vehicleInsuranceExpirationDate = DateTime.MinValue;
             
-            DateTime.TryParseExact(request.DeliveryMan.IdentityExpirationDate, "yyyy-MM-dd", new CultureInfo("en-US"), DateTimeStyles.None, out identityExpirationDate);
-            DateTime.TryParseExact(request.DeliveryMan.DrivingLicenseExpirationDate, "yyyy-MM-dd", new CultureInfo("en-US"), DateTimeStyles.None, out licenceExpirationDate);
-            DateTime.TryParseExact(request.DeliveryMan.VehicleLicenseExpirationDate, "yyyy-MM-dd", new CultureInfo("en-US"), DateTimeStyles.None, out vehicleLicenseExpirationDate);
-            DateTime.TryParseExact(request.DeliveryMan.VehicleInsuranceExpirationDate, "yyyy-MM-dd", new CultureInfo("en-US"), DateTimeStyles.None, out vehicleInsuranceExpirationDate);
+            if (!DateTime.TryParseExact(request.DeliveryMan.IdentityExpirationDate, "yyyy-MM-dd", new CultureInfo("en-US"), DateTimeStyles.None, out identityExpirationDate))
+            {
+                return Result.Failure<int>("Invalid Identity Expiration Date format");
+            }
 
-            var deliveryFolder = string.Join("{0}_{1}", DeliveryFolderPrefix, deliveryMan.Id);
+            if (!DateTime.TryParseExact(request.DeliveryMan.DrivingLicenseExpirationDate, "yyyy-MM-dd", new CultureInfo("en-US"), DateTimeStyles.None, out licenceExpirationDate))
+            {
+                return Result.Failure<int>("Invalid Driving License Expiration Date format");
+            }
+
+            if (!string.IsNullOrWhiteSpace(request.DeliveryMan.VehicleLicenseExpirationDate))
+            {
+                if (!DateTime.TryParseExact(request.DeliveryMan.VehicleLicenseExpirationDate, "yyyy-MM-dd", new CultureInfo("en-US"), DateTimeStyles.None, out vehicleLicenseExpirationDate))
+                {
+                    return Result.Failure<int>("Invalid Vehicle License Expiration Date format");
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(request.DeliveryMan.VehicleInsuranceExpirationDate))
+            {
+                if (!DateTime.TryParseExact(request.DeliveryMan.VehicleInsuranceExpirationDate, "yyyy-MM-dd", new CultureInfo("en-US"), DateTimeStyles.None, out vehicleInsuranceExpirationDate))
+                {
+                    return Result.Failure<int>("Invalid Vehicle Insurance Expiration Date format");
+                }
+            }
+
+            // Step 4: Create delivery folder using delivery man ID (use userId as temporary if Id is 0)
+            var deliveryFolder = deliveryMan.Id > 0 
+                ? string.Format("{0}_{1}", DeliveryFolderPrefix, deliveryMan.Id)
+                : string.Format("{0}_{1}", DeliveryFolderPrefix, userId);
 
             var frontIdenitytImagePath = "";  var backIdenitytImagePath = ""; var personalImagePath = "";
             var frontLicenseImagePath = ""; var backLicenseImagePath = "";
@@ -103,37 +170,50 @@ namespace Application.Features.DeliveryManSection.CurrentDeliveryMen.Commands
             }
 
 
-            var updateResult = deliveryMan.UpdatePersnalInfo(request.DeliveryMan.FullName,
-                                                           request.DeliveryMan.Address,
-                                                           request.DeliveryMan.IdentityNumber,
-                                                           frontIdenitytImagePath,
-                                                           backIdenitytImagePath,
-                                                           personalImagePath,
-                                                           identityExpirationDate,
-                                                           licenceExpirationDate,
-                                                           request.DeliveryMan.DeliveryType,
-                                                           request.DeliveryMan.DeliveryLicenseType,
-                                                           frontLicenseImagePath,
-                                                           backLicenseImagePath);
+            // Step 5: Update delivery man personal information using domain method
+            var updateResult = deliveryMan.UpdatePersnalInfo(
+                request.DeliveryMan.FullName,
+                request.DeliveryMan.Address,
+                request.DeliveryMan.IdentityNumber,
+                frontIdenitytImagePath,
+                backIdenitytImagePath,
+                personalImagePath,
+                identityExpirationDate,
+                licenceExpirationDate,
+                request.DeliveryMan.DeliveryType,
+                request.DeliveryMan.DeliveryLicenseType,
+                frontLicenseImagePath,
+                backLicenseImagePath
+            );
 
             if (updateResult.IsFailure)
                 return Result.Failure<int>(updateResult.Error);
 
-            // Set activation status
+            // Step 6: Set activation status
             deliveryMan.ChangeActivation(request.DeliveryMan.Active);
 
-            await _context.DeliveryMen.AddAsync(deliveryMan, cancellationToken);
-            var saveResult = await _context.SaveChangesAsyncWithResult();
+            // Step 7: Set delivery state (default to New for new delivery men)
+            deliveryMan.UpdateDeliveryManRequestState((int)DeliveryRequesState.New);
 
-            if (saveResult.IsFailure)
-                return Result.Failure<int>("Failed To Save Data");
-
-            // Create delivery vehicle if vehicle data is provided
-            if (request.DeliveryMan.VehicleTypeId.HasValue && request.DeliveryMan.VehicleBrandId.HasValue && !string.IsNullOrWhiteSpace(request.DeliveryMan.VehiclePlateNumber))
+            // Step 8: Add vehicle using domain method (this sets the relationship properly)
+            if (request.DeliveryMan.VehicleTypeId.HasValue && 
+                request.DeliveryMan.VehicleBrandId.HasValue && 
+                !string.IsNullOrWhiteSpace(request.DeliveryMan.VehiclePlateNumber))
             {
                 var ownerTypeId = request.DeliveryMan.VehicleOwnerTypeId ?? 0;
 
-                var vehicleResult = DeliveryVehicle.Instance(
+                // Use default dates if not provided
+                if (vehicleLicenseExpirationDate == DateTime.MinValue)
+                {
+                    vehicleLicenseExpirationDate = DateTime.Now.AddYears(1);
+                }
+
+                if (vehicleInsuranceExpirationDate == DateTime.MinValue)
+                {
+                    vehicleInsuranceExpirationDate = DateTime.Now.AddYears(1);
+                }
+
+                var addVehicleResult = deliveryMan.AddVehicle(
                     request.DeliveryMan.VehicleTypeId.Value,
                     request.DeliveryMan.VehicleBrandId.Value,
                     request.DeliveryMan.VehiclePlateNumber,
@@ -148,19 +228,20 @@ namespace Application.Features.DeliveryManSection.CurrentDeliveryMen.Commands
                     ownerTypeId
                 );
 
-                if (vehicleResult.IsSuccess)
+                if (addVehicleResult.IsFailure)
                 {
-                    // Set the DeliveryManId for the vehicle
-                    var vehicle = vehicleResult.Value;
-                    typeof(DeliveryVehicle).GetProperty("DeliveryManId")?.SetValue(vehicle, deliveryMan.Id);
-
-                    await _context.DeliveryVehicles.AddAsync(vehicle, cancellationToken);
-                    var vehicleSaveResult = await _context.SaveChangesAsyncWithResult();
-
-                    if (vehicleSaveResult.IsFailure)
-                        return Result.Failure<int>("Failed To Save Vehicle Data");
+                    return Result.Failure<int>(addVehicleResult.Error);
                 }
             }
+
+            // Step 9: Save all changes in a single transaction
+            // EF Core will automatically handle all relationships and save:
+            // - DeliveryMan updates (address, IdentityNumber, images, DeliveryType, DeliveryLicenseType, Active, DeliveryState)
+            // - DeliveryVehicle (through the navigation property relationship)
+            var saveResult = await _context.SaveChangesAsyncWithResult();
+
+            if (saveResult.IsFailure)
+                return Result.Failure<int>($"Failed To Save Data: {saveResult.Error}");
 
             return Result.Success(deliveryMan.Id);
         }

@@ -4944,6 +4944,12 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
           "fullName": {
             "type": "string"
           },

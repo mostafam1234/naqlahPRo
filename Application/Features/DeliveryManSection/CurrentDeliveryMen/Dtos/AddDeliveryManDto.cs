@@ -4,6 +4,10 @@ namespace Application.Features.DeliveryManSection.CurrentDeliveryMen.Dtos
 {
     public class AddDeliveryManDto
     {
+        // User Account Information
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+        
         // Basic Personal Information
         public string FullName { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
