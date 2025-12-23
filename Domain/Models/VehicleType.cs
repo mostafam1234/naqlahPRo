@@ -33,7 +33,6 @@ namespace Domain.Models
             }
         }
 
-
         public static Result<VehicleType> Instance(string arabicName, string englishName, string iconImagePath, List<int> mainCategoryIds)
         {
             if (string.IsNullOrWhiteSpace(arabicName) || string.IsNullOrWhiteSpace(englishName))
