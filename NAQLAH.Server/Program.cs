@@ -102,28 +102,28 @@ namespace NAQLAH.Server
 
             async Task SeedDefaultUsers(IServiceScope scope)
             {
-                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
+                //var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+                //var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
 
-                // Create default user if not exists
+                //// Create default user if not exists
 
-                var defaultUser = await userManager.FindByNameAsync("admin");
-                if (defaultUser == null)
-                {
-                    var user = new User
-                    {
-                        UserName = "admin",
-                        PhoneNumber = "01029249892",
-                        Email = "admin@accflex.com",
-                        IsActive = true
-                    };
-                    var result = await userManager.CreateAsync(user, "Password500$$");
+                //var defaultUser = await userManager.FindByNameAsync("admin");
+                //if (defaultUser == null)
+                //{
+                //    var user = new User
+                //    {
+                //        UserName = "admin",
+                //        PhoneNumber = "01029249892",
+                //        Email = "admin@accflex.com",
+                //        IsActive = true
+                //    };
+                //    var result = await userManager.CreateAsync(user, "Password500$$");
 
-                    if (result.Succeeded)
-                    {
-                        await userManager.AddToRoleAsync(user, "Admin");
-                    }
-                }
+                //    if (result.Succeeded)
+                //    {
+                //        await userManager.AddToRoleAsync(user, "Admin");
+                //    }
+                //}
             }
 
 

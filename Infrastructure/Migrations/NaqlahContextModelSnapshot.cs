@@ -29,12 +29,22 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Models.AssistanWork", b =>
             {
-                b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("int");
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
+
                 SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                b.Property<string>("ArabicName").IsRequired().HasColumnType("nvarchar(max)");
-                b.Property<string>("EnglishName").IsRequired().HasColumnType("nvarchar(max)");
-                b.Property<bool>("IsDeleted").HasColumnType("bit");
+                b.Property<string>("ArabicName")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
+
+                b.Property<string>("EnglishName")
+                    .IsRequired()
+                    .HasColumnType("nvarchar(max)");
+
+                b.Property<bool>("IsDeleted")
+                    .HasColumnType("bit");
 
                 b.HasKey("Id");
                 b.ToTable("NA_AssistanWork");
@@ -42,19 +52,24 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Models.Assistant", b =>
             {
-                b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("int");
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
+
                 SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                b.Property<string>("Name").IsRequired().HasColumnType("nvarchar(max)");
-                b.Property<string>("PhoneNumber").IsRequired().HasColumnType("nvarchar(max)");
-                b.Property<string>("Address").IsRequired().HasColumnType("nvarchar(max)");
-                b.Property<string>("FrontIdentityImagePath").IsRequired().HasColumnType("nvarchar(max)");
-                b.Property<string>("BackIdentityImagePath").IsRequired().HasColumnType("nvarchar(max)");
-                b.Property<string>("IdentityNumber").IsRequired().HasColumnType("nvarchar(max)");
-                b.Property<DateTime>("IdentityExpirationDate").HasColumnType("datetime2");
+                b.Property<string>("Name").IsRequired();
+                b.Property<string>("PhoneNumber").IsRequired();
+                b.Property<string>("Address").IsRequired();
+                b.Property<string>("FrontIdentityImagePath").IsRequired();
+                b.Property<string>("BackIdentityImagePath").IsRequired();
+                b.Property<string>("IdentityNumber").IsRequired();
 
-                b.Property<int>("AssistanWorkId").HasColumnType("int");
-                b.Property<int?>("DeliveryManId").HasColumnType("int");
+                b.Property<DateTime>("IdentityExpirationDate")
+                    .HasColumnType("datetime2");
+
+                b.Property<int>("AssistanWorkId");
+                b.Property<int?>("DeliveryManId");
 
                 b.HasKey("Id");
                 b.HasIndex("AssistanWorkId");
@@ -65,14 +80,18 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Models.Customer", b =>
             {
-                b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("int");
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
+
                 SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                b.Property<string>("PhoneNumber").IsRequired().HasColumnType("nvarchar(max)");
-                b.Property<string>("AndriodDevice").IsRequired().HasColumnType("nvarchar(max)");
-                b.Property<string>("IosDevice").IsRequired().HasColumnType("nvarchar(max)");
-                b.Property<int>("CustomerType").HasColumnType("int");
-                b.Property<int>("UserId").HasColumnType("int");
+                b.Property<string>("PhoneNumber").IsRequired();
+                b.Property<string>("AndriodDevice").IsRequired();
+                b.Property<string>("IosDevice").IsRequired();
+
+                b.Property<int>("CustomerType");
+                b.Property<int>("UserId");
 
                 b.HasKey("Id");
                 b.HasIndex("UserId").IsUnique();
@@ -82,20 +101,23 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Models.DeliveryMan", b =>
             {
-                b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("int");
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
+
                 SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                b.Property<string>("FullName").IsRequired().HasColumnType("nvarchar(max)");
-                b.Property<string>("PhoneNumber").IsRequired().HasColumnType("nvarchar(max)");
-                b.Property<string>("Address").IsRequired().HasColumnType("nvarchar(max)");
-                b.Property<string>("PersonalImagePath").IsRequired().HasColumnType("nvarchar(max)");
+                b.Property<string>("FullName").IsRequired();
+                b.Property<string>("PhoneNumber").IsRequired();
+                b.Property<string>("Address").IsRequired();
+                b.Property<string>("PersonalImagePath").IsRequired();
 
-                b.Property<bool>("Active").HasColumnType("bit");
-                b.Property<int>("DeliveryState").HasColumnType("int");
-                b.Property<int>("DeliveryType").HasColumnType("int");
-                b.Property<int>("DeliveryLicenseType").HasColumnType("int");
+                b.Property<bool>("Active");
+                b.Property<int>("DeliveryState");
+                b.Property<int>("DeliveryType");
+                b.Property<int>("DeliveryLicenseType");
 
-                b.Property<int>("UserId").HasColumnType("int");
+                b.Property<int>("UserId");
 
                 b.HasKey("Id");
                 b.HasIndex("UserId").IsUnique();
@@ -105,15 +127,20 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Models.Order", b =>
             {
-                b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("int");
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
+
                 SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                b.Property<string>("OrderNumber").IsRequired().HasColumnType("nvarchar(max)");
-                b.Property<int>("CustomerId").HasColumnType("int");
-                b.Property<int>("OrderStatus").HasColumnType("int");
-                b.Property<int>("OrderType").HasColumnType("int");
-                b.Property<decimal>("Total").HasColumnType("decimal(18,2)");
-                b.Property<int>("OrderPackageId").HasColumnType("int");
+                b.Property<string>("OrderNumber").IsRequired();
+                b.Property<int>("CustomerId");
+                b.Property<int>("OrderStatus");
+                b.Property<int>("OrderType");
+                b.Property<decimal>("Total")
+                    .HasColumnType("decimal(18,2)");
+
+                b.Property<int>("OrderPackageId");
 
                 b.HasKey("Id");
                 b.HasIndex("OrderPackageId");
@@ -123,15 +150,19 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Models.Role", b =>
             {
-                b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("int");
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
+
                 SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                b.Property<string>("Name").HasMaxLength(256).HasColumnType("nvarchar(256)");
-                b.Property<string>("NormalizedName").HasMaxLength(256).HasColumnType("nvarchar(256)");
-                b.Property<string>("ArabicName").IsRequired().HasColumnType("nvarchar(max)");
+                b.Property<string>("Name").HasMaxLength(256);
+                b.Property<string>("NormalizedName").HasMaxLength(256);
+                b.Property<string>("ArabicName").IsRequired();
                 b.Property<string>("ConcurrencyStamp").IsConcurrencyToken();
 
                 b.HasKey("Id");
+
                 b.HasIndex("NormalizedName")
                     .IsUnique()
                     .HasDatabaseName("RoleNameIndex")
@@ -148,7 +179,10 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Models.User", b =>
             {
-                b.Property<int>("Id").ValueGeneratedOnAdd().HasColumnType("int");
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("int");
+
                 SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                 b.Property<string>("UserName").HasMaxLength(256);
@@ -156,10 +190,12 @@ namespace Infrastructure.Migrations
                 b.Property<string>("Email").HasMaxLength(256);
                 b.Property<string>("NormalizedEmail").HasMaxLength(256);
                 b.Property<string>("PasswordHash");
-                b.Property<bool>("IsActive").HasColumnType("bit");
-                b.Property<bool>("IsDeleted").HasColumnType("bit");
+
+                b.Property<bool>("IsActive");
+                b.Property<bool>("IsDeleted");
 
                 b.HasKey("Id");
+
                 b.HasIndex("NormalizedUserName")
                     .IsUnique()
                     .HasDatabaseName("UserNameIndex")
@@ -202,98 +238,6 @@ namespace Infrastructure.Migrations
                     .HasForeignKey("Domain.Models.DeliveryMan", "UserId")
                     .OnDelete(DeleteBehavior.Cascade)
                     .IsRequired();
-            });
-
-            /* =========================
-             * NAVIGATION-ONLY CONFIG
-             * ========================= */
-
-            modelBuilder.Entity("Domain.Models.Customer", b =>
-            {
-                b.Navigation("User");
-            });
-
-            modelBuilder.Entity("Domain.Models.DeliveryMan", b =>
-                {
-                    b.Navigation("Assistants");
-
-                    b.Navigation("DeliveryManLocation")
-                        .IsRequired();
-
-                    b.Navigation("Vehicle");
-                });
-
-            modelBuilder.Entity("Domain.Models.DeliveryVehicle", b =>
-                {
-                    b.Navigation("Company");
-
-                    b.Navigation("Renter");
-
-                    b.Navigation("Resident");
-                });
-
-            modelBuilder.Entity("Domain.Models.EstablishMent", b =>
-                {
-                    b.Navigation("EstablishMentRepresentitive")
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Domain.Models.Order", b =>
-            {
-                b.Navigation("OrderDetails");
-
-                b.Navigation("OrderServices");
-
-                b.Navigation("OrderStatusHistories");
-
-                b.Navigation("OrderWayPoints");
-
-                b.Navigation("PaymentMethods");
-
-                modelBuilder.Entity("Domain.Models.MainCategory", b =>
-                    {
-                        b.Navigation("CategorySizes");
-
-                    });
-
-                modelBuilder.Entity("Domain.Models.Region", b =>
-                    {
-                        b.Navigation("Cities");
-                    });
-
-                modelBuilder.Entity("Domain.Models.Role", b =>
-                    {
-                        b.Navigation("AspNetUserRoles");
-                    });
-
-                modelBuilder.Entity("Domain.Models.User", b =>
-                    {
-                        b.Navigation("AspNetUserClaims");
-
-                        b.Navigation("AspNetUserLogins");
-
-                        b.Navigation("AspNetUserRoles");
-
-                        b.Navigation("Customer");
-
-                        b.Navigation("DeliveryMan");
-                    });
-
-                modelBuilder.Entity("Domain.Models.VehicleType", b =>
-                    {
-                        b.Navigation("VehicleTypeCategoies");
-                    });
-            });
-
-            {
-                b.Navigation("User");
-                b.Navigation("Assistants");
-            });
-
-            modelBuilder.Entity("Domain.Models.User", b =>
-            {
-                b.Navigation("Customer");
-                b.Navigation("DeliveryMan");
             });
 
 #pragma warning restore 612, 618
