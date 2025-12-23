@@ -3958,6 +3958,130 @@ export class OrderAdminClient {
 @Injectable({
     providedIn: 'root'
 })
+export class SystemConfigurationClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ?? "";
+    }
+
+    getSystemConfiguration(): Observable<SystemConfigurationDto> {
+        let url_ = this.baseUrl + "/api/SystemConfiguration/GetSystemConfiguration";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetSystemConfiguration(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetSystemConfiguration(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<SystemConfigurationDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<SystemConfigurationDto>;
+        }));
+    }
+
+    protected processGetSystemConfiguration(response: HttpResponseBase): Observable<SystemConfigurationDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SystemConfigurationDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    update(request: UpdateSystemConfigurationCommand): Observable<void> {
+        let url_ = this.baseUrl + "/api/SystemConfiguration/Update";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(request);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdate(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processUpdate(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
 export class VehicleAdminClient {
     private http: HttpClient;
     private baseUrl: string;
@@ -8432,6 +8556,100 @@ export class OrderStatusHistoryDto {
         data["statusName"] = this.statusName !== undefined ? this.statusName : <any>null;
         data["creationDate"] = this.creationDate ? this.creationDate.toISOString() : <any>null;
         data["description"] = this.description !== undefined ? this.description : <any>null;
+        return data;
+    }
+}
+
+export class SystemConfigurationDto {
+    id!: number;
+    baseKm!: number;
+    baseKmRate!: number;
+    extraKmRate!: number;
+    baseHours!: number;
+    baseHourRate!: number;
+    extraHourRate!: number;
+    vatRate!: number;
+    serviceFess!: number;
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.baseKm = _data["baseKm"] !== undefined ? _data["baseKm"] : <any>null;
+            this.baseKmRate = _data["baseKmRate"] !== undefined ? _data["baseKmRate"] : <any>null;
+            this.extraKmRate = _data["extraKmRate"] !== undefined ? _data["extraKmRate"] : <any>null;
+            this.baseHours = _data["baseHours"] !== undefined ? _data["baseHours"] : <any>null;
+            this.baseHourRate = _data["baseHourRate"] !== undefined ? _data["baseHourRate"] : <any>null;
+            this.extraHourRate = _data["extraHourRate"] !== undefined ? _data["extraHourRate"] : <any>null;
+            this.vatRate = _data["vatRate"] !== undefined ? _data["vatRate"] : <any>null;
+            this.serviceFess = _data["serviceFess"] !== undefined ? _data["serviceFess"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): SystemConfigurationDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SystemConfigurationDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["baseKm"] = this.baseKm !== undefined ? this.baseKm : <any>null;
+        data["baseKmRate"] = this.baseKmRate !== undefined ? this.baseKmRate : <any>null;
+        data["extraKmRate"] = this.extraKmRate !== undefined ? this.extraKmRate : <any>null;
+        data["baseHours"] = this.baseHours !== undefined ? this.baseHours : <any>null;
+        data["baseHourRate"] = this.baseHourRate !== undefined ? this.baseHourRate : <any>null;
+        data["extraHourRate"] = this.extraHourRate !== undefined ? this.extraHourRate : <any>null;
+        data["vatRate"] = this.vatRate !== undefined ? this.vatRate : <any>null;
+        data["serviceFess"] = this.serviceFess !== undefined ? this.serviceFess : <any>null;
+        return data;
+    }
+}
+
+export class UpdateSystemConfigurationCommand {
+    id!: number;
+    baseKm!: number;
+    baseKmRate!: number;
+    extraKmRate!: number;
+    baseHours!: number;
+    baseHourRate!: number;
+    extraHourRate!: number;
+    vatRate!: number;
+    serviceFess!: number;
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.baseKm = _data["baseKm"] !== undefined ? _data["baseKm"] : <any>null;
+            this.baseKmRate = _data["baseKmRate"] !== undefined ? _data["baseKmRate"] : <any>null;
+            this.extraKmRate = _data["extraKmRate"] !== undefined ? _data["extraKmRate"] : <any>null;
+            this.baseHours = _data["baseHours"] !== undefined ? _data["baseHours"] : <any>null;
+            this.baseHourRate = _data["baseHourRate"] !== undefined ? _data["baseHourRate"] : <any>null;
+            this.extraHourRate = _data["extraHourRate"] !== undefined ? _data["extraHourRate"] : <any>null;
+            this.vatRate = _data["vatRate"] !== undefined ? _data["vatRate"] : <any>null;
+            this.serviceFess = _data["serviceFess"] !== undefined ? _data["serviceFess"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): UpdateSystemConfigurationCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateSystemConfigurationCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["baseKm"] = this.baseKm !== undefined ? this.baseKm : <any>null;
+        data["baseKmRate"] = this.baseKmRate !== undefined ? this.baseKmRate : <any>null;
+        data["extraKmRate"] = this.extraKmRate !== undefined ? this.extraKmRate : <any>null;
+        data["baseHours"] = this.baseHours !== undefined ? this.baseHours : <any>null;
+        data["baseHourRate"] = this.baseHourRate !== undefined ? this.baseHourRate : <any>null;
+        data["extraHourRate"] = this.extraHourRate !== undefined ? this.extraHourRate : <any>null;
+        data["vatRate"] = this.vatRate !== undefined ? this.vatRate : <any>null;
+        data["serviceFess"] = this.serviceFess !== undefined ? this.serviceFess : <any>null;
         return data;
     }
 }

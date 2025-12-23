@@ -18,10 +18,15 @@ namespace Domain.Models
             this._PaymentMethods = new List<OrderPaymentMethod>();
             this._OrderStatusHistories = new List<OrderStatusHistory>();
             this._OrderServices = new List<OrderService>();
+            this.HashedLocation = string.Empty;
         }
         public int Id { get; private set; }
         public string OrderNumber { get; set; }
         public int CustomerId { get; private set; }
+        public DateTime CreationDate { get;private set; }
+        public double ExpectedTimeMinutes { get;private set; }
+        public double DistanceInKiloMeter { get;private set; }
+        public string HashedLocation { get;private set; }
         public int? VehicleTypeId { get; private set; }
         public int? DeliveryManId { get; private set; }
         public int OrderPackageId { get; private set; }
@@ -100,7 +105,6 @@ namespace Domain.Models
                                            OrderType orderType,
                                            string orderNumber,
                                            int orderPackageId,
-                                           int paymentMethodId,
                                            DateTime nowDate,
                                            List<OrderDetails> orderDetails,
                                            List<OrderWayPoint> orderWayPoints,
@@ -123,7 +127,7 @@ namespace Domain.Models
                 return Result.Failure<Order>("At least two order way points are required");
             }
 
-            var orderPaymentMethod = OrderPaymentMethod.Instance(paymentMethodId, fixedTotal);
+
             var orderStatusHistory = OrderStatusHistory.Create(OrderStatus.Pending, nowDate);
 
             var order = new Order
@@ -139,7 +143,6 @@ namespace Domain.Models
                 OrderServices = orderServices
             };
 
-            order._PaymentMethods.Add(orderPaymentMethod);
             order._OrderStatusHistories.Add(orderStatusHistory);
             return order;
 
@@ -170,6 +173,59 @@ namespace Domain.Models
             var statusHistory = OrderStatusHistory.Create(OrderStatus.Assigned, nowDate);
             this._OrderStatusHistories.Add(statusHistory);
 
+            return Result.Success();
+        }
+
+
+        public Result CompleteOrderAndSetVehicleType(int vehicleTypeId,
+                                                     decimal vehicleCost,
+                                                     decimal customerWalletBalance,
+                                                     int baseKm,
+                                                     decimal baseKmRate,
+                                                     decimal extraKmRate,
+                                                     int baseHour,
+                                                     decimal baseHourRate,
+                                                     decimal extraHourRate,
+                                                     decimal vatRate,
+                                                     decimal servicesFees,
+                                                     int paymentMethodId,
+                                                     double distanceInKiloMeter,
+                                                     double timeInMinutes,
+                                                     string hasedLocation)
+        {
+            var pricePerKiloMeter= distanceInKiloMeter <= baseKm
+                ? baseKmRate
+                : extraKmRate;
+
+            var timeInHours=timeInMinutes/ 60.0;
+
+            var pricePerHour = timeInHours <= baseHour
+                ? baseHourRate
+                : extraHourRate;
+
+            var distanceCost = (decimal)distanceInKiloMeter * pricePerKiloMeter;
+            var timeCost = (decimal)timeInHours * pricePerHour;
+
+            var orderServicesSubTotal = this.OrderServices.Select(x => x.Amount).DefaultIfEmpty(0).Sum();
+
+            var vatAmount = (distanceCost + timeCost + servicesFees + orderServicesSubTotal) * vatRate / 100.0m;
+
+            var orderTotal= distanceCost + timeCost + servicesFees + orderServicesSubTotal + vatAmount;
+
+            if (customerWalletBalance < orderTotal &&
+                paymentMethodId == (int)PaymentMethodEnum.Wallet)
+            {
+                return Result.Failure("Insufficient wallet balance to complete the order");
+            }
+
+            this.VehicleTypdId = vehicleTypeId;
+            this.DistanceInKiloMeter= distanceInKiloMeter;
+            this.ExpectedTimeMinutes= timeInMinutes;
+            this.HashedLocation= hasedLocation;
+            this.Total = orderTotal;
+
+            var orderPaymentMethod = OrderPaymentMethod.Instance(paymentMethodId, orderTotal); 
+            this._PaymentMethods.Add(orderPaymentMethod);
             return Result.Success();
         }
 

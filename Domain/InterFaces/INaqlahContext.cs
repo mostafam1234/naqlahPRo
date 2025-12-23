@@ -13,6 +13,7 @@ namespace Domain.InterFaces
     {
         DbSet<User> Users { get; set; }
         DbSet<Role> Roles { get; set; }
+        DbSet<SystemConfiguration> SystemConfigurations { get; set; }
         DbSet<Customer> Customers { get; set; }
         DbSet<UserRole> UserRoles { get; set; }
         DbSet<DeliveryMan> DeliveryMen { get; set; }

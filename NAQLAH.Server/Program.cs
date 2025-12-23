@@ -32,7 +32,6 @@ namespace NAQLAH.Server
                             .AddDataBase(builder.Configuration)
                             .AddServicesForApi()
                             .AddHangFireConfig(builder.Configuration)
-                            .AddServicesForApi()
                             .AddFireBaseConfigurations(builder.Configuration,
                                                        builder.Environment);
 

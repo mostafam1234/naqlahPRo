@@ -1,0 +1,139 @@
+<div class="min-h-screen">
+  <div class="container mx-auto max-w-4xl">
+
+    <!-- Page Header -->
+    <app-page-header
+      [title]="'إعدادات النظام'"
+      [subtitle]="'إدارة إعدادات التسعير والضرائب'"
+      [showBackButton]="true"
+      (onBackClick)="goBack()"
+    ></app-page-header>
+
+    <!-- Content Card -->
+    <div class="bg-white rounded-xl shadow-sm border border-neutral-200">
+
+      <!-- Header -->
+      <div class="px-6 py-4 border-b border-neutral-200 bg-neutral-50/50">
+        <h3 class="font-semibold text-neutral-900 text-lg">
+          إعدادات النظام
+        </h3>
+      </div>
+
+      <!-- Form -->
+      <form
+        [formGroup]="configForm"
+        (ngSubmit)="save()"
+        class="p-6 grid grid-cols-1 md:grid-cols-2 gap-5"
+      >
+
+        <!-- Base KM -->
+        <div>
+          <label class="block text-sm font-medium text-neutral-700 mb-2">
+            الكيلومترات الأساسية
+          </label>
+          <input
+            type="number"
+            formControlName="baseKm"
+            class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+          />
+        </div>
+
+        <!-- Base KM Rate -->
+        <div>
+          <label class="block text-sm font-medium text-neutral-700 mb-2">
+            سعر الكيلومتر الأساسي
+          </label>
+          <input
+            type="number"
+            formControlName="baseKmRate"
+            class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+          />
+        </div>
+
+        <!-- Extra KM Rate -->
+        <div>
+          <label class="block text-sm font-medium text-neutral-700 mb-2">
+            سعر الكيلومتر الإضافي
+          </label>
+          <input
+            type="number"
+            formControlName="extraKmRate"
+            class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+          />
+        </div>
+
+        <!-- Base Hours -->
+        <div>
+          <label class="block text-sm font-medium text-neutral-700 mb-2">
+            الساعات الأساسية
+          </label>
+          <input
+            type="number"
+            formControlName="baseHours"
+            class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+          />
+        </div>
+
+        <!-- Base Hour Rate -->
+        <div>
+          <label class="block text-sm font-medium text-neutral-700 mb-2">
+            سعر الساعة الأساسية
+          </label>
+          <input
+            type="number"
+            formControlName="baseHourRate"
+            class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+          />
+        </div>
+
+        <!-- Extra Hour Rate -->
+        <div>
+          <label class="block text-sm font-medium text-neutral-700 mb-2">
+            سعر الساعة الإضافية
+          </label>
+          <input
+            type="number"
+            formControlName="extraHourRate"
+            class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+          />
+        </div>
+
+        <!-- VAT -->
+        <div>
+          <label class="block text-sm font-medium text-neutral-700 mb-2">
+            نسبة الضريبة (VAT %)
+          </label>
+          <input
+            type="number"
+            formControlName="vatRate"
+            class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+          />
+        </div>
+
+        <!-- Service Fees -->
+        <div>
+          <label class="block text-sm font-medium text-neutral-700 mb-2">
+            رسوم الخدمة
+          </label>
+          <input
+            type="number"
+            formControlName="serviceFees"
+            class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+          />
+        </div>
+
+        <!-- Actions -->
+        <div class="md:col-span-2 flex justify-end gap-3 pt-4">
+          <button
+            type="submit"
+            [disabled]="configForm.invalid"
+            class="px-6 py-2 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors disabled:opacity-50"
+          >
+            حفظ الإعدادات
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>

@@ -16,6 +16,7 @@ namespace Domain.Models
         public int Id { get; private set; }
         public string ArabicName { get; private set; }
         public string EnglishName { get; private set; }
+        public decimal Cost { get;private set; }
         public bool IsDeleted { get;private set; }
     }
 }

@@ -47,6 +47,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'systemConfiguration',
+        loadComponent: () =>
+          import('./Pages/admin/system-configuration/system-configuration.component').then(
+            (m) => m.SystemConfigurationComponent
+          ),
+      },
+      {
         path: 'users/captains/add-captain',
         loadComponent: () =>
           import('./Pages/admin/users/captain/add-captain/add-captain.component').then(

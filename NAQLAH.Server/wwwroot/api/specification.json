@@ -2543,6 +2543,71 @@
         }
       }
     },
+    "/api/SystemConfiguration/GetSystemConfiguration": {
+      "get": {
+        "tags": [
+          "SystemConfiguration"
+        ],
+        "operationId": "SystemConfiguration_GetSystemConfiguration",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SystemConfigurationDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/SystemConfiguration/Update": {
+      "get": {
+        "tags": [
+          "SystemConfiguration"
+        ],
+        "operationId": "SystemConfiguration_Update",
+        "requestBody": {
+          "x-name": "request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSystemConfigurationCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/VehicleAdmin/GetVehiclesBrandLookup": {
       "get": {
         "tags": [
@@ -5524,6 +5589,90 @@
           },
           "description": {
             "type": "string"
+          }
+        }
+      },
+      "SystemConfigurationDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "baseKm": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "baseKmRate": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "extraKmRate": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "baseHours": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "baseHourRate": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "extraHourRate": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "vatRate": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "serviceFess": {
+            "type": "number",
+            "format": "decimal"
+          }
+        }
+      },
+      "UpdateSystemConfigurationCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "baseKm": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "baseKmRate": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "extraKmRate": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "baseHours": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "baseHourRate": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "extraHourRate": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "vatRate": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "serviceFess": {
+            "type": "number",
+            "format": "decimal"
           }
         }
       },

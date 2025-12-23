@@ -1,6 +1,8 @@
-﻿using Domain.InterFaces;
+﻿using Application.Services.GoogleMap;
+using Domain.InterFaces;
 using Infrastructure.Services;
 using NAQLAH.Server.Services;
+using TalabatkData.GoogleMapServices;
 
 namespace NAQLAH.Server.ApiDependencyInjection
 {
@@ -11,6 +13,7 @@ namespace NAQLAH.Server.ApiDependencyInjection
             services.AddScoped<UserSession>();
             services.AddScoped<IUserSession, UserSessions>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IGoogleMapService, GoogleMapService>();
             services.AddSingleton<LockServices>();
             services.AddScoped<IDateTimeProvider, DateTimeProvider>();
             services.AddScoped<IWebEnvironment, WebEnvironment>();
