@@ -1507,11 +1507,8 @@ export class CustomerWalletClient {
         this.baseUrl = baseUrl ?? "";
     }
 
-    getBalance(customerId: number): Observable<CustomerWalletBalanceDto> {
-        let url_ = this.baseUrl + "/api/CustomerWallet/GetBalance/{customerId}";
-        if (customerId === undefined || customerId === null)
-            throw new Error("The parameter 'customerId' must be defined.");
-        url_ = url_.replace("{customerId}", encodeURIComponent("" + customerId));
+    getBalance(): Observable<CustomerWalletBalanceDto> {
+        let url_ = this.baseUrl + "/api/CustomerWallet/GetBalance";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {

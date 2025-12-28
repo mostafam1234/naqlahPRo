@@ -927,24 +927,12 @@
         }
       }
     },
-    "/api/CustomerWallet/GetBalance/{customerId}": {
+    "/api/CustomerWallet/GetBalance": {
       "get": {
         "tags": [
           "CustomerWallet"
         ],
         "operationId": "CustomerWallet_GetBalance",
-        "parameters": [
-          {
-            "name": "customerId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          }
-        ],
         "responses": {
           "200": {
             "description": "",
