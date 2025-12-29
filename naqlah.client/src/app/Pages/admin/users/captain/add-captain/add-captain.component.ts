@@ -113,6 +113,10 @@ export class AddCaptainComponent implements OnInit, OnDestroy {
 
   private initializeForm(): void {
     this.captainForm = this.fb.group({
+      // User Account Information
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      
       // Personal Information
       fullName: ['', [Validators.required, Validators.minLength(3)]],
       address: ['', [Validators.required, Validators.minLength(10)]],
@@ -343,6 +347,8 @@ export class AddCaptainComponent implements OnInit, OnDestroy {
 
     const formData: AddDeliveryManDto = {
       ...rawFormData,
+      email: rawFormData.email,
+      password: rawFormData.password,
       active: false,
       // Format dates for backend
       identityExpirationDate: this.formatDateForBackend(rawFormData.identityExpirationDate),
@@ -465,7 +471,7 @@ export class AddCaptainComponent implements OnInit, OnDestroy {
   // Get fields for each step
   private getStepFields(stepKey: string): string[] {
     const fieldMap = {
-      personalInfo: ['fullName', 'phoneNumber', 'identityNumber', 'deliveryType', 'address'],
+      personalInfo: ['email', 'password', 'fullName', 'phoneNumber', 'identityNumber', 'deliveryType', 'address'],
       identityInfo: ['identityExpirationDate'],
       drivingLicense: ['deliveryLicenseType', 'drivingLicenseExpirationDate'],
       vehicleInfo: ['vehiclePlateNumber', 'vehicleTypeId', 'vehicleBrandId', 'vehicleLicenseExpirationDate', 'vehicleInsuranceExpirationDate'],

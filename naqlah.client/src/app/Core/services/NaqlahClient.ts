@@ -7779,6 +7779,8 @@ export class GetAllApprovedDeliveryMenDto {
 }
 
 export class AddDeliveryManDto {
+    email!: string;
+    password!: string;
     fullName!: string;
     address!: string;
     phoneNumber!: string;
@@ -7811,6 +7813,8 @@ export class AddDeliveryManDto {
 
     init(_data?: any) {
         if (_data) {
+            this.email = _data["email"] !== undefined ? _data["email"] : <any>null;
+            this.password = _data["password"] !== undefined ? _data["password"] : <any>null;
             this.fullName = _data["fullName"] !== undefined ? _data["fullName"] : <any>null;
             this.address = _data["address"] !== undefined ? _data["address"] : <any>null;
             this.phoneNumber = _data["phoneNumber"] !== undefined ? _data["phoneNumber"] : <any>null;
@@ -7852,6 +7856,8 @@ export class AddDeliveryManDto {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["email"] = this.email !== undefined ? this.email : <any>null;
+        data["password"] = this.password !== undefined ? this.password : <any>null;
         data["fullName"] = this.fullName !== undefined ? this.fullName : <any>null;
         data["address"] = this.address !== undefined ? this.address : <any>null;
         data["phoneNumber"] = this.phoneNumber !== undefined ? this.phoneNumber : <any>null;
