@@ -141,6 +141,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'assistant-works',
+        loadComponent: () =>
+          import('./Pages/admin/assistant-works/assistant-works.component').then(
+            (m) => m.AssistantWorksComponent
+          ),
+      },
+      {
         path: 'wallet/captain',
         loadComponent: () =>
           import('./Pages/admin/wallet/wallet-captain/wallet-captain.component').then(

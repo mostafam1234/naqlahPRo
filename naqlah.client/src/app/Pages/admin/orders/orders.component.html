@@ -107,7 +107,7 @@
               (click)="setActiveProgressTab('all')"
               class="flex-1 flex items-center justify-center space-x-2 space-x-reverse px-6 py-4 text-sm font-medium transition-colors duration-200"
               [ngClass]="{
-                'bg-blue-500 text-white': activeProgressTab === 'all',
+                'bg-primary-500 text-white': activeProgressTab === 'all',
                 'text-neutral-700 hover:bg-neutral-50':
                   activeProgressTab !== 'all'
               }"
@@ -132,7 +132,7 @@
               (click)="setActiveProgressTab('current')"
               class="flex-1 flex items-center justify-center space-x-2 space-x-reverse px-6 py-4 text-sm font-medium border-x border-neutral-200 transition-colors duration-200"
               [ngClass]="{
-                'bg-blue-500 text-white': activeProgressTab === 'current',
+                'bg-primary-500 text-white': activeProgressTab === 'current',
                 'text-neutral-700 hover:bg-neutral-50':
                   activeProgressTab !== 'current'
               }"
@@ -157,7 +157,7 @@
               (click)="setActiveProgressTab('expired')"
               class="flex-1 flex items-center justify-center space-x-2 space-x-reverse px-6 py-4 text-sm font-medium border-x border-neutral-200 transition-colors duration-200"
               [ngClass]="{
-                'bg-blue-500 text-white': activeProgressTab === 'expired',
+                'bg-primary-500 text-white': activeProgressTab === 'expired',
                 'text-neutral-700 hover:bg-neutral-50':
                   activeProgressTab !== 'expired'
               }"
@@ -182,7 +182,7 @@
               (click)="setActiveProgressTab('advanced')"
               class="flex-1 flex items-center justify-center space-x-2 space-x-reverse px-6 py-4 text-sm font-medium transition-colors duration-200"
               [ngClass]="{
-                'bg-blue-500 text-white': activeProgressTab === 'advanced',
+                'bg-primary-500 text-white': activeProgressTab === 'advanced',
                 'text-neutral-700 hover:bg-neutral-50':
                   activeProgressTab !== 'advanced'
               }"
@@ -207,26 +207,14 @@
       </div>
 
       <!-- Search and Filter Controls -->
-      <div class="bg-white border border-gray-200 rounded-xl p-6 mb-6">
-        <div class="flex flex-wrap items-center justify-between gap-4">
-          <div class="flex items-center space-x-4 space-x-reverse flex-1">
-            <!-- Search Input -->
+      <div class="bg-white rounded-xl shadow-sm border border-neutral-200 mb-6">
+        <div class="p-6">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <!-- Search -->
             <div class="relative flex-1 max-w-md">
-              <div
-                class="absolute inset-y-0 left-3 flex items-center pointer-events-none"
-              >
-                <svg
-                  class="w-5 h-5 text-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  ></path>
+              <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                <svg class="h-5 w-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
               <input
@@ -234,7 +222,7 @@
                 [(ngModel)]="searchTerm"
                 (input)="onSearchChange()"
                 placeholder="البحث في الطلبات..."
-                class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200"
+                class="block w-full pr-10 pl-3 py-2.5 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 text-sm"
               />
             </div>
           </div>
@@ -542,7 +530,7 @@
                       *ngIf="isPageNumber(page)"
                       (click)="changePage(page)"
                       [ngClass]="{
-                        'bg-blue-500 text-white shadow-md':
+                        'bg-primary-500 text-white shadow-md':
                           currentPage === page,
                         'text-gray-600 hover:bg-white hover:shadow-sm hover:text-blue-600':
                           currentPage !== page

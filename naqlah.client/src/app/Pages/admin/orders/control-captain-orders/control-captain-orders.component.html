@@ -21,41 +21,57 @@
     </div>
   </div>
 
-  <div class="flex flex-wrap items-center justify-between gap-4">
-    <div class="flex gap-[60px]">
-      <input
-        type="text"
-        placeholder="Search"
-        class="border rounded-full px-4 py-2 w-full"
-      />
-      <div class="flex items-center gap-2">
-        <svg
-          (click)="viewMode = 'table'" [ngClass]="{'ring rounded-lg ring-mainButtonBg': viewMode === 'table'}"
-          class="cursor-pointer transition"width="46" height="40"
-          viewBox="0 0 46 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="1.3856" y="0.470068" width="44.1442" height="39.0599" rx="10.8116" fill="white"/>
-          <rect x="1.3856" y="0.470068" width="44.1442" height="39.0599" rx="10.8116" stroke="#C5C5D3" stroke-width="0.940136"/>
-          <path d="M15.9575 15H30.9575M15.9575 20H30.9575M15.9575 25H30.9575" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <line x1="15.4155" y1="14" x2="15.4155" y2="26" stroke="black"/>
-          <line x1="19.4155" y1="14" x2="19.4155" y2="26" stroke="black"/>
-          <line x1="23.4155" y1="14" x2="23.4155" y2="26" stroke="black"/>
-          <line x1="27.4155" y1="14" x2="27.4155" y2="26" stroke="black"/>
-          <line x1="31.4155" y1="14" x2="31.4155" y2="26" stroke="black"/>
-        </svg>
-
-        <svg
-          (click)="viewMode = 'cards'" [ngClass]="{'ring rounded-lg ring-mainButtonBg': viewMode === 'cards'}"
-          class="cursor-pointer transition"width="46" height="40"
-          viewBox="0 0 46 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="1.30112" y="0.470068" width="44.1442" height="39.0599" rx="10.8116" fill="white"/>
-          <rect x="1.30112" y="0.470068" width="44.1442" height="39.0599" rx="10.8116" stroke="#C5C5D3" stroke-width="0.940136"/>
-          <path d="M15.873 15H30.873M15.873 20H30.873M15.873 25H30.873" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+  <div class="bg-white rounded-xl shadow-sm border border-neutral-200 mb-6">
+    <div class="p-6">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <!-- Search -->
+        <div class="relative flex-1 max-w-md">
+          <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+            <svg class="h-5 w-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <input
+            type="text"
+            placeholder="Search"
+            class="block w-full pr-10 pl-3 py-2.5 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 text-sm"
+          />
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="flex items-center bg-neutral-100 rounded-lg p-1">
+            <button
+              (click)="viewMode = 'table'"
+              [ngClass]="{
+                'bg-white text-primary-600 shadow-sm': viewMode === 'table',
+                'text-neutral-600': viewMode !== 'table'
+              }"
+              class="px-3 py-1.5 rounded-md transition-all duration-200 text-sm font-medium"
+              title="عرض الجدول"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+            </button>
+            <button
+              (click)="viewMode = 'cards'"
+              [ngClass]="{
+                'bg-white text-primary-600 shadow-sm': viewMode === 'cards',
+                'text-neutral-600': viewMode !== 'cards'
+              }"
+              class="px-3 py-1.5 rounded-md transition-all duration-200 text-sm font-medium"
+              title="عرض البطاقات"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+              </svg>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="max-w-sm">
-      <input type="date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date">
-    </div>
+  </div>
+  <div class="max-w-sm">
+    <input type="date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date">
   </div>
 
   <!-- Cards grid -->
