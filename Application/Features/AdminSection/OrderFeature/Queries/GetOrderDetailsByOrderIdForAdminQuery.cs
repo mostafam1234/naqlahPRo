@@ -89,9 +89,12 @@ namespace Application.Features.AdminSection.OrderFeature.Queries
                                                Status = wp.OrderWayPointsStatus,
                                                StatusName = GetWayPointStatusName(wp.OrderWayPointsStatus, request.LanguageId),
                                                PickedUpDate = wp.PickedUpDate,
+                                               CityName = request.LanguageId == 1 ? wp.City.ArabicName ?? string.Empty : wp.City.EnglishName ?? string.Empty,
+                                               RegionName = request.LanguageId == 1 ? wp.Region.ArabicName ?? string.Empty : wp.Region.EnglishName ?? string.Empty,
                                                NeighborhoodName = request.LanguageId == 1 ? wp.Neighborhood.ArabicName ?? string.Empty : wp.Neighborhood.EnglishName ?? string.Empty,
                                                Address = request.LanguageId == 1 ?
-                                                        wp.City.ArabicName + "-" + wp.Region.ArabicName : wp.City.EnglishName + "-" + wp.Region.EnglishName,
+                                                        (wp.City.ArabicName ?? string.Empty) + " - " + (wp.Neighborhood.ArabicName ?? string.Empty) : 
+                                                        (wp.City.EnglishName ?? string.Empty) + " - " + (wp.Neighborhood.EnglishName ?? string.Empty),
                                            }).ToListAsync(cancellationToken);
 
                     // Get payment methods with separate query

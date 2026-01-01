@@ -31,6 +31,7 @@ namespace Domain.InterFaces
         DbSet<OrderPackage> OrderPackages { get; set; }
         DbSet<Region> Regions { get; set; }
         DbSet<WalletTransctions> WalletTransctions { get; set; }
+        DbSet<Notification> Notifications { get; set; }
         Task<Result> SaveChangesAsyncWithResult();
     }
 }

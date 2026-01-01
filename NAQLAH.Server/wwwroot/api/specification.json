@@ -2462,6 +2462,184 @@
         }
       }
     },
+    "/api/DeliveryManAdmin/GetAllDeliveryMen": {
+      "get": {
+        "tags": [
+          "DeliveryManAdmin"
+        ],
+        "operationId": "DeliveryManAdmin_GetAllDeliveryMen",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            },
+            "x-position": 1
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            },
+            "x-position": 2
+          },
+          {
+            "name": "searchTerm",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfGetAllDeliveryMenDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/DeliveryManAdmin/GetDeliveryManStatistics": {
+      "get": {
+        "tags": [
+          "DeliveryManAdmin"
+        ],
+        "operationId": "DeliveryManAdmin_GetDeliveryManStatistics",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryManStatisticsDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/DeliveryManAdmin/GetOrdersByDeliveryManId": {
+      "get": {
+        "tags": [
+          "DeliveryManAdmin"
+        ],
+        "operationId": "DeliveryManAdmin_GetOrdersByDeliveryManId",
+        "parameters": [
+          {
+            "name": "deliveryManId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            },
+            "x-position": 2
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            },
+            "x-position": 3
+          },
+          {
+            "name": "searchTerm",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 4
+          },
+          {
+            "name": "statusFilter",
+            "in": "query",
+            "schema": {
+              "oneOf": [
+                {
+                  "nullable": true,
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/OrderStatus"
+                    }
+                  ]
+                }
+              ]
+            },
+            "x-position": 5
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfGetAllOrdersDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/MainCategoryAdmin/GetAllMainCategories": {
       "get": {
         "tags": [
@@ -2684,6 +2862,172 @@
         }
       }
     },
+    "/api/NotificationAdmin/GetNotifications": {
+      "get": {
+        "tags": [
+          "NotificationAdmin"
+        ],
+        "operationId": "NotificationAdmin_GetNotifications",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            },
+            "x-position": 1
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            },
+            "x-position": 2
+          },
+          {
+            "name": "unreadOnly",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            },
+            "x-position": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfNotificationDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/NotificationAdmin/GetUnreadNotificationsCount": {
+      "get": {
+        "tags": [
+          "NotificationAdmin"
+        ],
+        "operationId": "NotificationAdmin_GetUnreadNotificationsCount",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/NotificationAdmin/MarkNotificationAsRead/{id}": {
+      "post": {
+        "tags": [
+          "NotificationAdmin"
+        ],
+        "operationId": "NotificationAdmin_MarkNotificationAsRead",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/NotificationAdmin/MarkAllNotificationsAsRead": {
+      "post": {
+        "tags": [
+          "NotificationAdmin"
+        ],
+        "operationId": "NotificationAdmin_MarkAllNotificationsAsRead",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/OrderAdmin/GetAllOrders": {
       "get": {
         "tags": [
@@ -2865,6 +3209,124 @@
                 "schema": {
                   "type": "integer",
                   "format": "int32"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/OrderAdmin/AssignOrderToDeliveryMan": {
+      "post": {
+        "tags": [
+          "OrderAdmin"
+        ],
+        "operationId": "OrderAdmin_AssignOrderToDeliveryMan",
+        "requestBody": {
+          "x-name": "request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignOrderToDeliveryManRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/OrderAdmin/CompleteOrder": {
+      "post": {
+        "tags": [
+          "OrderAdmin"
+        ],
+        "operationId": "OrderAdmin_CompleteOrder",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/OrderAdmin/GetAvailableDeliveryMen": {
+      "get": {
+        "tags": [
+          "OrderAdmin"
+        ],
+        "operationId": "OrderAdmin_GetAvailableDeliveryMen",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AvailableDeliveryManDto"
+                  }
                 }
               }
             }
@@ -4223,6 +4685,9 @@
           "orderId": {
             "type": "integer",
             "format": "int32"
+          },
+          "orderNumber": {
+            "type": "string"
           },
           "matchingVehicles": {
             "type": "array",
@@ -5928,14 +6393,14 @@
           }
         }
       },
-      "PagedResultOfMainCategoryAdminDto": {
+      "PagedResultOfGetAllDeliveryMenDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
           "data": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/MainCategoryAdminDto"
+              "$ref": "#/components/schemas/GetAllDeliveryMenDto"
             }
           },
           "totalCount": {
@@ -5948,7 +6413,7 @@
           }
         }
       },
-      "MainCategoryAdminDto": {
+      "GetAllDeliveryMenDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -5956,52 +6421,47 @@
             "type": "integer",
             "format": "int32"
           },
-          "arabicName": {
+          "fullName": {
             "type": "string"
           },
-          "englishName": {
+          "phoneNumber": {
             "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "personalImagePath": {
+            "type": "string"
+          },
+          "vehicleTypeName": {
+            "type": "string"
+          },
+          "vehiclePlate": {
+            "type": "string"
+          },
+          "deliveryTypeName": {
+            "type": "string"
+          },
+          "active": {
+            "type": "boolean"
           }
         }
       },
-      "MainCategoryAdminLookupDto": {
+      "DeliveryManStatisticsDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "id": {
+          "totalDeliveryMen": {
             "type": "integer",
             "format": "int32"
           },
-          "name": {
-            "type": "string"
-          }
-        }
-      },
-      "AddMainAdminCategory": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "arabicName": {
-            "type": "string"
-          },
-          "englishName": {
-            "type": "string"
-          }
-        }
-      },
-      "UpdateMainAdminCategory": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
+          "activeDeliveryMen": {
             "type": "integer",
             "format": "int32"
           },
-          "arabicName": {
-            "type": "string"
-          },
-          "englishName": {
-            "type": "string"
+          "inactiveDeliveryMen": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
@@ -6147,6 +6607,146 @@
             "type": "string"
           }
         }
+      },
+      "PagedResultOfMainCategoryAdminDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MainCategoryAdminDto"
+            }
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "MainCategoryAdminDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "arabicName": {
+            "type": "string"
+          },
+          "englishName": {
+            "type": "string"
+          }
+        }
+      },
+      "MainCategoryAdminLookupDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "AddMainAdminCategory": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "arabicName": {
+            "type": "string"
+          },
+          "englishName": {
+            "type": "string"
+          }
+        }
+      },
+      "UpdateMainAdminCategory": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "arabicName": {
+            "type": "string"
+          },
+          "englishName": {
+            "type": "string"
+          }
+        }
+      },
+      "PagedResultOfNotificationDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NotificationDto"
+            }
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "NotificationDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "orderId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "notificationType": {
+            "$ref": "#/components/schemas/NotificationType"
+          },
+          "creationDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isRead": {
+            "type": "boolean"
+          }
+        }
+      },
+      "NotificationType": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "NewOrder",
+          "OrderStatusChanged"
+        ],
+        "enum": [
+          1,
+          2
+        ]
       },
       "GetOrderDetailsForAdminDto": {
         "type": "object",
@@ -6393,6 +6993,42 @@
             "format": "date-time"
           },
           "description": {
+            "type": "string"
+          }
+        }
+      },
+      "AssignOrderToDeliveryManRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "orderId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "deliveryManId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "AvailableDeliveryManDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "deliveryManId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "vehicleTypeName": {
+            "type": "string"
+          },
+          "vehiclePlate": {
             "type": "string"
           }
         }

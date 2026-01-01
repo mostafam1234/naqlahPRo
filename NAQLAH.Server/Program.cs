@@ -86,6 +86,9 @@ namespace NAQLAH.Server
 
             builder.Services.AddHangfireServer();
 
+            // Add SignalR
+            builder.Services.AddSignalR();
+
 
             var app = builder.Build();
             app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
@@ -144,6 +147,9 @@ namespace NAQLAH.Server
 
 
             app.MapControllers();
+
+            // Map SignalR Hub
+            app.MapHub<Presentaion.Hubs.NotificationHub>("/NotificationHub");
 
             app.MapFallbackToFile("/index.html");
 

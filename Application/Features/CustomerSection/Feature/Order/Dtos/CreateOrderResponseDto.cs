@@ -13,6 +13,7 @@ namespace Application.Features.CustomerSection.Feature.Order.Dtos
             this.MatchingVehicles = new List<OrderVehicleDto>();
         }
         public int OrderId { get; set; }
+        public string OrderNumber { get; set; } = string.Empty;
         public List<OrderVehicleDto> MatchingVehicles { get; set; }
     }
 

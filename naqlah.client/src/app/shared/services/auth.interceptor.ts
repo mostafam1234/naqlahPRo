@@ -5,15 +5,17 @@ import { Router } from '@angular/router';
 import { catchError, switchMap, throwError } from 'rxjs';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const authService = inject(AuthService);
-  const router = inject(Router);
-    
-  const excludedUrls = ['/LoginAdmin', '/login', '/register', '/refresh', '/Refresh'];
+  // Check if URL should be excluded BEFORE injecting services to avoid circular dependencies
+  const excludedUrls = ['/LoginAdmin', '/login', '/register', '/refresh', '/Refresh', 'appSettings.json'];
   const isExcluded = excludedUrls.some(url => req.url.includes(url));
   
   if (isExcluded) {
     return next(req);
   }
+
+  // Only inject services if URL is not excluded
+  const authService = inject(AuthService);
+  const router = inject(Router);
 
   let token = authService.getAccessToken();
 
@@ -33,11 +35,9 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const timeOffsetInMinutes = (nowDate.getTimezoneOffset()) * (-1);
 
   if (authService.isTokenExpired()) {
-    console.log('⏰ التوكن منتهي الصلاحية - محاولة التحديث...');
     const refreshToken = authService.getRefreshToken();
     
     if (!refreshToken) {
-      console.log('❌ لا يوجد refresh token - إعادة التوجيه إلى تسجيل الدخول');
       authService.logout();
       return throwError(() => new Error('No refresh token available'));
     }
@@ -47,7 +47,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         token = authService.getAccessToken();
         
         if (!token) {
-          console.log('❌ فشل في الحصول على التوكن بعد التحديث');
           authService.logout();
           return throwError(() => new Error('Failed to get token after refresh'));
         }
@@ -63,7 +62,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         return next(authReq);
       }),
       catchError((error) => {
-        console.error('❌ فشل في تحديث التوكن:', error);
         authService.logout();
         return throwError(() => error);
       })

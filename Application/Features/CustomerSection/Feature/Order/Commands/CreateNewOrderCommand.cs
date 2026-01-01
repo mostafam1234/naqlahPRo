@@ -97,6 +97,7 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
                 var response = new CreateOrderResponseDto
                 {
                     OrderId = orderResult.Value.Id,
+                    OrderNumber = orderResult.Value.OrderNumber,
                     MatchingVehicles = matchingVehicles
                 };
 

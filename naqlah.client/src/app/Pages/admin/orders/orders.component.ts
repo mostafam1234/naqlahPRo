@@ -1,7 +1,7 @@
 import { NgClass, NgFor, NgIf } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { LanguageService } from 'src/app/Core/services/language.service';
 import {
@@ -13,17 +13,18 @@ import {
   PagedResultOfGetAllOrdersDto
 } from 'src/app/Core/services/NaqlahClient';
 import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
-import { catchError, finalize } from 'rxjs/operators';
+import { catchError, finalize, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { SubSink } from 'subsink';
 
 @Component({
   selector: 'app-orders',
   standalone: true,
-  imports: [NgClass, NgFor, NgIf, FormsModule, PageHeaderComponent, TranslateModule],
+  imports: [NgClass, NgFor, NgIf, FormsModule, ReactiveFormsModule, PageHeaderComponent, TranslateModule],
   templateUrl: './orders.component.html',
   styleUrl: './orders.component.css'
 })
-export class OrdersComponent implements OnInit {
+export class OrdersComponent implements OnInit, OnDestroy {
 
   lang: string = 'ar';
   activeProgressTab: string = 'all';
@@ -36,7 +37,9 @@ export class OrdersComponent implements OnInit {
   totalCount = 0;
   totalPages = 0;
   isLoading = false;
-  searchTerm = '';
+  searchControl = new FormControl('');
+  
+  private sub = new SubSink();
 
   // Status filter properties
   statusFilter?: OrderStatus;
@@ -51,6 +54,23 @@ export class OrdersComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadOrders();
+    this.setupSearch();
+  }
+
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
+  }
+
+  setupSearch(): void {
+    this.sub.sink = this.searchControl.valueChanges
+      .pipe(
+        debounceTime(500),
+        distinctUntilChanged()
+      )
+      .subscribe(() => {
+        this.currentPage = 1;
+        this.loadOrders();
+      });
   }
 
   loadOrders(): void {
@@ -61,7 +81,7 @@ export class OrdersComponent implements OnInit {
     this.orderClient.getAllOrders(
       skip,
       this.itemsPerPage,
-      this.searchTerm || undefined,
+      this.searchControl.value || undefined,
       this.statusFilter,
       this.customerTypeFilter
     ).pipe(
@@ -116,11 +136,13 @@ export class OrdersComponent implements OnInit {
 
     // Map tab to status filter
     switch (tab) {
-      case 'current':
+      case 'assigned':
         this.statusFilter = OrderStatus.Assigned;
         break;
+      case 'pending':
+        this.statusFilter = OrderStatus.Pending;
+        break;
       case 'expired':
-        // You might want to add a different logic for expired orders
         this.statusFilter = OrderStatus.Cancelled;
         break;
       case 'completed':
@@ -135,17 +157,8 @@ export class OrdersComponent implements OnInit {
     this.loadOrders();
   }
 
-  onSearch(): void {
-    this.currentPage = 1;
-    this.loadOrders();
-  }
-
-  onSearchChange(): void {
-    this.onSearch();
-  }
-
   clearSearch(): void {
-    this.searchTerm = '';
+    this.searchControl.setValue('', { emitEvent: false });
     this.currentPage = 1;
     this.loadOrders();
   }
@@ -172,7 +185,7 @@ export class OrdersComponent implements OnInit {
       case OrderStatus.Cancelled:
         return 'bg-red-100 text-red-800';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-neutral-100 text-neutral-800';
     }
   }
 
@@ -236,11 +249,23 @@ export class OrdersComponent implements OnInit {
 
   // Helper methods for template
   getOriginWayPoint(wayPoints: any[]): any {
+    if (!wayPoints || wayPoints.length === 0) return null;
     return wayPoints.find(wp => wp.isOrigin) || wayPoints[0];
   }
 
   getDestinationWayPoint(wayPoints: any[]): any {
+    if (!wayPoints || wayPoints.length === 0) return null;
     return wayPoints.find(wp => wp.isDestination) || wayPoints[wayPoints.length - 1];
+  }
+
+  getIntermediateWayPoints(wayPoints: any[]): any[] {
+    if (!wayPoints || wayPoints.length <= 2) return [];
+    return wayPoints.filter(wp => !wp.isOrigin && !wp.isDestination);
+  }
+
+  getIntermediateWayPointsCount(wayPoints: any[]): number {
+    if (!wayPoints || wayPoints.length <= 2) return 0;
+    return wayPoints.filter(wp => !wp.isOrigin && !wp.isDestination).length;
   }
 
   getStatusText(status: OrderStatus): string {

@@ -60,6 +60,7 @@ namespace Infrastructure
         public DbSet<OrderPackage> OrderPackages { get; set; }
         public DbSet<Region> Regions { get; set; }
         public DbSet<WalletTransctions> WalletTransctions { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
 
 
         public async Task<Result> SaveChangesAsyncWithResult()
