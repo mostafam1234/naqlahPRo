@@ -8,25 +8,7 @@
 .side-bar:hover {
   overflow-y: visible;
 }
-.side-bar_links {
-  padding:13px 5px;
-  font-size: 16px;
-  font-weight: 400;
-  color: #000;
-  text-decoration: none;
-}
-.side-bar_links:hover,.side-bar_links--dropdown:hover  {
-  background-color: #0387c4;
-  color: #FFF;
-  transition: all 0.5s;
-}
-.side-bar_links:hover svg path{
-  transition: all 0.5s;
-  fill: #FFF;
-}
-.side-bar_links--dropdown {
-  padding: 5px 33px;
-}
+/* Sidebar styles are now handled by Tailwind classes in the template */
 
 .side-bar_links a {
   width: 100%;

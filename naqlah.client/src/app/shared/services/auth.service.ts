@@ -26,6 +26,12 @@ export class AuthService {
     return this.adminUser.loginAdmin(credential).pipe(
       map((response: AdminResponse) => {
         console.log('📦 استجابة تسجيل الدخول الكاملة:', response);
+        
+        // Store user email (userName) in localStorage
+        if (credential.userName) {
+          localStorage.setItem('userEmail', credential.userName);
+        }
+        
         this.storeAdminTokens(response);
         
         // فحص فوري بعد الحفظ
@@ -115,6 +121,12 @@ export class AuthService {
   getRole(): string | null {
     return localStorage.getItem('role');
   }
+
+  // Get User Email from localStorage (stored during login)
+  getUserEmail(): string {
+    return localStorage.getItem('userEmail') || '';
+  }
+
   // Get Refresh Token
   getRefreshToken(): string | null {
     return localStorage.getItem('refreshToken');
@@ -145,7 +157,25 @@ export class AuthService {
   // دالة لتحليل JWT Token
   private parseJwt(token: string): any {
     try {
-      const base64Url = token.split('.')[1];
+      // Validate token format
+      if (!token || typeof token !== 'string') {
+        console.warn('⚠️ التوكن غير صالح أو غير موجود');
+        return {};
+      }
+
+      // Check if token has the correct JWT format (three parts separated by dots)
+      const parts = token.split('.');
+      if (parts.length !== 3) {
+        console.warn('⚠️ تنسيق التوكن غير صحيح - يجب أن يحتوي على 3 أجزاء مفصولة بنقاط');
+        return {};
+      }
+
+      const base64Url = parts[1];
+      if (!base64Url) {
+        console.warn('⚠️ جزء payload التوكن غير موجود');
+        return {};
+      }
+
       const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
       const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
@@ -212,6 +242,8 @@ export class AuthService {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('expirationTime');
+    localStorage.removeItem('userEmail');
+    localStorage.removeItem('role');
   }
 
   // Logout

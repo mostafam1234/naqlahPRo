@@ -32,7 +32,6 @@ namespace NAQLAH.Server
                             .AddDataBase(builder.Configuration)
                             .AddServicesForApi()
                             .AddHangFireConfig(builder.Configuration)
-                            .AddServicesForApi()
                             .AddFireBaseConfigurations(builder.Configuration,
                                                        builder.Environment);
 
@@ -87,6 +86,9 @@ namespace NAQLAH.Server
 
             builder.Services.AddHangfireServer();
 
+            // Add SignalR
+            builder.Services.AddSignalR();
+
 
             var app = builder.Build();
             app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
@@ -107,12 +109,12 @@ namespace NAQLAH.Server
 
                 // Create default user if not exists
 
-                var defaultUser = await userManager.FindByNameAsync("admin");
+                var defaultUser = await userManager.FindByNameAsync("admin@accflex.com");
                 if (defaultUser == null)
                 {
                     var user = new User
                     {
-                        UserName = "admin",
+                        UserName = "admin@accflex.com",
                         PhoneNumber = "01029249892",
                         Email = "admin@accflex.com",
                         IsActive = true
@@ -145,6 +147,9 @@ namespace NAQLAH.Server
 
 
             app.MapControllers();
+
+            // Map SignalR Hub
+            app.MapHub<Presentaion.Hubs.NotificationHub>("/NotificationHub");
 
             app.MapFallbackToFile("/index.html");
 

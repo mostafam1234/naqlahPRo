@@ -13,6 +13,7 @@ namespace Domain.InterFaces
     {
         DbSet<User> Users { get; set; }
         DbSet<Role> Roles { get; set; }
+        DbSet<SystemConfiguration> SystemConfigurations { get; set; }
         DbSet<Customer> Customers { get; set; }
         DbSet<UserRole> UserRoles { get; set; }
         DbSet<DeliveryMan> DeliveryMen { get; set; }
@@ -30,6 +31,7 @@ namespace Domain.InterFaces
         DbSet<OrderPackage> OrderPackages { get; set; }
         DbSet<Region> Regions { get; set; }
         DbSet<WalletTransctions> WalletTransctions { get; set; }
+        DbSet<Notification> Notifications { get; set; }
         Task<Result> SaveChangesAsyncWithResult();
     }
 }

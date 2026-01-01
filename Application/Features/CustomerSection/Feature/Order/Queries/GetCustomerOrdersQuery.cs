@@ -111,7 +111,7 @@ namespace Application.Features.CustomerSection.Feature.Order.Queries
                             .OrderBy(h => h.CreationDate)
                             .First().CreationDate,
                         Status = x.Order.OrderStatus,
-                        StatusName = GetStatusName(x.Order.OrderStatus, languageId),
+                        StatusName = x.Order.OrderStatus.ToString(),
                         Total = x.Order.Total,
                         DeliveryManName = x.DeliveryMan != null ? x.DeliveryMan.FullName : null,
                         WayPoints = x.Order.OrderWayPoints.Select(wp => new CustomerOrderWayPointDto

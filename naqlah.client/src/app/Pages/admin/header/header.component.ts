@@ -62,6 +62,10 @@ export class HeaderComponent {
   isLoggingOut: boolean = false; // إضافة loading state لتسجيل الخروج
   appearSideBarNav: boolean = false;
 
+  // User Properties
+  userEmail: string = '';
+  userRole: string = '';
+
   // Dropdown States
   dropdownOpen: boolean = false;           // User profile dropdown
   languageDropdownOpen: boolean = false;   // Language dropdown
@@ -156,11 +160,29 @@ export class HeaderComponent {
     // Set initial direction
     this.setDirection(this.direction);
 
+    // Load user information
+    this.loadUserInfo();
+
     // Subscribe to router events
     this.router.events.subscribe(() => {
       this.activePath = this.location.path();
     });
   }
+
+  // Load user email and role
+  loadUserInfo(): void {
+    this.userEmail = this.authService.getUserEmail();
+    this.userRole = this.authService.GetUserRole() || '';
+  }
+
+  // Get first letter of email for avatar
+  getUserInitial(): string {
+    if (!this.userEmail) {
+      return 'U';
+    }
+    return this.userEmail.charAt(0).toUpperCase();
+  }
+
 
   // ============== Language Methods ==============
   isActive(path: string): boolean {
@@ -302,7 +324,8 @@ export class HeaderComponent {
 
   // ============== Other Methods ==============
   AppearSideBar() {
-    this.appearSideBarNav = true;
+    // Toggle sidebar state
+    this.appearSideBarNav = !this.appearSideBarNav;
     this.dataEmitter.emit(this.appearSideBarNav);
   }
 

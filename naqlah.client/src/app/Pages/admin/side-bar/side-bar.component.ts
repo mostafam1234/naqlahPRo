@@ -1,5 +1,5 @@
 import { NgClass, NgIf } from '@angular/common';
-import { Component, EventEmitter, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Output, Input, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -13,7 +13,11 @@ import { TranslateModule } from '@ngx-translate/core';
 export class SideBarComponent {
   
   appearSideBarNav: boolean = false;
+  @Input() isMobile: boolean = false;
+  @Input() isOpen: boolean = false;
+  @Input() isRtl: boolean = false;
   @Output() dataEmitter: EventEmitter<any> = new EventEmitter();
+  @Output() closeSidebar: EventEmitter<void> = new EventEmitter<void>();
   openDropdown: string | null = null;
 
   constructor(private router: Router){}
@@ -21,6 +25,10 @@ export class SideBarComponent {
   DisAppearSideBar() {
     this.appearSideBarNav = false;
     this.dataEmitter.emit(this.appearSideBarNav);
+  }
+
+  closeSidebarMobile() {
+    this.closeSidebar.emit();
   }
 
   toggleDropdown(menu: string): void {

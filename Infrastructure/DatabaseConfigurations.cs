@@ -12,7 +12,7 @@ namespace Infrastructure
         {
             services.AddDbContext<NaqlahContext>(options =>
             {
-                options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+                //options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
                 options.UseSqlServer(configuraion.GetConnectionString("DefaultConnection"), x =>
                 {
 

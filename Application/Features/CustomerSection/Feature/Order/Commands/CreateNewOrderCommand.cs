@@ -32,7 +32,8 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
                 this.userSession = userSession;
                 this.dateTimeProvider = dateTimeProvider;
             }
-            public async Task<Result<CreateOrderResponseDto>> Handle(CreateNewOrderCommand request, CancellationToken cancellationToken)
+            public async Task<Result<CreateOrderResponseDto>> Handle(CreateNewOrderCommand request,
+                                                                     CancellationToken cancellationToken)
             {
                 var nowDate = dateTimeProvider.Now;
                 var orderDetailsResult =await BuildOrderDetails(request.Order.MainCategoryIds);
@@ -72,7 +73,6 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
                                               (OrderType)request.Order.OrderTypeId,
                                               orderNumber: orderNumber,
                                               orderPackageId: request.Order.OrderPackId,
-                                              paymentMethodId: WalletPaymentMethodId,
                                               nowDate: nowDate,
                                               orderDetailsResult.Value,
                                               orderWayPointsResult.Value,
@@ -97,6 +97,7 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
                 var response = new CreateOrderResponseDto
                 {
                     OrderId = orderResult.Value.Id,
+                    OrderNumber = orderResult.Value.OrderNumber,
                     MatchingVehicles = matchingVehicles
                 };
 
@@ -142,7 +143,6 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
 
             public async Task<List<OrderService>> BuildOrderService(List<int> orderServiceIds)
             {
-                var fixedAmount = 100;
                 if (orderServiceIds.Count == 0)
                 {
                     return new List<OrderService>();
@@ -153,7 +153,7 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
                     .ToListAsync();
 
                 var orderServices = works.Select(w => OrderService.Instance(w.Id,
-                                                                          fixedAmount,
+                                                                          w.Cost,
                                                                          w.ArabicName,
                                                                          w.EnglishName)).ToList();
 

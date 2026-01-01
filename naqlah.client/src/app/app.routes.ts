@@ -47,6 +47,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'systemConfiguration',
+        loadComponent: () =>
+          import('./Pages/admin/system-configuration/system-configuration.component').then(
+            (m) => m.SystemConfigurationComponent
+          ),
+      },
+      {
         path: 'users/captains/add-captain',
         loadComponent: () =>
           import('./Pages/admin/users/captain/add-captain/add-captain.component').then(
@@ -131,6 +138,13 @@ const routes: Routes = [
         loadComponent: () =>
           import('./Pages/admin/main-category/main-category.component').then(
             (m) => m.MainCategoryComponent
+          ),
+      },
+      {
+        path: 'assistant-works',
+        loadComponent: () =>
+          import('./Pages/admin/assistant-works/assistant-works.component').then(
+            (m) => m.AssistantWorksComponent
           ),
       },
       {

@@ -33,8 +33,9 @@ namespace NAQLAH.Server.MiddleWares
             StringValues lang;
             context.Request.Headers.TryGetValue("Accept-Language", out lang);
            
-
-            sessionInfo.LanguageId = lang == "ar" ? (int)Language.Arabic : (int)Language.English;
+            // Convert StringValues to string and handle language detection
+            var languageValue = lang.ToString().ToLower().Trim();
+            sessionInfo.LanguageId = languageValue == "ar" ? (int)Language.Arabic : (int)Language.English;
             sessionInfo.Username = userName;
             sessionInfo.UserId = string.IsNullOrEmpty(userId) ? 0 : int.Parse(userId);
             sessionInfo.PhoneNumber = phoneNumber;

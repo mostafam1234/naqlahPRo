@@ -20,6 +20,9 @@ namespace Application.DependencyInjection
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             services.AddValidatorsFromAssembly(currentAssembly);
 
+            // Register Notification Service
+            services.AddScoped<Application.Shared.Services.INotificationService, Application.Shared.Services.NotificationService>();
+
             return services;
         }
     }

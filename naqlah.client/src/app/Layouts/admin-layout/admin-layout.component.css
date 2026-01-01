@@ -28,12 +28,13 @@
   overflow-y: hidden;
   background-color: #FFF;
   z-index: 99999;
-  transition: transform 0.5s ease-in-out;
+  transition: transform 0.3s ease-in-out;
 }
 .left-side:hover{
   overflow-y: scroll;
 }
 
+/* Small screen (mobile) states */
 .left-side.small.en.closed {
   transform: translateX(-100%);
 }
@@ -47,6 +48,33 @@
 
 .left-side.small.ar.open {
   transform: translateX(0);
+}
+
+/* Large screen states - collapsed sidebar */
+.left-side.large.en.closed {
+  transform: translateX(-100%);
+}
+
+.left-side.large.ar.closed {
+  transform: translateX(100%);
+}
+
+/* Mobile sidebar default: hidden */
+@media (max-width: 991px) {
+  .left-side.small {
+    transform: translateX(-100%);
+  }
+  .rtl .left-side.small {
+    transform: translateX(100%);
+  }
+  .left-side.small.open {
+    transform: translateX(0) !important;
+  }
+}
+
+/* Sidebar backdrop for mobile */
+.sidebar-backdrop {
+  backdrop-filter: blur(2px);
 }
 
 
@@ -67,6 +95,7 @@
 
 .right-side {
   width: 100%;
+  transition: margin 0.3s ease-in-out;
 }
 
 .G-container {
@@ -106,13 +135,48 @@
 @media (min-width: 992px) {
   .right-side {
     width: calc(100% - 240px);
+    transition: margin 0.3s ease-in-out;
+    margin-right: 0;
+    margin-left: 0;
   }
-  .rtl .right-side {
-    margin-right: 240px;
+  .rtl .right-side.sidebar-closed {
+    width: 100% !important;
   }
-  .ltr .right-side {
-    margin-left: 240px;
+  .ltr .right-side.sidebar-closed {
+    width: 100% !important;
   }
+  
+  /* Default: sidebar closed - body takes full width */
+  .rtl .right-side.sidebar-closed,
+  .rtl .right-side:not(.sidebar-open):not(.sidebar-closed) {
+    margin-right: 0 !important;
+  }
+  .ltr .right-side.sidebar-closed,
+  .ltr .right-side:not(.sidebar-open):not(.sidebar-closed) {
+    margin-left: 0 !important;
+  }
+  
+  /* When sidebar is open on large screens - body has margin */
+  .rtl .right-side.sidebar-open {
+    margin-right: 240px !important;
+  }
+  .ltr .right-side.sidebar-open {
+    margin-left: 240px !important;
+  }
+  
+  /* When sidebar is closed on large screens - ensure it's off-screen */
+  .left-side.large.closed {
+    transform: translateX(-100%);
+  }
+  .rtl .left-side.large.closed {
+    transform: translateX(100%);
+  }
+  
+  /* When sidebar is open on large screens - ensure it's visible */
+  .left-side.large.open {
+    transform: translateX(0) !important;
+  }
+  
   .left-side {
     display: inline-block;
   }
@@ -120,13 +184,40 @@
 @media (min-width: 1200px) {
   .right-side {
     width: calc(100% - 270px);
+    transition: margin 0.3s ease-in-out;
   }
-  .rtl .right-side {
-    margin-right: 270px;
+  .rtl .right-side.sidebar-closed {
+    width: 100% !important;
   }
-  .ltr .right-side {
-    margin-left: 270px;
+  .ltr .right-side.sidebar-closed {
+    width: 100% !important;
   }
+  /* Default: sidebar closed - body takes full width */
+  .rtl .right-side.sidebar-closed,
+  .rtl .right-side:not(.sidebar-open):not(.sidebar-closed) {
+    margin-right: 0 !important;
+  }
+  .ltr .right-side.sidebar-closed,
+  .ltr .right-side:not(.sidebar-open):not(.sidebar-closed) {
+    margin-left: 0 !important;
+  }
+  
+  /* When sidebar is open on 1200px+ screens - body has margin */
+  .rtl .right-side.sidebar-open {
+    margin-right: 270px !important;
+  }
+  .ltr .right-side.sidebar-open {
+    margin-left: 270px !important;
+  }
+  
+  /* When sidebar is closed on 1200px+ screens */
+  .left-side.large.closed {
+    transform: translateX(-100%);
+  }
+  .rtl .left-side.large.closed {
+    transform: translateX(100%);
+  }
+  
   .left-side {
     display: inline-block;
     width: 270px;
@@ -137,13 +228,40 @@
 @media (min-width: 1400px) {
   .right-side {
     width: calc(100% - 280px);
+    transition: margin 0.3s ease-in-out;
   }
-  .rtl .right-side {
-    margin-right: 280px;
+  .rtl .right-side.sidebar-closed {
+    width: 100% !important;
   }
-  .ltr .right-side {
-    margin-left: 280px;
+  .ltr .right-side.sidebar-closed {
+    width: 100% !important;
   }
+  /* Default: sidebar closed - body takes full width */
+  .rtl .right-side.sidebar-closed,
+  .rtl .right-side:not(.sidebar-open):not(.sidebar-closed) {
+    margin-right: 0 !important;
+  }
+  .ltr .right-side.sidebar-closed,
+  .ltr .right-side:not(.sidebar-open):not(.sidebar-closed) {
+    margin-left: 0 !important;
+  }
+  
+  /* When sidebar is open on 1400px+ screens - body has margin */
+  .rtl .right-side.sidebar-open {
+    margin-right: 280px !important;
+  }
+  .ltr .right-side.sidebar-open {
+    margin-left: 280px !important;
+  }
+  
+  /* When sidebar is closed on 1400px+ screens */
+  .left-side.large.closed {
+    transform: translateX(-100%);
+  }
+  .rtl .left-side.large.closed {
+    transform: translateX(100%);
+  }
+  
   .left-side {
     display: inline-block;
     width: 280px;

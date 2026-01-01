@@ -1,4 +1,6 @@
-﻿using Application.Features.DeliveryManSection.Assistant.Dtos;
+﻿using Application.Features.AdminSection.DeliveryManFeature.Dtos;
+using Application.Features.AdminSection.DeliveryManFeature.Queries;
+using Application.Features.DeliveryManSection.Assistant.Dtos;
 using Application.Features.DeliveryManSection.Assistant.Queries;
 using Application.Features.DeliveryManSection.CurrentDeliveryMen.Commands;
 using Application.Features.DeliveryManSection.CurrentDeliveryMen.Dtos;
@@ -6,6 +8,8 @@ using Application.Features.DeliveryManSection.CurrentDeliveryMen.Queries;
 using Application.Features.DeliveryManSection.NewRequests.Commands;
 using Application.Features.DeliveryManSection.NewRequests.Dtos;
 using Application.Features.DeliveryManSection.NewRequests.Queries;
+using Application.Shared.Dtos;
+using Domain.InterFaces;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -25,9 +29,12 @@ namespace Presentaion.Controllers.Admin
     public class DeliveryManAdminController : ControllerBase
     {
         private readonly IMediator mediator;
-        public DeliveryManAdminController(IMediator mediator)
+        private readonly IUserSession userSession;
+
+        public DeliveryManAdminController(IMediator mediator, IUserSession userSession)
         {
             this.mediator = mediator;
+            this.userSession = userSession;
         }
 
         [HttpGet]
@@ -128,6 +135,79 @@ namespace Presentaion.Controllers.Admin
                 return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
             }
             return Ok(result.Value);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(PagedResult<GetAllDeliveryMenDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("GetAllDeliveryMen")]
+        public async Task<IActionResult> GetAllDeliveryMen(
+            [FromQuery] int skip = 0,
+            [FromQuery] int take = 10,
+            [FromQuery] string? searchTerm = null)
+        {
+            var query = new GetAllDeliveryMenQuery
+            {
+                Skip = skip,
+                Take = take,
+                SearchTerm = searchTerm,
+                LanguageId = this.userSession.LanguageId
+            };
+
+            var result = await mediator.Send(query);
+            if (result.IsSuccess)
+            {
+                return Ok(result.Value);
+            }
+
+            return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(DeliveryManStatisticsDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("GetDeliveryManStatistics")]
+        public async Task<IActionResult> GetDeliveryManStatistics()
+        {
+            var query = new GetDeliveryManStatisticsQuery();
+
+            var result = await mediator.Send(query);
+            if (result.IsSuccess)
+            {
+                return Ok(result.Value);
+            }
+
+            return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(PagedResult<Application.Features.AdminSection.OrderFeature.Dtos.GetAllOrdersDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("GetOrdersByDeliveryManId")]
+        public async Task<IActionResult> GetOrdersByDeliveryManId(
+            [FromQuery] int deliveryManId,
+            [FromQuery] int skip = 0,
+            [FromQuery] int take = 10,
+            [FromQuery] string? searchTerm = null,
+            [FromQuery] Domain.Enums.OrderStatus? statusFilter = null)
+        {
+            var query = new GetOrdersByDeliveryManIdQuery
+            {
+                DeliveryManId = deliveryManId,
+                Skip = skip,
+                Take = take,
+                SearchTerm = searchTerm,
+                StatusFilter = statusFilter,
+                LanguageId = this.userSession.LanguageId
+            };
+
+            var result = await mediator.Send(query);
+            if (result.IsSuccess)
+            {
+                return Ok(result.Value);
+            }
+
+            return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
         }
     }
 }

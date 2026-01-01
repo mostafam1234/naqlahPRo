@@ -1,153 +1,82 @@
-<section class="homePage flex flex-col gap-[80px]">
-  <div class="homePage-Info grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-[15px]">
-    <div class="cards-info rounded-xl p-4 shadow-sm">
-      <div class="flex justify-between items-center mb-2">
-        <span class="text-gray-700 font-medium">عدد الطلبات</span>
-        <div class="relative">
-          <select class="select-date text-sm border border-gray-300 rounded-full pl-3 pr-7 py-1 bg-white text-gray-700 focus:outline-none">
-            <option>اليوم</option>
-            <option>أمس</option>
-            <option>آخر 7 أيام</option>
-            <option>هذا الشهر</option>
-          </select>
-          <div class="custom-arrow pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-600">
-            <svg width="11" height="10" viewBox="0 0 11 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M9.13655 4.08128L6.01156 7.20628C5.96801 7.24998 5.91626 7.28466 5.85928 7.30831C5.80231 7.33197 5.74122 7.34415 5.67952 7.34415C5.61783 7.34415 5.55674 7.33197 5.49976 7.30831C5.44279 7.28466 5.39104 7.24998 5.34749 7.20628L2.22249 4.08128C2.13443 3.99322 2.08496 3.87379 2.08496 3.74925C2.08496 3.62471 2.13443 3.50528 2.22249 3.41722C2.31055 3.32916 2.42999 3.27969 2.55452 3.27969C2.67906 3.27969 2.7985 3.32916 2.88656 3.41722L5.67991 6.21058L8.47327 3.41683C8.56133 3.32877 8.68077 3.2793 8.8053 3.2793C8.92984 3.2793 9.04928 3.32877 9.13734 3.41683C9.2254 3.50489 9.27487 3.62432 9.27487 3.74886C9.27487 3.8734 9.2254 3.99283 9.13734 4.08089L9.13655 4.08128Z" fill="#141D21"/>
-            </svg>
-          </div>
+<section class="homePage flex flex-col gap-12">
+  <!-- Dashboard Statistics Section -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <!-- Total Orders -->
+    <div class="bg-surface-50 rounded-xl p-6 border border-neutral-200 hover:shadow-lg transition-shadow duration-200">
+      <div class="flex items-start justify-between mb-4">
+        <div class="p-3 rounded-lg bg-primary-50">
+          <svg width="24" height="24" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-primary-600">
+            <path d="M18.3333 6.89102V3.52435C18.3333 2.19935 17.8 1.66602 16.475 1.66602H13.1083C11.7833 1.66602 11.25 2.19935 11.25 3.52435V6.89102C11.25 8.21602 11.7833 8.74935 13.1083 8.74935H16.475C17.8 8.74935 18.3333 8.21602 18.3333 6.89102Z" fill="currentColor"/>
+            <path d="M8.74984 7.09935V3.31602C8.74984 2.14102 8.2165 1.66602 6.8915 1.66602H3.52484C2.19984 1.66602 1.6665 2.14102 1.6665 3.31602V7.09102C1.6665 8.27435 2.19984 8.74102 3.52484 8.74102H6.8915C8.2165 8.74935 8.74984 8.27435 8.74984 7.09935Z" fill="currentColor"/>
+            <path d="M8.74984 16.475V13.1083C8.74984 11.7833 8.2165 11.25 6.8915 11.25H3.52484C2.19984 11.25 1.6665 11.7833 1.6665 13.1083V16.475C1.6665 17.8 2.19984 18.3333 3.52484 18.3333H6.8915C8.2165 18.3333 8.74984 17.8 8.74984 16.475Z" fill="currentColor"/>
+            <path d="M12.5 12.916H17.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M12.5 16.25H17.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
         </div>
       </div>
-      <div class="flex items-center gap-[15px] text-gray-700 justify-center mt-[20px]">
-        <svg width="16" height="19" viewBox="0 0 16 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M9.46609 9.56719L8.64915 10.0363L8.63687 18.4898L15.9931 14.2756L16.0054 5.82207L9.46609 9.56719Z" fill="#234A43"/>
-          <path d="M10.8073 1.98843L7.98301 0.355326L0.422561 4.68585L3.25064 6.31896L10.8073 1.98843Z" fill="#234A43"/>
-          <path d="M15.5271 4.70779L12.2723 2.85585L4.71562 7.18638L5.1461 7.40897L7.9704 9.03832L10.7843 7.42845L15.5271 4.70779Z" fill="#234A43"/>
-          <path d="M4.14048 10.2931L2.78862 9.59887L2.79175 7.44693L0.00519438 5.84398L-0.00699711 14.2373L7.28408 18.4427L7.29628 10.0494L4.14347 8.23518L4.14048 10.2931Z" fill="#234A43"/>
-        </svg>
-        <span class="text-lg font-semibold">5523</span>
-        <svg width="13" height="8" viewBox="0 0 13 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path fill-rule="evenodd" clip-rule="evenodd" d="M7.44169 1.60777L12.9868 0L11.6066 5.6061L9.88485 3.9532L7.10751 6.84627C7.01322 6.94448 6.88296 7 6.74682 7C6.61067 7 6.48041 6.94448 6.38612 6.84627L4.34682 4.72199L1.34751 7.84627C1.15627 8.04547 0.839757 8.05193 0.640551 7.86069C0.441346 7.66946 0.434886 7.35294 0.626123 7.15373L3.98612 3.65373C4.08041 3.55552 4.21067 3.5 4.34682 3.5C4.48296 3.5 4.61322 3.55552 4.70751 3.65373L6.74682 5.77801L9.16346 3.26067L7.44169 1.60777Z" fill="#1C1C1C"/>
-        </svg>
+      <div class="space-y-1">
+        <p class="text-sm font-medium text-neutral-600">{{ "ADMIN.DASHBOARD.TOTAL_ORDERS" | translate }}</p>
+        <p class="text-3xl font-bold text-neutral-900" *ngIf="!isLoadingStatistics">{{ statistics?.totalOrders ?? 0 | number }}</p>
+        <div class="h-8 w-20 bg-neutral-200 rounded animate-pulse" *ngIf="isLoadingStatistics"></div>
+        <p class="text-xs text-neutral-500 mt-2">{{ "ADMIN.DASHBOARD.ALL_TIME" | translate }}</p>
       </div>
     </div>
-    <div class="cards-info rounded-xl p-4 shadow-sm">
-      <div class="flex justify-between items-center mb-2 gap-[5px]">
-        <span class="text-gray-700 font-medium"> المستخدمين الجدد</span>
-        <div class="relative">
-          <select class="select-date text-sm border border-gray-300 rounded-full pl-3 pr-7 py-1 bg-white text-gray-700 focus:outline-none">
-            <option>اليوم</option>
-            <option>أمس</option>
-            <option>آخر 7 أيام</option>
-            <option>هذا الشهر</option>
-          </select>
-          <div class="custom-arrow pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-600">
-            <svg width="11" height="10" viewBox="0 0 11 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M9.13655 4.08128L6.01156 7.20628C5.96801 7.24998 5.91626 7.28466 5.85928 7.30831C5.80231 7.33197 5.74122 7.34415 5.67952 7.34415C5.61783 7.34415 5.55674 7.33197 5.49976 7.30831C5.44279 7.28466 5.39104 7.24998 5.34749 7.20628L2.22249 4.08128C2.13443 3.99322 2.08496 3.87379 2.08496 3.74925C2.08496 3.62471 2.13443 3.50528 2.22249 3.41722C2.31055 3.32916 2.42999 3.27969 2.55452 3.27969C2.67906 3.27969 2.7985 3.32916 2.88656 3.41722L5.67991 6.21058L8.47327 3.41683C8.56133 3.32877 8.68077 3.2793 8.8053 3.2793C8.92984 3.2793 9.04928 3.32877 9.13734 3.41683C9.2254 3.50489 9.27487 3.62432 9.27487 3.74886C9.27487 3.8734 9.2254 3.99283 9.13734 4.08089L9.13655 4.08128Z" fill="#141D21"/>
-            </svg>
-          </div>
+
+    <!-- Today Orders -->
+    <div class="bg-surface-50 rounded-xl p-6 border border-neutral-200 hover:shadow-lg transition-shadow duration-200">
+      <div class="flex items-start justify-between mb-4">
+        <div class="p-3 rounded-lg bg-info-50">
+          <svg width="24" height="24" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-info-600">
+            <path d="M18.3333 8.33333H1.66667C1.20833 8.33333 0.833336 8.70833 0.833336 9.16667V16.6667C0.833336 17.5833 1.58334 18.3333 2.50001 18.3333H17.5C18.4167 18.3333 19.1667 17.5833 19.1667 16.6667V9.16667C19.1667 8.70833 18.7917 8.33333 18.3333 8.33333Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M13.3333 1.66667V5.00001" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M6.66667 1.66667V5.00001" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M0.833336 8.33333H19.1667" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
         </div>
       </div>
-      <div class="flex items-center gap-[15px] text-gray-700 justify-center mt-[20px]">
-        <svg width="16" height="19" viewBox="0 0 16 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M9.46609 9.56719L8.64915 10.0363L8.63687 18.4898L15.9931 14.2756L16.0054 5.82207L9.46609 9.56719Z" fill="#234A43"/>
-          <path d="M10.8073 1.98843L7.98301 0.355326L0.422561 4.68585L3.25064 6.31896L10.8073 1.98843Z" fill="#234A43"/>
-          <path d="M15.5271 4.70779L12.2723 2.85585L4.71562 7.18638L5.1461 7.40897L7.9704 9.03832L10.7843 7.42845L15.5271 4.70779Z" fill="#234A43"/>
-          <path d="M4.14048 10.2931L2.78862 9.59887L2.79175 7.44693L0.00519438 5.84398L-0.00699711 14.2373L7.28408 18.4427L7.29628 10.0494L4.14347 8.23518L4.14048 10.2931Z" fill="#234A43"/>
-        </svg>
-        <span class="text-lg font-semibold">5523</span>
-        <svg width="13" height="8" viewBox="0 0 13 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path fill-rule="evenodd" clip-rule="evenodd" d="M7.44169 1.60777L12.9868 0L11.6066 5.6061L9.88485 3.9532L7.10751 6.84627C7.01322 6.94448 6.88296 7 6.74682 7C6.61067 7 6.48041 6.94448 6.38612 6.84627L4.34682 4.72199L1.34751 7.84627C1.15627 8.04547 0.839757 8.05193 0.640551 7.86069C0.441346 7.66946 0.434886 7.35294 0.626123 7.15373L3.98612 3.65373C4.08041 3.55552 4.21067 3.5 4.34682 3.5C4.48296 3.5 4.61322 3.55552 4.70751 3.65373L6.74682 5.77801L9.16346 3.26067L7.44169 1.60777Z" fill="#1C1C1C"/>
-        </svg>
+      <div class="space-y-1">
+        <p class="text-sm font-medium text-neutral-600">{{ "ADMIN.DASHBOARD.TODAY_ORDERS" | translate }}</p>
+        <p class="text-3xl font-bold text-neutral-900" *ngIf="!isLoadingStatistics">{{ statistics?.todayOrders ?? 0 | number }}</p>
+        <div class="h-8 w-20 bg-neutral-200 rounded animate-pulse" *ngIf="isLoadingStatistics"></div>
+        <p class="text-xs text-neutral-500 mt-2">{{ "ADMIN.DASHBOARD.TODAY" | translate }}</p>
       </div>
     </div>
-    <div class="cards-info rounded-xl p-4 shadow-sm">
-      <div class="flex justify-between items-center mb-2 gap-[5px]">
-        <span class="text-gray-700 font-medium">عدد الطلبات</span>
-        <div class="relative">
-          <select class="select-date text-sm border border-gray-300 rounded-full pl-3 pr-7 py-1 bg-white text-gray-700 focus:outline-none">
-            <option>اليوم</option>
-            <option>أمس</option>
-            <option>آخر 7 أيام</option>
-            <option>هذا الشهر</option>
-          </select>
-          <div class="custom-arrow pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-600">
-            <svg width="11" height="10" viewBox="0 0 11 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M9.13655 4.08128L6.01156 7.20628C5.96801 7.24998 5.91626 7.28466 5.85928 7.30831C5.80231 7.33197 5.74122 7.34415 5.67952 7.34415C5.61783 7.34415 5.55674 7.33197 5.49976 7.30831C5.44279 7.28466 5.39104 7.24998 5.34749 7.20628L2.22249 4.08128C2.13443 3.99322 2.08496 3.87379 2.08496 3.74925C2.08496 3.62471 2.13443 3.50528 2.22249 3.41722C2.31055 3.32916 2.42999 3.27969 2.55452 3.27969C2.67906 3.27969 2.7985 3.32916 2.88656 3.41722L5.67991 6.21058L8.47327 3.41683C8.56133 3.32877 8.68077 3.2793 8.8053 3.2793C8.92984 3.2793 9.04928 3.32877 9.13734 3.41683C9.2254 3.50489 9.27487 3.62432 9.27487 3.74886C9.27487 3.8734 9.2254 3.99283 9.13734 4.08089L9.13655 4.08128Z" fill="#141D21"/>
-            </svg>
-          </div>
+
+    <!-- This Week Orders -->
+    <div class="bg-surface-50 rounded-xl p-6 border border-neutral-200 hover:shadow-lg transition-shadow duration-200">
+      <div class="flex items-start justify-between mb-4">
+        <div class="p-3 rounded-lg bg-success-50">
+          <svg width="24" height="24" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-success-600">
+            <path d="M17.5 2.5H15.8333V1.66667C15.8333 1.20833 15.4583 0.833336 15 0.833336C14.5417 0.833336 14.1667 1.20833 14.1667 1.66667V2.5H5.83334V1.66667C5.83334 1.20833 5.45834 0.833336 5.00001 0.833336C4.54167 0.833336 4.16667 1.20833 4.16667 1.66667V2.5H2.50001C1.58334 2.5 0.833336 3.25 0.833336 4.16667V17.5C0.833336 18.4167 1.58334 19.1667 2.50001 19.1667H17.5C18.4167 19.1667 19.1667 18.4167 19.1667 17.5V4.16667C19.1667 3.25 18.4167 2.5 17.5 2.5Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M0.833336 7.5H19.1667" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
         </div>
       </div>
-      <div class="flex items-center gap-[15px] text-gray-700 justify-center mt-[20px]">
-        <svg width="16" height="19" viewBox="0 0 16 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M9.46609 9.56719L8.64915 10.0363L8.63687 18.4898L15.9931 14.2756L16.0054 5.82207L9.46609 9.56719Z" fill="#234A43"/>
-          <path d="M10.8073 1.98843L7.98301 0.355326L0.422561 4.68585L3.25064 6.31896L10.8073 1.98843Z" fill="#234A43"/>
-          <path d="M15.5271 4.70779L12.2723 2.85585L4.71562 7.18638L5.1461 7.40897L7.9704 9.03832L10.7843 7.42845L15.5271 4.70779Z" fill="#234A43"/>
-          <path d="M4.14048 10.2931L2.78862 9.59887L2.79175 7.44693L0.00519438 5.84398L-0.00699711 14.2373L7.28408 18.4427L7.29628 10.0494L4.14347 8.23518L4.14048 10.2931Z" fill="#234A43"/>
-        </svg>
-        <span class="text-lg font-semibold">5523</span>
-        <svg width="13" height="8" viewBox="0 0 13 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path fill-rule="evenodd" clip-rule="evenodd" d="M7.44169 1.60777L12.9868 0L11.6066 5.6061L9.88485 3.9532L7.10751 6.84627C7.01322 6.94448 6.88296 7 6.74682 7C6.61067 7 6.48041 6.94448 6.38612 6.84627L4.34682 4.72199L1.34751 7.84627C1.15627 8.04547 0.839757 8.05193 0.640551 7.86069C0.441346 7.66946 0.434886 7.35294 0.626123 7.15373L3.98612 3.65373C4.08041 3.55552 4.21067 3.5 4.34682 3.5C4.48296 3.5 4.61322 3.55552 4.70751 3.65373L6.74682 5.77801L9.16346 3.26067L7.44169 1.60777Z" fill="#1C1C1C"/>
-        </svg>
+      <div class="space-y-1">
+        <p class="text-sm font-medium text-neutral-600">{{ "ADMIN.DASHBOARD.WEEK_ORDERS" | translate }}</p>
+        <p class="text-3xl font-bold text-neutral-900" *ngIf="!isLoadingStatistics">{{ statistics?.thisWeekOrders ?? 0 | number }}</p>
+        <div class="h-8 w-20 bg-neutral-200 rounded animate-pulse" *ngIf="isLoadingStatistics"></div>
+        <p class="text-xs text-neutral-500 mt-2">{{ "ADMIN.DASHBOARD.THIS_WEEK" | translate }}</p>
       </div>
     </div>
-    <div class="cards-info rounded-xl p-4 shadow-sm">
-      <div class="flex justify-between items-center mb-2 gap-[5px]">
-        <span class="text-gray-700 font-medium">عدد الطلبات</span>
-        <div class="relative">
-          <select class="select-date text-sm border border-gray-300 rounded-full pl-3 pr-7 py-1 bg-white text-gray-700 focus:outline-none">
-            <option>اليوم</option>
-            <option>أمس</option>
-            <option>آخر 7 أيام</option>
-            <option>هذا الشهر</option>
-          </select>
-          <div class="custom-arrow pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-600">
-            <svg width="11" height="10" viewBox="0 0 11 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M9.13655 4.08128L6.01156 7.20628C5.96801 7.24998 5.91626 7.28466 5.85928 7.30831C5.80231 7.33197 5.74122 7.34415 5.67952 7.34415C5.61783 7.34415 5.55674 7.33197 5.49976 7.30831C5.44279 7.28466 5.39104 7.24998 5.34749 7.20628L2.22249 4.08128C2.13443 3.99322 2.08496 3.87379 2.08496 3.74925C2.08496 3.62471 2.13443 3.50528 2.22249 3.41722C2.31055 3.32916 2.42999 3.27969 2.55452 3.27969C2.67906 3.27969 2.7985 3.32916 2.88656 3.41722L5.67991 6.21058L8.47327 3.41683C8.56133 3.32877 8.68077 3.2793 8.8053 3.2793C8.92984 3.2793 9.04928 3.32877 9.13734 3.41683C9.2254 3.50489 9.27487 3.62432 9.27487 3.74886C9.27487 3.8734 9.2254 3.99283 9.13734 4.08089L9.13655 4.08128Z" fill="#141D21"/>
-            </svg>
-          </div>
+
+    <!-- Total Customers -->
+    <div class="bg-surface-50 rounded-xl p-6 border border-neutral-200 hover:shadow-lg transition-shadow duration-200">
+      <div class="flex items-start justify-between mb-4">
+        <div class="p-3 rounded-lg bg-warning-50">
+          <svg width="24" height="24" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-warning-600">
+            <path d="M7.63021 9.05866C7.54687 9.05033 7.44687 9.05033 7.35521 9.05866C5.37187 8.99199 3.79688 7.36699 3.79688 5.36699C3.79687 3.32533 5.44687 1.66699 7.49687 1.66699C9.53854 1.66699 11.1969 3.32533 11.1969 5.36699C11.1885 7.36699 9.61354 8.99199 7.63021 9.05866Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M3.46563 12.133C1.44896 13.483 1.44896 15.683 3.46563 17.0247C5.75729 18.558 9.51563 18.558 11.8073 17.0247C13.824 15.6747 13.824 13.4747 11.8073 12.133C9.52396 10.608 5.76562 10.608 3.46563 12.133Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M13.6747 3.33301C15.2914 3.33301 16.5914 4.64134 16.5914 6.24967C16.5914 7.82467 15.3414 9.10801 13.7831 9.16634C13.7164 9.15801 13.6414 9.15801 13.5664 9.16634" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M15.2812 16.667C15.8813 16.542 16.4479 16.3003 16.9146 15.942C18.2146 14.967 18.2146 13.3587 16.9146 12.3837C16.4562 12.0337 15.8979 11.8003 15.3063 11.667" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
         </div>
       </div>
-      <div class="flex items-center gap-[15px] text-gray-700 justify-center mt-[20px]">
-        <svg width="16" height="19" viewBox="0 0 16 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M9.46609 9.56719L8.64915 10.0363L8.63687 18.4898L15.9931 14.2756L16.0054 5.82207L9.46609 9.56719Z" fill="#234A43"/>
-          <path d="M10.8073 1.98843L7.98301 0.355326L0.422561 4.68585L3.25064 6.31896L10.8073 1.98843Z" fill="#234A43"/>
-          <path d="M15.5271 4.70779L12.2723 2.85585L4.71562 7.18638L5.1461 7.40897L7.9704 9.03832L10.7843 7.42845L15.5271 4.70779Z" fill="#234A43"/>
-          <path d="M4.14048 10.2931L2.78862 9.59887L2.79175 7.44693L0.00519438 5.84398L-0.00699711 14.2373L7.28408 18.4427L7.29628 10.0494L4.14347 8.23518L4.14048 10.2931Z" fill="#234A43"/>
-        </svg>
-        <span class="text-lg font-semibold">5523</span>
-        <svg width="13" height="8" viewBox="0 0 13 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path fill-rule="evenodd" clip-rule="evenodd" d="M7.44169 1.60777L12.9868 0L11.6066 5.6061L9.88485 3.9532L7.10751 6.84627C7.01322 6.94448 6.88296 7 6.74682 7C6.61067 7 6.48041 6.94448 6.38612 6.84627L4.34682 4.72199L1.34751 7.84627C1.15627 8.04547 0.839757 8.05193 0.640551 7.86069C0.441346 7.66946 0.434886 7.35294 0.626123 7.15373L3.98612 3.65373C4.08041 3.55552 4.21067 3.5 4.34682 3.5C4.48296 3.5 4.61322 3.55552 4.70751 3.65373L6.74682 5.77801L9.16346 3.26067L7.44169 1.60777Z" fill="#1C1C1C"/>
-        </svg>
-      </div>
-    </div>
-    <div class="cards-info rounded-xl p-4 shadow-sm">
-      <div class="flex justify-between items-center mb-2 gap-[5px]">
-        <span class="text-gray-700 font-medium">عدد الطلبات</span>
-        <div class="relative">
-          <select class="select-date text-sm border border-gray-300 rounded-full pl-3 pr-7 py-1 bg-white text-gray-700 focus:outline-none">
-            <option>اليوم</option>
-            <option>أمس</option>
-            <option>آخر 7 أيام</option>
-            <option>هذا الشهر</option>
-          </select>
-          <div class="custom-arrow pointer-events-none absolute inset-y-0 right-2 flex items-center text-gray-600">
-            <svg width="11" height="10" viewBox="0 0 11 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M9.13655 4.08128L6.01156 7.20628C5.96801 7.24998 5.91626 7.28466 5.85928 7.30831C5.80231 7.33197 5.74122 7.34415 5.67952 7.34415C5.61783 7.34415 5.55674 7.33197 5.49976 7.30831C5.44279 7.28466 5.39104 7.24998 5.34749 7.20628L2.22249 4.08128C2.13443 3.99322 2.08496 3.87379 2.08496 3.74925C2.08496 3.62471 2.13443 3.50528 2.22249 3.41722C2.31055 3.32916 2.42999 3.27969 2.55452 3.27969C2.67906 3.27969 2.7985 3.32916 2.88656 3.41722L5.67991 6.21058L8.47327 3.41683C8.56133 3.32877 8.68077 3.2793 8.8053 3.2793C8.92984 3.2793 9.04928 3.32877 9.13734 3.41683C9.2254 3.50489 9.27487 3.62432 9.27487 3.74886C9.27487 3.8734 9.2254 3.99283 9.13734 4.08089L9.13655 4.08128Z" fill="#141D21"/>
-            </svg>
-          </div>
-        </div>
-      </div>
-      <div class="flex items-center gap-[15px] text-gray-700 justify-center mt-[20px]">
-        <svg width="16" height="19" viewBox="0 0 16 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M9.46609 9.56719L8.64915 10.0363L8.63687 18.4898L15.9931 14.2756L16.0054 5.82207L9.46609 9.56719Z" fill="#234A43"/>
-          <path d="M10.8073 1.98843L7.98301 0.355326L0.422561 4.68585L3.25064 6.31896L10.8073 1.98843Z" fill="#234A43"/>
-          <path d="M15.5271 4.70779L12.2723 2.85585L4.71562 7.18638L5.1461 7.40897L7.9704 9.03832L10.7843 7.42845L15.5271 4.70779Z" fill="#234A43"/>
-          <path d="M4.14048 10.2931L2.78862 9.59887L2.79175 7.44693L0.00519438 5.84398L-0.00699711 14.2373L7.28408 18.4427L7.29628 10.0494L4.14347 8.23518L4.14048 10.2931Z" fill="#234A43"/>
-        </svg>
-        <span class="text-lg font-semibold">5523</span>
-        <svg width="13" height="8" viewBox="0 0 13 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path fill-rule="evenodd" clip-rule="evenodd" d="M7.44169 1.60777L12.9868 0L11.6066 5.6061L9.88485 3.9532L7.10751 6.84627C7.01322 6.94448 6.88296 7 6.74682 7C6.61067 7 6.48041 6.94448 6.38612 6.84627L4.34682 4.72199L1.34751 7.84627C1.15627 8.04547 0.839757 8.05193 0.640551 7.86069C0.441346 7.66946 0.434886 7.35294 0.626123 7.15373L3.98612 3.65373C4.08041 3.55552 4.21067 3.5 4.34682 3.5C4.48296 3.5 4.61322 3.55552 4.70751 3.65373L6.74682 5.77801L9.16346 3.26067L7.44169 1.60777Z" fill="#1C1C1C"/>
-        </svg>
+      <div class="space-y-1">
+        <p class="text-sm font-medium text-neutral-600">{{ "ADMIN.DASHBOARD.TOTAL_CUSTOMERS" | translate }}</p>
+        <p class="text-3xl font-bold text-neutral-900" *ngIf="!isLoadingStatistics">{{ statistics?.totalCustomers ?? 0 | number }}</p>
+        <div class="h-8 w-20 bg-neutral-200 rounded animate-pulse" *ngIf="isLoadingStatistics"></div>
+        <p class="text-xs text-neutral-500 mt-2">{{ "ADMIN.DASHBOARD.ALL_CUSTOMERS" | translate }}</p>
       </div>
     </div>
   </div>
@@ -157,6 +86,7 @@
         <canvas
           baseChart
           [data]="doughnutChartData"
+          [options]="doughnutChartOptions"
           [type]="doughnutChartType"
         ></canvas>
       </div>
@@ -187,90 +117,191 @@
     </div>
   </div>
 
-  <!-- component.html -->
-<div class="grid grid-cols-2 gap-4 p-4 items-center">
+  <!-- Top Cities & Heat Map Section -->
+  <div class="cities-heatmap-section">
+    <!-- Section Header -->
+    <div class="section-header mb-6">
+      <h2 class="section-title">المدن الأكثر نشاطًا</h2>
+      <p class="section-subtitle">توزيع الطلبات حسب المدينة</p>
+    </div>
 
-  <!-- القائمة الجانبية -->
-  <div class="space-y-4 flex flex-col justify-center items-center">
-    <div *ngFor="let city of cities" class="bg-secondaryCard rounded-xl shadow p-4 w-[50%]">
-      <div class="flex justify-between text-secondaryProgressColor font-bold mb-8">
-        <span>{{ city.name }}</span>
-        <span>{{ city.percentage }}%</span>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 items-stretch">
+      <!-- Cities List - Left Side -->
+      <div class="lg:col-span-1">
+        <div class="cities-container">
+          <!-- Loading State -->
+          <div *ngIf="isLoadingCities" class="cities-loading">
+            <div *ngFor="let i of [1,2,3,4]" class="city-skeleton">
+              <div class="skeleton-avatar"></div>
+              <div class="skeleton-content">
+                <div class="skeleton-line skeleton-name"></div>
+                <div class="skeleton-line skeleton-bar"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cities List -->
+          <div *ngIf="!isLoadingCities" class="cities-list">
+            <div 
+              *ngFor="let city of topCities; let i = index" 
+              class="city-card"
+              [style.animation-delay.ms]="i * 50"
+            >
+              <div class="city-icon-wrapper" [ngClass]="'city-color-' + (i % 8)">
+                <svg class="city-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+              </div>
+              
+              <div class="city-info">
+                <div class="city-main-info">
+                  <h3 class="city-name">{{ city.cityName }}</h3>
+                  <div class="city-badge" [ngClass]="'badge-color-' + (i % 8)">
+                    <span class="badge-number">{{ city.orderCount }}</span>
+                    <span class="badge-text">طلب</span>
+                  </div>
+                </div>
+                
+                <div class="city-progress">
+                  <div class="progress-track">
+                    <div 
+                      class="progress-fill"
+                      [ngClass]="'progress-color-' + (i % 8)"
+                      [style.width.%]="city.percentage"
+                    ></div>
+                  </div>
+                  <span class="progress-text">{{ city.percentage | number:'1.1-1' }}%</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Empty State -->
+            <div *ngIf="topCities.length === 0" class="empty-state">
+              <div class="empty-icon-wrapper">
+                <svg class="empty-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+              </div>
+              <p class="empty-text">لا توجد بيانات متاحة</p>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="w-full h-2 bg-gray-200 rounded">
-        <div
-          class="h-2 bg-secondaryProgressColor rounded"
-          [style.width.%]="city.percentage"
-        ></div>
+
+      <!-- Heat Map - Right Side -->
+      <div class="lg:col-span-2">
+        <div class="heatmap-container">
+          <div class="heatmap-header">
+            <h3 class="heatmap-title">خريطة توزيع الطلبات</h3>
+          </div>
+          
+          <div class="heatmap-content">
+            <div class="map-wrapper">
+              <canvas id="worldMapChart"></canvas>
+            </div>
+            
+            <div class="heatmap-legend">
+              <div class="legend-item">
+                <div class="legend-dot legend-high"></div>
+                <span class="legend-text">الاتجاه الأكثر طلبًا</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-dot legend-low"></div>
+                <span class="legend-text">الاتجاه الأقل طلبًا</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- خريطة الطلبات -->
-  <div class="custom-card flex flex-col gap-[20px]">
-    <h3 class="text-center text-lg font-bold">رسم بياني لتوضيح حجم الطلبات</h3>
-    <canvas id="worldMapChart"></canvas>
-    <div class="flex justify-center gap-4 mt-2 text-sm text-gray-600">
-      <div><span class="inline-block w-3 h-3 bg-blue-400 rounded-full mr-1"></span> الاتجاه الأكثر طلبًا</div>
-      <div><span class="inline-block w-3 h-3 bg-gray-400 rounded-full mr-1"></span> الاتجاه الأقل طلبًا</div>
-    </div>
+<div class="flex flex-col gap-6">
+  <!-- Header -->
+  <div class="flex justify-between items-center">
+    <h2 class="text-2xl font-bold text-neutral-900">الشحنات التي تم العمل بها خلال اليوم</h2>
   </div>
 
-</div>
-
-<div class="flex flex-col gap-[30px]">
-  <div class="header flex justify-between items-center">
-    <h1 class="text-[20px] font-bold">الشحنات الى تم العمل بها خلال اليوم</h1>
-    <svg width="46" height="40" viewBox="0 0 46 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="0.470068" y="0.470068" width="44.1442" height="39.0599" rx="10.8116" fill="white"/>
-      <rect x="0.470068" y="0.470068" width="44.1442" height="39.0599" rx="10.8116" stroke="#C5C5D3" stroke-width="0.940136"/>
-      <path d="M15.0422 15H30.0422M17.5422 20H27.5422M20.5422 25H24.5422" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
+  <!-- Loading State -->
+  <div *ngIf="isLoadingTodayOrders" class="bg-white rounded-lg shadow-sm border border-neutral-200 p-12 text-center">
+    <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+    <p class="mt-2 text-sm text-neutral-500">جاري التحميل...</p>
   </div>
-  <div class="overflow-x-auto shadow rounded-lg">
-    <table class="min-w-full divide-y divide-gray-200 text-sm text-center">
-      <thead class="bg-gray-100 text-gray-700">
-        <tr>
-          <th class="px-4 py-3">#</th>
-          <th class="px-4 py-3">نوع النقل</th>
-          <th class="px-4 py-3">الوصف</th>
-          <th class="px-4 py-3">السعر</th>
-          <th class="px-4 py-3">حالة الشحنة</th>
-        </tr>
-      </thead>
-      <tbody class="bg-white divide-y divide-gray-200">
-        <tr *ngFor="let shipping of paginatedshipping; let i = index" class="hover:bg-gray-50">
-          <td class="px-4 py-3 font-bold">{{ i + 1 }}</td>
-          <td class="px-4 py-3 rounded">{{ shipping.type }}</td>
-          <td class="px-4 py-3 rounded">{{ shipping.destination }}</td>
-          <td class="px-4 py-3 rounded">{{ shipping.price }}</td>
-          <td class="flex items-center justify-center p-2">
-            <p class="w-[50%] p-2 rounded-md"
-              [ngClass]="{
-              'bg-yellow-100 text-yellow-800': shipping.stateId === 1,
-              'bg-blue-100 text-blue-700': shipping.stateId === 2,
-              'bg-green-100 text-greed-700': shipping.stateId === 3,
-              'bg-red-100 text-red-700': shipping.stateId === 4,
-              }">
-              {{ shipping.state }}
-            </p>
+
+  <!-- Table -->
+  <div *ngIf="!isLoadingTodayOrders" class="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-neutral-200">
+        <thead class="bg-neutral-50">
+          <tr>
+            <th class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">
+              #
+            </th>
+            <th class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">
+              نوع النقل
+            </th>
+            <th class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">
+              الوصف
+            </th>
+            <th class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">
+              السعر
+            </th>
+            <th class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">
+              حالة الشحنة
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-neutral-200">
+          <tr 
+            *ngFor="let order of paginatedTodayOrders; let i = index" 
+            class="hover:bg-neutral-50 transition-colors duration-150"
+          >
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-neutral-900">
+              {{ (currentPage - 1) * itemsPerPage + i + 1 }}
             </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-    <div class="flex w-full justify-start gap-2" *ngIf="totalPages > 1">
-    <button
-      *ngFor="let page of [].constructor(totalPages); let i = index"
-      (click)="changePage(i + 1)"
-      [ngClass]="{
-        'bg-mainButtonBg text-white': currentPage === (i + 1),
-        'bg-gray-200 text-gray-700': currentPage !== (i + 1)
-      }"
-      class="w-10 h-10 rounded-full font-bold flex items-center justify-center transition-colors duration-200"
-    >
-      {{ i + 1 }}
-    </button>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-900">
+              {{ order.vehicleTypeName || 'غير محدد' }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-900">
+              {{ order.orderTypeName }}
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-neutral-900">
+              {{ order.total | number:'1.2-2' }} ر.س
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <span 
+                class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium"
+                [ngClass]="getOrderStatusClass(order.orderStatus)"
+              >
+                {{ order.orderStatusName }}
+              </span>
+            </td>
+          </tr>
+          <tr *ngIf="paginatedTodayOrders.length === 0">
+            <td colspan="5" class="px-6 py-12 text-center text-sm text-neutral-500">
+              لا توجد شحنات متاحة اليوم
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="flex justify-start items-center gap-2 px-6 py-4 border-t border-neutral-200" *ngIf="totalPages > 1">
+      <button
+        *ngFor="let page of [].constructor(totalPages); let i = index"
+        (click)="changePage(i + 1)"
+        [ngClass]="{
+          'bg-primary-600 text-white shadow-md': currentPage === (i + 1),
+          'bg-neutral-100 text-neutral-700 hover:bg-neutral-200': currentPage !== (i + 1)
+        }"
+        class="w-10 h-10 rounded-lg font-semibold flex items-center justify-center transition-all duration-200 text-sm"
+      >
+        {{ i + 1 }}
+      </button>
+    </div>
   </div>
 </div>
 

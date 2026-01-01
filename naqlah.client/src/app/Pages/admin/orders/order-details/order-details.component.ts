@@ -12,7 +12,9 @@ import {
   GetOrderDetailsForAdminDto,
   OrderStatus,
   CustomerType,
-  OrderType
+  OrderType,
+  AvailableDeliveryManDto,
+  AssignOrderToDeliveryManRequest
 } from 'src/app/Core/services/NaqlahClient';
 import { catchError, finalize } from 'rxjs/operators';
 import { of } from 'rxjs';
@@ -43,6 +45,12 @@ export class OrderDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
   confirmationTitle = '';
   confirmationMessage = '';
   private pendingAction?: () => void;
+
+  // Assignment modal properties
+  showAssignModal = false;
+  availableDeliveryMen: AvailableDeliveryManDto[] = [];
+  selectedDeliveryManId: number | null = null;
+  isLoadingDeliveryMen = false;
 
   private routeSubscription?: Subscription;
 
@@ -134,7 +142,18 @@ export class OrderDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   canCancelOrder(): boolean {
+    // Can cancel only pending orders
     return this.orderDetails?.status === OrderStatus.Pending;
+  }
+
+  canAssignOrder(): boolean {
+    // Can assign only pending orders
+    return this.orderDetails?.status === OrderStatus.Pending;
+  }
+
+  canCompleteOrder(): boolean {
+    // Can complete if assigned
+    return this.orderDetails?.status === OrderStatus.Assigned;
   }
 
   cancelOrder(): void {
@@ -460,5 +479,74 @@ export class OrderDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
   onConfirmationCancelled(): void {
     this.showConfirmation = false;
     this.pendingAction = undefined;
+  }
+
+  openAssignModal(): void {
+    this.showAssignModal = true;
+    this.selectedDeliveryManId = null;
+    this.loadAvailableDeliveryMen();
+  }
+
+  closeAssignModal(): void {
+    this.showAssignModal = false;
+    this.selectedDeliveryManId = null;
+  }
+
+  loadAvailableDeliveryMen(): void {
+    this.isLoadingDeliveryMen = true;
+    this.orderClient.getAvailableDeliveryMen().subscribe({
+      next: (deliveryMen) => {
+        this.availableDeliveryMen = deliveryMen;
+        this.isLoadingDeliveryMen = false;
+      },
+      error: (err) => {
+        this.isLoadingDeliveryMen = false;
+        const errorMessage = err?.error?.error || err?.error || 'حدث خطأ أثناء تحميل المندوبين المتاحين';
+        this.toasterService.error('خطأ', errorMessage);
+      }
+    });
+  }
+
+  assignOrder(): void {
+    if (!this.selectedDeliveryManId) {
+      this.toasterService.error('خطأ', 'يرجى اختيار مندوب التوصيل');
+      return;
+    }
+
+    const request = new AssignOrderToDeliveryManRequest();
+    request.orderId = this.orderId;
+    request.deliveryManId = this.selectedDeliveryManId;
+
+    this.orderClient.assignOrderToDeliveryMan(request).subscribe({
+      next: (res) => {
+        this.toasterService.success('تم تعيين المندوب', 'تم تعيين مندوب التوصيل بنجاح');
+        this.closeAssignModal();
+        this.loadOrderDetails();
+      },
+      error: (err) => {
+        const errorMessage = err?.error?.error || err?.error || 'حدث خطأ أثناء تعيين المندوب';
+        this.toasterService.error('خطأ', errorMessage);
+      }
+    });
+  }
+
+  completeOrder(): void {
+    this.confirmationTitle = 'إكمال الطلب';
+    this.confirmationMessage = 'هل أنت متأكد من إكمال هذا الطلب؟';
+    this.pendingAction = () => this.completeOrderFromAdmin();
+    this.showConfirmation = true;
+  }
+
+  completeOrderFromAdmin(): void {
+    this.orderClient.completeOrder(this.orderId).subscribe({
+      next: (res) => {
+        this.toasterService.success('تم إكمال الطلب', 'تم إكمال الطلب بنجاح');
+        this.loadOrderDetails();
+      },
+      error: (err) => {
+        const errorMessage = err?.error?.error || err?.error || 'حدث خطأ أثناء إكمال الطلب';
+        this.toasterService.error('خطأ', errorMessage);
+      }
+    });
   }
 }

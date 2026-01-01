@@ -26,10 +26,10 @@ namespace Presentaion.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(CustomerWalletBalanceDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
-        [Route("GetBalance/{customerId}")]
-        public async Task<IActionResult> GetBalance(int customerId)
+        [Route("GetBalance")]
+        public async Task<IActionResult> GetBalance()
         {
-            var result = await mediator.Send(new GetCustomerWalletBalanceQuery(customerId));
+            var result = await mediator.Send(new GetCustomerWalletBalanceQuery());
 
             if (result.IsFailure)
             {

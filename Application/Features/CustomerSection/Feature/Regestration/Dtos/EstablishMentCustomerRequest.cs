@@ -13,7 +13,7 @@ namespace Application.Features.CustomerSection.Feature.Regestration.Dtos
         public string RecoredImage { get; set; } = string.Empty;
         public string TaxRegistrationNumber { get; set; } = string.Empty;
         public string TaxRegistrationImage { get; set; } = string.Empty;
-        public string Address { get; private set; } = string.Empty;
+        public string Address { get;  set; } = string.Empty;
         public string RepresentitveName { get; set; } = string.Empty;
         public string RepresentitvePhoneNumber { get; set; } = string.Empty;
         public string RepresentitveFrontIdentityNumberImage { get; set; } = string.Empty;
