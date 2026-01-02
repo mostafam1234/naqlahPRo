@@ -1,6 +1,7 @@
 using CSharpFunctionalExtensions;
 using Domain.Enums;
 using Domain.InterFaces;
+using Domain.Shared;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -24,18 +25,21 @@ namespace Application.Features.DeliveryManSection.Order.Commands
         private readonly IUserSession userSession;
         private readonly IMediaUploader mediaUploader;
         private readonly IDateTimeProvider dateTimeProvider;
+        private readonly INotificationService notificationService;
         private const string DeliveryOrderFolderPrefix = "DeliveryOrders";
 
         public ChangeOrderWayPointStatusCommandHandler(
             INaqlahContext context,
             IUserSession userSession,
             IMediaUploader mediaUploader,
-            IDateTimeProvider dateTimeProvider)
+            IDateTimeProvider dateTimeProvider,
+            INotificationService notificationService)
         {
             this.context = context;
             this.userSession = userSession;
             this.mediaUploader = mediaUploader;
             this.dateTimeProvider = dateTimeProvider;
+            this.notificationService = notificationService;
         }
 
         public async Task<Result> Handle(ChangeOrderWayPointStatusCommand request, CancellationToken cancellationToken)
@@ -88,27 +92,46 @@ namespace Application.Features.DeliveryManSection.Order.Commands
 
             // Mark the waypoint as picked up
             var currentDateTime = dateTimeProvider.Now;
-            var markResult = wayPoint.MarkAsPickedUp(packImagePath, currentDateTime);
+            var markResult = wayPoint.WaitingForCustomerActionCommand(packImagePath, currentDateTime);
 
             if (markResult.IsFailure)
             {
                 return Result.Failure(markResult.Error);
             }
-
-            // Check if all waypoints are picked up and auto-complete the order if needed
-            var checkCompleteResult = order.CheckAndCompleteIfAllWayPointsPickedUp(currentDateTime);
             
-            if (checkCompleteResult.IsFailure)
-            {
-                return Result.Failure(checkCompleteResult.Error);
-            }
 
-            // Save changes to database
             var saveResult = await context.SaveChangesAsyncWithResult();
-            
+
             if (saveResult.IsFailure)
             {
                 return Result.Failure(saveResult.Error);
+            }
+
+            var customer = await context.Customers.FirstOrDefaultAsync(c => c.Id == order.CustomerId, cancellationToken);
+            if (customer is not null)
+            {
+                var firebaseTokens = new List<string>
+                {
+                        customer.AndriodDevice,
+                        customer.IosDevice
+                };
+
+
+                var notificationBody = new NotificationBodyForMultipleDevices
+                {
+                    Title = "New Order Available",
+                    Body = $"New order #{order.OrderNumber} is available for pickup within your area",
+                    FireBaseTokens = firebaseTokens.Where(x => !string.IsNullOrEmpty(x)).ToList(),
+                    PayLoad = new Dictionary<string, string>
+                        {
+                            { "orderId", order.Id.ToString() },
+                            { "orderNumber", order.OrderNumber },
+                            { "orderWayPointId", request.WayPointId.ToString()},
+                            { "type", ((int)NotificationType.WaititngCustomerAction).ToString() }
+                        }
+                };
+
+                await notificationService.SendNotificationAsyncToMultipleDevices(notificationBody);
             }
 
             return Result.Success();

@@ -35,14 +35,14 @@ namespace Presentaion.Controllers
 
 
         [HttpPost]
-        [ProducesResponseType(typeof(CreateOrderResponseDto),StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CreateOrderResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
         [Route("Create")]
         public async Task<IActionResult> Create([FromBody] CreateOrderDto request)
         {
             var result = await mediator.Send(new CreateNewOrderCommand
             {
-                Order=request,
+                Order = request,
             });
 
             if (result.IsFailure)
@@ -70,6 +70,45 @@ namespace Presentaion.Controllers
             }
 
             return Ok(result.Value);
+        }
+
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("ConfirmOrderWayPoint")]
+        public async Task<IActionResult> ConfirmOrderWayPoint([FromBody] ChangeOrderWayPointStatusRequest request)
+        {
+            var result = await mediator.Send(new ConfirmCustomerWayPoint
+            {
+                OrderId = request.OrderId,
+                OrderWayPointId = request.OrderWayPointId,
+            });
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+            return Ok();
+        }
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("RejectOrderWayPoint")]
+        public async Task<IActionResult> RejectOrderWayPoint([FromBody] ChangeOrderWayPointStatusRequest request)
+        {
+            var result = await mediator.Send(new RejectCustomerWayPointCommand
+            {
+                OrderId = request.OrderId,
+                OrderWayPointId = request.OrderWayPointId,
+            });
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+            return Ok();
         }
 
         [HttpPost]
