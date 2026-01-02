@@ -33,7 +33,7 @@ export class AdminLayoutComponent {
   slide: string = "";
   loading: boolean = false;
   routerSubscription!: Subscription;
-  appearSideBar: boolean = false;
+  appearSideBar: boolean = true; // Default to open on large screens
   constructor(
     private languageService: LanguageService,
     private router: Router,
@@ -41,6 +41,8 @@ export class AdminLayoutComponent {
   ngOnInit() {
     this.getLanuage();
     this.onResize();
+    // Set initial sidebar state based on screen size
+    this.appearSideBar = !this.isSmallScreen;
     this.loaderService.loading$.subscribe((loadingState) => {
       this.loading = loadingState;
     });
@@ -59,11 +61,19 @@ export class AdminLayoutComponent {
 
   private checkScreenSize(): void {
     this.isSmallScreen = window.innerWidth < 992;
-
+    // Don't auto-close sidebar on screen size change - let user control it
   }
 
   handleSideBarVisibility(data: boolean){
     this.appearSideBar = data;
+  }
+
+  toggleSidebar() {
+    this.appearSideBar = !this.appearSideBar;
+  }
+
+  closeSidebar() {
+    this.appearSideBar = false;
   }
   getLanuage() {
     this.language = this.languageService.getLanguage();

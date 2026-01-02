@@ -1,12 +1,15 @@
+
 ﻿namespace Domain.Enums
 {
 
     public enum NotificationType
     {
         NewOrder=1,
-        PickUp=2,
-        RejectORderWayPointFromCustomer=3,
-        WaititngCustomerAction= 4,
-        RejectOrder=5,
+        OrderStatusChanged = 2
+        PickUp=3,
+        RejectORderWayPointFromCustomer=4,
+        WaititngCustomerAction= 5,
+        RejectOrder=6,
     }
 }
+

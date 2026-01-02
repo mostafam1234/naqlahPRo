@@ -1,14 +1,17 @@
-﻿using Application.Features.CustomerSection.Feature.AssistantWork.Dtos;
+﻿using Application.Features.AdminSection.OrderFeature.Queries;
+using Application.Features.CustomerSection.Feature.AssistantWork.Dtos;
 using Application.Features.CustomerSection.Feature.AssistantWork.Queries;
 using Application.Features.CustomerSection.Feature.Order.Commands;
 using Application.Features.CustomerSection.Feature.Order.Dtos;
 using Application.Features.CustomerSection.Feature.Order.Queries;
 using Application.Features.CustomerSection.Feature.Regestration.Commands;
 using Application.Features.CustomerSection.Feature.Regestration.Dtos;
+using Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Presentaion.Reponse;
+using Presentaion.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,9 +25,12 @@ namespace Presentaion.Controllers
     public class CustomerOrderController:ControllerBase
     {
         private readonly IMediator mediator;
-        public CustomerOrderController(IMediator mediator)
+        private readonly NotificationHubService notificationHubService;
+
+        public CustomerOrderController(IMediator mediator, NotificationHubService notificationHubService)
         {
             this.mediator = mediator;
+            this.notificationHubService = notificationHubService;
         }
 
 
@@ -43,6 +49,26 @@ namespace Presentaion.Controllers
             {
                 return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
             }
+
+            // Send notification for new order
+            try
+            {
+                var orderNumber = result.Value.OrderNumber ?? result.Value.OrderId.ToString();
+                await notificationHubService.SendNotificationAsync(
+                    arabicTitle: "طلب جديد",
+                    englishTitle: "New Order",
+                    arabicMessage: $"تم إنشاء طلب جديد برقم {orderNumber}",
+                    englishMessage: $"A new order has been created with number {orderNumber}",
+                    notificationType: NotificationType.NewOrder,
+                    orderId: result.Value.OrderId
+                );
+            }
+            catch (Exception ex)
+            {
+                // Log error but don't fail the request
+                // TODO: Add logging here
+            }
+
             return Ok(result.Value);
         }
 

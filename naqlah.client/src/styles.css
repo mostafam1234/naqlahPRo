@@ -43,11 +43,10 @@ body{
 .main-header {
   font-weight: 600;
   line-height: 1.4;
-  @apply text-secondaryColor text-[24px] text-center;
+  @apply text-[24px] text-center;
 }
 .main-definition {
   font-weight: 500;
-  @apply text-primaryColor;
   font-size: 24px;
 }
 .custom-card {

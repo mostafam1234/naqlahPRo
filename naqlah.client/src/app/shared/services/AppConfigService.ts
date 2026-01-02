@@ -13,21 +13,28 @@ export class AppConfigService {
   loaded: boolean = false;
   constructor(protected inej: Injector) {
     this.config = new SystemConfiguration();
-    this.loadConfig();
+    console.log('🔧 AppConfigService constructor called');
+    console.log('🔧 Starting to load config...');
+    this.loadConfig().catch(err => {
+      console.error('❌ Failed to load config:', err);
+    });
   }
   loadConfig(): Promise<any> {
     return new Promise((resolve, reject) => {
       const http = this.inej.get(HttpClient);
+      console.log('📂 Loading config from:', this.envUrl);
       http
         .get(this.envUrl)
         .pipe(
           catchError((err) => {
-            console.log(err);
+            console.error('❌ Error loading appSettings.json:', err);
+            console.error('❌ URL attempted:', this.envUrl);
             return EMPTY;
           })
         )
         .subscribe(
           (response: any) => {
+            console.log('✅ Config loaded successfully:', response);
             this.config = response;
             this.loaded = true;
             if (!this.loaded$.value) {
@@ -36,13 +43,15 @@ export class AppConfigService {
             resolve(true);
           },
           (err) => {
-            debugger;
+            console.error('❌ Error in config subscription:', err);
+            reject(err);
           }
         );
     });
   }
 
   getConfig(): SystemConfiguration {
+    console.log('📋 getConfig() called, loaded:', this.loaded, 'config:', this.config);
     return this.config;
   }
 

@@ -45,6 +45,7 @@ namespace Application.Features.AdminSection.OrderFeature.Commands
                     return Result.Failure<int>(errMessage);
                 }
 
+                // Only pending orders can be canceled
                 if (order.OrderStatus != OrderStatus.Pending)
                 {
                     var errMessage = request.LanguageId == 1 ? "يمكن إلغاء الطلبات المعلقة فقط." : "Only Pending orders can be canceled.";

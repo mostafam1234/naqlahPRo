@@ -1,171 +1,289 @@
-<section class="captain flex flex-col gap-[45px]">
+<div class="min-h-screen bg-neutral-50">
+  <div class="relative">
+    <!-- Page Header Component -->
+    <app-page-header
+      title="إدارة مندوبي التوصيل"
+      subtitle="عرض وإدارة جميع مندوبي التوصيل في النظام"
+      [showBackButton]="true"
+      iconPath="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+    >
+    </app-page-header>
 
-  <div class="flex items-center justify-center bg-gray-50">
-    <div class="flex flex-col lg:flex-row gap-6 p-6 w-[100%] lg:w-[80%] flex-wrap ">
-
-      <!-- Dynamic Cards -->
-      <div *ngFor="let card of cards"
-            class="bg-white rounded-lg border-2 border-dashed border-gray-300 p-4 w-[100%] lg:w-[30%] text-center shadow-sm hover:shadow-md transition-shadow">
-        <h3 class="text-gray-700 font-medium mb-4 text-lg">{{ card.title }}</h3>
-        <div class="flex items-center justify-center gap-2">
-          <svg width="31" height="35" viewBox="0 0 31 35" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M18.185 17.7659L16.6892 18.6247L16.6668 34.1029L30.1358 26.3868L30.1583 10.9086L18.185 17.7659Z" fill="#625A5A"/>
-            <path d="M20.6408 3.88931L15.4695 0.899126L1.62651 8.82822L6.80466 11.8184L20.6408 3.88931Z" fill="#625A5A"/>
-            <path d="M29.2826 8.86839L23.3231 5.47754L9.48702 13.4066L10.2752 13.8142L15.4465 16.7975L20.5986 13.8499L29.2826 8.86839Z" fill="#625A5A"/>
-            <path d="M8.43395 19.0949L5.95872 17.8239L5.96444 13.8837L0.862325 10.9487L0.840003 26.3167L14.1898 34.0167L14.2121 18.6487L8.43943 15.327L8.43395 19.0949Z" fill="#625A5A"/>
-            </svg>
-          <span class="text-2xl font-bold text-gray-800">{{ card.count }}</span>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <div class="flex flex-wrap items-center justify-between gap-4">
-    <div class="flex gap-[60px]">
-      <input
-        type="text"
-        placeholder="Search"
-        class="border rounded-full px-4 py-2 w-full"
-      />
-      <div class="flex items-center gap-2">
-        <svg
-          (click)="viewMode = 'table'" [ngClass]="{'ring rounded-lg ring-mainButtonBg': viewMode === 'table'}"
-          class="cursor-pointer transition"width="46" height="40"
-          viewBox="0 0 46 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="1.3856" y="0.470068" width="44.1442" height="39.0599" rx="10.8116" fill="white"/>
-          <rect x="1.3856" y="0.470068" width="44.1442" height="39.0599" rx="10.8116" stroke="#C5C5D3" stroke-width="0.940136"/>
-          <path d="M15.9575 15H30.9575M15.9575 20H30.9575M15.9575 25H30.9575" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <line x1="15.4155" y1="14" x2="15.4155" y2="26" stroke="black"/>
-          <line x1="19.4155" y1="14" x2="19.4155" y2="26" stroke="black"/>
-          <line x1="23.4155" y1="14" x2="23.4155" y2="26" stroke="black"/>
-          <line x1="27.4155" y1="14" x2="27.4155" y2="26" stroke="black"/>
-          <line x1="31.4155" y1="14" x2="31.4155" y2="26" stroke="black"/>
-        </svg>
-
-        <svg
-          (click)="viewMode = 'cards'" [ngClass]="{'ring rounded-lg ring-mainButtonBg': viewMode === 'cards'}"
-          class="cursor-pointer transition"width="46" height="40"
-          viewBox="0 0 46 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="1.30112" y="0.470068" width="44.1442" height="39.0599" rx="10.8116" fill="white"/>
-          <rect x="1.30112" y="0.470068" width="44.1442" height="39.0599" rx="10.8116" stroke="#C5C5D3" stroke-width="0.940136"/>
-          <path d="M15.873 15H30.873M15.873 20H30.873M15.873 25H30.873" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </div>
-    </div>
-    <div class="max-w-sm">
-      <input type="date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Select date">
-    </div>
-  </div>
-
-  <!-- Cards grid -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[20px]" *ngIf="viewMode === 'cards'">
-    <div *ngFor="let captain of paginatedCaptains; let i = index" class="custom-card rounded flex flex-col gap-[20px] shadow">
-      <div class="flex justify-between items-center">
-        <div class="flex gap-[10px] items-center">
-          <img
-            [src]="captain.avatar"
-            alt="avatar"
-            class="w-[50px] h-[50px] rounded-full object-cover"
-          />
-          <p class="font-bold text-sm">{{ captain.name }}</p>
-        </div>
-
-        <div class="flex text-sm gap-[5px]">
-          <!-- زر المعاينة -->
-          <div class="relative group inline-block">
-            <a
-              routerLink="requestTracking/{{captain.id}}"
-              class="flex items-center gap-1 px-3 py-1.5 bg-blue-100 text-blue-800 rounded hover:bg-yellow-200 transition"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+    <!-- Main Content Container -->
+    <div class="container mx-auto px-6 py-8">
+      <!-- Statistics Cards Section -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+        <!-- Total Delivery Men -->
+        <div class="bg-surface-50 rounded-xl p-6 border border-neutral-200 hover:shadow-lg transition-shadow duration-200">
+          <div class="flex items-start justify-between mb-4">
+            <div class="p-3 rounded-lg bg-primary-50">
+              <svg width="24" height="24" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-primary-600">
+                <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" fill="currentColor"/>
               </svg>
-            </a>
-
-            <!-- Tooltip -->
-            <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block bg-gray-800 text-white text-sm rounded py-1 px-2 shadow-md z-10">
-              الإجراء
             </div>
+          </div>
+          <div class="space-y-1">
+            <p class="text-sm font-medium text-neutral-600">إجمالي مندوبي التوصيل</p>
+            <p class="text-3xl font-bold text-neutral-900" *ngIf="!isLoadingStatistics">{{ statistics?.totalDeliveryMen ?? 0 | number }}</p>
+            <div class="h-8 w-20 bg-neutral-200 rounded animate-pulse" *ngIf="isLoadingStatistics"></div>
+            <p class="text-xs text-neutral-500 mt-2">جميع مندوبي التوصيل</p>
           </div>
         </div>
 
-      </div>
-
-      <!-- معلومات الكابتن -->
-      <div class="flex flex-col gap-[10px] w-full">
-        <div class="flex items-center gap-[10px] text-sm text-gray-700">
-          <i class="fa fa-envelope ml-2"></i> {{ captain.email }}
-        </div>
-        <div class="flex items-center gap-[10px] text-sm text-gray-700">
-          <i class="fa fa-map-marker ml-2"></i> {{ captain.location }}
-        </div>
-        <div class="flex items-center gap-[10px] text-sm text-gray-700">
-          <i class="fa fa-phone ml-2"></i> {{ captain.phone }}
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div *ngIf="viewMode === 'table'" class="overflow-x-auto shadow rounded-lg">
-    <table class="min-w-full divide-y divide-gray-200 text-sm text-center">
-      <thead class="bg-gray-100 text-gray-700">
-        <tr>
-          <th class="px-4 py-3">#</th>
-          <th class="px-4 py-3">الصورة</th>
-          <th class="px-4 py-3">اسم الكابتن</th>
-          <th class="px-4 py-3">كود الكابتن</th>
-          <th class="px-4 py-3">رقم الهاتف</th>
-          <th class="px-4 py-3">البريد الإلكترونى</th>
-          <th class="px-4 py-3">النوع</th>
-        </tr>
-      </thead>
-      <tbody class="bg-white divide-y divide-gray-200">
-        <tr *ngFor="let captain of paginatedCaptains; let i = index" class="hover:bg-gray-50">
-          <td class="px-4 py-3 font-bold">{{ i + 1 }}</td>
-          <td class="px-4 py-3">
-            <img [src]="captain.avatar" alt="avatar" class="w-10 h-10 rounded-full object-cover mx-auto">
-          </td>
-          <td class="px-4 py-3">{{ captain.name }}</td>
-          <td class="px-4 py-3">{{ captain.code }}</td>
-          <td class="px-4 py-3">{{ captain.phone }}</td>
-          <td class="px-4 py-3">{{ captain.email }}</td>
-          <td class="px-4 py-3">{{ captain.type2 }}</td>
-          <td class="px-4 py-3">
-            <div class="flex justify-center gap-1">
-              <!-- المعاينة -->
-              <div class="relative group inline-block">
-                <a routerLink="requestTracking/{{captain.id}}"
-                  class="flex items-center px-2 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                  </svg>
-                </a>
-              </div>
+        <!-- Active Delivery Men -->
+        <div class="bg-surface-50 rounded-xl p-6 border border-neutral-200 hover:shadow-lg transition-shadow duration-200">
+          <div class="flex items-start justify-between mb-4">
+            <div class="p-3 rounded-lg bg-success-50">
+              <svg width="24" height="24" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-success-600">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" fill="currentColor"/>
+              </svg>
             </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+          </div>
+          <div class="space-y-1">
+            <p class="text-sm font-medium text-neutral-600">مندوبي التوصيل النشطين</p>
+            <p class="text-3xl font-bold text-neutral-900" *ngIf="!isLoadingStatistics">{{ statistics?.activeDeliveryMen ?? 0 | number }}</p>
+            <div class="h-8 w-20 bg-neutral-200 rounded animate-pulse" *ngIf="isLoadingStatistics"></div>
+            <p class="text-xs text-neutral-500 mt-2">مندوبين نشطين</p>
+          </div>
+        </div>
 
-  <div class="flex w-full justify-start gap-2" *ngIf="totalPages > 1">
-      <button
-        *ngFor="let page of [].constructor(totalPages); let i = index"
-        (click)="changePage(i + 1)"
-        [ngClass]="{
-          'bg-mainButtonBg mainButtonText': currentPage === (i + 1),
-          'bg-gray-200 text-gray-700': currentPage !== (i + 1)
-        }"
-        class="w-10 h-10 rounded-full font-bold flex items-center justify-center transition-colors duration-200"
-      >
-        {{ i + 1 }}
-      </button>
+        <!-- Inactive Delivery Men -->
+        <div class="bg-surface-50 rounded-xl p-6 border border-neutral-200 hover:shadow-lg transition-shadow duration-200">
+          <div class="flex items-start justify-between mb-4">
+            <div class="p-3 rounded-lg bg-warning-50">
+              <svg width="24" height="24" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" class="text-warning-600">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" fill="currentColor"/>
+              </svg>
+            </div>
+          </div>
+          <div class="space-y-1">
+            <p class="text-sm font-medium text-neutral-600">مندوبي التوصيل غير النشطين</p>
+            <p class="text-3xl font-bold text-neutral-900" *ngIf="!isLoadingStatistics">{{ statistics?.inactiveDeliveryMen ?? 0 | number }}</p>
+            <div class="h-8 w-20 bg-neutral-200 rounded animate-pulse" *ngIf="isLoadingStatistics"></div>
+            <p class="text-xs text-neutral-500 mt-2">مندوبين غير نشطين</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filters Section -->
+      <div class="bg-white rounded-xl shadow-sm border border-neutral-200 mb-6">
+        <div class="p-6">
+          <!-- Search Bar -->
+          <div class="mb-6">
+            <div class="relative max-w-2xl">
+              <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                <svg class="h-5 w-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <input
+                type="text"
+                [formControl]="searchControl"
+                placeholder="البحث باسم المندوب أو رقم الهاتف..."
+                class="block w-full pr-10 pl-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 text-sm"
+              />
+              <button
+                *ngIf="searchControl.value"
+                (click)="clearSearch()"
+                class="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400 hover:text-neutral-600 transition-colors"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Delivery Men Table -->
+      <div class="bg-white rounded-xl shadow-sm border border-neutral-200 overflow-hidden">
+        <!-- Loading State -->
+        <div *ngIf="isLoading" class="p-12 text-center">
+          <div class="inline-flex items-center px-4 py-2 font-semibold leading-6 text-sm shadow rounded-md text-primary-600 bg-primary-50">
+            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-primary-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            جاري تحميل البيانات...
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="!isLoading && deliveryMen.length === 0" class="p-12 text-center">
+          <div class="max-w-md mx-auto">
+            <div class="w-16 h-16 mx-auto mb-4 bg-neutral-100 rounded-full flex items-center justify-center">
+              <svg class="w-8 h-8 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-neutral-900 mb-2">لا يوجد مندوبي توصيل</h3>
+            <p class="text-sm text-neutral-500">لم يتم العثور على أي مندوبي توصيل تطابق المعايير المحددة</p>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div *ngIf="!isLoading && deliveryMen.length > 0" class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-neutral-200">
+            <thead class="bg-neutral-50">
+              <tr>
+                <th scope="col" class="px-6 py-4 text-right text-xs font-semibold text-neutral-700 uppercase tracking-wider">
+                  #
+                </th>
+                <th scope="col" class="px-6 py-4 text-right text-xs font-semibold text-neutral-700 uppercase tracking-wider">
+                  اسم المندوب
+                </th>
+                <th scope="col" class="px-6 py-4 text-right text-xs font-semibold text-neutral-700 uppercase tracking-wider">
+                  البريد الإلكتروني
+                </th>
+                <th scope="col" class="px-6 py-4 text-right text-xs font-semibold text-neutral-700 uppercase tracking-wider">
+                  رقم الهاتف
+                </th>
+                <th scope="col" class="px-6 py-4 text-right text-xs font-semibold text-neutral-700 uppercase tracking-wider">
+                  نوع المركبة
+                </th>
+                <th scope="col" class="px-6 py-4 text-right text-xs font-semibold text-neutral-700 uppercase tracking-wider">
+                  رقم اللوحة
+                </th>
+                <th scope="col" class="px-6 py-4 text-right text-xs font-semibold text-neutral-700 uppercase tracking-wider">
+                  النوع
+                </th>
+                <th scope="col" class="px-6 py-4 text-center text-xs font-semibold text-neutral-700 uppercase tracking-wider">
+                  الإجراءات
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-neutral-200">
+              <tr 
+                *ngFor="let deliveryMan of deliveryMen; let i = index" 
+                class="hover:bg-neutral-50 transition-colors duration-150"
+              >
+                <!-- Index -->
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm font-medium text-neutral-900">{{ displayStartCount + i }}</div>
+                </td>
+                <!-- Name -->
+                <td class="px-6 py-4">
+                  <div class="text-sm font-medium text-neutral-900">{{ deliveryMan.fullName }}</div>
+                  <span 
+                    *ngIf="deliveryMan.active"
+                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 mt-1"
+                  >
+                    نشط
+                  </span>
+                  <span 
+                    *ngIf="!deliveryMan.active"
+                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800 mt-1"
+                  >
+                    غير نشط
+                  </span>
+                </td>
+
+                <!-- Email -->
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm text-neutral-900">{{ deliveryMan.email || 'غير محدد' }}</div>
+                </td>
+
+                <!-- Phone -->
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm text-neutral-900">{{ deliveryMan.phoneNumber || 'غير محدد' }}</div>
+                </td>
+
+                <!-- Vehicle Type -->
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm text-neutral-900">{{ deliveryMan.vehicleTypeName || 'غير محدد' }}</div>
+                </td>
+
+                <!-- Vehicle Plate -->
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm font-mono text-neutral-900">{{ deliveryMan.vehiclePlate || 'غير محدد' }}</div>
+                </td>
+
+                <!-- Delivery Type -->
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                    {{ deliveryMan.deliveryTypeName }}
+                  </span>
+                </td>
+
+                <!-- Actions -->
+                <td class="px-6 py-4 whitespace-nowrap text-center">
+                  <button
+                    (click)="viewDeliveryManDetails(deliveryMan.id)"
+                    class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-primary-600 bg-primary-50 hover:bg-primary-100 rounded-lg transition-colors duration-200"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    <span>عرض</span>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div *ngIf="!isLoading && totalPages > 1" class="bg-neutral-50 border-t border-neutral-200 px-6 py-4">
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <!-- Results Info -->
+            <div class="text-sm text-neutral-600">
+              عرض <span class="font-semibold text-neutral-900">{{ displayStartCount }}</span> - 
+              <span class="font-semibold text-neutral-900">{{ displayEndCount }}</span> من 
+              <span class="font-semibold text-neutral-900">{{ totalCount }}</span> مندوب
+            </div>
+
+            <!-- Pagination Controls -->
+            <div class="flex items-center gap-2">
+              <!-- Previous Button -->
+              <button
+                (click)="changePage(currentPage - 1)"
+                [disabled]="currentPage === 1"
+                class="px-3 py-2 text-sm font-medium text-neutral-700 bg-white border border-neutral-300 rounded-lg hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+
+              <!-- Page Numbers -->
+              <div class="flex items-center gap-1">
+                <ng-container *ngFor="let page of visiblePages">
+                  <button
+                    *ngIf="isPageNumber(page)"
+                    (click)="changePage(+page)"
+                    [ngClass]="{
+                      'bg-primary-600 text-white shadow-md': currentPage === page,
+                      'text-neutral-700 hover:bg-neutral-100': currentPage !== page
+                    }"
+                    class="min-w-[40px] h-10 px-3 text-sm font-medium rounded-lg transition-all duration-200"
+                  >
+                    {{ page }}
+                  </button>
+                  <span
+                    *ngIf="isPageEllipsis(page)"
+                    class="px-2 text-neutral-500"
+                  >
+                    ...
+                  </span>
+                </ng-container>
+              </div>
+
+              <!-- Next Button -->
+              <button
+                (click)="changePage(currentPage + 1)"
+                [disabled]="currentPage >= totalPages"
+                class="px-3 py-2 text-sm font-medium text-neutral-700 bg-white border border-neutral-300 rounded-lg hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-</section>
+  </div>
+</div>

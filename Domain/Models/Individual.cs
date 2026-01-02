@@ -40,15 +40,15 @@ namespace Domain.Models
                 return Result.Failure<Individual>("Identity Number is Required");
             }
 
-            if (string.IsNullOrWhiteSpace(frontIdentityImage))
-            {
-                return Result.Failure<Individual>("Identity Image is Required");
-            }
+            //if (string.IsNullOrWhiteSpace(frontIdentityImage))
+            //{
+            //    return Result.Failure<Individual>("Identity Image is Required");
+            //}
 
-            if (string.IsNullOrWhiteSpace(backIdentityImage))
-            {
-                return Result.Failure<Individual>("Identity Image is Required");
-            }
+            //if (string.IsNullOrWhiteSpace(backIdentityImage))
+            //{
+            //    return Result.Failure<Individual>("Identity Image is Required");
+            //}
 
             return new Individual
             {

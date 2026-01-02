@@ -1,5 +1,12 @@
 <!-- dashboard.component.html -->
-<div class="G-dashboard bg-adminPrimaryBg" [class.rtl]="language === 'ar'" [class.ltr]="language === 'en'">
+<div class="G-dashboard bg-neutral-50" [class.rtl]="language === 'ar'" [class.ltr]="language === 'en'">
+  <!-- Mobile Backdrop/Overlay -->
+  <div 
+    *ngIf="isSmallScreen && appearSideBar"
+    class="sidebar-backdrop fixed inset-0 bg-black/50 z-[99998] transition-opacity duration-300"
+    (click)="closeSidebar()"
+  ></div>
+
   <div class="left-side"
   [ngClass]="{
     en: language === 'en',
@@ -9,9 +16,19 @@
     large: !isSmallScreen,
     small: isSmallScreen
   }">
-    <app-side-bar (dataEmitter)="handleSideBarVisibility($event)"></app-side-bar>
+    <app-side-bar 
+      (dataEmitter)="handleSideBarVisibility($event)"
+      [isMobile]="isSmallScreen"
+      [isOpen]="appearSideBar"
+      [isRtl]="language === 'ar'"
+      (closeSidebar)="closeSidebar()"
+    ></app-side-bar>
   </div>
-  <div class="right-side">
+  <div class="right-side"
+    [ngClass]="{
+      'sidebar-open': appearSideBar && !isSmallScreen,
+      'sidebar-closed': !appearSideBar && !isSmallScreen
+    }">
     <app-header (dataEmitter)="handleSideBarVisibility($event)"></app-header>
     <div class="bg-adminBodyBG">
       <div class="G-sub_container">
