@@ -3,20 +3,13 @@ using Application.Features.CustomerSection.Feature.CustomerInfo.Queries;
 using Application.Features.CustomerSection.Feature.Regestration.Commands;
 using Application.Features.CustomerSection.Feature.Regestration.Dtos;
 using Application.Features.DeliveryManSection.LogIn.Dtos;
-using Application.Features.DeliveryManSection.Regestration.Commands;
-using Application.Features.DeliveryManSection.Regestration.Dtos;
 using Domain.InterFaces;
-using Domain.Shared;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Presentaion.Reponse;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Presentaion.Controllers
 {

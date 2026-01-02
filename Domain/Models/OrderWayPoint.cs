@@ -1,4 +1,5 @@
-﻿using Domain.Enums;
+﻿using CSharpFunctionalExtensions;
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,6 +51,30 @@ namespace Domain.Models
             };
         }
 
+
+        public Result ChangeStatusToCustomerConfirm(DateTime nowDate)
+        {
+            if (this.OrderWayPointsStatus != OrderWayPointsStatus.WaititngCustomerAction)
+            {
+                return CSharpFunctionalExtensions.Result.Failure("Waypoint must be waiting for customer action before confirming");
+            }
+            this.OrderWayPointsStatus = OrderWayPointsStatus.PickedUp;
+            this.PickedUpDate = nowDate;
+            return CSharpFunctionalExtensions.Result.Success();
+        }
+
+        public Result ChangeStatusToCustomerReject()
+        {
+            if (this.OrderWayPointsStatus != OrderWayPointsStatus.WaititngCustomerAction)
+            {
+                return CSharpFunctionalExtensions.Result.Failure("Waypoint must be waiting for customer action before confirming");
+            }
+            this.OrderWayPointsStatus = OrderWayPointsStatus.CustomerRejected;
+            return CSharpFunctionalExtensions.Result.Success();
+        }
+
+
+
         public CSharpFunctionalExtensions.Result MarkAsPickedUp(string packImagePath, DateTime pickedUpDate)
         {
             if (string.IsNullOrWhiteSpace(packImagePath))
@@ -70,6 +95,29 @@ namespace Domain.Models
             this.OrderWayPointsStatus = OrderWayPointsStatus.PickedUp;
             this.PackImagePath = packImagePath;
             this.PickedUpDate = pickedUpDate;
+
+            return CSharpFunctionalExtensions.Result.Success();
+        }
+
+        public CSharpFunctionalExtensions.Result WaitingForCustomerActionCommand(string packImagePath, DateTime pickedUpDate)
+        {
+            if (string.IsNullOrWhiteSpace(packImagePath))
+            {
+                return CSharpFunctionalExtensions.Result.Failure("Pack image is required to mark waypoint as picked up");
+            }
+
+            if (this.OrderWayPointsStatus == OrderWayPointsStatus.PickedUp)
+            {
+                return CSharpFunctionalExtensions.Result.Failure("Waypoint is already marked as picked up");
+            }
+
+            if (this.OrderWayPointsStatus == OrderWayPointsStatus.Completed)
+            {
+                return CSharpFunctionalExtensions.Result.Failure("Waypoint is already completed");
+            }
+
+            this.OrderWayPointsStatus = OrderWayPointsStatus.WaititngCustomerAction;
+            this.PackImagePath = packImagePath;
 
             return CSharpFunctionalExtensions.Result.Success();
         }

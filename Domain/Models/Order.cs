@@ -101,6 +101,42 @@ namespace Domain.Models
             }
         }
 
+
+        public Result ConfirmOrderWayPointFromCustomer(int orderWayPoint,DateTime nowDate)
+        {
+            var wayPoint = this._OrderWayPoints
+                               .FirstOrDefault(x => x.Id == orderWayPoint);
+            if (wayPoint is null)
+            {
+                return Result.Failure("Order way point not found");
+            }
+
+            var confirmResult = wayPoint.ChangeStatusToCustomerConfirm(nowDate);
+            if (confirmResult.IsFailure)
+            {
+                return Result.Failure(confirmResult.Error);
+            }
+            return Result.Success();
+        }
+
+
+        public Result RejectOrderWayPointFromCustomer(int orderWayPoint)
+        {
+            var wayPoint = this._OrderWayPoints
+                               .FirstOrDefault(x => x.Id == orderWayPoint);
+            if (wayPoint is null)
+            {
+                return Result.Failure("Order way point not found");
+            }
+
+            var confirmResult = wayPoint.ChangeStatusToCustomerReject();
+            if (confirmResult.IsFailure)
+            {
+                return Result.Failure(confirmResult.Error);
+            }
+            return Result.Success();
+        }
+
         public static Result<Order> Create(int customerId,
                                            OrderType orderType,
                                            string orderNumber,
