@@ -61,6 +61,7 @@ namespace Application.Features.VehicleSection.Queries
                         ArabicName = x.ArabicName,
                         EnglishName = x.EnglishName,
                         IconImagePath = $"{baseUrl}/ImageBank/{VehicleFolderPrefix}/{x.IconImagePath}",
+                        Cost = x.Cost,
                         MainCategories = x.VehicleTypeCategoies.Select(vtc => new MainCategoryInfo
                         {
                             Id = vtc.MainCategory.Id,

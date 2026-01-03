@@ -12,6 +12,7 @@ namespace Application.Features.VehicleSection.Dtos
         public string ArabicName { get; set; } = string.Empty;
         public string EnglishName { get; set; } = string.Empty;
         public string IconImagePath { get; set; } = string.Empty;
+        public decimal Cost { get; set; }
         public List<MainCategoryInfo> MainCategories { get; set; } = new List<MainCategoryInfo>();
     }
 

@@ -303,12 +303,9 @@ export class HeaderComponent {
     switch (action) {
       case 'profile':
         // Navigate to profile page
-        this.router.navigate(['/profile']);
+        this.router.navigate(['/admin/profile']);
         break;
-      case 'change_password':
-        // Navigate to change password page
-        this.router.navigate(['/change-password']);
-        break;
+
       case 'language':
         // Open language dropdown
         this.toggleLanguageDropdown();
@@ -350,7 +347,7 @@ export class HeaderComponent {
   private completeLogout() {
     this.authService.logout();
     this.isLoggingOut = false;
-    
+
     console.log('✅ تم تسجيل الخروج بنجاح');
       }
 

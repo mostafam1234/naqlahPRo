@@ -16,6 +16,7 @@ namespace Application.Features.VehicleSection.Commands
         public string EnglishName { get; set; } = string.Empty;
         public string IconBase64 { get; set; } = string.Empty;
         public List<int> MainCategoryIds { get; set; } = new List<int>();
+        public decimal Cost { get; set; }
 
         private class AddVehicleTypeCommandHandler : IRequestHandler<AddVehicleTypeCommand, Result<int>>
         {
@@ -53,7 +54,7 @@ namespace Application.Features.VehicleSection.Commands
                     return Result.Failure<int>($"Failed to upload icon: {ex.Message}");
                 }
 
-                var vehicleType = VehicleType.Instance(request.ArabicName, request.EnglishName, iconPath, request.MainCategoryIds);
+                var vehicleType = VehicleType.Instance(request.ArabicName, request.EnglishName, iconPath, request.MainCategoryIds, request.Cost);
                 if (vehicleType.IsFailure)
                 {
                     return Result.Failure<int>(vehicleType.Error);

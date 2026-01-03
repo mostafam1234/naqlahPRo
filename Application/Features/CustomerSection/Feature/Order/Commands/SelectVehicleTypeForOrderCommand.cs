@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace Application.Features.CustomerSection.Feature.Order.Commands
 {
-    public sealed record SelectVehicleTypeForOrderCommand(SelectVehicleTypeDto Request) : 
+    public sealed record SelectVehicleTypeForOrderCommand(SelectVehicleTypeDto Request) :
                          IRequest<Result<SelectVehicleTypeResponseDto>>
     {
         private class SelectVehicleTypeForOrderCommandHandler : IRequestHandler<SelectVehicleTypeForOrderCommand,
@@ -28,19 +28,21 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
             private readonly IGoogleMapService googleMapService;
             private readonly ILogger<SelectVehicleTypeForOrderCommandHandler> logger;
             private const double RadiusInKilometers = 3.0;
-
+            private readonly IDateTimeProvider dateTimeProvider;
             public SelectVehicleTypeForOrderCommandHandler(INaqlahContext context,
                                                           INotificationService notificationService,
                                                           IGoogleMapService googleMapService,
-                                                          ILogger<SelectVehicleTypeForOrderCommandHandler> logger)
+                                                          ILogger<SelectVehicleTypeForOrderCommandHandler> logge,
+                                                          IDateTimeProvider dateTimeProvider)
             {
                 this.context = context;
                 this.notificationService = notificationService;
                 this.googleMapService = googleMapService;
                 this.logger = logger;
+                this.dateTimeProvider = dateTimeProvider;
             }
 
-            public async Task<Result<SelectVehicleTypeResponseDto>> Handle(SelectVehicleTypeForOrderCommand request, 
+            public async Task<Result<SelectVehicleTypeResponseDto>> Handle(SelectVehicleTypeForOrderCommand request,
                                                                            CancellationToken cancellationToken)
             {
                 // Get the order with its details
@@ -73,7 +75,7 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
                                                       .ToListAsync();
 
 
-                var customerBalance=wallletTransctions.Any()? wallletTransctions.Sum(x => x.Withdraw ? -x.Amount : x.Amount):0;
+                var customerBalance = wallletTransctions.Any() ? wallletTransctions.Sum(x => x.Withdraw ? -x.Amount : x.Amount) : 0;
 
 
                 // Get the origin waypoint (where IsOrgin = true)
@@ -83,7 +85,7 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
                     return Result.Failure<SelectVehicleTypeResponseDto>("Order origin waypoint not found");
                 }
 
-                var vehicleType=await context.VehicleTypes.FirstOrDefaultAsync();
+                var vehicleType = await context.VehicleTypes.FirstOrDefaultAsync();
                 if (vehicleType is null)
                 {
                     return Result.Failure<SelectVehicleTypeResponseDto>("Vehicle Could be Deleted");
@@ -112,10 +114,12 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
                     return Result.Failure<SelectVehicleTypeResponseDto>(setVehicleResult.Error);
                 }
 
-                var arabicDescription = $"??? ?? ??????? ?? ??? ??? {order.OrderNumber}";
+                var arabicDescription = $"قيمة طلب رقم {order.OrderNumber}";
                 var englishDescription = $"Cost Of Order Number {order.OrderNumber}";
 
-                var walletTransction = WalletTransctions.Instance(arabicDescription,
+                var walletTransction = WalletTransctions.Instance(
+                                                                dateTimeProvider.Now,
+                                                                arabicDescription,
                                                                  englishDescription,
                                                                  order.CustomerId,
                                                                  order.Total,
@@ -140,7 +144,7 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
                 var deliveryMenWithVehicle = await context.DeliveryMen
                     .Include(d => d.Vehicle)
                     .Include(d => d.DeliveryManLocation)
-                    .Where(d => d.Vehicle != null && 
+                    .Where(d => d.Vehicle != null &&
                                d.Vehicle.VehicleTypeId == request.Request.VehicleTypeId &&
                                d.Active == true &&
                                d.DeliveryManLocation != null)
@@ -157,13 +161,13 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
 
                 // Filter delivery men within 3km radius
                 var deliveryMenWithinRadius = deliveryMenWithVehicle
-                    .Where(d => CalculateDistance(originWaypoint.Latitude, originWaypoint.longitude, 
+                    .Where(d => CalculateDistance(originWaypoint.Latitude, originWaypoint.longitude,
                                                   d.Latitude, d.Longitude) <= RadiusInKilometers)
                     .ToList();
 
                 // Prepare notification
                 var firebaseTokens = new List<string>();
-                
+
                 foreach (var deliveryMan in deliveryMenWithinRadius)
                 {
                     if (!string.IsNullOrWhiteSpace(deliveryMan.AndroidToken))
@@ -193,7 +197,7 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
                     };
 
                     await notificationService.SendNotificationAsyncToMultipleDevices(notificationBody);
-                    
+
                     logger.LogInformation($"Notifications sent to {deliveryMenWithinRadius.Count} delivery men within {RadiusInKilometers}km for order {order.Id}");
                 }
 
@@ -214,7 +218,7 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
                                           .Select(x => new LocationPoint { Latitude = x.Latitude, Longitude = x.longitude })
                                           .FirstOrDefault();
 
-                if(originWaypoint is null)
+                if (originWaypoint is null)
                 {
                     return Result.Failure<GoogleResponse>("Order must Have Orging");
                 }
@@ -234,7 +238,7 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
                     .Select(x => new LocationPoint { Latitude = x.Latitude, Longitude = x.longitude })
                     .ToList();
 
-                var response= await googleMapService.CalculateOrderDeliveryTime(originWaypoint, wayPoints, destinationWaypoint);
+                var response = await googleMapService.CalculateOrderDeliveryTime(originWaypoint, wayPoints, destinationWaypoint);
                 return response;
             }
 
@@ -243,16 +247,16 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
             {
                 // Using Haversine formula to calculate distance between two points on Earth
                 const double R = 6371; // Earth's radius in kilometers
-                
+
                 var dLat = ToRadians(lat2 - lat1);
                 var dLon = ToRadians(lon2 - lon1);
-                
+
                 var a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
                         Math.Cos(ToRadians(lat1)) * Math.Cos(ToRadians(lat2)) *
                         Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
-                        
+
                 var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
-                
+
                 return R * c; // Distance in kilometers
             }
 

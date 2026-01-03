@@ -71,7 +71,8 @@ export class VehiclesComponent implements OnInit, OnDestroy {
       arabicName: ['', [Validators.required, Validators.maxLength(100)]],
       englishName: ['', [Validators.required, Validators.maxLength(100)]],
       iconBase64: [''],
-      mainCategoryIds: [[], []]
+      mainCategoryIds: [[], []],
+      cost: [0, [Validators.min(0)]]
     });
   }
 
@@ -163,7 +164,7 @@ export class VehiclesComponent implements OnInit, OnDestroy {
 
   onCategoryChange(categoryId: number, event: any): void {
     const currentIds = this.itemForm.get('mainCategoryIds')?.value || [];
-    
+
     if (event.target.checked) {
       // Add category if not exists
       if (!currentIds.includes(categoryId)) {
@@ -176,7 +177,7 @@ export class VehiclesComponent implements OnInit, OnDestroy {
         currentIds.splice(index, 1);
       }
     }
-    
+
     this.itemForm.patchValue({ mainCategoryIds: currentIds });
   }
 
@@ -205,28 +206,29 @@ export class VehiclesComponent implements OnInit, OnDestroy {
   openEdit(item: DeliveryManVehicleDto): void {
     debugger
     this.editingItem = item;
-    
+
     this.selectedCategories = item.mainCategories?.map(cat => {
       const lookupDto = new MainCategoryAdminLookupDto();
       lookupDto.id = cat.id;
       lookupDto.name = (cat as any).name || cat.arabicName;
       return lookupDto;
     }) || [];
-    
+
     // Extract all category IDs for form
     const categoryIds = item.mainCategories?.map(cat => cat.id) || [];
-    
+
     this.itemForm.patchValue({
       arabicName: item.arabicName,
       englishName: item.englishName,
       mainCategoryIds: categoryIds,
-      iconBase64: '' // Start with empty, will be set if user uploads new image
+      iconBase64: '', // Start with empty, will be set if user uploads new image
+      cost: (item as any).cost || 0 // Add cost if available
     });
-    
+
     // Reset multi-select state
     this.isCategoryMultiSelectOpen = false;
     this.categorySearchTerm = '';
-    
+
     // Set icon preview if available
     if (item.iconImagePath && this.activeTab === 'types') {
       this.iconPreview = item.iconImagePath;
@@ -236,7 +238,7 @@ export class VehiclesComponent implements OnInit, OnDestroy {
     } else {
       this.removeIcon();
     }
-    
+
     this.showUpdateModal = true;
   }
 
@@ -256,6 +258,7 @@ export class VehiclesComponent implements OnInit, OnDestroy {
   }
 
   submit(): void {
+    debugger;
     if (this.itemForm.invalid) return;
 
     const value = this.itemForm.value;
@@ -272,6 +275,7 @@ export class VehiclesComponent implements OnInit, OnDestroy {
       command.englishName = value.englishName;
       command.iconBase64 = value.iconBase64;
       command.mainCategoryIds = value.mainCategoryIds;
+      command.cost = value.cost;
       apiCall = this.vehicleClient.addVehicleType(command);
      }
 
@@ -308,6 +312,7 @@ export class VehiclesComponent implements OnInit, OnDestroy {
       // Only send iconBase64 if user uploaded a new image
       command.iconBase64 = value.iconBase64 || null;
       command.mainCategoryIds = value.mainCategoryIds;
+      command.cost = value.cost || 0;
       apiCall = this.vehicleClient.updateVehicleType(command);
     }
 
@@ -325,7 +330,7 @@ export class VehiclesComponent implements OnInit, OnDestroy {
 
   confirmDelete(itemId: number): void {
     const itemType = this.activeTab === 'brands' ? 'الماركة' : 'نوع المركبة';
-    
+
     this.confirmationTitle = 'تأكيد الحذف';
     this.confirmationMessage = `هل أنت متأكد من حذف ${itemType}؟`;
     this.pendingAction = () => this.performDelete(itemId);
@@ -336,7 +341,7 @@ export class VehiclesComponent implements OnInit, OnDestroy {
     const apiCall = this.activeTab === 'brands'
       ? this.vehicleClient.deleteVehicleBrand(itemId)
       : this.vehicleClient.deleteVehicleType(itemId);
-    
+
     this.sub.sink = apiCall.subscribe({
       next: () => {
         this.toasterService.success('تم الحذف بنجاح', 'تم حذف العنصر بنجاح');
