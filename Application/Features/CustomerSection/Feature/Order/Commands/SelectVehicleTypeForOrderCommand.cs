@@ -27,22 +27,26 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
             private readonly INotificationService notificationService;
             private readonly IGoogleMapService googleMapService;
             private readonly ILogger<SelectVehicleTypeForOrderCommandHandler> logger;
+            private readonly IDateTimeProvider dateTimeProvider;
             private const double RadiusInKilometers = 3.0;
 
             public SelectVehicleTypeForOrderCommandHandler(INaqlahContext context,
                                                           INotificationService notificationService,
                                                           IGoogleMapService googleMapService,
-                                                          ILogger<SelectVehicleTypeForOrderCommandHandler> logger)
+                                                          ILogger<SelectVehicleTypeForOrderCommandHandler> logger,
+                                                          IDateTimeProvider dateTimeProvider)
             {
                 this.context = context;
                 this.notificationService = notificationService;
                 this.googleMapService = googleMapService;
                 this.logger = logger;
+                this.dateTimeProvider = dateTimeProvider;
             }
 
             public async Task<Result<SelectVehicleTypeResponseDto>> Handle(SelectVehicleTypeForOrderCommand request, 
                                                                            CancellationToken cancellationToken)
             {
+                var nowDate = dateTimeProvider.Now;
                 // Get the order with its details
                 var order = await context.Orders
                     .Include(o => o.OrderDetails)
@@ -115,7 +119,7 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
                 var arabicDescription = $"??? ?? ??????? ?? ??? ??? {order.OrderNumber}";
                 var englishDescription = $"Cost Of Order Number {order.OrderNumber}";
 
-                var walletTransction = WalletTransctions.Instance(arabicDescription,
+                var walletTransction = WalletTransctions.Instance(nowDate,arabicDescription,
                                                                  englishDescription,
                                                                  order.CustomerId,
                                                                  order.Total,
