@@ -33,7 +33,7 @@ namespace Domain.Models
             }
         }
 
-        public static Result<VehicleType> Instance(string arabicName, string englishName, string iconImagePath, List<int> mainCategoryIds)
+        public static Result<VehicleType> Instance(string arabicName, string englishName, string iconImagePath, List<int> mainCategoryIds, decimal cost)
         {
             if (string.IsNullOrWhiteSpace(arabicName) || string.IsNullOrWhiteSpace(englishName))
             {
@@ -49,12 +49,18 @@ namespace Domain.Models
             {
                 return Result.Failure<VehicleType>("At least one main category is required");
             }
+
+            if (cost < 0)
+            {
+                return Result.Failure<VehicleType>("Cost cannot be negative");
+            }
             
             var vehicleType = new VehicleType()
             {
                 ArabicName = arabicName,
                 EnglishName = englishName,
                 IconImagePath = iconImagePath,
+                Cost = cost,
                 _VehicleTypeCategoies = new List<VehiclTypeCategory>()
             };
 
@@ -77,7 +83,7 @@ namespace Domain.Models
             EnglishName = englishName;
         }
 
-        public Result Update(string arabicName, string englishName, string iconImagePath, List<int> mainCategoryIds)
+        public Result Update(string arabicName, string englishName, string iconImagePath, List<int> mainCategoryIds, decimal cost)
         {
             if (string.IsNullOrWhiteSpace(arabicName) || string.IsNullOrWhiteSpace(englishName))
             {
@@ -94,9 +100,15 @@ namespace Domain.Models
                 return Result.Failure("At least one main category is required");
             }
 
+            if (cost < 0)
+            {
+                return Result.Failure("Cost cannot be negative");
+            }
+
             ArabicName = arabicName;
             EnglishName = englishName;
             IconImagePath = iconImagePath;
+            Cost = cost;
 
             // Clear existing categories
             _VehicleTypeCategoies.Clear();

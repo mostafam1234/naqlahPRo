@@ -40,6 +40,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'profile',
+        loadComponent: () =>
+          import('./Pages/admin/profile/profile.component').then(
+            (m) => m.ProfileComponent
+          ),
+      },
+      {
         path: 'users/captains',
         loadComponent: () =>
           import('./Pages/admin/users/captain/captain.component').then(
@@ -208,6 +215,20 @@ const routes: Routes = [
         loadComponent: () =>
           import('./Pages/admin/chat/chat-review/chat-review.component').then(
             (m) => m.ChatReviewComponent
+          ),
+      },
+      {
+        path: 'areasSettings',
+        loadComponent: () =>
+          import('./Pages/admin/areas-settings/areas-settings.component').then(
+            (m) => m.AreasSettingsComponent
+          ),
+      },
+      {
+        path: 'customer-wallet-transactions',
+        loadComponent: () =>
+          import('./Pages/admin/customer-wallet-transactions/customer-wallet-transactions.component').then(
+            (m) => m.CustomerWalletTransactionsComponent
           ),
       }
     ],

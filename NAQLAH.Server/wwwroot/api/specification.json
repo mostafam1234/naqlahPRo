@@ -697,6 +697,76 @@
         }
       }
     },
+    "/api/CustomerOrder/ConfirmOrderWayPoint": {
+      "post": {
+        "tags": [
+          "CustomerOrder"
+        ],
+        "operationId": "CustomerOrder_ConfirmOrderWayPoint",
+        "requestBody": {
+          "x-name": "request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeOrderWayPointStatusRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/CustomerOrder/RejectOrderWayPoint": {
+      "post": {
+        "tags": [
+          "CustomerOrder"
+        ],
+        "operationId": "CustomerOrder_RejectOrderWayPoint",
+        "requestBody": {
+          "x-name": "request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeOrderWayPointStatusRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/CustomerOrder/SelectVehicleType": {
       "post": {
         "tags": [
@@ -1822,6 +1892,744 @@
         "responses": {
           "200": {
             "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/AdminUser/GetCurrentUserProfile": {
+      "get": {
+        "tags": [
+          "AdminUser"
+        ],
+        "operationId": "AdminUser_GetCurrentUserProfile",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfileDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/AdminUser/UpdateCurrentUserProfile": {
+      "post": {
+        "tags": [
+          "AdminUser"
+        ],
+        "operationId": "AdminUser_UpdateCurrentUserProfile",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCurrentUserProfileCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/AreasSettingsAdmin/GetAllRegions": {
+      "get": {
+        "tags": [
+          "AreasSettingsAdmin"
+        ],
+        "operationId": "AreasSettingsAdmin_GetAllRegions",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            },
+            "x-position": 1
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            },
+            "x-position": 2
+          },
+          {
+            "name": "searchTerm",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfRegionAdminDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/AreasSettingsAdmin/GetAllRegionsLookup": {
+      "get": {
+        "tags": [
+          "AreasSettingsAdmin"
+        ],
+        "operationId": "AreasSettingsAdmin_GetAllRegionsLookup",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RegionLookupDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/AreasSettingsAdmin/AddRegion": {
+      "post": {
+        "tags": [
+          "AreasSettingsAdmin"
+        ],
+        "operationId": "AreasSettingsAdmin_AddRegion",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddRegionCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/AreasSettingsAdmin/UpdateRegion": {
+      "post": {
+        "tags": [
+          "AreasSettingsAdmin"
+        ],
+        "operationId": "AreasSettingsAdmin_UpdateRegion",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRegionCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/AreasSettingsAdmin/DeleteRegion": {
+      "post": {
+        "tags": [
+          "AreasSettingsAdmin"
+        ],
+        "operationId": "AreasSettingsAdmin_DeleteRegion",
+        "parameters": [
+          {
+            "name": "regionId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/AreasSettingsAdmin/GetAllCities": {
+      "get": {
+        "tags": [
+          "AreasSettingsAdmin"
+        ],
+        "operationId": "AreasSettingsAdmin_GetAllCities",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            },
+            "x-position": 1
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            },
+            "x-position": 2
+          },
+          {
+            "name": "searchTerm",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
+          },
+          {
+            "name": "regionId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            },
+            "x-position": 4
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfCityAdminDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/AreasSettingsAdmin/GetAllCitiesLookup": {
+      "get": {
+        "tags": [
+          "AreasSettingsAdmin"
+        ],
+        "operationId": "AreasSettingsAdmin_GetAllCitiesLookup",
+        "parameters": [
+          {
+            "name": "regionId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CityLookupDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/AreasSettingsAdmin/AddCity": {
+      "post": {
+        "tags": [
+          "AreasSettingsAdmin"
+        ],
+        "operationId": "AreasSettingsAdmin_AddCity",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddCityCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/AreasSettingsAdmin/UpdateCity": {
+      "post": {
+        "tags": [
+          "AreasSettingsAdmin"
+        ],
+        "operationId": "AreasSettingsAdmin_UpdateCity",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCityCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/AreasSettingsAdmin/DeleteCity": {
+      "post": {
+        "tags": [
+          "AreasSettingsAdmin"
+        ],
+        "operationId": "AreasSettingsAdmin_DeleteCity",
+        "parameters": [
+          {
+            "name": "cityId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/AreasSettingsAdmin/GetAllNeighborhoods": {
+      "get": {
+        "tags": [
+          "AreasSettingsAdmin"
+        ],
+        "operationId": "AreasSettingsAdmin_GetAllNeighborhoods",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            },
+            "x-position": 1
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            },
+            "x-position": 2
+          },
+          {
+            "name": "searchTerm",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
+          },
+          {
+            "name": "cityId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            },
+            "x-position": 4
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfNeighborhoodAdminDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/AreasSettingsAdmin/AddNeighborhood": {
+      "post": {
+        "tags": [
+          "AreasSettingsAdmin"
+        ],
+        "operationId": "AreasSettingsAdmin_AddNeighborhood",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddNeighborhoodCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/AreasSettingsAdmin/UpdateNeighborhood": {
+      "post": {
+        "tags": [
+          "AreasSettingsAdmin"
+        ],
+        "operationId": "AreasSettingsAdmin_UpdateNeighborhood",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateNeighborhoodCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/AreasSettingsAdmin/DeleteNeighborhood": {
+      "post": {
+        "tags": [
+          "AreasSettingsAdmin"
+        ],
+        "operationId": "AreasSettingsAdmin_DeleteNeighborhood",
+        "parameters": [
+          {
+            "name": "neighborhoodId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
           },
           "400": {
             "description": "",
@@ -4157,6 +4965,264 @@
           }
         }
       }
+    },
+    "/api/WalletTransactionsAdmin/GetAllWalletTransactions": {
+      "get": {
+        "tags": [
+          "WalletTransactionsAdmin"
+        ],
+        "operationId": "WalletTransactionsAdmin_GetAllWalletTransactions",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            },
+            "x-position": 1
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            },
+            "x-position": 2
+          },
+          {
+            "name": "searchTerm",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
+          },
+          {
+            "name": "customerId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            },
+            "x-position": 4
+          },
+          {
+            "name": "fromDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-position": 5
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-position": 6
+          },
+          {
+            "name": "withdraw",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            },
+            "x-position": 7
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfWalletTransactionAdminDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/WalletTransactionsAdmin/GetCustomersLookup": {
+      "get": {
+        "tags": [
+          "WalletTransactionsAdmin"
+        ],
+        "operationId": "WalletTransactionsAdmin_GetCustomersLookup",
+        "parameters": [
+          {
+            "name": "searchTerm",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CustomerLookupDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/WalletTransactionsAdmin/AddWalletTransaction": {
+      "post": {
+        "tags": [
+          "WalletTransactionsAdmin"
+        ],
+        "operationId": "WalletTransactionsAdmin_AddWalletTransaction",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddWalletTransactionCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/WalletTransactionsAdmin/GetWalletBalance": {
+      "get": {
+        "tags": [
+          "WalletTransactionsAdmin"
+        ],
+        "operationId": "WalletTransactionsAdmin_GetWalletBalance",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "fromDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-position": 3
+          },
+          {
+            "name": "withdraw",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            },
+            "x-position": 4
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "number",
+                  "format": "decimal"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -4783,6 +5849,20 @@
           }
         }
       },
+      "ChangeOrderWayPointStatusRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "orderId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "orderWayPointId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
       "SelectVehicleTypeResponseDto": {
         "type": "object",
         "additionalProperties": false,
@@ -4946,12 +6026,18 @@
         "x-enumNames": [
           "Pending",
           "PickedUp",
-          "Completed"
+          "Completed",
+          "CustomerRejected",
+          "CustomerConfirm",
+          "WaititngCustomerAction"
         ],
         "enum": [
           1,
           2,
-          3
+          3,
+          4,
+          5,
+          6
         ]
       },
       "OrderDetailsDto": {
@@ -5871,6 +6957,311 @@
           }
         }
       },
+      "UserProfileDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "roleId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "roleName": {
+            "type": "string"
+          },
+          "roleArabicName": {
+            "type": "string"
+          },
+          "fullName": {
+            "type": "string"
+          }
+        }
+      },
+      "UpdateCurrentUserProfileCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "userName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "newPassword": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "PagedResultOfRegionAdminDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RegionAdminDto"
+            }
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "RegionAdminDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "arabicName": {
+            "type": "string"
+          },
+          "englishName": {
+            "type": "string"
+          }
+        }
+      },
+      "RegionLookupDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "AddRegionCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "arabicName": {
+            "type": "string"
+          },
+          "englishName": {
+            "type": "string"
+          }
+        }
+      },
+      "UpdateRegionCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "arabicName": {
+            "type": "string"
+          },
+          "englishName": {
+            "type": "string"
+          }
+        }
+      },
+      "PagedResultOfCityAdminDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CityAdminDto"
+            }
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "CityAdminDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "arabicName": {
+            "type": "string"
+          },
+          "englishName": {
+            "type": "string"
+          },
+          "regionId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "regionName": {
+            "type": "string"
+          }
+        }
+      },
+      "CityLookupDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "AddCityCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "arabicName": {
+            "type": "string"
+          },
+          "englishName": {
+            "type": "string"
+          },
+          "regionId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "UpdateCityCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "arabicName": {
+            "type": "string"
+          },
+          "englishName": {
+            "type": "string"
+          },
+          "regionId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "PagedResultOfNeighborhoodAdminDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NeighborhoodAdminDto"
+            }
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "NeighborhoodAdminDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "arabicName": {
+            "type": "string"
+          },
+          "englishName": {
+            "type": "string"
+          },
+          "cityId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "cityName": {
+            "type": "string"
+          }
+        }
+      },
+      "AddNeighborhoodCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "arabicName": {
+            "type": "string"
+          },
+          "englishName": {
+            "type": "string"
+          },
+          "cityId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "UpdateNeighborhoodCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "arabicName": {
+            "type": "string"
+          },
+          "englishName": {
+            "type": "string"
+          },
+          "cityId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
       "PagedResultOfAssistantWorkAdminDto": {
         "type": "object",
         "additionalProperties": false,
@@ -6741,11 +8132,19 @@
         "description": "",
         "x-enumNames": [
           "NewOrder",
-          "OrderStatusChanged"
+          "OrderStatusChanged",
+          "PickUp",
+          "RejectORderWayPointFromCustomer",
+          "WaititngCustomerAction",
+          "RejectOrder"
         ],
         "enum": [
           1,
-          2
+          2,
+          3,
+          4,
+          5,
+          6
         ]
       },
       "GetOrderDetailsForAdminDto": {
@@ -7283,6 +8682,10 @@
           "iconImagePath": {
             "type": "string"
           },
+          "cost": {
+            "type": "number",
+            "format": "decimal"
+          },
           "mainCategories": {
             "type": "array",
             "items": {
@@ -7341,6 +8744,10 @@
               "type": "integer",
               "format": "int32"
             }
+          },
+          "cost": {
+            "type": "number",
+            "format": "decimal"
           }
         }
       },
@@ -7368,6 +8775,10 @@
               "type": "integer",
               "format": "int32"
             }
+          },
+          "cost": {
+            "type": "number",
+            "format": "decimal"
           }
         }
       },
@@ -7384,6 +8795,112 @@
           },
           "englishName": {
             "type": "string"
+          }
+        }
+      },
+      "PagedResultOfWalletTransactionAdminDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WalletTransactionAdminDto"
+            }
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "WalletTransactionAdminDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "arabicDescription": {
+            "type": "string"
+          },
+          "englishDescription": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "withdraw": {
+            "type": "boolean"
+          },
+          "orderId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "customerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "customerName": {
+            "type": "string"
+          },
+          "customerPhoneNumber": {
+            "type": "string"
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CustomerLookupDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
+          }
+        }
+      },
+      "AddWalletTransactionCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "arabicDescription": {
+            "type": "string"
+          },
+          "englishDescription": {
+            "type": "string"
+          },
+          "customerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "amount": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "withdraw": {
+            "type": "boolean"
+          },
+          "orderId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
           }
         }
       }

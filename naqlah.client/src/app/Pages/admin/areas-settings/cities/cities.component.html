@@ -1,0 +1,307 @@
+<!-- Search and Actions Bar -->
+<div class="p-6 border-b border-neutral-200">
+  <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+    <div class="flex flex-col md:flex-row gap-4 flex-1">
+      <!-- Search -->
+      <div class="relative flex-1 max-w-md">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          <i class="bi bi-search text-neutral-400"></i>
+        </div>
+        <input
+          type="text"
+          [formControl]="searchControl"
+          placeholder="البحث في المدن..."
+          class="block w-full pl-10 pr-3 py-2.5 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 text-sm"
+        />
+      </div>
+
+      <!-- Region Filter -->
+      <div class="w-full md:w-64">
+        <select
+          [formControl]="regionFilterControl"
+          class="w-full px-4 py-2.5 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white text-neutral-900 text-sm"
+        >
+          <option [value]="null">جميع الدول</option>
+          <option *ngFor="let region of regions" [value]="region.id">{{ region.name }}</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Add Button -->
+    <button
+      (click)="openAdd()"
+      class="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 active:bg-primary-800 text-white px-4 py-2.5 rounded-lg shadow-sm transition-all duration-200 text-sm font-medium"
+    >
+      <i class="bi bi-plus-lg"></i>
+      <span>إضافة مدينة جديدة</span>
+    </button>
+  </div>
+</div>
+
+<!-- Header -->
+<div class="px-6 py-4 border-b border-neutral-200 bg-neutral-50/50">
+  <div class="flex items-center justify-between">
+    <h3 class="font-semibold text-neutral-900 text-lg">المدن</h3>
+    <span class="text-sm text-neutral-500 bg-neutral-100 px-3 py-1 rounded-full">
+      {{ totalCount }} عنصر
+    </span>
+  </div>
+</div>
+
+<!-- Loading State -->
+<div *ngIf="isLoading" class="p-12 text-center">
+  <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+  <p class="mt-2 text-sm text-neutral-500">جاري التحميل...</p>
+</div>
+
+<!-- Table -->
+<div *ngIf="!isLoading" class="overflow-x-auto">
+  <table class="min-w-full divide-y divide-neutral-200">
+    <thead class="bg-neutral-50">
+      <tr>
+        <th class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">#</th>
+        <th class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">الاسم بالعربية</th>
+        <th class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">الاسم بالإنجليزية</th>
+        <th class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">الدولة</th>
+        <th class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">الإجراءات</th>
+      </tr>
+    </thead>
+    <tbody class="bg-white divide-y divide-neutral-200">
+      <tr *ngFor="let item of items; let i = index" class="hover:bg-neutral-50 transition-colors duration-150">
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-900">
+          {{ currentPage * itemsPerPage + i + 1 }}
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap">
+          <div class="text-sm font-medium text-neutral-900">{{ item.arabicName }}</div>
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap">
+          <div class="text-sm text-neutral-700">{{ item.englishName }}</div>
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap">
+          <div class="text-sm text-neutral-700">{{ item.regionName }}</div>
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap text-right">
+          <div class="inline-flex items-center gap-2">
+            <button
+              (click)="openEdit(item)"
+              class="flex items-center justify-center w-8 h-8 bg-yellow-100 text-yellow-600 rounded-lg hover:bg-yellow-200 transition-colors"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536M9 13l6.364-6.364a2 2 0 112.828 2.828L11.828 16H9v-2.828z"></path>
+              </svg>
+            </button>
+            <button
+              class="flex items-center justify-center w-8 h-8 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
+              (click)="confirmDelete(item.id)"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+        </td>
+      </tr>
+
+      <!-- Empty State -->
+      <tr *ngIf="items.length === 0">
+        <td colspan="5" class="px-6 py-12 text-center">
+          <div class="text-neutral-400 mb-2">
+            <i class="bi bi-inbox text-4xl"></i>
+          </div>
+          <p class="text-sm text-neutral-500">لا توجد مدن</p>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Pagination -->
+<div *ngIf="!isLoading && totalPages > 1" class="px-6 py-4 border-t border-neutral-200 bg-neutral-50/30">
+  <div class="flex items-center justify-between">
+    <div class="text-sm text-neutral-700">
+      عرض <span class="font-medium">{{ displayStartCount }}</span> إلى
+      <span class="font-medium">{{ displayEndCount }}</span> من أصل
+      <span class="font-medium">{{ totalCount }}</span> نتيجة
+    </div>
+    <nav class="flex items-center gap-1">
+      <button
+        [disabled]="displayCurrentPage === 1"
+        (click)="changePage(displayCurrentPage - 1)"
+        [class]="displayCurrentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-neutral-100'"
+        class="px-3 py-2 text-sm font-medium text-neutral-700 bg-white border border-neutral-300 rounded-lg transition-colors duration-150"
+      >
+        <i class="bi bi-chevron-left"></i>
+      </button>
+      <ng-container *ngFor="let page of visiblePages">
+        <button
+          *ngIf="page !== -1"
+          (click)="changePage(page)"
+          [class]="page === displayCurrentPage ? 'bg-primary-600 text-white border-primary-600' : 'bg-white text-neutral-700 border-neutral-300 hover:bg-neutral-100'"
+          class="px-3 py-2 text-sm font-medium border rounded-lg transition-colors duration-150"
+        >
+          {{ page }}
+        </button>
+        <span *ngIf="page === -1" class="px-2 py-2 text-neutral-500">...</span>
+      </ng-container>
+      <button
+        [disabled]="displayCurrentPage === totalPages"
+        (click)="changePage(displayCurrentPage + 1)"
+        [class]="displayCurrentPage === totalPages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-neutral-100'"
+        class="px-3 py-2 text-sm font-medium text-neutral-700 bg-white border border-neutral-300 rounded-lg transition-colors duration-150"
+      >
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </nav>
+  </div>
+</div>
+
+<!-- Add Modal -->
+<div *ngIf="showModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+  <div class="bg-white rounded-xl shadow-xl w-full max-w-lg">
+    <div class="px-6 py-4 border-b border-neutral-200">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-semibold text-neutral-900">إضافة مدينة جديدة</h3>
+        <button (click)="closeModal()" class="text-neutral-400 hover:text-neutral-600 transition-colors duration-150">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+    </div>
+    <form [formGroup]="itemForm" (ngSubmit)="submit()" class="p-6 space-y-5">
+      <div>
+        <label class="block text-sm font-medium text-neutral-700 mb-2">
+          الدولة <span class="text-red-500">*</span>
+        </label>
+        <select
+          formControlName="regionId"
+          class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
+          [class.border-red-500]="itemForm.get('regionId')?.touched && itemForm.get('regionId')?.invalid"
+        >
+          <option [value]="null">اختر الدولة</option>
+          <option *ngFor="let region of regions" [value]="region.id">{{ region.name }}</option>
+        </select>
+        <div *ngIf="itemForm.get('regionId')?.touched && itemForm.get('regionId')?.invalid" class="mt-1 text-xs text-red-600">
+          الدولة مطلوبة
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-neutral-700 mb-2">
+          الاسم بالعربية <span class="text-red-500">*</span>
+        </label>
+        <input
+          formControlName="arabicName"
+          type="text"
+          placeholder="أدخل الاسم بالعربية"
+          class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
+          [class.border-red-500]="itemForm.get('arabicName')?.touched && itemForm.get('arabicName')?.invalid"
+        />
+        <div *ngIf="itemForm.get('arabicName')?.touched && itemForm.get('arabicName')?.invalid" class="mt-1 text-xs text-red-600">
+          الاسم بالعربية مطلوب
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-neutral-700 mb-2">
+          الاسم بالإنجليزية <span class="text-red-500">*</span>
+        </label>
+        <input
+          formControlName="englishName"
+          type="text"
+          placeholder="أدخل الاسم بالإنجليزية"
+          class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
+          [class.border-red-500]="itemForm.get('englishName')?.touched && itemForm.get('englishName')?.invalid"
+        />
+        <div *ngIf="itemForm.get('englishName')?.touched && itemForm.get('englishName')?.invalid" class="mt-1 text-xs text-red-600">
+          الاسم بالإنجليزية مطلوب
+        </div>
+      </div>
+      <div class="flex justify-end gap-3 pt-4">
+        <button type="button" (click)="closeModal()" class="px-4 py-2 text-sm font-medium text-neutral-700 bg-neutral-100 hover:bg-neutral-200 rounded-lg transition-colors duration-200">
+          إلغاء
+        </button>
+        <button type="submit" [disabled]="itemForm.invalid" [class.opacity-50]="itemForm.invalid" [class.cursor-not-allowed]="itemForm.invalid" class="px-4 py-2 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors duration-200 disabled:hover:bg-primary-600">
+          إضافة
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div *ngIf="showUpdateModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+  <div class="bg-white rounded-xl shadow-xl w-full max-w-lg">
+    <div class="px-6 py-4 border-b border-neutral-200">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-semibold text-neutral-900">تعديل المدينة</h3>
+        <button (click)="closeModal()" class="text-neutral-400 hover:text-neutral-600 transition-colors duration-150">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+    </div>
+    <form [formGroup]="itemForm" (ngSubmit)="update()" class="p-6 space-y-5">
+      <div>
+        <label class="block text-sm font-medium text-neutral-700 mb-2">
+          الدولة <span class="text-red-500">*</span>
+        </label>
+        <select
+          formControlName="regionId"
+          class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
+          [class.border-red-500]="itemForm.get('regionId')?.touched && itemForm.get('regionId')?.invalid"
+        >
+          <option [value]="null">اختر الدولة</option>
+          <option *ngFor="let region of regions" [value]="region.id">{{ region.name }}</option>
+        </select>
+        <div *ngIf="itemForm.get('regionId')?.touched && itemForm.get('regionId')?.invalid" class="mt-1 text-xs text-red-600">
+          الدولة مطلوبة
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-neutral-700 mb-2">
+          الاسم بالعربية <span class="text-red-500">*</span>
+        </label>
+        <input
+          formControlName="arabicName"
+          type="text"
+          placeholder="أدخل الاسم بالعربية"
+          class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
+          [class.border-red-500]="itemForm.get('arabicName')?.touched && itemForm.get('arabicName')?.invalid"
+        />
+        <div *ngIf="itemForm.get('arabicName')?.touched && itemForm.get('arabicName')?.invalid" class="mt-1 text-xs text-red-600">
+          الاسم بالعربية مطلوب
+        </div>
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-neutral-700 mb-2">
+          الاسم بالإنجليزية <span class="text-red-500">*</span>
+        </label>
+        <input
+          formControlName="englishName"
+          type="text"
+          placeholder="أدخل الاسم بالإنجليزية"
+          class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
+          [class.border-red-500]="itemForm.get('englishName')?.touched && itemForm.get('englishName')?.invalid"
+        />
+        <div *ngIf="itemForm.get('englishName')?.touched && itemForm.get('englishName')?.invalid" class="mt-1 text-xs text-red-600">
+          الاسم بالإنجليزية مطلوب
+        </div>
+      </div>
+      <div class="flex justify-end gap-3 pt-4">
+        <button type="button" (click)="closeModal()" class="px-4 py-2 text-sm font-medium text-neutral-700 bg-neutral-100 hover:bg-neutral-200 rounded-lg transition-colors duration-200">
+          إلغاء
+        </button>
+        <button type="submit" [disabled]="itemForm.invalid" [class.opacity-50]="itemForm.invalid" [class.cursor-not-allowed]="itemForm.invalid" class="px-4 py-2 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors duration-200 disabled:hover:bg-primary-600">
+          حفظ التغييرات
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Confirmation Modal -->
+<app-confirmation-modal
+  [show]="showConfirmModal"
+  [title]="confirmationTitle"
+  [message]="confirmationMessage"
+  (confirmed)="onConfirmationConfirmed()"
+  (cancelled)="onConfirmationCancelled()"
+></app-confirmation-modal>
+
+

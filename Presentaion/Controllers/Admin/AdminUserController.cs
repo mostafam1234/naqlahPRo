@@ -1,4 +1,7 @@
 ﻿using Application.Features.AdminSection.LogIn;
+using Application.Features.AdminSection.UserProfile.Commands;
+using Application.Features.AdminSection.UserProfile.Dtos;
+using Application.Features.AdminSection.UserProfile.Queries;
 using Domain.InterFaces;
 using Domain.Models;
 using MediatR;
@@ -18,6 +21,7 @@ namespace Presentaion.Controllers.Admin
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class AdminUserController : ControllerBase
     {
         private readonly IMediator mediator;
@@ -49,7 +53,6 @@ namespace Presentaion.Controllers.Admin
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
         [Route("Logout")]
-        [Authorize] // محمي بالتوثيق
         public async Task<IActionResult> Logout()
         {
             try
@@ -73,6 +76,38 @@ namespace Presentaion.Controllers.Admin
                     Error = ex.Message
                 });
             }
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(UserProfileDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("GetCurrentUserProfile")]
+        public async Task<IActionResult> GetCurrentUserProfile()
+        {
+            var result = await mediator.Send(new GetCurrentUserProfileQuery());
+
+            if (result.IsSuccess)
+            {
+                return Ok(result.Value);
+            }
+
+            return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("UpdateCurrentUserProfile")]
+        public async Task<IActionResult> UpdateCurrentUserProfile([FromBody] UpdateCurrentUserProfileCommand command)
+        {
+            var result = await mediator.Send(command);
+
+            if (result.IsSuccess)
+            {
+                return Ok(result.Value);
+            }
+
+            return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
         }
     }
 }
