@@ -16,7 +16,7 @@ namespace Presentaion.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize] // Require authentication for delivery man endpoints
+   
     public class DeliveryOrderController : ControllerBase
     {
         private readonly IMediator mediator;
@@ -68,6 +68,22 @@ namespace Presentaion.Controllers
         public async Task<IActionResult> GetOrderDetails(int orderId)
         {
             var result = await mediator.Send(new GetOrderDetailsByIdQuery(orderId));
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+
+            return Ok(result.Value);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(List<AcceptedOrder>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("GetDeliveryManOrders")]
+        public async Task<IActionResult> GetDeliveryManOrders()
+        {
+            var result = await mediator.Send(new GetDeliveryManAcceptedOrderQuery());
 
             if (result.IsFailure)
             {

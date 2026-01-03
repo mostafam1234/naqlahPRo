@@ -655,6 +655,41 @@
         }
       }
     },
+    "/api/CustomerOrder/CancelOrder/{orderId}": {
+      "post": {
+        "tags": [
+          "CustomerOrder"
+        ],
+        "operationId": "CustomerOrder_CancelOrder",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/CustomerOrder/Create": {
       "post": {
         "tags": [
@@ -683,6 +718,76 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/CustomerOrder/ConfirmOrderWayPoint": {
+      "post": {
+        "tags": [
+          "CustomerOrder"
+        ],
+        "operationId": "CustomerOrder_ConfirmOrderWayPoint",
+        "requestBody": {
+          "x-name": "request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeOrderWayPointStatusRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/CustomerOrder/RejectOrderWayPoint": {
+      "post": {
+        "tags": [
+          "CustomerOrder"
+        ],
+        "operationId": "CustomerOrder_RejectOrderWayPoint",
+        "requestBody": {
+          "x-name": "request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeOrderWayPointStatusRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": ""
           },
           "400": {
             "description": "",
@@ -909,7 +1014,8 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "boolean"
+                  "type": "integer",
+                  "format": "int32"
                 }
               }
             }
@@ -1620,6 +1726,39 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/OrderDetailsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/DeliveryOrder/GetDeliveryManOrders": {
+      "get": {
+        "tags": [
+          "DeliveryOrder"
+        ],
+        "operationId": "DeliveryOrder_GetDeliveryManOrders",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AcceptedOrder"
+                  }
                 }
               }
             }
@@ -3375,7 +3514,7 @@
       }
     },
     "/api/SystemConfiguration/Update": {
-      "get": {
+      "post": {
         "tags": [
           "SystemConfiguration"
         ],
@@ -4743,6 +4882,12 @@
               "format": "int32"
             }
           },
+          "isScheduled": {
+            "type": "boolean"
+          },
+          "expectedPickUpTime": {
+            "type": "string"
+          },
           "wayPoints": {
             "type": "array",
             "items": {
@@ -4780,6 +4925,20 @@
           },
           "isDestenation": {
             "type": "boolean"
+          }
+        }
+      },
+      "ChangeOrderWayPointStatusRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "orderId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "orderWayPointId": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
@@ -4930,6 +5089,9 @@
           "neighborhoodName": {
             "type": "string"
           },
+          "packImagePath": {
+            "type": "string"
+          },
           "status": {
             "$ref": "#/components/schemas/OrderWayPointsStatus"
           },
@@ -4946,12 +5108,18 @@
         "x-enumNames": [
           "Pending",
           "PickedUp",
-          "Completed"
+          "Completed",
+          "CustomerRejected",
+          "CustomerConfirm",
+          "WaititngCustomerAction"
         ],
         "enum": [
           1,
           2,
-          3
+          3,
+          4,
+          5,
+          6
         ]
       },
       "OrderDetailsDto": {
@@ -5120,6 +5288,9 @@
             "type": "string"
           },
           "neighborhoodName": {
+            "type": "string"
+          },
+          "packImagePath": {
             "type": "string"
           }
         }
@@ -5539,6 +5710,14 @@
           "createdAt": {
             "type": "string",
             "format": "date-time"
+          },
+          "isScheduled": {
+            "type": "boolean"
+          },
+          "expectedPickUpTime": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           }
         }
       },
@@ -5600,6 +5779,14 @@
           },
           "orderPackageEnglishDescription": {
             "type": "string"
+          },
+          "isScheduled": {
+            "type": "boolean"
+          },
+          "expectedPickUpTIme": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           },
           "paymentMethods": {
             "type": "array",
@@ -5707,6 +5894,203 @@
         }
       },
       "PaymentMethodResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "paymentMethodId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "paymentMethodArabicName": {
+            "type": "string"
+          },
+          "paymentMethodEnglishName": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number",
+            "format": "decimal"
+          }
+        }
+      },
+      "AcceptedOrder": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "orderId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isScheduled": {
+            "type": "boolean"
+          },
+          "expectedPickUpTime": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "orderNumber": {
+            "type": "string"
+          },
+          "customerPhone": {
+            "type": "string"
+          },
+          "customerName": {
+            "type": "string"
+          },
+          "customerNotes": {
+            "type": "string"
+          },
+          "orderStatus": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "orderType": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "total": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "customerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "wayPoints": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WayPoint"
+            }
+          },
+          "orderDetails": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderDetail"
+            }
+          },
+          "orderServices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderService"
+            }
+          },
+          "orderPackageArabicDescription": {
+            "type": "string"
+          },
+          "orderPackageEnglishDescription": {
+            "type": "string"
+          },
+          "paymentMethods": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DeliveryPaymentMethodDto"
+            }
+          }
+        }
+      },
+      "WayPoint": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pickedUpDate": {
+            "type": "string",
+            "nullable": true
+          },
+          "packImagePath": {
+            "type": "string",
+            "nullable": true
+          },
+          "isOrigin": {
+            "type": "boolean"
+          },
+          "isDestination": {
+            "type": "boolean"
+          },
+          "backAndForth": {
+            "type": "boolean"
+          },
+          "regionArabicName": {
+            "type": "string"
+          },
+          "regionEnglishName": {
+            "type": "string"
+          },
+          "cityArabicName": {
+            "type": "string"
+          },
+          "cityEnglishName": {
+            "type": "string"
+          },
+          "neighborhoodArabicName": {
+            "type": "string"
+          },
+          "neighborhoodEnglishName": {
+            "type": "string"
+          }
+        }
+      },
+      "OrderDetail": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "mainCategoryId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "arabicCategoryName": {
+            "type": "string"
+          },
+          "englishCategoryName": {
+            "type": "string"
+          }
+        }
+      },
+      "OrderService": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "workId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "arabicName": {
+            "type": "string"
+          },
+          "englishName": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number",
+            "format": "decimal"
+          }
+        }
+      },
+      "DeliveryPaymentMethodDto": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -6741,11 +7125,19 @@
         "description": "",
         "x-enumNames": [
           "NewOrder",
-          "OrderStatusChanged"
+          "OrderStatusChanged",
+          "PickUp",
+          "RejectORderWayPointFromCustomer",
+          "WaititngCustomerAction",
+          "RejectOrder"
         ],
         "enum": [
           1,
-          2
+          2,
+          3,
+          4,
+          5,
+          6
         ]
       },
       "GetOrderDetailsForAdminDto": {

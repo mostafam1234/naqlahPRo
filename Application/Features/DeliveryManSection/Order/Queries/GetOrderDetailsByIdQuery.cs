@@ -26,6 +26,8 @@ namespace Application.Features.DeliveryManSection.Order.Queries
         public List<OrderServiceResponse> OrderServices { get; set; } = new();
         public string OrderPackageArabicDescription { get; set; } = string.Empty;
         public string OrderPackageEnglishDescription { get; set; } = string.Empty;
+        public bool IsScheduled { get; set; }
+        public DateTime? ExpectedPickUpTIme { get; set; }
         public List<PaymentMethodResponse> PaymentMethods { get; set; } = new();
     }
 
@@ -76,11 +78,14 @@ namespace Application.Features.DeliveryManSection.Order.Queries
     {
         private readonly INaqlahContext context;
         private readonly IUserSession userSession;
-
-        public GetOrderDetailsByIdQueryHandler(INaqlahContext context, IUserSession userSession)
+        private readonly IReadFromAppSetting config;
+        private const string DeliveryOrderFolderPrefix = "DeliveryOrders";
+        public GetOrderDetailsByIdQueryHandler(INaqlahContext context, IUserSession userSession,
+            IReadFromAppSetting config)
         {
             this.context = context;
             this.userSession = userSession;
+            this.config = config;
         }
 
         public async Task<Result<OrderDetailsResponse>> Handle(GetOrderDetailsByIdQuery request, CancellationToken cancellationToken)
@@ -116,6 +121,10 @@ namespace Application.Features.DeliveryManSection.Order.Queries
                 return Result.Failure<OrderDetailsResponse>("Order not found or not assigned to you");
             }
 
+            var baseUrl = config.GetValue<string>("apiBaseUrl");
+            var orderFolder = $"{DeliveryOrderFolderPrefix}/Order_{order.Id}";
+            
+
             var response = new OrderDetailsResponse
             {
                 OrderId = order.Id,
@@ -133,7 +142,7 @@ namespace Application.Features.DeliveryManSection.Order.Queries
                     Longitude = wp.longitude,
                     Status = wp.OrderWayPointsStatus,
                     PickedUpDate = wp.PickedUpDate,
-                    PackImagePath = wp.PackImagePath,
+                    PackImagePath = string.IsNullOrEmpty(wp.PackImagePath)?"":$"{baseUrl}/{orderFolder}/{wp.PackImagePath}" ,
                     IsOrigin = wp.IsOrgin,
                     IsDestination = wp.IsDestination,
                     RegionArabicName = wp.Region?.ArabicName ?? string.Empty,
@@ -164,7 +173,9 @@ namespace Application.Features.DeliveryManSection.Order.Queries
                     PaymentMethodArabicName = pm.PaymentMethod?.ArabicName ?? string.Empty,
                     PaymentMethodEnglishName = pm.PaymentMethod?.EnglishName ?? string.Empty,
                     Amount = pm.Amount
-                }).ToList()
+                }).ToList(),
+                IsScheduled = order.IsScheduled,
+                ExpectedPickUpTIme = order.ExpectedPickUpTime
             };
 
             return Result.Success(response);

@@ -28,6 +28,8 @@ namespace Domain.Models
         public double DistanceInKiloMeter { get;private set; }
         public string HashedLocation { get;private set; }
         public int? VehicleTypeId { get; private set; }
+        public bool IsScheduled { get;private set; }
+        public DateTime? ExpectedPickUpTime { get;private set; }
         public int? DeliveryManId { get; private set; }
         public int OrderPackageId { get; private set; }
         public OrderType OrderType { get; private set; }
@@ -144,7 +146,9 @@ namespace Domain.Models
                                            DateTime nowDate,
                                            List<OrderDetails> orderDetails,
                                            List<OrderWayPoint> orderWayPoints,
-                                           List<OrderService> orderServices)
+                                           List<OrderService> orderServices,
+                                           bool isScheduled=false,
+                                           DateTime? expectedPickUpTime=null)
         {
             const int MinOrderWayPointsCount = 2;
             var fixedTotal = 100;
@@ -174,9 +178,12 @@ namespace Domain.Models
                 OrderDetails = orderDetails,
                 OrderWayPoints = orderWayPoints,
                 OrderNumber = orderNumber,
-                OrderPackageId = orderPackageId,
+                OrderPackageId = 1,
                 Total = fixedTotal,
-                OrderServices = orderServices
+                OrderServices = orderServices,
+                IsScheduled = isScheduled,
+                ExpectedPickUpTime = expectedPickUpTime,
+                CreationDate=nowDate
             };
 
             order._OrderStatusHistories.Add(orderStatusHistory);

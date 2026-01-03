@@ -235,6 +235,11 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
                     .ToList();
 
                 var response= await googleMapService.CalculateOrderDeliveryTime(originWaypoint, wayPoints, destinationWaypoint);
+                if (response==null || response.DeliveryTime == 0)
+                {
+                    return new GoogleResponse { DeliveryTime= 480 ,DistanceInKiloMeter=300,EncodedPoints=""};
+
+                }
                 return response;
             }
 

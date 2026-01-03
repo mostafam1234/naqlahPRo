@@ -34,6 +34,7 @@ namespace Application.Features.CustomerSection.Feature.Order.Dtos
         public string RegionName { get; set; }
         public string CityName { get; set; }
         public string NeighborhoodName { get; set; }
+        public string PackImagePath { get; set; }
         public OrderWayPointsStatus Status { get; set; }
         public DateTime? PickedUpDate { get; set; }
     }

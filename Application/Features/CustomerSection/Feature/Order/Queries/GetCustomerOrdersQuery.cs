@@ -2,6 +2,7 @@ using Application.Features.CustomerSection.Feature.Order.Dtos;
 using CSharpFunctionalExtensions;
 using Domain.Enums;
 using Domain.InterFaces;
+using Domain.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -19,16 +20,21 @@ namespace Application.Features.CustomerSection.Feature.Order.Queries
         {
             private readonly INaqlahContext context;
             private readonly IUserSession userSession;
+            private readonly IReadFromAppSetting config;
+            private const string DeliveryOrderFolderPrefix = "DeliveryOrders";
 
             public GetCustomerOrdersQueryHandler(INaqlahContext context,
-                                                 IUserSession userSession)
+                                                 IUserSession userSession,
+                                                 IReadFromAppSetting config)
             {
                 this.context = context;
                 this.userSession = userSession;
+                this.config = config;
             }
 
             public async Task<Result<PagedCustomerOrdersDto>> Handle(GetCustomerOrdersQuery request, CancellationToken cancellationToken)
             {
+                var baseUrl = config.GetValue<string>("apiBaseUrl");
                 var languageId = userSession.LanguageId;
                 
                 // Get customer ID from user session
@@ -84,6 +90,8 @@ namespace Application.Features.CustomerSection.Feature.Order.Queries
                 var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
                 var skip = (pageNumber - 1) * pageSize;
 
+
+
                 // Get paged data with left joins to DeliveryMan and VehicleType
                 var ordersQuery = from o in query
                                   join dm in context.DeliveryMen on o.DeliveryManId equals dm.Id into deliveryManGroup
@@ -125,7 +133,8 @@ namespace Application.Features.CustomerSection.Feature.Order.Queries
                             CityName = languageId == (int)Language.Arabic ? wp.City.ArabicName : wp.City.EnglishName,
                             NeighborhoodName = languageId == (int)Language.Arabic ? wp.Neighborhood.ArabicName : wp.Neighborhood.EnglishName,
                             Status = wp.OrderWayPointsStatus,
-                            PickedUpDate = wp.PickedUpDate
+                            PickedUpDate = wp.PickedUpDate,
+                            PackImagePath = $"{baseUrl}/ImageBank/{DeliveryOrderFolderPrefix}/Order_{x.Order.Id}/{wp.PackImagePath}"
                         }).ToList()
                     })
                     .ToListAsync(cancellationToken);
