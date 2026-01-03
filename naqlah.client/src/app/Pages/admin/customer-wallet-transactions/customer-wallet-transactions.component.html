@@ -1,0 +1,750 @@
+<div class="min-h-screen bg-neutral-50">
+  <!-- Customer Selection Section -->
+  <div class="bg-white border-b border-neutral-200 shadow-sm">
+    <div class="p-6">
+      <div class="flex items-center justify-between">
+        <div class="flex-1">
+          <label class="block text-sm font-medium text-neutral-700 mb-2">
+            <i class="bi bi-person-fill mr-2"></i>
+            العميل المحدد
+          </label>
+
+          <!-- Selected Customer Display -->
+          <div *ngIf="selectedCustomer" class="flex items-center gap-3">
+            <div
+              class="inline-flex items-center gap-2 bg-primary-100 text-primary-800 px-4 py-2 rounded-lg text-sm font-medium"
+            >
+              <i class="bi bi-person-check-fill"></i>
+              <span>{{ selectedCustomer.name }}</span>
+            </div>
+            <button
+              type="button"
+              (click)="removeCustomer()"
+              class="inline-flex items-center gap-2 bg-red-100 hover:bg-red-200 text-red-800 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
+              aria-label="إزالة العميل"
+            >
+              <i class="bi bi-x-lg"></i>
+              <span>إزالة</span>
+            </button>
+          </div>
+
+          <!-- No Customer Selected -->
+          <div *ngIf="!selectedCustomer" class="text-neutral-500 text-sm">
+            لم يتم اختيار عميل. يرجى اختيار عميل لعرض المعاملات.
+          </div>
+        </div>
+
+        <!-- Select Customer Button -->
+        <button
+          type="button"
+          (click)="openCustomerModal()"
+          class="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-4 py-2.5 rounded-lg shadow-sm transition-all duration-200 text-sm font-medium"
+        >
+          <i class="bi bi-person-plus"></i>
+          <span>{{ selectedCustomer ? "تغيير العميل" : "اختيار عميل" }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container mx-auto max-w-7xl py-6" *ngIf="selectedCustomer">
+    <!-- Filters and Actions Bar -->
+    <div class="bg-white rounded-xl shadow-sm border border-neutral-200 mb-6">
+      <div class="p-6 border-b border-neutral-200">
+        <div class="flex flex-col gap-4">
+          <!-- Search and Add Button Row -->
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <!-- Search -->
+            <div class="relative flex-1 max-w-md">
+              <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                <i class="bi bi-search text-neutral-400"></i>
+              </div>
+              <input type="text"
+                     formControlName="searchTerm"
+                     [formGroup]="filterForm"
+                     placeholder="البحث في المعاملات..."
+                     class="block w-full pl-3 pr-10 py-2.5 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 text-sm" />
+            </div>
+
+            <!-- Add Button -->
+            <button (click)="openAdd()"
+                    class="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 active:bg-primary-800 text-white px-4 py-2.5 rounded-lg shadow-sm transition-all duration-200 text-sm font-medium">
+              <i class="bi bi-plus-lg"></i>
+              <span>إضافة معاملة جديدة</span>
+            </button>
+          </div>
+
+          <!-- Date Range and Withdraw Filter Row -->
+          <form [formGroup]="filterForm">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+
+              <!-- From Date -->
+              <div>
+                <label>من تاريخ</label>
+                <input type="date"
+                       formControlName="fromDate"
+                       class="w-full px-4 py-2.5 border rounded-lg" />
+              </div>
+
+              <!-- To Date -->
+              <div>
+                <label>إلى تاريخ</label>
+                <input type="date"
+                       formControlName="toDate"
+                       class="w-full px-4 py-2.5 border rounded-lg" />
+              </div>
+
+              <!-- Withdraw -->
+              <div>
+                <label>نوع المعاملة</label>
+                <select formControlName="withdraw"
+                        class="w-full px-4 py-2.5 border rounded-lg">
+                  <option [ngValue]="null">الكل</option>
+                  <option [ngValue]="false">إيداع</option>
+                  <option [ngValue]="true">سحب</option>
+                </select>
+              </div>
+
+              <!-- Buttons -->
+              <div class="flex items-end gap-2">
+                <button type="button" (click)="applyFilters()">بحث</button>
+                <button type="button" (click)="resetFilters()">↺</button>
+              </div>
+
+            </div>
+          </form>
+
+        </div>
+      </div>
+
+      <!-- Header -->
+      <div class="px-6 py-4 border-b border-neutral-200 bg-neutral-50/50">
+        <div class="flex items-center justify-between">
+          <h3 class="font-semibold text-neutral-900 text-lg">
+            معاملات المحفظة
+          </h3>
+          <span
+            class="text-sm text-neutral-500 bg-neutral-100 px-3 py-1 rounded-full"
+          >
+            {{ totalCount }} معاملة
+          </span>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div *ngIf="isLoading" class="p-12 text-center">
+        <div
+          class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"
+        ></div>
+        <p class="mt-2 text-sm text-neutral-500">جاري التحميل...</p>
+      </div>
+
+      <!-- Transactions Table -->
+      <div
+        *ngIf="!isLoading && transactions.length > 0"
+        class="overflow-x-auto"
+      >
+        <table class="min-w-full divide-y divide-neutral-200">
+          <thead class="bg-neutral-50">
+            <tr>
+              <th
+                class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider"
+              >
+                #
+              </th>
+              <th
+                class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider"
+              >
+                الوصف (عربي)
+              </th>
+              <th
+                class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider"
+              >
+                الوصف (إنجليزي)
+              </th>
+              <th
+                class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider"
+              >
+                المبلغ
+              </th>
+              <th
+                class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider"
+              >
+                النوع
+              </th>
+              <th
+                class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider"
+              >
+                رقم الطلب
+              </th>
+              <th
+                class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider"
+              >
+                التاريخ
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-neutral-200">
+            <tr
+              *ngFor="let transaction of transactions; let i = index"
+              class="hover:bg-neutral-50 transition-colors"
+            >
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-900">
+                {{ displayStartCount + i }}
+              </td>
+              <td class="px-6 py-4 text-sm text-neutral-900">
+                {{ transaction.arabicDescription }}
+              </td>
+              <td class="px-6 py-4 text-sm text-neutral-900">
+                {{ transaction.englishDescription }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span [class]="getAmountClass(transaction.withdraw)">
+                  {{ formatAmount(transaction.amount, transaction.withdraw) }}
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span
+                  [class]="
+                    transaction.withdraw
+                      ? 'px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800'
+                      : 'px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800'
+                  "
+                >
+                  {{ transaction.withdraw ? "سحب" : "إيداع" }}
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">
+                {{ transaction.orderId || "-" }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-600">
+                <div class="flex items-center gap-2">
+                  <i class="bi bi-calendar3 text-neutral-400"></i>
+                  <span>{{ formatDate(transaction.createdDate) }}</span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Wallet Balance Summary -->
+      <div
+        *ngIf="!isLoading && transactions.length > 0"
+        class="px-6 py-4 border-t border-neutral-200 bg-neutral-50"
+      >
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <i class="bi bi-wallet2 text-2xl text-primary-600"></i>
+            <div>
+              <div class="text-sm font-medium text-neutral-700">
+                رصيد المحفظة الإجمالي
+              </div>
+              <div *ngIf="isLoadingBalance" class="text-xs text-neutral-500">
+                جاري الحساب...
+              </div>
+            </div>
+          </div>
+          <div [class]="'text-2xl font-bold ' + getBalanceClass()">
+            {{ formatBalance(walletBalance) }}
+          </div>
+        </div>
+      </div>
+
+      <!-- No Transactions Found -->
+      <div
+        *ngIf="!isLoading && transactions.length === 0"
+        class="p-12 text-center"
+      >
+        <i class="bi bi-inbox text-5xl text-neutral-300 mb-4"></i>
+        <p class="text-lg font-medium text-neutral-700 mb-2">لا توجد معاملات</p>
+        <p class="text-sm text-neutral-500">
+          لم يتم العثور على معاملات للعميل المحدد
+        </p>
+      </div>
+
+      <!-- Pagination -->
+      <div
+        *ngIf="!isLoading && totalPages > 1"
+        class="px-6 py-4 border-t border-neutral-200 flex items-center justify-between"
+      >
+        <div class="text-sm text-neutral-500">
+          عرض {{ displayStartCount }} إلى {{ displayEndCount }} من
+          {{ totalCount }} معاملة
+        </div>
+        <div class="flex gap-1">
+          <button
+            *ngFor="let page of visiblePages"
+            (click)="page > 0 && changePage(page)"
+            [disabled]="page <= 0 || page === displayCurrentPage"
+            [class]="
+              page === displayCurrentPage
+                ? 'px-3 py-1.5 bg-primary-600 text-white rounded-md text-sm font-medium'
+                : page <= 0
+                ? 'px-3 py-1.5 text-neutral-400 cursor-default'
+                : 'px-3 py-1.5 text-neutral-700 hover:bg-neutral-100 rounded-md text-sm font-medium transition-colors'
+            "
+          >
+            {{ page <= 0 ? "..." : page }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State (No Customer Selected) -->
+  <div *ngIf="!selectedCustomer" class="container mx-auto max-w-7xl py-12">
+    <div
+      class="bg-white rounded-xl shadow-sm border border-neutral-200 p-12 text-center"
+    >
+      <i class="bi bi-person-x text-6xl text-neutral-300 mb-4"></i>
+      <p class="text-lg font-medium text-neutral-700 mb-2">
+        لم يتم اختيار عميل
+      </p>
+      <p class="text-sm text-neutral-500 mb-6">
+        يرجى اختيار عميل لعرض معاملات المحفظة
+      </p>
+      <button
+        type="button"
+        (click)="openCustomerModal()"
+        class="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg shadow-sm transition-all duration-200 text-sm font-medium"
+      >
+        <i class="bi bi-person-plus"></i>
+        <span>اختيار عميل</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Customer Selection Modal -->
+<div
+  *ngIf="showCustomerModal"
+  class="fixed inset-0 z-50 overflow-y-auto"
+  aria-labelledby="customer-modal-title"
+  role="dialog"
+  aria-modal="true"
+  (click)="closeCustomerModal()"
+>
+  <div
+    class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0"
+  >
+    <!-- Background overlay with animation -->
+    <div
+      class="fixed inset-0 bg-gradient-to-br from-neutral-900/60 via-neutral-800/70 to-neutral-900/60 backdrop-blur-sm transition-opacity duration-300"
+      (click)="closeCustomerModal()"
+      aria-hidden="true"
+    ></div>
+
+    <!-- Modal panel with enhanced styling -->
+    <div
+      class="inline-block align-bottom bg-white rounded-2xl text-right overflow-hidden shadow-2xl transform transition-all duration-300 sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full"
+      (click)="$event.stopPropagation()"
+    >
+      <!-- Modal Header with gradient -->
+      <div
+        class="bg-gradient-to-r from-primary-600 to-primary-700 px-6 pt-6 pb-5"
+      >
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <div class="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
+              <i class="bi bi-person-search text-2xl text-white"></i>
+            </div>
+            <div>
+              <h3
+                class="text-xl font-bold text-white"
+                id="customer-modal-title"
+              >
+                البحث عن عميل
+              </h3>
+              <p class="text-sm text-primary-100 mt-1">
+                ابحث برقم الهاتف للعثور على العميل
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            (click)="closeCustomerModal()"
+            class="text-white/80 hover:text-white hover:bg-white/20 rounded-lg p-2 transition-all duration-200"
+            aria-label="إغلاق"
+          >
+            <i class="bi bi-x-lg text-xl"></i>
+          </button>
+        </div>
+
+        <!-- Enhanced Search Input -->
+        <div class="relative">
+          <div
+            class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none"
+          >
+            <i
+              class="bi bi-search text-primary-200 text-lg"
+              *ngIf="!isLoadingCustomers"
+            ></i>
+            <div
+              *ngIf="isLoadingCustomers"
+              class="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"
+            ></div>
+          </div>
+          <input
+            type="text"
+            [formControl]="customerSearchControl"
+            placeholder="ابحث برقم الهاتف (مثال: 0501234567)..."
+            class="block w-full pl-4 pr-12 py-3.5 bg-white/95 backdrop-blur-sm border-2 border-white/30 rounded-xl focus:ring-4 focus:ring-white/50 focus:border-white focus:bg-white text-sm font-medium text-neutral-900 placeholder:text-neutral-400 shadow-lg transition-all duration-200"
+            autofocus
+          />
+          <div
+            *ngIf="
+              customerSearchControl.value &&
+              customerSearchControl.value.trim().length > 0 &&
+              customerSearchControl.value.trim().length < 2
+            "
+            class="absolute left-0 top-full mt-2 text-xs text-primary-100 bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-lg"
+          >
+            <i class="bi bi-info-circle ml-1"></i>
+            يرجى إدخال على الأقل حرفين للبحث
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="bg-white px-6 py-5">
+        <!-- Empty State (No Search) -->
+        <div
+          *ngIf="!hasSearchTerm && !isLoadingCustomers"
+          class="py-16 text-center"
+        >
+          <div
+            class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-primary-100 to-primary-200 rounded-full mb-4"
+          >
+            <i class="bi bi-search text-3xl text-primary-600"></i>
+          </div>
+          <h4 class="text-lg font-semibold text-neutral-700 mb-2">
+            ابدأ البحث عن عميل
+          </h4>
+          <p class="text-sm text-neutral-500 max-w-sm mx-auto">
+            أدخل رقم الهاتف في حقل البحث أعلاه للعثور على العميل المطلوب
+          </p>
+        </div>
+
+        <!-- Loading State -->
+        <div *ngIf="isLoadingCustomers" class="py-12 text-center">
+          <div
+            class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-primary-200 border-t-primary-600 mb-4"
+          ></div>
+          <p class="text-sm font-medium text-neutral-600">جاري البحث...</p>
+          <p class="text-xs text-neutral-400 mt-1">يرجى الانتظار</p>
+        </div>
+
+        <!-- Customer List with enhanced design -->
+        <div
+          *ngIf="!isLoadingCustomers && hasSearchTerm"
+          class="max-h-96 overflow-y-auto custom-scrollbar"
+        >
+          <!-- Results Header -->
+          <div
+            *ngIf="filteredCustomers.length > 0"
+            class="mb-3 pb-3 border-b border-neutral-200"
+          >
+            <div class="flex items-center justify-between">
+              <span
+                class="text-xs font-semibold text-neutral-500 uppercase tracking-wide"
+              >
+                النتائج
+              </span>
+              <span
+                class="px-2.5 py-1 bg-primary-100 text-primary-700 rounded-full text-xs font-semibold"
+              >
+                {{ filteredCustomers.length }}
+                {{ filteredCustomers.length === 1 ? "عميل" : "عملاء" }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Customer Cards -->
+          <div
+            *ngFor="let customer of filteredCustomers; let i = index"
+            (click)="selectCustomer(customer)"
+            class="group relative mb-2 px-4 py-4 bg-gradient-to-r from-white to-neutral-50/50 hover:from-primary-50 hover:to-primary-100/50 border border-neutral-200 hover:border-primary-300 rounded-xl cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02] active:scale-[0.98]"
+            [style.animation-delay]="i * 50 + 'ms'"
+          >
+            <div class="flex items-center gap-4">
+              <!-- Avatar -->
+              <div
+                class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg group-hover:shadow-xl transition-shadow duration-200"
+              >
+                {{ customer.name.charAt(0).toUpperCase() }}
+              </div>
+
+              <!-- Customer Info -->
+              <div class="flex-1 min-w-0">
+                <div
+                  class="font-semibold text-neutral-900 text-base mb-1 group-hover:text-primary-700 transition-colors duration-200"
+                >
+                  {{ customer.name }}
+                </div>
+                <div class="flex items-center gap-2 text-sm text-neutral-600">
+                  <i class="bi bi-telephone-fill text-primary-500"></i>
+                  <span class="font-mono font-medium">{{
+                    customer.phoneNumber
+                  }}</span>
+                </div>
+              </div>
+
+              <!-- Selection Indicator -->
+              <div
+                class="flex-shrink-0 w-8 h-8 rounded-full border-2 border-neutral-300 group-hover:border-primary-500 flex items-center justify-center transition-all duration-200"
+              >
+                <i
+                  class="bi bi-check-lg text-primary-600 text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                ></i>
+              </div>
+            </div>
+
+            <!-- Hover Effect Border -->
+            <div
+              class="absolute inset-0 rounded-xl border-2 border-primary-500 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
+            ></div>
+          </div>
+
+          <!-- No Results Found -->
+          <div
+            *ngIf="filteredCustomers.length === 0 && hasSearchTerm"
+            class="py-16 text-center"
+          >
+            <div
+              class="inline-flex items-center justify-center w-20 h-20 bg-red-100 rounded-full mb-4"
+            >
+              <i class="bi bi-person-x text-3xl text-red-500"></i>
+            </div>
+            <h4 class="text-lg font-semibold text-neutral-700 mb-2">
+              لم يتم العثور على نتائج
+            </h4>
+            <p class="text-sm text-neutral-500 max-w-sm mx-auto">
+              لا يوجد عميل بهذا الرقم. يرجى التحقق من رقم الهاتف والمحاولة مرة
+              أخرى
+            </p>
+          </div>
+        </div>
+
+        <!-- Selected Customer Display (if any) -->
+        <div
+          *ngIf="selectedCustomer"
+          class="mt-5 pt-5 border-t border-neutral-200"
+        >
+          <div
+            class="flex items-center gap-3 p-4 bg-gradient-to-r from-primary-50 to-primary-100/50 border-2 border-primary-200 rounded-xl"
+          >
+            <div
+              class="flex-shrink-0 w-10 h-10 bg-primary-600 rounded-full flex items-center justify-center text-white font-bold"
+            >
+              <i class="bi bi-check-lg"></i>
+            </div>
+            <div class="flex-1">
+              <div
+                class="text-xs font-semibold text-primary-700 uppercase tracking-wide mb-1"
+              >
+                العميل المحدد حالياً
+              </div>
+              <div class="text-sm font-semibold text-primary-900">
+                {{ selectedCustomer.name }}
+              </div>
+              <div class="text-xs text-primary-600 font-mono">
+                {{ selectedCustomer.phoneNumber }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Transaction Modal -->
+<div
+  *ngIf="showModal"
+  class="fixed inset-0 z-50 overflow-y-auto"
+  aria-labelledby="modal-title"
+  role="dialog"
+  aria-modal="true"
+>
+  <div
+    class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0"
+  >
+    <!-- Background overlay -->
+    <div
+      class="fixed inset-0 bg-neutral-500 bg-opacity-75 transition-opacity"
+      (click)="closeModal()"
+      aria-hidden="true"
+    ></div>
+
+    <!-- Modal panel -->
+    <div
+      class="inline-block align-bottom bg-white rounded-lg text-right overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full"
+    >
+      <div class="bg-white px-6 pt-5 pb-4">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-semibold text-neutral-900" id="modal-title">
+            إضافة معاملة جديدة
+          </h3>
+          <button
+            type="button"
+            (click)="closeModal()"
+            class="text-neutral-400 hover:text-neutral-500"
+            aria-label="إغلاق"
+          >
+            <i class="bi bi-x-lg text-xl"></i>
+          </button>
+        </div>
+
+        <form [formGroup]="transactionForm" (ngSubmit)="submit()">
+          <div class="space-y-4">
+            <!-- Customer Display (Disabled) -->
+            <div>
+              <label class="block text-sm font-medium text-neutral-700 mb-2">
+                العميل
+              </label>
+              <input
+                type="text"
+                [value]="
+                  selectedCustomer?.name + ' - ' + selectedCustomer?.phoneNumber
+                "
+                disabled
+                class="w-full px-4 py-2.5 border border-neutral-300 rounded-lg bg-neutral-100 text-neutral-600 text-sm cursor-not-allowed"
+              />
+            </div>
+
+            <!-- Arabic Description -->
+            <div>
+              <label class="block text-sm font-medium text-neutral-700 mb-2">
+                الوصف بالعربية <span class="text-red-500">*</span>
+              </label>
+              <textarea
+                formControlName="arabicDescription"
+                rows="3"
+                class="w-full px-4 py-2.5 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm"
+                placeholder="أدخل الوصف بالعربية"
+              ></textarea>
+              <div
+                *ngIf="
+                  transactionForm.get('arabicDescription')?.invalid &&
+                  transactionForm.get('arabicDescription')?.touched
+                "
+                class="mt-1 text-sm text-red-600"
+              >
+                يرجى إدخال الوصف بالعربية
+              </div>
+            </div>
+
+            <!-- English Description -->
+            <div>
+              <label class="block text-sm font-medium text-neutral-700 mb-2">
+                الوصف بالإنجليزية <span class="text-red-500">*</span>
+              </label>
+              <textarea
+                formControlName="englishDescription"
+                rows="3"
+                class="w-full px-4 py-2.5 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm"
+                placeholder="Enter description in English"
+              ></textarea>
+              <div
+                *ngIf="
+                  transactionForm.get('englishDescription')?.invalid &&
+                  transactionForm.get('englishDescription')?.touched
+                "
+                class="mt-1 text-sm text-red-600"
+              >
+                يرجى إدخال الوصف بالإنجليزية
+              </div>
+            </div>
+
+            <!-- Amount and Type -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-neutral-700 mb-2">
+                  المبلغ <span class="text-red-500">*</span>
+                </label>
+                <input
+                  type="number"
+                  formControlName="amount"
+                  step="0.01"
+                  min="0.01"
+                  class="w-full px-4 py-2.5 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm"
+                  placeholder="0.00"
+                />
+                <div
+                  *ngIf="
+                    transactionForm.get('amount')?.invalid &&
+                    transactionForm.get('amount')?.touched
+                  "
+                  class="mt-1 text-sm text-red-600"
+                >
+                  يرجى إدخال مبلغ صحيح
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-neutral-700 mb-2">
+                  نوع المعاملة
+                </label>
+                <div class="flex items-center gap-4 mt-2">
+                  <label class="flex items-center">
+                    <input
+                      type="radio"
+                      formControlName="withdraw"
+                      [value]="false"
+                      class="mr-2"
+                    />
+                    <span class="text-sm text-green-600 font-medium"
+                      >إيداع</span
+                    >
+                  </label>
+                  <label class="flex items-center">
+                    <input
+                      type="radio"
+                      formControlName="withdraw"
+                      [value]="true"
+                      class="mr-2"
+                    />
+                    <span class="text-sm text-red-600 font-medium">سحب</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Order ID (Optional) -->
+            <div>
+              <label class="block text-sm font-medium text-neutral-700 mb-2">
+                رقم الطلب (اختياري)
+              </label>
+              <input
+                type="number"
+                formControlName="orderId"
+                class="w-full px-4 py-2.5 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm"
+                placeholder="رقم الطلب"
+              />
+            </div>
+          </div>
+
+          <!-- Modal Actions -->
+          <div class="mt-6 flex justify-end gap-3">
+            <button
+              type="button"
+              (click)="closeModal()"
+              class="px-4 py-2.5 border border-neutral-300 rounded-lg text-neutral-700 hover:bg-neutral-50 text-sm font-medium transition-colors"
+            >
+              إلغاء
+            </button>
+            <button
+              type="submit"
+              [disabled]="transactionForm.invalid"
+              class="px-4 py-2.5 bg-primary-600 hover:bg-primary-700 disabled:bg-neutral-300 disabled:cursor-not-allowed text-white rounded-lg text-sm font-medium transition-colors"
+            >
+              إضافة
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

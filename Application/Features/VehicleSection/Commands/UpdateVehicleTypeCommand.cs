@@ -17,6 +17,7 @@ namespace Application.Features.VehicleSection.Commands
         public string EnglishName { get; set; } = string.Empty;
         public string? IconBase64 { get; set; }
         public List<int> MainCategoryIds { get; set; } = new List<int>();
+        public decimal Cost { get; set; }
 
         private class UpdateVehicleTypeCommandHandler : IRequestHandler<UpdateVehicleTypeCommand, Result<int>>
         {
@@ -68,7 +69,7 @@ namespace Application.Features.VehicleSection.Commands
                     return Result.Failure<int>("Icon is required");
                 }
 
-                var updateResult = vehicleType.Update(request.ArabicName, request.EnglishName, iconPath, request.MainCategoryIds);
+                var updateResult = vehicleType.Update(request.ArabicName, request.EnglishName, iconPath, request.MainCategoryIds, request.Cost);
                 if (updateResult.IsFailure)
                 {
                     return Result.Failure<int>(updateResult.Error);

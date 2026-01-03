@@ -1,0 +1,144 @@
+/* Customer Wallet Transactions Component Styles */
+
+/* Smooth transitions */
+* {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Dropdown animations */
+.rotate-180 {
+  transform: rotate(180deg);
+}
+
+/* Table row hover effect */
+tbody tr {
+  transition: background-color 0.15s ease-in-out;
+}
+
+/* Modal backdrop blur effect */
+.fixed.inset-0.bg-neutral-500 {
+  backdrop-filter: blur(2px);
+}
+
+/* Custom scrollbar for dropdown */
+.overflow-auto::-webkit-scrollbar {
+  width: 6px;
+}
+
+.overflow-auto::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.overflow-auto::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.overflow-auto::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Chip removal button hover */
+.bg-primary-100 button:hover {
+  background-color: rgba(59, 130, 246, 0.2);
+}
+
+/* Focus states for accessibility */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Loading spinner animation */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Empty state icon animation */
+.bi-inbox,
+.bi-wallet2 {
+  opacity: 0.5;
+}
+
+/* Responsive table */
+@media (max-width: 768px) {
+  table {
+    font-size: 0.875rem;
+  }
+  
+  th, td {
+    padding: 0.5rem;
+  }
+}
+
+/* Custom scrollbar for customer modal */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #3b82f6, #2563eb);
+  border-radius: 10px;
+  border: 2px solid #f1f5f9;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #2563eb, #1d4ed8);
+}
+
+/* Customer card animation */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.group {
+  animation: slideInUp 0.3s ease-out forwards;
+  opacity: 0;
+}
+
+/* Modal entrance animation */
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.inline-block.align-bottom {
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+/* Enhanced hover effects */
+.group:hover .bi-check-lg {
+  transform: scale(1.2);
+  transition: transform 0.2s ease-out;
+}
+
+
+

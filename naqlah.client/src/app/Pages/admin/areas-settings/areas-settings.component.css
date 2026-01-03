@@ -1,0 +1,30 @@
+/* Areas Settings Component Styles */
+
+/* Tab Button Animations */
+button[type="button"] {
+  transition: all 0.2s ease-in-out;
+}
+
+button[type="button"]:active {
+  transform: scale(0.98);
+}
+
+/* Smooth transitions for component switching */
+app-regions,
+app-cities,
+app-neighborhoods {
+  display: block;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+

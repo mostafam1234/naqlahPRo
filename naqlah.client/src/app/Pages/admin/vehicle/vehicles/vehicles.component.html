@@ -1,34 +1,40 @@
 <div class="min-h-screen">
   <div class="container mx-auto max-w-7xl">
     <!-- Page Header -->
-    <app-page-header [title]="currentTabTitle | translate"
-                     [subtitle]="currentTabDescription | translate"
-                     [showBackButton]="true"
-                     iconPath="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                     (onBackClick)="goBack()">
+    <app-page-header
+      [title]="currentTabTitle | translate"
+      [subtitle]="currentTabDescription | translate"
+      [showBackButton]="true"
+      iconPath="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+      (onBackClick)="goBack()"
+    >
     </app-page-header>
 
     <!-- Navigation Tabs -->
     <div class="mb-6">
       <div class="border-b border-neutral-200 bg-white rounded-t-xl shadow-sm">
         <nav class="-mb-px flex space-x-8 px-6">
-          <button (click)="setActiveTab('brands')"
-                  [class]="
+          <button
+            (click)="setActiveTab('brands')"
+            [class]="
               activeTab === 'brands'
                 ? 'border-primary-500 text-primary-600 bg-primary-50/50'
                 : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300'
             "
-                  class="whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm transition-all duration-200 rounded-t-lg">
+            class="whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm transition-all duration-200 rounded-t-lg"
+          >
             <i class="bi bi-award me-2"></i>
             {{ "ADMIN.VEHICLESMENUE.BRANDS" | translate }}
           </button>
-          <button (click)="setActiveTab('types')"
-                  [class]="
+          <button
+            (click)="setActiveTab('types')"
+            [class]="
               activeTab === 'types'
                 ? 'border-primary-500 text-primary-600 bg-primary-50/50'
                 : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300'
             "
-                  class="whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm transition-all duration-200 rounded-t-lg">
+            class="whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm transition-all duration-200 rounded-t-lg"
+          >
             <i class="bi bi-collection me-2"></i>
             {{ "ADMIN.VEHICLESMENUE.TYPES" | translate }}
           </button>
@@ -39,21 +45,29 @@
     <!-- Search and Actions Bar -->
     <div class="bg-white rounded-xl shadow-sm border border-neutral-200 mb-6">
       <div class="p-6">
-        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div
+          class="flex flex-col lg:flex-row lg:items-center justify-between gap-4"
+        >
           <!-- Search -->
           <div class="relative flex-1 max-w-md">
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <div
+              class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+            >
               <i class="bi bi-search text-neutral-400"></i>
             </div>
-            <input type="text"
-                   [formControl]="searchControl"
-                   [placeholder]="'COMMON.SEARCH_PLACEHOLDER' | translate"
-                   class="block w-full pl-10 pr-3 py-2.5 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 text-sm" />
+            <input
+              type="text"
+              [formControl]="searchControl"
+              [placeholder]="'COMMON.SEARCH_PLACEHOLDER' | translate"
+              class="block w-full pl-10 pr-3 py-2.5 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 text-sm"
+            />
           </div>
 
           <!-- Add Button -->
-          <button (click)="openAdd()"
-                  class="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 active:bg-primary-800 text-white px-4 py-2.5 rounded-lg shadow-sm transition-all duration-200 text-sm font-medium">
+          <button
+            (click)="openAdd()"
+            class="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 active:bg-primary-800 text-white px-4 py-2.5 rounded-lg shadow-sm transition-all duration-200 text-sm font-medium"
+          >
             <i class="bi bi-plus-lg"></i>
             <span>{{ addButtonText | translate }}</span>
           </button>
@@ -62,14 +76,18 @@
     </div>
 
     <!-- Content Card -->
-    <div class="bg-white rounded-xl shadow-sm border border-neutral-200 overflow-hidden">
+    <div
+      class="bg-white rounded-xl shadow-sm border border-neutral-200 overflow-hidden"
+    >
       <!-- Header -->
       <div class="px-6 py-4 border-b border-neutral-200 bg-neutral-50/50">
         <div class="flex items-center justify-between">
           <h3 class="font-semibold text-neutral-900 text-lg">
             {{ tableTitle | translate }}
           </h3>
-          <span class="text-sm text-neutral-500 bg-neutral-100 px-3 py-1 rounded-full">
+          <span
+            class="text-sm text-neutral-500 bg-neutral-100 px-3 py-1 rounded-full"
+          >
             {{ totalCount }} {{ "COMMON.ITEMS" | translate }}
           </span>
         </div>
@@ -77,7 +95,9 @@
 
       <!-- Loading State -->
       <div *ngIf="isLoading" class="p-12 text-center">
-        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+        <div
+          class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"
+        ></div>
         <p class="mt-2 text-sm text-neutral-500">
           {{ "COMMON.LOADING" | translate }}...
         </p>
@@ -88,40 +108,72 @@
         <table class="min-w-full divide-y divide-neutral-200">
           <thead class="bg-neutral-50">
             <tr>
-              <th class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">
+              <th
+                class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider"
+              >
                 #
               </th>
-              <th *ngIf="activeTab === 'types'" class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">
+              <th
+                *ngIf="activeTab === 'types'"
+                class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider"
+              >
                 الأيقونة
               </th>
-              <th class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">
+              <th
+                class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider"
+              >
                 {{ "ADMIN.VEHICLESMENUE.ARABIC_NAME" | translate }}
               </th>
-              <th class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">
+              <th
+                class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider"
+              >
                 {{ "ADMIN.VEHICLESMENUE.ENGLISH_NAME" | translate }}
               </th>
-              <th *ngIf="activeTab === 'types'" class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">
+              <th
+                *ngIf="activeTab === 'types'"
+                class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider"
+              >
                 الفئات الرئيسية
               </th>
-              <th class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">
+              <th
+                *ngIf="activeTab === 'types'"
+                class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider"
+              >
+                التكلفة
+              </th>
+              <th
+                class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider"
+              >
                 {{ "ADMIN.VEHICLESMENUE.ACTIONS" | translate }}
               </th>
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-neutral-200">
-            <tr *ngFor="let item of items; let i = index"
-                class="hover:bg-neutral-50 transition-colors duration-150">
+            <tr
+              *ngFor="let item of items; let i = index"
+              class="hover:bg-neutral-50 transition-colors duration-150"
+            >
               <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-900">
                 {{ currentPage * itemsPerPage + i + 1 }}
               </td>
               <!-- Icon Column (types only) -->
-              <td *ngIf="activeTab === 'types'" class="px-6 py-4 whitespace-nowrap">
-                <div class="w-10 h-10 rounded-lg overflow-hidden border border-neutral-200 bg-neutral-50 flex items-center justify-center">
-                  <img *ngIf="item.iconImagePath" 
-                       [src]="item.iconImagePath" 
-                       [alt]="item.arabicName"
-                       class="w-full h-full object-cover">
-                  <i *ngIf="!item.iconImagePath" class="bi bi-image text-neutral-400"></i>
+              <td
+                *ngIf="activeTab === 'types'"
+                class="px-6 py-4 whitespace-nowrap"
+              >
+                <div
+                  class="w-10 h-10 rounded-lg overflow-hidden border border-neutral-200 bg-neutral-50 flex items-center justify-center"
+                >
+                  <img
+                    *ngIf="item.iconImagePath"
+                    [src]="item.iconImagePath"
+                    [alt]="item.arabicName"
+                    class="w-full h-full object-cover"
+                  />
+                  <i
+                    *ngIf="!item.iconImagePath"
+                    class="bi bi-image text-neutral-400"
+                  ></i>
                 </div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap">
@@ -137,20 +189,38 @@
               <!-- Categories Column (types only) -->
               <td *ngIf="activeTab === 'types'" class="px-6 py-4">
                 <div class="flex flex-wrap gap-1">
-                  <span *ngFor="let category of item.mainCategories" 
-                        class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary-100 text-primary-800">
+                  <span
+                    *ngFor="let category of item.mainCategories"
+                    class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary-100 text-primary-800"
+                  >
                     {{ category.arabicName }}
                   </span>
-                  <span *ngIf="!item.mainCategories || item.mainCategories.length === 0" 
-                        class="text-xs text-neutral-500">
+                  <span
+                    *ngIf="
+                      !item.mainCategories || item.mainCategories.length === 0
+                    "
+                    class="text-xs text-neutral-500"
+                  >
                     لا توجد فئات
                   </span>
                 </div>
               </td>
+              <!-- Cost Column (types only) -->
+              <td
+                *ngIf="activeTab === 'types'"
+                class="px-6 py-4 whitespace-nowrap"
+              >
+                <div class="text-sm font-medium text-neutral-900">
+                  {{ item.cost | number : "1.2-2" }}
+                  {{ "ADMIN.PAGES.ASSISTANT_WORKS.CURRENCY" | translate }}
+                </div>
+              </td>
               <td class="px-6 py-4 whitespace-nowrap text-right">
                 <div class="inline-flex items-center gap-2">
-                  <button (click)="openEdit(item)"
-                          class="flex items-center justify-center w-8 h-8 bg-yellow-100 text-yellow-600 rounded-lg hover:bg-yellow-200 transition-colors">
+                  <button
+                    (click)="openEdit(item)"
+                    class="flex items-center justify-center w-8 h-8 bg-yellow-100 text-yellow-600 rounded-lg hover:bg-yellow-200 transition-colors"
+                  >
                     <svg
                       class="w-4 h-4"
                       fill="none"
@@ -165,8 +235,10 @@
                       ></path>
                     </svg>
                   </button>
-                  <button class="flex items-center justify-center w-8 h-8 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
-                        (click)="confirmDelete(item.id)">
+                  <button
+                    class="flex items-center justify-center w-8 h-8 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
+                    (click)="confirmDelete(item.id)"
+                  >
                     <svg
                       class="w-4 h-4"
                       fill="none"
@@ -187,7 +259,10 @@
 
             <!-- Empty State -->
             <tr *ngIf="items.length === 0">
-              <td [attr.colspan]="activeTab === 'types' ? 6 : 4" class="px-6 py-12 text-center">
+              <td
+                [attr.colspan]="activeTab === 'types' ? 7 : 4"
+                class="px-6 py-12 text-center"
+              >
                 <div class="text-neutral-400 mb-2">
                   <i class="bi bi-inbox text-4xl"></i>
                 </div>
@@ -201,8 +276,10 @@
       </div>
 
       <!-- Pagination -->
-      <div *ngIf="!isLoading && totalPages > 1"
-           class="px-6 py-4 border-t border-neutral-200 bg-neutral-50/30">
+      <div
+        *ngIf="!isLoading && totalPages > 1"
+        class="px-6 py-4 border-t border-neutral-200 bg-neutral-50/30"
+      >
         <div class="flex items-center justify-between">
           <!-- Results Info -->
           <div class="text-sm text-neutral-700">
@@ -218,41 +295,49 @@
           <!-- Pagination Controls -->
           <nav class="flex items-center gap-1">
             <!-- Previous Button -->
-            <button [disabled]="displayCurrentPage === 1"
-                    (click)="changePage(displayCurrentPage - 1)"
-                    [class]="
+            <button
+              [disabled]="displayCurrentPage === 1"
+              (click)="changePage(displayCurrentPage - 1)"
+              [class]="
                 displayCurrentPage === 1
                   ? 'opacity-50 cursor-not-allowed'
                   : 'hover:bg-neutral-100'
               "
-                    class="px-3 py-2 text-sm font-medium text-neutral-700 bg-white border border-neutral-300 rounded-lg transition-colors duration-150">
+              class="px-3 py-2 text-sm font-medium text-neutral-700 bg-white border border-neutral-300 rounded-lg transition-colors duration-150"
+            >
               <i class="bi bi-chevron-left"></i>
             </button>
 
             <!-- Page Numbers -->
             <ng-container *ngFor="let page of visiblePages">
-              <button *ngIf="page !== -1"
-                      (click)="changePage(page)"
-                      [class]="
+              <button
+                *ngIf="page !== -1"
+                (click)="changePage(page)"
+                [class]="
                   page === displayCurrentPage
                     ? 'bg-primary-600 text-white border-primary-600'
                     : 'bg-white text-neutral-700 border-neutral-300 hover:bg-neutral-100'
                 "
-                      class="px-3 py-2 text-sm font-medium border rounded-lg transition-colors duration-150">
+                class="px-3 py-2 text-sm font-medium border rounded-lg transition-colors duration-150"
+              >
                 {{ page }}
               </button>
-              <span *ngIf="page === -1" class="px-2 py-2 text-neutral-500">...</span>
+              <span *ngIf="page === -1" class="px-2 py-2 text-neutral-500"
+                >...</span
+              >
             </ng-container>
 
             <!-- Next Button -->
-            <button [disabled]="displayCurrentPage === totalPages"
-                    (click)="changePage(displayCurrentPage + 1)"
-                    [class]="
+            <button
+              [disabled]="displayCurrentPage === totalPages"
+              (click)="changePage(displayCurrentPage + 1)"
+              [class]="
                 displayCurrentPage === totalPages
                   ? 'opacity-50 cursor-not-allowed'
                   : 'hover:bg-neutral-100'
               "
-                    class="px-3 py-2 text-sm font-medium text-neutral-700 bg-white border border-neutral-300 rounded-lg transition-colors duration-150">
+              class="px-3 py-2 text-sm font-medium text-neutral-700 bg-white border border-neutral-300 rounded-lg transition-colors duration-150"
+            >
               <i class="bi bi-chevron-right"></i>
             </button>
           </nav>
@@ -262,8 +347,10 @@
   </div>
 
   <!-- Add Modal -->
-  <div *ngIf="showModal"
-       class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+  <div
+    *ngIf="showModal"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
+  >
     <div class="bg-white rounded-xl shadow-xl w-full max-w-lg">
       <!-- Modal Header -->
       <div class="px-6 py-4 border-b border-neutral-200">
@@ -275,8 +362,10 @@
                 : (modalTitleAdd | translate)
             }}
           </h3>
-          <button (click)="closeModal()"
-                  class="text-neutral-400 hover:text-neutral-600 transition-colors duration-150">
+          <button
+            (click)="closeModal()"
+            class="text-neutral-400 hover:text-neutral-600 transition-colors duration-150"
+          >
             <i class="bi bi-x-lg"></i>
           </button>
         </div>
@@ -289,18 +378,22 @@
           <label class="block text-sm font-medium text-neutral-700 mb-2">
             {{ "ADMIN.PAGES.VEHICLES.ARABIC_NAME" | translate }}
           </label>
-          <input formControlName="arabicName"
-                 type="text"
-                 class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
-                 [class.border-danger-500]="
-              itemForm.get('arabicName')?.touched &&
-              itemForm.get('arabicName')?.invalid
-            " />
-          <div *ngIf="
+          <input
+            formControlName="arabicName"
+            type="text"
+            class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
+            [class.border-danger-500]="
               itemForm.get('arabicName')?.touched &&
               itemForm.get('arabicName')?.invalid
             "
-               class="mt-1 text-xs text-danger-600">
+          />
+          <div
+            *ngIf="
+              itemForm.get('arabicName')?.touched &&
+              itemForm.get('arabicName')?.invalid
+            "
+            class="mt-1 text-xs text-danger-600"
+          >
             {{ "VALIDATION.REQUIRED" | translate }}
           </div>
         </div>
@@ -310,19 +403,53 @@
           <label class="block text-sm font-medium text-neutral-700 mb-2">
             {{ "ADMIN.PAGES.VEHICLES.ENGLISH_NAME" | translate }}
           </label>
-          <input formControlName="englishName"
-                 type="text"
-                 class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
-                 [class.border-danger-500]="
-              itemForm.get('englishName')?.touched &&
-              itemForm.get('englishName')?.invalid
-            " />
-          <div *ngIf="
+          <input
+            formControlName="englishName"
+            type="text"
+            class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
+            [class.border-danger-500]="
               itemForm.get('englishName')?.touched &&
               itemForm.get('englishName')?.invalid
             "
-               class="mt-1 text-xs text-danger-600">
+          />
+          <div
+            *ngIf="
+              itemForm.get('englishName')?.touched &&
+              itemForm.get('englishName')?.invalid
+            "
+            class="mt-1 text-xs text-danger-600"
+          >
             {{ "VALIDATION.REQUIRED" | translate }}
+          </div>
+        </div>
+
+        <!-- Cost (only for types) -->
+        <div *ngIf="activeTab === 'types'">
+          <label class="block text-sm font-medium text-neutral-700 mb-2">
+            التكلفة <span class="text-red-500">*</span>
+          </label>
+          <input
+            formControlName="cost"
+            type="number"
+            step="0.01"
+            min="0"
+            class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
+            [class.border-danger-500]="
+              itemForm.get('cost')?.touched && itemForm.get('cost')?.invalid
+            "
+          />
+          <div
+            *ngIf="
+              itemForm.get('cost')?.touched && itemForm.get('cost')?.invalid
+            "
+            class="mt-1 text-xs text-danger-600"
+          >
+            <span *ngIf="itemForm.get('cost')?.errors?.['required']">
+              {{ "VALIDATION.REQUIRED" | translate }}
+            </span>
+            <span *ngIf="itemForm.get('cost')?.errors?.['min']">
+              التكلفة يجب أن تكون أكبر من أو تساوي صفر
+            </span>
           </div>
         </div>
 
@@ -343,16 +470,18 @@
           >
             <!-- Upload Button -->
             <div class="text-center" *ngIf="!iconPreview">
-              <div class="w-12 h-12 mx-auto mb-3 bg-neutral-100 rounded-lg flex items-center justify-center">
+              <div
+                class="w-12 h-12 mx-auto mb-3 bg-neutral-100 rounded-lg flex items-center justify-center"
+              >
                 <i class="bi bi-cloud-upload text-neutral-400 text-xl"></i>
               </div>
               <p class="text-sm text-neutral-600 mb-2">
-                <span class="font-medium text-primary-600">انقر لاختيار ملف</span>
+                <span class="font-medium text-primary-600"
+                  >انقر لاختيار ملف</span
+                >
                 أو اسحب وأفلت الملف هنا
               </p>
-              <p class="text-xs text-neutral-500">
-                PNG، JPG، JPEG حتى 2MB
-              </p>
+              <p class="text-xs text-neutral-500">PNG، JPG، JPEG حتى 2MB</p>
               <input
                 type="file"
                 accept="image/*"
@@ -374,7 +503,9 @@
             <div *ngIf="iconPreview" class="relative">
               <div class="flex items-center gap-4">
                 <!-- Image Preview -->
-                <div class="w-20 h-20 border border-neutral-200 rounded-lg overflow-hidden bg-neutral-50 flex items-center justify-center">
+                <div
+                  class="w-20 h-20 border border-neutral-200 rounded-lg overflow-hidden bg-neutral-50 flex items-center justify-center"
+                >
                   <img
                     [src]="iconPreview"
                     alt="Preview"
@@ -438,10 +569,16 @@
               (click)="toggleMultiSelect()"
             >
               <div class="flex-1">
-                <div *ngIf="selectedCategories.length === 0" class="text-neutral-400 text-sm">
+                <div
+                  *ngIf="selectedCategories.length === 0"
+                  class="text-neutral-400 text-sm"
+                >
                   اختر الفئات الرئيسية...
                 </div>
-                <div *ngIf="selectedCategories.length > 0" class="flex flex-wrap gap-1">
+                <div
+                  *ngIf="selectedCategories.length > 0"
+                  class="flex flex-wrap gap-1"
+                >
                   <span
                     *ngFor="let category of selectedCategories"
                     class="inline-flex items-center gap-1 bg-primary-100 text-primary-800 text-xs px-2 py-1 rounded-full"
@@ -472,7 +609,9 @@
               <!-- Search Box -->
               <div class="p-3 border-b border-neutral-200">
                 <div class="relative">
-                  <i class="bi bi-search absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400 text-sm"></i>
+                  <i
+                    class="bi bi-search absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400 text-sm"
+                  ></i>
                   <input
                     type="text"
                     [(ngModel)]="categorySearchTerm"
@@ -500,10 +639,15 @@
                       class="bi bi-check text-white text-xs"
                     ></i>
                   </div>
-                  <span class="flex-1 text-sm text-neutral-700">{{ category.name }}</span>
+                  <span class="flex-1 text-sm text-neutral-700">{{
+                    category.name
+                  }}</span>
                 </div>
 
-                <div *ngIf="filteredCategories.length === 0" class="px-3 py-4 text-center text-sm text-neutral-500">
+                <div
+                  *ngIf="filteredCategories.length === 0"
+                  class="px-3 py-4 text-center text-sm text-neutral-500"
+                >
                   لا توجد فئات مطابقة
                 </div>
               </div>
@@ -522,16 +666,20 @@
 
         <!-- Modal Actions -->
         <div class="flex justify-end gap-3 pt-4">
-          <button type="button"
-                  (click)="closeModal()"
-                  class="px-4 py-2 text-sm font-medium text-neutral-700 bg-neutral-100 hover:bg-neutral-200 rounded-lg transition-colors duration-200">
+          <button
+            type="button"
+            (click)="closeModal()"
+            class="px-4 py-2 text-sm font-medium text-neutral-700 bg-neutral-100 hover:bg-neutral-200 rounded-lg transition-colors duration-200"
+          >
             {{ "COMMON.CANCEL" | translate }}
           </button>
-          <button type="submit"
-                  [disabled]="itemForm.invalid"
-                  [class.opacity-50]="itemForm.invalid"
-                  [class.cursor-not-allowed]="itemForm.invalid"
-                  class="px-4 py-2 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors duration-200 disabled:hover:bg-primary-600">
+          <button
+            type="submit"
+            [disabled]="itemForm.invalid"
+            [class.opacity-50]="itemForm.invalid"
+            [class.cursor-not-allowed]="itemForm.invalid"
+            class="px-4 py-2 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors duration-200 disabled:hover:bg-primary-600"
+          >
             {{
               editingItem
                 ? ("COMMON.SAVE" | translate)
@@ -544,21 +692,25 @@
   </div>
 
   <!-- Edit Modal-->
-  <div *ngIf="showUpdateModal"
-       class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+  <div
+    *ngIf="showUpdateModal"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
+  >
     <div class="bg-white rounded-xl shadow-xl w-full max-w-lg">
       <!-- Modal Header -->
       <div class="px-6 py-4 border-b border-neutral-200">
         <div class="flex items-center justify-between">
           <h3 class="text-lg font-semibold text-neutral-900">
             {{
-            editingItem
-              ? (modalTitleEdit | translate)
-              : (modalTitleAdd | translate)
+              editingItem
+                ? (modalTitleEdit | translate)
+                : (modalTitleAdd | translate)
             }}
           </h3>
-          <button (click)="closeModal()"
-                  class="text-neutral-400 hover:text-neutral-600 transition-colors duration-150">
+          <button
+            (click)="closeModal()"
+            class="text-neutral-400 hover:text-neutral-600 transition-colors duration-150"
+          >
             <i class="bi bi-x-lg"></i>
           </button>
         </div>
@@ -571,18 +723,22 @@
           <label class="block text-sm font-medium text-neutral-700 mb-2">
             {{ "ADMIN.PAGES.VEHICLES.ARABIC_NAME" | translate }}
           </label>
-          <input formControlName="arabicName"
-                 type="text"
-                 class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
-                 [class.border-danger-500]="
-            itemForm.get('arabicName')?.touched &&
-            itemForm.get('arabicName')?.invalid
-          " />
-          <div *ngIf="
-            itemForm.get('arabicName')?.touched &&
-            itemForm.get('arabicName')?.invalid
-          "
-               class="mt-1 text-xs text-danger-600">
+          <input
+            formControlName="arabicName"
+            type="text"
+            class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
+            [class.border-danger-500]="
+              itemForm.get('arabicName')?.touched &&
+              itemForm.get('arabicName')?.invalid
+            "
+          />
+          <div
+            *ngIf="
+              itemForm.get('arabicName')?.touched &&
+              itemForm.get('arabicName')?.invalid
+            "
+            class="mt-1 text-xs text-danger-600"
+          >
             {{ "VALIDATION.REQUIRED" | translate }}
           </div>
         </div>
@@ -592,19 +748,50 @@
           <label class="block text-sm font-medium text-neutral-700 mb-2">
             {{ "ADMIN.PAGES.VEHICLES.ENGLISH_NAME" | translate }}
           </label>
-          <input formControlName="englishName"
-                 type="text"
-                 class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
-                 [class.border-danger-500]="
-            itemForm.get('englishName')?.touched &&
-            itemForm.get('englishName')?.invalid
-          " />
-          <div *ngIf="
-            itemForm.get('englishName')?.touched &&
-            itemForm.get('englishName')?.invalid
-          "
-               class="mt-1 text-xs text-danger-600">
+          <input
+            formControlName="englishName"
+            type="text"
+            class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
+            [class.border-danger-500]="
+              itemForm.get('englishName')?.touched &&
+              itemForm.get('englishName')?.invalid
+            "
+          />
+          <div
+            *ngIf="
+              itemForm.get('englishName')?.touched &&
+              itemForm.get('englishName')?.invalid
+            "
+            class="mt-1 text-xs text-danger-600"
+          >
             {{ "VALIDATION.REQUIRED" | translate }}
+          </div>
+        </div>
+
+        <!-- Cost (only for types) -->
+        <div *ngIf="activeTab === 'types'">
+          <label class="block text-sm font-medium text-neutral-700 mb-2">
+            التكلفة <span class="text-red-500">*</span>
+          </label>
+          <input
+            formControlName="cost"
+            type="number"
+            step="0.01"
+            min="0"
+            class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
+            [class.border-danger-500]="
+              itemForm.get('cost')?.touched && itemForm.get('cost')?.invalid
+            "
+          />
+          <div
+            *ngIf="
+              itemForm.get('cost')?.touched && itemForm.get('cost')?.invalid
+            "
+            class="mt-1 text-xs text-danger-600"
+          >
+            <span *ngIf="itemForm.get('cost')?.errors?.['min']">
+              التكلفة يجب أن تكون أكبر من أو تساوي صفر
+            </span>
           </div>
         </div>
 
@@ -625,16 +812,18 @@
           >
             <!-- Upload Button -->
             <div class="text-center" *ngIf="!iconPreview">
-              <div class="w-12 h-12 mx-auto mb-3 bg-neutral-100 rounded-lg flex items-center justify-center">
+              <div
+                class="w-12 h-12 mx-auto mb-3 bg-neutral-100 rounded-lg flex items-center justify-center"
+              >
                 <i class="bi bi-cloud-upload text-neutral-400 text-xl"></i>
               </div>
               <p class="text-sm text-neutral-600 mb-2">
-                <span class="font-medium text-primary-600">انقر لاختيار ملف</span>
+                <span class="font-medium text-primary-600"
+                  >انقر لاختيار ملف</span
+                >
                 أو اسحب وأفلت الملف هنا
               </p>
-              <p class="text-xs text-neutral-500">
-                PNG، JPG، JPEG حتى 2MB
-              </p>
+              <p class="text-xs text-neutral-500">PNG، JPG، JPEG حتى 2MB</p>
               <input
                 type="file"
                 accept="image/*"
@@ -656,7 +845,9 @@
             <div *ngIf="iconPreview" class="relative">
               <div class="flex items-center gap-4">
                 <!-- Image Preview -->
-                <div class="w-20 h-20 border border-neutral-200 rounded-lg overflow-hidden bg-neutral-50 flex items-center justify-center">
+                <div
+                  class="w-20 h-20 border border-neutral-200 rounded-lg overflow-hidden bg-neutral-50 flex items-center justify-center"
+                >
                   <img
                     [src]="iconPreview"
                     alt="Preview"
@@ -720,10 +911,16 @@
               (click)="toggleMultiSelect()"
             >
               <div class="flex-1">
-                <div *ngIf="selectedCategories.length === 0" class="text-neutral-400 text-sm">
+                <div
+                  *ngIf="selectedCategories.length === 0"
+                  class="text-neutral-400 text-sm"
+                >
                   اختر الفئات الرئيسية...
                 </div>
-                <div *ngIf="selectedCategories.length > 0" class="flex flex-wrap gap-1">
+                <div
+                  *ngIf="selectedCategories.length > 0"
+                  class="flex flex-wrap gap-1"
+                >
                   <span
                     *ngFor="let category of selectedCategories"
                     class="inline-flex items-center gap-1 bg-primary-100 text-primary-800 text-xs px-2 py-1 rounded-full"
@@ -754,7 +951,9 @@
               <!-- Search Box -->
               <div class="p-3 border-b border-neutral-200">
                 <div class="relative">
-                  <i class="bi bi-search absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400 text-sm"></i>
+                  <i
+                    class="bi bi-search absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400 text-sm"
+                  ></i>
                   <input
                     type="text"
                     [(ngModel)]="categorySearchTerm"
@@ -782,10 +981,15 @@
                       class="bi bi-check text-white text-xs"
                     ></i>
                   </div>
-                  <span class="flex-1 text-sm text-neutral-700">{{ category.name }}</span>
+                  <span class="flex-1 text-sm text-neutral-700">{{
+                    category.name
+                  }}</span>
                 </div>
 
-                <div *ngIf="filteredCategories.length === 0" class="px-3 py-4 text-center text-sm text-neutral-500">
+                <div
+                  *ngIf="filteredCategories.length === 0"
+                  class="px-3 py-4 text-center text-sm text-neutral-500"
+                >
                   لا توجد فئات مطابقة
                 </div>
               </div>
@@ -804,20 +1008,24 @@
 
         <!-- Modal Actions -->
         <div class="flex justify-end gap-3 pt-4">
-          <button type="button"
-                  (click)="closeModal()"
-                  class="px-4 py-2 text-sm font-medium text-neutral-700 bg-neutral-100 hover:bg-neutral-200 rounded-lg transition-colors duration-200">
+          <button
+            type="button"
+            (click)="closeModal()"
+            class="px-4 py-2 text-sm font-medium text-neutral-700 bg-neutral-100 hover:bg-neutral-200 rounded-lg transition-colors duration-200"
+          >
             {{ "COMMON.CANCEL" | translate }}
           </button>
-          <button type="submit"
-                  [disabled]="itemForm.invalid"
-                  [class.opacity-50]="itemForm.invalid"
-                  [class.cursor-not-allowed]="itemForm.invalid"
-                  class="px-4 py-2 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors duration-200 disabled:hover:bg-primary-600">
+          <button
+            type="submit"
+            [disabled]="itemForm.invalid"
+            [class.opacity-50]="itemForm.invalid"
+            [class.cursor-not-allowed]="itemForm.invalid"
+            class="px-4 py-2 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors duration-200 disabled:hover:bg-primary-600"
+          >
             {{
-            editingItem
-              ? ("COMMON.SAVE" | translate)
-              : ("COMMON.ADD" | translate)
+              editingItem
+                ? ("COMMON.SAVE" | translate)
+                : ("COMMON.ADD" | translate)
             }}
           </button>
         </div>
@@ -833,5 +1041,4 @@
     (confirmed)="onConfirmationConfirmed()"
     (cancelled)="onConfirmationCancelled()"
   ></app-confirmation-modal>
-
 </div>

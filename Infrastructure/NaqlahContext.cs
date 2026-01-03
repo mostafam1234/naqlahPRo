@@ -59,6 +59,8 @@ namespace Infrastructure
         public DbSet<DeliveryManLocation> DeliveryManLocations { get; set; }
         public DbSet<OrderPackage> OrderPackages { get; set; }
         public DbSet<Region> Regions { get; set; }
+        public DbSet<City> Cities { get; set; }
+        public DbSet<Neighborhood> Neighborhoods { get; set; }
         public DbSet<WalletTransctions> WalletTransctions { get; set; }
         public DbSet<Notification> Notifications { get; set; }
 

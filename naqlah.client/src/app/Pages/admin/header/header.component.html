@@ -2,7 +2,7 @@
 <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-lg border-b border-neutral-200 shadow-sm animate-fade-in">
   <div class="px-4 sm:px-6 lg:px-8">
     <div class="flex items-center justify-between h-20">
-      
+
       <!-- Left Section: Hamburger Menu -->
       <div class="flex items-center gap-4">
         <!-- Hamburger Icon -->
@@ -11,35 +11,35 @@
           class="group relative flex items-center justify-center w-11 h-11 rounded-xl bg-surface-50 hover:bg-primary-50 border border-neutral-200 hover:border-primary-300 transition-all duration-300 hover:shadow-md hover:scale-105 active:scale-95"
           aria-label="Toggle sidebar"
         >
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            width="24" 
-            height="24" 
-            viewBox="0 0 24 24" 
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
             fill="none"
             class="transition-all duration-300 group-hover:scale-110"
           >
-            <rect 
-              x="4" 
-              y="6" 
-              width="16" 
-              height="2" 
+            <rect
+              x="4"
+              y="6"
+              width="16"
+              height="2"
               rx="1"
               class="fill-primary-600 group-hover:fill-primary-700 transition-colors duration-300"
             />
-            <rect 
-              x="4" 
-              y="11" 
-              width="16" 
-              height="2" 
+            <rect
+              x="4"
+              y="11"
+              width="16"
+              height="2"
               rx="1"
               class="fill-primary-600 group-hover:fill-primary-700 transition-colors duration-300"
             />
-            <rect 
-              x="4" 
-              y="16" 
-              width="16" 
-              height="2" 
+            <rect
+              x="4"
+              y="16"
+              width="16"
+              height="2"
               rx="1"
               class="fill-primary-600 group-hover:fill-primary-700 transition-colors duration-300"
             />
@@ -80,7 +80,7 @@
               />
             </svg>
             <!-- Active Indicator -->
-            <span 
+            <span
               *ngIf="settingsDropdownOpen"
               class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-primary-500 rounded-full border-2 border-white animate-pulse"
             ></span>
@@ -126,21 +126,6 @@
                     </svg>
                   </button>
 
-                  <!-- Change Password Button -->
-                  <button
-                    (click)="handleMenuClick('change_password')"
-                    class="w-full flex items-center gap-3 px-4 py-3 text-sm text-neutral-700 hover:bg-primary-50 hover:text-primary-700 rounded-xl transition-all duration-200 group hover:translate-x-1"
-                  >
-                    <div class="p-2 rounded-lg bg-primary-100 group-hover:bg-primary-200 transition-colors duration-200">
-                      <svg class="w-5 h-5 text-primary-600 transition-transform duration-200 group-hover:scale-110" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
-                      </svg>
-                    </div>
-                    <span class="flex-1 font-medium">{{ 'ADMIN.HEADER.CHANGE_PASSWORD' | translate }}</span>
-                    <svg class="w-4 h-4 text-neutral-400 group-hover:text-primary-500 transition-all duration-200 opacity-0 group-hover:opacity-100 transform translate-x-[-4px] group-hover:translate-x-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                    </svg>
-                  </button>
 
                   <!-- Account Info Button -->
                   <button
@@ -350,7 +335,7 @@
           <div class="relative">
             <div class="absolute inset-0 rounded-full bg-primary-500 opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-300"></div>
             <!-- User Avatar with Initial -->
-            <div 
+            <div
               [class]="'relative w-12 h-12 rounded-full border-2 border-neutral-200 group-hover:border-primary-400 transition-all duration-300 shadow-md group-hover:shadow-lg group-hover:scale-105 flex items-center justify-center text-white font-bold text-lg bg-primary-500'"
             >
               {{ getUserInitial() }}

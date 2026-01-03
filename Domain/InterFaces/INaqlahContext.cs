@@ -30,6 +30,8 @@ namespace Domain.InterFaces
         DbSet<MainCategory> MainCategories { get; set; }
         DbSet<OrderPackage> OrderPackages { get; set; }
         DbSet<Region> Regions { get; set; }
+        DbSet<City> Cities { get; set; }
+        DbSet<Neighborhood> Neighborhoods { get; set; }
         DbSet<WalletTransctions> WalletTransctions { get; set; }
         DbSet<Notification> Notifications { get; set; }
         Task<Result> SaveChangesAsyncWithResult();

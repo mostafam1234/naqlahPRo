@@ -131,7 +131,8 @@ namespace Presentaion.Controllers.Admin
             ArabicName = command.ArabicName,
             EnglishName = command.EnglishName,
             IconBase64 = command.IconBase64,
-            MainCategoryIds = command.MainCategoryIds
+            MainCategoryIds = command.MainCategoryIds,
+            Cost = command.Cost
           });
 
           if (result.IsSuccess)

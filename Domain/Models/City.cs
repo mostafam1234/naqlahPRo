@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CSharpFunctionalExtensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace Domain.Models
 {
     public class City
     {
-        public City()
+        private City()
         {
             this.ArabicName = string.Empty;
             this.EnglishName = string.Empty;
@@ -29,6 +30,23 @@ namespace Domain.Models
             {
                 _Neighborhoods = (List<Neighborhood>)value.ToList();
             }
+        }
+
+        public static Result<City> Instance(string arabicName, string englishName, int regionId)
+        {
+            return new City()
+            {
+                ArabicName = arabicName,
+                EnglishName = englishName,
+                RegionId = regionId
+            };
+        }
+
+        public void Update(string arabicName, string englishName, int regionId)
+        {
+            ArabicName = arabicName;
+            EnglishName = englishName;
+            RegionId = regionId;
         }
     }
 }
