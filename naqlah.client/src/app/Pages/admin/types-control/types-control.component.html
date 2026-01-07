@@ -1,4 +1,15 @@
 <section class="captain flex flex-col gap-[45px]">
+  <!-- Page Header -->
+  <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+    <app-page-header
+      title="إدارة أنواع الشحنات"
+      subtitle="عرض وإدارة أنواع الشحنات ونطاقات أوزانها"
+      [showBackButton]="true"
+      iconPath="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
+    >
+    </app-page-header>
+  </div>
+
   <div class="bg-white rounded-xl shadow-sm border border-neutral-200 mb-6">
     <div class="p-6">
       <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
@@ -11,61 +22,127 @@
           </div>
           <input
             type="text"
-            placeholder="Search"
+            [formControl]="searchControl"
+            placeholder="{{ 'COMMON.SEARCH_PLACEHOLDER' | translate }}"
             class="block w-full pr-10 pl-3 py-2.5 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 text-sm"
           />
         </div>
         <button
           (click)="openModal()"
-          class="inline-flex items-center gap-2 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 text-sm font-semibold">
-          فتح المودال
+          class="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 text-sm font-semibold">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          </svg>
+          {{ "COMMON.ADD" | translate }}
         </button>
       </div>
     </div>
   </div>
-  <div class="bg-white rounded-lg p-4 shadow-sm">
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="bg-white rounded-lg p-12 shadow-sm text-center">
+    <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-primary-200 border-t-primary-600"></div>
+    <p class="mt-4 text-sm font-medium text-neutral-700">{{ "COMMON.LOADING" | translate }}</p>
+  </div>
+
+  <!-- Table -->
+  <div *ngIf="!isLoading" class="bg-white rounded-lg p-4 shadow-sm">
     <table class="min-w-full divide-y divide-gray-200 text-sm text-center">
       <thead class="bg-gray-100 text-gray-700">
         <tr>
-          <th class="py-3 px-4">نوع الشحنة </th>
-          <th class="py-3 px-4">نوع المركبة</th>
-          <th class="py-3 px-4">نوع الفنى</th>
-          <th class="py-3 px-4">حجم الشحنة</th>
-          <th class="py-3 px-4">نوع المدينة</th>
-          <th class="py-3 px-4">الإجراء</th>
+          <th class="py-3 px-4">#</th>
+          <th class="py-3 px-4">{{ "ADMIN.PAGES.ORDER_PACKAGES.TABLE_HEADERS.ARABIC_DESCRIPTION" | translate }}</th>
+          <th class="py-3 px-4">{{ "ADMIN.PAGES.ORDER_PACKAGES.TABLE_HEADERS.ENGLISH_DESCRIPTION" | translate }}</th>
+          <th class="py-3 px-4">{{ "ADMIN.PAGES.ORDER_PACKAGES.TABLE_HEADERS.MIN_WEIGHT" | translate }}</th>
+          <th class="py-3 px-4">{{ "ADMIN.PAGES.ORDER_PACKAGES.TABLE_HEADERS.MAX_WEIGHT" | translate }}</th>
+          <th class="py-3 px-4">{{ "ADMIN.PAGES.ORDER_PACKAGES.TABLE_HEADERS.ACTIONS" | translate }}</th>
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
-        <tr class="hover:bg-gray-50">
-          <td class="px-4 py-3">نقل ثقيل</td>
-          <td class="px-4 py-3">نيسان</td>
-          <td class="px-4 py-3">سائق</td>
-          <td class="px-4 py-3">حجم كبير</td>
-          <td class="px-4 py-3">تحت الانشاء</td>
+        <tr *ngFor="let item of items; let i = index" class="hover:bg-gray-50">
+          <td class="px-4 py-3">{{ (currentPage * itemsPerPage) + i + 1 }}</td>
+          <td class="px-4 py-3">{{ item.arabicDescription }}</td>
+          <td class="px-4 py-3">{{ item.englishDescription }}</td>
+          <td class="px-4 py-3">{{ item.minWeightInKg }} {{ "ADMIN.PAGES.ORDER_PACKAGES.KG" | translate }}</td>
+          <td class="px-4 py-3">{{ item.maxWeightInKg }} {{ "ADMIN.PAGES.ORDER_PACKAGES.KG" | translate }}</td>
           <td class="px-4 py-3">
-            <div class="flex justify-center gap-1">
-              <!-- المعاينة -->
-              <div class="relative group inline-block">
-                <a routerLink="requestTracking/1"
-                  class="flex items-center px-2 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                  </svg>
-                </a>
-              </div>
+            <div class="flex justify-center gap-2">
+              <!-- Edit Button -->
+              <button
+                type="button"
+                (click)="openEdit(item)"
+                class="flex items-center px-3 py-1.5 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+                {{ "COMMON.EDIT" | translate }}
+              </button>
+              <!-- Delete Button -->
+              <button
+                type="button"
+                (click)="confirmDelete(item.id)"
+                class="flex items-center px-3 py-1.5 bg-red-100 text-red-700 rounded hover:bg-red-200 transition text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                {{ "COMMON.DELETE" | translate }}
+              </button>
             </div>
+          </td>
+        </tr>
+        <!-- Empty State -->
+        <tr *ngIf="items.length === 0">
+          <td colspan="6" class="px-6 py-12 text-center">
+            <svg class="mx-auto h-12 w-12 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+            </svg>
+            <h3 class="mt-2 text-sm font-medium text-neutral-900">{{ "ADMIN.PAGES.ORDER_PACKAGES.NO_DATA" | translate }}</h3>
+            <p class="mt-1 text-sm text-neutral-500">{{ "ADMIN.PAGES.ORDER_PACKAGES.NO_DATA_DESC" | translate }}</p>
           </td>
         </tr>
       </tbody>
     </table>
   </div>
 
+  <!-- Pagination -->
+  <div *ngIf="!isLoading && totalPages > 1" class="flex items-center justify-between bg-white rounded-xl shadow-sm border border-neutral-200 px-4 py-2">
+    <div class="text-sm text-neutral-600">
+      {{ "COMMON.SHOWING" | translate }} <span class="font-medium text-neutral-900">{{ displayStartCount }}</span> {{ "COMMON.TO" | translate }}
+      <span class="font-medium text-neutral-900">{{ displayEndCount }}</span> {{ "COMMON.OF" | translate }}
+      <span class="font-medium text-neutral-900">{{ totalCount }}</span> {{ "COMMON.RESULTS" | translate }}
+    </div>
+    <div class="flex items-center gap-2">
+      <button
+        (click)="changePage(displayCurrentPage - 1)"
+        [disabled]="currentPage === 0"
+        class="px-3 py-2 text-sm font-medium text-neutral-700 bg-white border border-neutral-300 rounded-lg hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200">
+        {{ "COMMON.PREVIOUS" | translate }}
+      </button>
+      <div class="flex items-center gap-1">
+        <button
+          *ngFor="let page of visiblePages"
+          (click)="page > 0 && changePage(page)"
+          [ngClass]="{
+            'bg-primary-600 text-white border-primary-600': page === displayCurrentPage,
+            'bg-white text-neutral-700 border-neutral-300 hover:bg-neutral-50': page !== displayCurrentPage && page > 0,
+            'cursor-default': page < 0
+          }"
+          [disabled]="page < 0"
+          class="px-4 py-2 text-sm font-medium border rounded-lg transition-all duration-200 disabled:cursor-default">
+          {{ page > 0 ? page : '...' }}
+        </button>
+      </div>
+      <button
+        (click)="changePage(displayCurrentPage + 1)"
+        [disabled]="currentPage >= totalPages - 1"
+        class="px-3 py-2 text-sm font-medium text-neutral-700 bg-white border border-neutral-300 rounded-lg hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200">
+        {{ "COMMON.NEXT" | translate }}
+      </button>
+    </div>
+  </div>
 </section>
 
-
+<!-- Modal -->
 <div
   *ngIf="isModalOpen"
   class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
@@ -73,61 +150,119 @@
 
   <!-- Modal Content -->
   <div
-    class="bg-white rounded-lg shadow-xl w-96 max-w-full mx-4"
+    class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4"
     (click)="$event.stopPropagation()">
 
     <!-- Modal Header -->
     <div class="p-6 border-b border-gray-200">
       <h2 class="text-xl font-semibold text-gray-800 text-center">
-        أضافة جديدة
+        {{ isEditMode ? ("ADMIN.PAGES.ORDER_PACKAGES.EDIT_TITLE" | translate) : ("ADMIN.PAGES.ORDER_PACKAGES.ADD_TITLE" | translate) }}
       </h2>
     </div>
 
     <!-- Modal Body -->
-    <div class="p-6 space-y-4">
-      <!-- First Input with Icon -->
-      <div class="relative">
-        <input
-          type="text"
-          placeholder="النوع"
-          class="w-full p-3 border border-gray-300 rounded-md pr-10 text-right focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
-        <div class="absolute left-3 top-1/2 transform -translate-y-1/2">
-          <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M9 12a1 1 0 102 0V7a1 1 0 10-2 0v5zM9 16a1 1 0 102 0v-1a1 1 0 10-2 0v1z"/>
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm0-2a6 6 0 100-12 6 6 0 000 12z" clip-rule="evenodd"/>
-          </svg>
+    <form [formGroup]="itemForm" (ngSubmit)="saveAction()">
+      <div class="p-6 space-y-4">
+        <!-- Arabic Description -->
+        <div class="relative">
+          <label class="block text-sm font-medium text-gray-700 mb-2 text-right">
+            {{ "ADMIN.PAGES.ORDER_PACKAGES.FIELDS.ARABIC_DESCRIPTION" | translate }}
+            <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            formControlName="arabicDescription"
+            placeholder="{{ 'ADMIN.PAGES.ORDER_PACKAGES.FIELDS.ARABIC_DESCRIPTION_PLACEHOLDER' | translate }}"
+            class="w-full p-3 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            [class.border-red-500]="itemForm.get('arabicDescription')?.invalid && itemForm.get('arabicDescription')?.touched">
+          <div *ngIf="itemForm.get('arabicDescription')?.invalid && itemForm.get('arabicDescription')?.touched" class="text-red-500 text-xs mt-1 text-right">
+            {{ "VALIDATION.REQUIRED" | translate }}
+          </div>
+        </div>
+
+        <!-- English Description -->
+        <div class="relative">
+          <label class="block text-sm font-medium text-gray-700 mb-2 text-right">
+            {{ "ADMIN.PAGES.ORDER_PACKAGES.FIELDS.ENGLISH_DESCRIPTION" | translate }}
+            <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            formControlName="englishDescription"
+            placeholder="{{ 'ADMIN.PAGES.ORDER_PACKAGES.FIELDS.ENGLISH_DESCRIPTION_PLACEHOLDER' | translate }}"
+            class="w-full p-3 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            [class.border-red-500]="itemForm.get('englishDescription')?.invalid && itemForm.get('englishDescription')?.touched">
+          <div *ngIf="itemForm.get('englishDescription')?.invalid && itemForm.get('englishDescription')?.touched" class="text-red-500 text-xs mt-1 text-right">
+            {{ "VALIDATION.REQUIRED" | translate }}
+          </div>
+        </div>
+
+        <!-- Min Weight -->
+        <div class="relative">
+          <label class="block text-sm font-medium text-gray-700 mb-2 text-right">
+            {{ "ADMIN.PAGES.ORDER_PACKAGES.FIELDS.MIN_WEIGHT" | translate }}
+            <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="number"
+            formControlName="minWeightInKiloGram"
+            placeholder="{{ 'ADMIN.PAGES.ORDER_PACKAGES.FIELDS.MIN_WEIGHT_PLACEHOLDER' | translate }}"
+            min="0"
+            step="0.01"
+            class="w-full p-3 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            [class.border-red-500]="itemForm.get('minWeightInKiloGram')?.invalid && itemForm.get('minWeightInKiloGram')?.touched">
+          <div *ngIf="itemForm.get('minWeightInKiloGram')?.invalid && itemForm.get('minWeightInKiloGram')?.touched" class="text-red-500 text-xs mt-1 text-right">
+            {{ "VALIDATION.REQUIRED" | translate }}
+          </div>
+        </div>
+
+        <!-- Max Weight -->
+        <div class="relative">
+          <label class="block text-sm font-medium text-gray-700 mb-2 text-right">
+            {{ "ADMIN.PAGES.ORDER_PACKAGES.FIELDS.MAX_WEIGHT" | translate }}
+            <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="number"
+            formControlName="maxWeightInKiloGram"
+            placeholder="{{ 'ADMIN.PAGES.ORDER_PACKAGES.FIELDS.MAX_WEIGHT_PLACEHOLDER' | translate }}"
+            min="0"
+            step="0.01"
+            class="w-full p-3 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            [class.border-red-500]="itemForm.get('maxWeightInKiloGram')?.invalid && itemForm.get('maxWeightInKiloGram')?.touched">
+          <div *ngIf="itemForm.get('maxWeightInKiloGram')?.invalid && itemForm.get('maxWeightInKiloGram')?.touched" class="text-red-500 text-xs mt-1 text-right">
+            {{ "VALIDATION.REQUIRED" | translate }}
+          </div>
         </div>
       </div>
 
-      <!-- Second Input with Icon -->
-      <div class="relative">
-        <input
-          type="text"
-          placeholder="الكمية"
-          class="w-full p-3 border border-gray-300 rounded-md pr-10 text-right focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent">
-        <div class="absolute left-3 top-1/2 transform -translate-y-1/2">
-          <svg class="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
-          </svg>
-        </div>
+      <!-- Modal Footer -->
+      <div class="flex justify-between p-6 border-t border-gray-200">
+        <!-- Cancel Button -->
+        <button
+          type="button"
+          (click)="closeModal()"
+          class="px-6 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors duration-200">
+          {{ "COMMON.CANCEL" | translate }}
+        </button>
+
+        <!-- Save Button -->
+        <button
+          type="submit"
+          [disabled]="itemForm.invalid"
+          class="px-6 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200">
+          {{ isEditMode ? ("COMMON.SAVE" | translate) : ("COMMON.ADD" | translate) }}
+        </button>
       </div>
-    </div>
-
-    <!-- Modal Footer -->
-    <div class="flex justify-between p-6 border-t border-gray-200">
-      <!-- Cancel Button -->
-      <button
-        (click)="closeModal()"
-        class="px-6 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors duration-200">
-        إلغاء
-      </button>
-
-      <!-- Save Button -->
-      <button
-        (click)="saveAction()"
-        class="px-6 py-2 bg-mainButtonBg mainButtonText text-white rounded-md hover:bg-green-700 transition-colors duration-200">
-        أضافة
-      </button>
-    </div>
+    </form>
   </div>
 </div>
+
+<!-- Confirmation Modal -->
+<app-confirmation-modal
+  [show]="showConfirmModal"
+  [title]="confirmationTitle"
+  [message]="confirmationMessage"
+  (confirmed)="onConfirmationConfirmed()"
+  (cancelled)="onConfirmationCancelled()">
+</app-confirmation-modal>

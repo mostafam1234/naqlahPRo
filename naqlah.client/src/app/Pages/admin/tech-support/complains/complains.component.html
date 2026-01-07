@@ -1,0 +1,139 @@
+<div class="min-h-screen bg-neutral-50">
+  <div class="container mx-auto">
+    <!-- Page Header -->
+    <app-page-header
+      title="ADMIN.PAGES.TECH_SUPPORT.COMPLAINS.TITLE"
+      subtitle="ADMIN.PAGES.TECH_SUPPORT.COMPLAINS.SUBTITLE"
+      [showBackButton]="true"
+      iconPath="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+      (onBackClick)="goBack()"
+    >
+    </app-page-header>
+
+    <!-- Search Bar -->
+    <div class="bg-white rounded-xl shadow-sm border border-neutral-200 mb-6 mt-6">
+      <div class="p-6">
+        <div class="relative max-w-md">
+          <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+            <svg class="h-5 w-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <input
+            type="text"
+            [formControl]="searchControl"
+            placeholder="البحث في الشكاوى..."
+            class="block w-full pr-10 pl-3 py-2.5 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 text-sm"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="bg-white rounded-xl shadow-sm border border-neutral-200 overflow-hidden mb-6">
+      <div class="px-4 py-2 border-b border-neutral-200 bg-neutral-50/50">
+        <div class="flex items-center justify-between">
+          <h3 class="font-semibold text-neutral-900 text-lg">الشكاوى</h3>
+          <span class="text-sm text-neutral-500 bg-neutral-100 px-3 py-1 rounded-full">
+            {{ totalCount }} شكوى
+          </span>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div *ngIf="isLoading" class="p-12 text-center">
+        <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-primary-200 border-t-primary-600"></div>
+        <p class="mt-4 text-sm font-medium text-neutral-700">جاري التحميل...</p>
+      </div>
+
+      <!-- Table Content -->
+      <div *ngIf="!isLoading" class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-neutral-200">
+          <thead class="bg-neutral-50">
+            <tr>
+              <th class="px-6 py-3 text-right text-xs font-semibold text-neutral-700 uppercase tracking-wider">#</th>
+              <th class="px-6 py-3 text-right text-xs font-semibold text-neutral-700 uppercase tracking-wider">اسم العميل</th>
+              <th class="px-6 py-3 text-right text-xs font-semibold text-neutral-700 uppercase tracking-wider">رقم الجوال</th>
+              <th class="px-6 py-3 text-right text-xs font-semibold text-neutral-700 uppercase tracking-wider">العنوان</th>
+              <th class="px-6 py-3 text-right text-xs font-semibold text-neutral-700 uppercase tracking-wider">الوصف</th>
+              <th class="px-6 py-3 text-right text-xs font-semibold text-neutral-700 uppercase tracking-wider">تاريخ الإنشاء</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-neutral-200">
+            <tr *ngFor="let item of items; let i = index" class="hover:bg-neutral-50 transition-colors duration-150">
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-900">
+                {{ currentPage * itemsPerPage + i + 1 }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm font-medium text-neutral-900">{{ item.customerName }}</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-neutral-700">{{ item.customerMobileNumber }}</div>
+              </td>
+              <td class="px-6 py-4">
+                <div class="text-sm text-neutral-700 max-w-xs">{{ item.customerAddress }}</div>
+              </td>
+              <td class="px-6 py-4">
+                <div class="text-sm text-neutral-700 max-w-md">{{ item.description }}</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-neutral-700">{{ formatDate(item.creationDate) }}</div>
+              </td>
+            </tr>
+            <!-- Empty State -->
+            <tr *ngIf="items.length === 0">
+              <td colspan="6" class="px-6 py-12 text-center">
+                <svg class="mx-auto h-12 w-12 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <h3 class="mt-2 text-sm font-medium text-neutral-900">لا توجد شكاوى</h3>
+                <p class="mt-1 text-sm text-neutral-500">لم يتم العثور على أي شكاوى</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div *ngIf="!isLoading && totalPages > 1" class="px-6 py-4 border-t border-neutral-200 bg-neutral-50/30">
+        <div class="flex items-center justify-between">
+          <div class="text-sm text-neutral-700">
+            عرض <span class="font-medium">{{ displayStartCount }}</span> إلى
+            <span class="font-medium">{{ displayEndCount }}</span> من أصل
+            <span class="font-medium">{{ totalCount }}</span> نتيجة
+          </div>
+          <nav class="flex items-center gap-1">
+            <button
+              [disabled]="displayCurrentPage === 1"
+              (click)="changePage(displayCurrentPage - 1)"
+              [class]="displayCurrentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-neutral-100'"
+              class="px-3 py-2 text-sm font-medium text-neutral-700 bg-white border border-neutral-300 rounded-lg transition-colors duration-150"
+            >
+              السابق
+            </button>
+            <ng-container *ngFor="let page of visiblePages">
+              <button
+                *ngIf="page !== -1"
+                (click)="changePage(page)"
+                [class]="page === displayCurrentPage ? 'bg-primary-600 text-white border-primary-600' : 'bg-white text-neutral-700 border-neutral-300 hover:bg-neutral-100'"
+                class="px-4 py-2 text-sm font-medium border rounded-lg transition-colors duration-150"
+              >
+                {{ page }}
+              </button>
+              <span *ngIf="page === -1" class="px-2 py-2 text-neutral-500">...</span>
+            </ng-container>
+            <button
+              [disabled]="displayCurrentPage === totalPages"
+              (click)="changePage(displayCurrentPage + 1)"
+              [class]="displayCurrentPage === totalPages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-neutral-100'"
+              class="px-3 py-2 text-sm font-medium text-neutral-700 bg-white border border-neutral-300 rounded-lg transition-colors duration-150"
+            >
+              التالي
+            </button>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -1,93 +1,1389 @@
-<section class="bg-white p-[40px] rounded-lg shadow">
-  <h2 class="text-2xl font-bold mb-8">تعديل بيانات الكابتن</h2>
-
-  <form [formGroup]="captainForm" (ngSubmit)="submitForm()" class="space-y-4">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-[15px]">
-      <div class="flex flex-col">
-        <label for="nameAr" class="font-medium">الاسم بالعربي</label>
-        <input
-          id="nameAr"
-          type="text"
-          formControlName="nameAr"
-          class="border rounded px-4 py-2 mt-2"
-          placeholder="أدخل الاسم بالعربي"
-        />
-        <div *ngIf="captainForm.get('nameAr')?.invalid && captainForm.get('nameAr')?.touched" class="text-red-500 text-sm mt-2">
-          الاسم مطلوب
-        </div>
-      </div>
-
-      <div class="flex flex-col">
-        <label for="nameEn" class="font-medium">الاسم بالإنجليزي</label>
-        <input
-          id="nameEn"
-          type="text"
-          formControlName="nameEn"
-          class="border rounded px-4 py-2 mt-2"
-          placeholder="Enter name in English"
-        />
-        <div *ngIf="captainForm.get('nameEn')?.invalid && captainForm.get('nameEn')?.touched" class="text-red-500 text-sm mt-2">
-          الاسم مطلوب
-        </div>
-      </div>
-
-      <div class="flex flex-col">
-        <label for="phone" class="font-medium">رقم الهاتف</label>
-        <input
-          id="phone"
-          type="text"
-          formControlName="phone"
-          class="border rounded px-4 py-2 mt-2"
-          placeholder="أدخل رقم الهاتف"
-        />
-        <div *ngIf="captainForm.get('phone')?.invalid && captainForm.get('phone')?.touched" class="text-red-500 text-sm mt-2">
-          رقم الهاتف مطلوب
-        </div>
-      </div>
-      <div class="flex flex-col">
-          <label class="font-medium">البريد الإلكتروني</label>
-          <input type="email" formControlName="email" placeholder="example@email.com"
-                class="border rounded px-4 py-2 mt-2" />
-          <div *ngIf="captainForm.get('email')?.invalid && captainForm.get('email')?.touched"
-              class="text-red-500 text-sm">البريد مطلوب وصحيح</div>
-        </div>
-
-        <!-- النوع -->
-        <div class="flex flex-col">
-          <label class="font-medium">النوع</label>
-          <select formControlName="type" class="border rounded px-4 py-2 mt-2">
-            <option value="" disabled selected>اختر النوع</option>
-            <option value="individual">فردي</option>
-            <option value="institution">مؤسسة</option>
-          </select>
-          <div *ngIf="captainForm.get('type')?.invalid && captainForm.get('type')?.touched"
-              class="text-red-500 text-sm mt-2">
-              النوع مطلوب
-          </div>
-        </div>
-        <div class="flex flex-col gap-2 col-span-2 mt-4">
-          <label class="font-medium">صورة الطيار</label>
-          <div class="border border-dashed w-full p-8 min-h-[100px] flex flex-col justify-center items-center">
-            <div class="flex items-center gap-4">
-              <label for="fileUpload"
-                    class="cursor-pointer mb-4 bg-mainButtonBg text-white py-2 px-4 rounded-full hover:bg-opacity-90">
-                اختر صورة
-              </label>
-              <input type="file" id="fileUpload" (change)="onImageSelected($event)"
-                    accept="image/*" hidden />
-            </div>
-            <div *ngIf="imagePreview" class="custom-card border border-dashed rounded-xl p-4 max-w-xs">
-              <img [src]="imagePreview" alt="معاينة الصورة" class="rounded-xl h-[150px] w-full object-cover" />
-            </div>
-          </div>
-        </div>
-      </div>
-    <button
-      type="submit"
-      [disabled]="captainForm.invalid"
-      class="bg-mainButtonBg text-white py-2 px-6 rounded-full font-bold hover:bg-opacity-90"
+<div class="min-h-screen bg-neutral-50">
+  <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+    <app-page-header
+      title="ADMIN.PAGES.EDIT_CAPTAIN.HEADER_TITLE"
+      subtitle="ADMIN.PAGES.EDIT_CAPTAIN.HEADER_SUBTITLE"
+      [showBackButton]="true"
+      iconPath="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+      (onBackClick)="onCancel()"
     >
-      تعديل الكابتن
-    </button>
-  </form>
-</section>
+    </app-page-header>
+
+    <form [formGroup]="captainForm" (ngSubmit)="onSubmit()" class="mt-8">
+      <!-- Progress Steps -->
+      <div class="mb-8">
+        <div class="flex items-center justify-center gap-4 mb-6">
+          <div
+            *ngFor="let step of formSteps; let i = index"
+            class="flex items-center"
+            [class.opacity-50]="!formSections[step.key]"
+          >
+            <div
+              class="flex items-center justify-center w-10 h-10 rounded-full transition-all duration-300"
+              [class]="getStepClass(step.key)"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="step.icon"></path>
+              </svg>
+            </div>
+            <span class="mr-3 text-neutral-700 font-medium">{{ step.title }}</span>
+            <div *ngIf="i < formSteps.length - 1" class="w-16 h-0.5 bg-neutral-300 mr-4"></div>
+          </div>
+        </div>
+      </div>
+
+        <!-- Form Grid Layout -->
+        <div class="grid grid-cols-12 gap-6">
+      <!-- Personal Information - Large Card -->
+      <div class="col-span-12 lg:col-span-6">
+        <div class="bg-white border border-neutral-200 rounded-xl overflow-hidden shadow-sm">
+          <div class="bg-primary-500 p-6">
+                <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3 space-x-reverse">
+              <div class="w-12 h-12 bg-primary-600 rounded-xl flex items-center justify-center">
+                      <svg
+                        class="w-6 h-6 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                        ></path>
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 class="text-xl font-bold text-white">
+                        {{
+                          "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.PERSONAL_INFO_TITLE"
+                            | translate
+                        }}
+                      </h3>
+                      <p class="text-blue-100 text-sm">
+                        {{
+                          "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.PERSONAL_INFO_SUBTITLE"
+                            | translate
+                        }}
+                      </p>
+                    </div>
+                  </div>
+            <button
+              type="button"
+              (click)="toggleSection('personalInfo')"
+              class="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center hover:bg-primary-700 transition-colors"
+            >
+                    <svg
+                      class="w-4 h-4 text-white transform transition-transform duration-200"
+                      [class.rotate-180]="!formSections.personalInfo"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 9l-7 7-7-7"
+                      ></path>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+          <div *ngIf="formSections.personalInfo" class="p-6 space-y-6">
+            <!-- Email -->
+            <div class="space-y-2">
+              <label class="block text-sm font-semibold text-neutral-700">{{
+                "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.EMAIL" | translate
+              }}</label>
+              <input
+                type="email"
+                formControlName="email"
+                placeholder="example@email.com"
+                class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 placeholder-neutral-500 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
+                [class.border-red-500]="isFieldInvalid('email')"
+                [class.border-green-500]="captainForm.get('email')?.valid && captainForm.get('email')?.touched"
+                [readonly]="true"
+              />
+                  <p
+                    *ngIf="isFieldInvalid('email')"
+                    class="text-red-500 text-sm mt-1"
+                  >
+                    {{ getFieldError("email") }}
+                  </p>
+                </div>
+
+                <!-- Password (Optional for edit) -->
+                <div class="space-y-2">
+                  <label class="block text-sm font-semibold text-gray-700">{{ "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.PASSWORD" | translate }} <span class="text-gray-400 text-xs">({{ "COMMON.OPTIONAL" | translate }})</span></label>
+                  <input
+                    type="password"
+                    formControlName="password"
+                    placeholder="••••••••"
+                    class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 placeholder-neutral-500 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
+                    [class.border-red-500]="isFieldInvalid('password')"
+                    [class.border-green-500]="
+                      captainForm.get('password')?.valid &&
+                      captainForm.get('password')?.touched &&
+                      captainForm.get('password')?.value
+                    "
+                  />
+                  <p
+                    *ngIf="isFieldInvalid('password')"
+                    class="text-red-500 text-sm mt-1"
+                  >
+                    {{ getFieldError("password") }}
+                  </p>
+                </div>
+
+                <!-- Full Name -->
+                <div class="space-y-2">
+                  <label class="block text-sm font-semibold text-gray-700">{{
+                    "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.FULL_NAME" | translate
+                  }}</label>
+                  <input
+                    type="text"
+                    formControlName="fullName"
+                    placeholder="{{
+                      'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.FULL_NAME_PLACEHOLDER'
+                        | translate
+                    }}"
+                    class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 placeholder-neutral-500 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
+                    [class.border-red-500]="isFieldInvalid('fullName')"
+                    [class.border-green-500]="
+                      captainForm.get('fullName')?.valid &&
+                      captainForm.get('fullName')?.touched
+                    "
+                  />
+                  <p
+                    *ngIf="isFieldInvalid('fullName')"
+                    class="text-red-500 text-sm mt-1"
+                  >
+                    {{ getFieldError("fullName") }}
+                  </p>
+                </div>
+
+                <!-- Phone Number -->
+                <div class="space-y-2">
+                  <label class="block text-sm font-semibold text-gray-700">{{
+                    "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.PHONE_NUMBER" | translate
+                  }}</label>
+                  <input
+                    type="tel"
+                    formControlName="phoneNumber"
+                    placeholder="05xxxxxxxx"
+                    class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 placeholder-neutral-500 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
+                    [class.border-red-500]="isFieldInvalid('phoneNumber')"
+                    [class.border-green-500]="
+                      captainForm.get('phoneNumber')?.valid &&
+                      captainForm.get('phoneNumber')?.touched
+                    "
+                  />
+                  <p
+                    *ngIf="isFieldInvalid('phoneNumber')"
+                    class="text-red-500 text-sm mt-1"
+                  >
+                    {{ getFieldError("phoneNumber") }}
+                  </p>
+                </div>
+
+                <!-- Identity Number -->
+                <div class="space-y-2">
+                  <label class="block text-sm font-semibold text-gray-700">{{
+                    "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.IDENTITY_NUMBER" | translate
+                  }}</label>
+                  <input
+                    type="text"
+                    formControlName="identityNumber"
+                    placeholder="1234567890"
+                    class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 placeholder-neutral-500 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
+                    [class.border-red-500]="isFieldInvalid('identityNumber')"
+                    [class.border-green-500]="
+                      captainForm.get('identityNumber')?.valid &&
+                      captainForm.get('identityNumber')?.touched
+                    "
+                  />
+                  <p
+                    *ngIf="isFieldInvalid('identityNumber')"
+                    class="text-red-500 text-sm mt-1"
+                  >
+                    {{ getFieldError("identityNumber") }}
+                  </p>
+                </div>
+
+                <!-- Delivery Type -->
+                <div class="space-y-2">
+                  <label class="block text-sm font-semibold text-gray-700">{{
+                    "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.DELIVERY_TYPE" | translate
+                  }}</label>
+                  <select
+                    formControlName="deliveryType"
+                    class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
+                  >
+                    <option
+                      *ngFor="let type of deliveryTypes"
+                      [value]="type.value"
+                      class="bg-white text-gray-900"
+                    >
+                      {{ type.label }}
+                    </option>
+                  </select>
+                </div>
+
+                <!-- Address -->
+                <div class="space-y-2">
+                  <label class="block text-sm font-semibold text-gray-700">{{
+                    "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.ADDRESS" | translate
+                  }}</label>
+                  <textarea
+                    formControlName="address"
+                    rows="3"
+                    placeholder="{{
+                      'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.ADDRESS_PLACEHOLDER'
+                        | translate
+                    }}"
+                    class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all resize-none"
+                    [class.border-red-500]="isFieldInvalid('address')"
+                    [class.border-green-500]="
+                      captainForm.get('address')?.valid &&
+                      captainForm.get('address')?.touched
+                    "
+                  ></textarea>
+                  <p
+                    *ngIf="isFieldInvalid('address')"
+                    class="text-red-500 text-sm mt-1"
+                  >
+                    {{ getFieldError("address") }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Identity & License Information -->
+          <div class="col-span-12 lg:col-span-6">
+            <div class="space-y-6">
+              <!-- Identity Info -->
+              <div
+                class="bg-white border border-neutral-200 rounded-xl overflow-hidden shadow-sm"
+              >
+                <div class="bg-green-500 p-6">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3 space-x-reverse">
+                      <div
+                        class="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center"
+                      >
+                        <svg
+                          class="w-6 h-6 text-white"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"
+                          ></path>
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 class="text-xl font-bold text-white">
+                          {{
+                            "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.IDENTITY_INFO_TITLE"
+                              | translate
+                          }}
+                        </h3>
+                        <p class="text-green-100 text-sm">
+                          {{
+                            "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.IDENTITY_INFO_SUBTITLE"
+                              | translate
+                          }}
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      (click)="toggleSection('identityInfo')"
+                      class="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center hover:bg-emerald-700 transition-colors"
+                    >
+                      <svg
+                        class="w-4 h-4 text-white transform transition-transform duration-200"
+                        [class.rotate-180]="!formSections.identityInfo"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M19 9l-7 7-7-7"
+                        ></path>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <div *ngIf="formSections.identityInfo" class="p-6">
+                  <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-gray-700">{{
+                      "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.IDENTITY_EXPIRATION_DATE" | translate
+                    }}</label>
+                    <input
+                      type="date"
+                      formControlName="identityExpirationDate"
+                      class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Driving License -->
+              <div
+                class="bg-white border border-neutral-200 rounded-xl overflow-hidden shadow-sm"
+              >
+                <div class="bg-purple-500 p-6">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3 space-x-reverse">
+                      <div
+                        class="w-12 h-12 bg-purple-600 rounded-xl flex items-center justify-center"
+                      >
+                        <svg
+                          class="w-6 h-6 text-white"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                          ></path>
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 class="text-xl font-bold text-white">
+                          {{
+                            "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.DRIVING_LICENSE_TITLE"
+                              | translate
+                          }}
+                        </h3>
+                        <p class="text-purple-100 text-sm">
+                          {{
+                            "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.DRIVING_LICENSE_SUBTITLE"
+                              | translate
+                          }}
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      (click)="toggleSection('drivingLicense')"
+                      class="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center hover:bg-purple-700 transition-colors"
+                    >
+                      <svg
+                        class="w-4 h-4 text-white transform transition-transform duration-200"
+                        [class.rotate-180]="!formSections.drivingLicense"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M19 9l-7 7-7-7"
+                        ></path>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <div *ngIf="formSections.drivingLicense" class="p-6 space-y-6">
+                  <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-gray-700">{{
+                      "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.DRIVING_LICENSE_TYPE"
+                        | translate
+                    }}</label>
+                    <select
+                      formControlName="deliveryLicenseType"
+                      class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+                    >
+                      <option
+                        *ngFor="let licenseType of deliveryLicenseTypes"
+                        [value]="licenseType.value"
+                        class="bg-white text-gray-900"
+                      >
+                        {{ licenseType.label }}
+                      </option>
+                    </select>
+                  </div>
+
+                  <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-gray-700">{{
+                      "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.DRIVING_LICENSE_EXPIRY"
+                        | translate
+                    }}</label>
+                    <input
+                      type="date"
+                      formControlName="drivingLicenseExpirationDate"
+                      class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Vehicle Information - Full Width -->
+          <div class="col-span-12">
+            <div
+              class="bg-white border border-neutral-200 rounded-xl overflow-hidden shadow-sm"
+            >
+              <div class="bg-orange-500 p-6">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center space-x-3 space-x-reverse">
+                    <div
+                      class="w-12 h-12 bg-orange-600 rounded-xl flex items-center justify-center"
+                    >
+                      <svg
+                        class="w-6 h-6 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"
+                        ></path>
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M13 16v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6M8 9l3-3 3 3"
+                        ></path>
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 class="text-xl font-bold text-white">
+                        {{
+                          "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_INFO_TITLE"
+                            | translate
+                        }}
+                      </h3>
+                      <p class="text-orange-100 text-sm">
+                        {{
+                          "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_INFO_SUBTITLE"
+                            | translate
+                        }}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    (click)="toggleSection('vehicleInfo')"
+                    class="w-8 h-8 bg-orange-600 rounded-lg flex items-center justify-center hover:bg-orange-700 transition-colors"
+                  >
+                    <svg
+                      class="w-4 h-4 text-white transform transition-transform duration-200"
+                      [class.rotate-180]="!formSections.vehicleInfo"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 9l-7 7-7-7"
+                      ></path>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <div *ngIf="formSections.vehicleInfo" class="p-6">
+                <div
+                  class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                >
+                  <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-gray-700">{{
+                      "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_TYPE" | translate
+                    }}</label>
+                    <select
+                      formControlName="vehicleTypeId"
+                      class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
+                    >
+                      <option *ngFor="let t of vehicleTypes" [value]="t.id">
+                        {{ t.name }}
+                      </option>
+                    </select>
+                  </div>
+
+                  <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-gray-700">{{
+                      "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_BRAND" | translate
+                    }}</label>
+                    <select
+                      formControlName="vehicleBrandId"
+                      class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
+                    >
+                      <option *ngFor="let b of vehicleBrands" [value]="b.id">
+                        {{ b.name }}
+                      </option>
+                    </select>
+                  </div>
+
+                  <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-gray-700">{{
+                      "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_OWNER_TYPE" | translate
+                    }}</label>
+                    <select
+                      formControlName="vehicleOwnerTypeId"
+                      class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
+                    >
+                      <option [value]="1">
+                        {{
+                          "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.OWNER_RESIDENT"
+                            | translate
+                        }}
+                      </option>
+                      <option [value]="2">
+                        {{
+                          "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.OWNER_COMPANY"
+                            | translate
+                        }}
+                      </option>
+                      <option [value]="3">
+                        {{
+                          "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.OWNER_LEASE"
+                            | translate
+                        }}
+                      </option>
+                    </select>
+                  </div>
+
+                  <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-gray-700">{{
+                      "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_PLATE_NUMBER" | translate
+                    }}</label>
+                    <input
+                      type="text"
+                      formControlName="vehiclePlateNumber"
+                      placeholder="{{
+                        'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_PLATE_NUMBER_PLACEHOLDER'
+                          | translate
+                      }}"
+                      class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
+                    />
+                  </div>
+
+                  <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-gray-700">{{
+                      "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_LICENSE_EXPIRATION_DATE" | translate
+                    }}</label>
+                    <input
+                      type="date"
+                      formControlName="vehicleLicenseExpirationDate"
+                      class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
+                    />
+                  </div>
+
+                  <div class="space-y-2">
+                    <label class="block text-sm font-semibold text-gray-700">{{
+                      "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_INSURANCE_EXPIRY"
+                        | translate
+                    }}</label>
+                    <input
+                      type="date"
+                      formControlName="vehicleInsuranceExpirationDate"
+                      class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Documents Upload - Full Width -->
+          <div class="col-span-12">
+            <div
+              class="bg-white border border-neutral-200 rounded-xl overflow-hidden shadow-sm"
+            >
+              <div class="bg-cyan-500 p-6">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center space-x-3 space-x-reverse">
+                    <div
+                      class="w-12 h-12 bg-cyan-600 rounded-xl flex items-center justify-center"
+                    >
+                      <svg
+                        class="w-6 h-6 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                        ></path>
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 class="text-xl font-bold text-white">
+                        {{
+                          "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.DOCUMENTS_TITLE"
+                            | translate
+                        }}
+                      </h3>
+                      <p class="text-cyan-100 text-sm">
+                        {{
+                          "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.DOCUMENTS_SUBTITLE"
+                            | translate
+                        }}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    (click)="toggleSection('documentsUpload')"
+                    class="w-8 h-8 bg-cyan-600 rounded-lg flex items-center justify-center hover:bg-cyan-700 transition-colors"
+                  >
+                    <svg
+                      class="w-4 h-4 text-white transform transition-transform duration-200"
+                      [class.rotate-180]="!formSections.documentsUpload"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 9l-7 7-7-7"
+                      ></path>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <div *ngIf="formSections.documentsUpload" class="p-6">
+                <div
+                  class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                >
+                  <!-- Personal Image -->
+                  <div class="space-y-4">
+                    <h4 class="text-lg font-semibold text-neutral-700">
+                      {{
+                        "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.PERSONAL_IMAGE"
+                          | translate
+                      }}
+                    </h4>
+                    <div class="relative group">
+                      <div
+                        class="aspect-square w-full max-w-xs mx-auto border-2 border-dashed border-neutral-300 rounded-xl bg-neutral-50 flex items-center justify-center overflow-hidden hover:border-cyan-400 transition-colors"
+                      >
+                        <img
+                          *ngIf="
+                            imagesPreviews.personalImage;
+                            else noPersonalImage
+                          "
+                          [src]="imagesPreviews.personalImage"
+                          [alt]="
+                            'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.PERSONAL_IMAGE_ALT'
+                              | translate
+                          "
+                          class="w-full h-full object-cover rounded-2xl"
+                        />
+                        <ng-template #noPersonalImage>
+                          <div class="text-center">
+                            <svg
+                              class="w-12 h-12 text-gray-400 mx-auto mb-2"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                              ></path>
+                            </svg>
+                            <p class="text-gray-500 text-sm">
+                              {{ "COMMON.CHOOSE_IMAGE" | translate }}
+                            </p>
+                          </div>
+                        </ng-template>
+                      </div>
+                      <input
+                        type="file"
+                        id="personalImage"
+                        accept="image/*"
+                        (change)="onImageSelected($event, 'personal')"
+                        class="hidden"
+                      />
+                      <div class="flex space-x-2 space-x-reverse mt-4">
+                        <label
+                          for="personalImage"
+                          class="button flex-1 bg-cyan-500 hover:bg-cyan-600 text-white px-4 py-2 rounded-xl text-center cursor-pointer transition-all transform hover:scale-105"
+                        >
+                          {{ "COMMON.CHOOSE_IMAGE" | translate }}
+                        </label>
+                        <button
+                          *ngIf="imagesPreviews.personalImage"
+                          type="button"
+                          (click)="removeImage('personal')"
+                          class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-xl transition-colors"
+                        >
+                          {{ "COMMON.DELETE" | translate }}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Identity Images -->
+                  <div class="space-y-4">
+                    <h4 class="text-lg font-semibold text-neutral-700">
+                      {{
+                        "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.IDENTITY_IMAGES"
+                          | translate
+                      }}
+                    </h4>
+                    <div class="space-y-4">
+                      <!-- Front Identity -->
+                      <div>
+                        <label
+                          class="block text-sm font-medium text-neutral-600 mb-2"
+                        >
+                          {{
+                            "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.IDENTITY_FRONT_LABEL"
+                              | translate
+                          }}</label
+                        >
+                        <div
+                          class="aspect-video border-2 border-dashed border-neutral-300 rounded-lg bg-neutral-50 flex items-center justify-center overflow-hidden hover:border-emerald-400 transition-colors"
+                        >
+                          <img
+                            *ngIf="
+                              imagesPreviews.frontIdentityImage;
+                              else noFrontIdentity
+                            "
+                            [src]="imagesPreviews.frontIdentityImage"
+                            alt="{{
+                              'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.IDENTITY_FRONT_ALT'
+                                | translate
+                            }}"
+                            class="w-full h-full object-cover rounded-xl"
+                          />
+                          <ng-template #noFrontIdentity>
+                            <svg
+                              class="w-8 h-8 text-gray-400"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                              ></path>
+                            </svg>
+                          </ng-template>
+                        </div>
+                        <input
+                          type="file"
+                          id="frontIdentityImage"
+                          accept="image/*"
+                          (change)="onImageSelected($event, 'frontIdentity')"
+                          class="hidden"
+                        />
+                        <div class="flex space-x-2 space-x-reverse mt-2">
+                          <label
+                            for="frontIdentityImage"
+                            class="button flex-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 px-3 py-2 rounded-lg text-center cursor-pointer transition-colors text-sm"
+                          >
+                            {{ "COMMON.CHOOSE_IMAGE" | translate }}
+                          </label>
+                          <button
+                            *ngIf="imagesPreviews.frontIdentityImage"
+                            type="button"
+                            (click)="removeImage('frontIdentity')"
+                            class="px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors text-sm"
+                          >
+                            {{ "COMMON.DELETE" | translate }}
+                          </button>
+                        </div>
+                      </div>
+
+                      <!-- Back Identity -->
+                      <div>
+                        <label
+                          class="block text-sm font-medium text-gray-600 mb-2"
+                          >{{
+                            "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.IDENTITY_BACK_LABEL"
+                              | translate
+                          }}</label
+                        >
+                        <div
+                          class="aspect-video border-2 border-dashed border-neutral-300 rounded-lg bg-neutral-50 flex items-center justify-center overflow-hidden hover:border-emerald-400 transition-colors"
+                        >
+                          <img
+                            *ngIf="
+                              imagesPreviews.backIdentityImage;
+                              else noBackIdentity
+                            "
+                            [src]="imagesPreviews.backIdentityImage"
+                            alt="{{
+                              'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.IDENTITY_BACK_ALT'
+                                | translate
+                            }}"
+                            class="w-full h-full object-cover rounded-xl"
+                          />
+                          <ng-template #noBackIdentity>
+                            <svg
+                              class="w-8 h-8 text-gray-400"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                              ></path>
+                            </svg>
+                          </ng-template>
+                        </div>
+                        <input
+                          type="file"
+                          id="backIdentityImage"
+                          accept="image/*"
+                          (change)="onImageSelected($event, 'backIdentity')"
+                          class="hidden"
+                        />
+                        <div class="flex space-x-2 space-x-reverse mt-2">
+                          <label
+                            for="backIdentityImage"
+                            class="button flex-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 px-3 py-2 rounded-lg text-center cursor-pointer transition-colors text-sm"
+                          >
+                            {{ "COMMON.CHOOSE_IMAGE" | translate }}
+                          </label>
+                          <button
+                            *ngIf="imagesPreviews.backIdentityImage"
+                            type="button"
+                            (click)="removeImage('backIdentity')"
+                            class="px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors text-sm"
+                          >
+                            {{ "COMMON.DELETE" | translate }}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Driving License Images -->
+                  <div class="space-y-4">
+                    <h4 class="text-lg font-semibold text-neutral-700">
+                      {{
+                        "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.DRIVING_LICENSE_IMAGES"
+                          | translate
+                      }}
+                    </h4>
+                    <div class="space-y-4">
+                      <!-- Front License -->
+                      <div>
+                        <label
+                          class="block text-sm font-medium text-gray-600 mb-2"
+                          >{{
+                            "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.DRIVING_LICENSE_FRONT_LABEL"
+                              | translate
+                          }}</label
+                        >
+                        <div
+                          class="aspect-video border-2 border-dashed border-neutral-300 rounded-lg bg-neutral-50 flex items-center justify-center overflow-hidden hover:border-purple-400 transition-colors"
+                        >
+                          <img
+                            *ngIf="
+                              imagesPreviews.frontDrivingLicenseImage;
+                              else noFrontLicense
+                            "
+                            [src]="imagesPreviews.frontDrivingLicenseImage"
+                            alt="{{
+                              'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.DRIVING_LICENSE_FRONT_ALT'
+                                | translate
+                            }}"
+                            class="w-full h-full object-cover rounded-xl"
+                          />
+                          <ng-template #noFrontLicense>
+                            <svg
+                              class="w-8 h-8 text-gray-400"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                              ></path>
+                            </svg>
+                          </ng-template>
+                        </div>
+                        <input
+                          type="file"
+                          id="frontDrivingLicenseImage"
+                          accept="image/*"
+                          (change)="
+                            onImageSelected($event, 'frontDrivingLicense')
+                          "
+                          class="hidden"
+                        />
+                        <div class="flex space-x-2 space-x-reverse mt-2">
+                          <label
+                            for="frontDrivingLicenseImage"
+                            class="button flex-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 px-3 py-2 rounded-lg text-center cursor-pointer transition-colors text-sm"
+                          >
+                            {{ "COMMON.CHOOSE_IMAGE" | translate }}
+                          </label>
+                          <button
+                            *ngIf="imagesPreviews.frontDrivingLicenseImage"
+                            type="button"
+                            (click)="removeImage('frontDrivingLicense')"
+                            class="px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors text-sm"
+                          >
+                            {{ "COMMON.DELETE" | translate }}
+                          </button>
+                        </div>
+                      </div>
+
+                      <!-- Back License -->
+                      <div>
+                        <label
+                          class="block text-sm font-medium text-gray-600 mb-2"
+                          >{{
+                            "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.DRIVING_LICENSE_BACK_LABEL"
+                              | translate
+                          }}</label
+                        >
+                        <div
+                          class="aspect-video border-2 border-dashed border-neutral-300 rounded-lg bg-neutral-50 flex items-center justify-center overflow-hidden hover:border-purple-400 transition-colors"
+                        >
+                          <img
+                            *ngIf="
+                              imagesPreviews.backDrivingLicenseImage;
+                              else noBackLicense
+                            "
+                            [src]="imagesPreviews.backDrivingLicenseImage"
+                            alt="{{
+                              'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.DRIVING_LICENSE_BACK_ALT'
+                                | translate
+                            }}"
+                            class="w-full h-full object-cover rounded-xl"
+                          />
+                          <ng-template #noBackLicense>
+                            <svg
+                              class="w-8 h-8 text-gray-400"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                              ></path>
+                            </svg>
+                          </ng-template>
+                        </div>
+                        <input
+                          type="file"
+                          id="backDrivingLicenseImage"
+                          accept="image/*"
+                          (change)="
+                            onImageSelected($event, 'backDrivingLicense')
+                          "
+                          class="hidden"
+                        />
+                        <div class="flex space-x-2 space-x-reverse mt-2">
+                          <label
+                            for="backDrivingLicenseImage"
+                            class="button flex-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 px-3 py-2 rounded-lg text-center cursor-pointer transition-colors text-sm"
+                          >
+                            {{ "COMMON.CHOOSE_IMAGE" | translate }}
+                          </label>
+                          <button
+                            *ngIf="imagesPreviews.backDrivingLicenseImage"
+                            type="button"
+                            (click)="removeImage('backDrivingLicense')"
+                            class="px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors text-sm"
+                          >
+                            {{ "COMMON.DELETE" | translate }}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Vehicle Images with preview (match Documents Upload style) -->
+                <div
+                  class="VehiclesImages text-lg font-semibold text-gray-700 mt-6"
+                >
+                  <h3>
+                    {{
+                      "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_IMAGES_TITLE"
+                        | translate
+                    }}
+                  </h3>
+                </div>
+                <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <!-- Front Vehicle Image -->
+                  <div>
+                    <label
+                      class="block text-sm font-medium text-gray-600 mb-2"
+                      >{{
+                        "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_FRONT_LABEL"
+                          | translate
+                      }}</label
+                    >
+                    <div
+                      class="aspect-video border-2 border-dashed border-neutral-300 rounded-lg bg-neutral-50 flex items-center justify-center overflow-hidden hover:border-orange-400 transition-colors"
+                    >
+                      <img
+                        *ngIf="
+                          imagesPreviews.vehicleFrontImage;
+                          else noVehicleFront
+                        "
+                        [src]="imagesPreviews.vehicleFrontImage"
+                        [alt]="
+                          'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_FRONT_ALT'
+                            | translate
+                        "
+                        class="w-full h-full object-cover rounded-xl"
+                      />
+                      <ng-template #noVehicleFront>
+                        <svg
+                          class="w-8 h-8 text-gray-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                          ></path>
+                        </svg>
+                      </ng-template>
+                    </div>
+                    <input
+                      type="file"
+                      id="vehicleFrontImage"
+                      accept="image/*"
+                      (change)="onImageSelected($event, 'vehicleFront')"
+                      class="hidden"
+                    />
+                    <div class="flex space-x-2 space-x-reverse mt-2">
+                      <label
+                        for="vehicleFrontImage"
+                        class="button flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-center cursor-pointer transition-colors text-sm"
+                        >{{ "COMMON.CHOOSE_IMAGE" | translate }}</label
+                      >
+                      <button
+                        *ngIf="imagesPreviews.vehicleFrontImage"
+                        type="button"
+                        (click)="removeImage('vehicleFront')"
+                        class="px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors text-sm"
+                      >
+                        {{ "COMMON.DELETE" | translate }}
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Side Vehicle Image -->
+                  <div>
+                    <label
+                      class="block text-sm font-medium text-gray-600 mb-2"
+                      >{{
+                        "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_SIDE_LABEL"
+                          | translate
+                      }}</label
+                    >
+                    <div
+                      class="aspect-video border-2 border-dashed border-neutral-300 rounded-lg bg-neutral-50 flex items-center justify-center overflow-hidden hover:border-orange-400 transition-colors"
+                    >
+                      <img
+                        *ngIf="
+                          imagesPreviews.vehicleSideImage;
+                          else noVehicleSide
+                        "
+                        [src]="imagesPreviews.vehicleSideImage"
+                        [alt]="
+                          'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_SIDE_ALT'
+                            | translate
+                        "
+                        class="w-full h-full object-cover rounded-xl"
+                      />
+                      <ng-template #noVehicleSide>
+                        <svg
+                          class="w-8 h-8 text-gray-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                          ></path>
+                        </svg>
+                      </ng-template>
+                    </div>
+                    <input
+                      type="file"
+                      id="vehicleSideImage"
+                      accept="image/*"
+                      (change)="onImageSelected($event, 'vehicleSide')"
+                      class="hidden"
+                    />
+                    <div class="flex space-x-2 space-x-reverse mt-2">
+                      <label
+                        for="vehicleSideImage"
+                        class="button flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-center cursor-pointer transition-colors text-sm"
+                        >{{ "COMMON.CHOOSE_IMAGE" | translate }}</label
+                      >
+                      <button
+                        *ngIf="imagesPreviews.vehicleSideImage"
+                        type="button"
+                        (click)="removeImage('vehicleSide')"
+                        class="px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors text-sm"
+                      >
+                        {{ "COMMON.DELETE" | translate }}
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Front Insurance Image -->
+                  <div>
+                    <label
+                      class="block text-sm font-medium text-gray-600 mb-2"
+                      >{{
+                        "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_INSURANCE_FRONT_LABEL"
+                          | translate
+                      }}</label
+                    >
+                    <div
+                      class="aspect-video border-2 border-dashed border-neutral-300 rounded-lg bg-neutral-50 flex items-center justify-center overflow-hidden hover:border-orange-400 transition-colors"
+                    >
+                      <img
+                        *ngIf="
+                          imagesPreviews.vehicleFrontInsuranceImage;
+                          else noVehicleFrontInsurance
+                        "
+                        [src]="imagesPreviews.vehicleFrontInsuranceImage"
+                        [alt]="
+                          'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_INSURANCE_FRONT_ALT'
+                            | translate
+                        "
+                        class="w-full h-full object-cover rounded-xl"
+                      />
+                      <ng-template #noVehicleFrontInsurance>
+                        <svg
+                          class="w-8 h-8 text-gray-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                          ></path>
+                        </svg>
+                      </ng-template>
+                    </div>
+                    <input
+                      type="file"
+                      id="vehicleFrontInsuranceImage"
+                      accept="image/*"
+                      (change)="
+                        onImageSelected($event, 'vehicleFrontInsurance')
+                      "
+                      class="hidden"
+                    />
+                    <div class="flex space-x-2 space-x-reverse mt-2">
+                      <label
+                        for="vehicleFrontInsuranceImage"
+                        class="button flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-center cursor-pointer transition-colors text-sm"
+                        >{{ "COMMON.CHOOSE_IMAGE" | translate }}</label
+                      >
+                      <button
+                        *ngIf="imagesPreviews.vehicleFrontInsuranceImage"
+                        type="button"
+                        (click)="removeImage('vehicleFrontInsurance')"
+                        class="px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors text-sm"
+                      >
+                        {{ "COMMON.DELETE" | translate }}
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Back Insurance Image -->
+                  <div>
+                    <label
+                      class="block text-sm font-medium text-gray-600 mb-2"
+                      >{{
+                        "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_INSURANCE_BACK_LABEL"
+                          | translate
+                      }}</label
+                    >
+                    <div
+                      class="aspect-video border-2 border-dashed border-neutral-300 rounded-lg bg-neutral-50 flex items-center justify-center overflow-hidden hover:border-orange-400 transition-colors"
+                    >
+                      <img
+                        *ngIf="
+                          imagesPreviews.vehicleBackInsuranceImage;
+                          else noVehicleBackInsurance
+                        "
+                        [src]="imagesPreviews.vehicleBackInsuranceImage"
+                        [alt]="
+                          'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_INSURANCE_BACK_ALT'
+                            | translate
+                        "
+                        class="w-full h-full object-cover rounded-xl"
+                      />
+                      <ng-template #noVehicleBackInsurance>
+                        <svg
+                          class="w-8 h-8 text-gray-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                          ></path>
+                        </svg>
+                      </ng-template>
+                    </div>
+                    <input
+                      type="file"
+                      id="vehicleBackInsuranceImage"
+                      accept="image/*"
+                      (change)="onImageSelected($event, 'vehicleBackInsurance')"
+                      class="hidden"
+                    />
+                    <div class="flex space-x-2 space-x-reverse mt-2">
+                      <label
+                        for="vehicleBackInsuranceImage"
+                        class="button flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-center cursor-pointer transition-colors text-sm"
+                        >{{ "COMMON.CHOOSE_IMAGE" | translate }}</label
+                      >
+                      <button
+                        *ngIf="imagesPreviews.vehicleBackInsuranceImage"
+                        type="button"
+                        (click)="removeImage('vehicleBackInsurance')"
+                        class="px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors text-sm"
+                      >
+                        {{ "COMMON.DELETE" | translate }}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons - Full Width -->
+          <div class="col-span-12">
+            <div
+              class="bg-white border border-neutral-200 rounded-xl p-6 shadow-sm"
+            >
+              <div class="flex items-center justify-between">
+                <div class="text-neutral-600 text-sm">
+                  <span class="text-red-500">*</span>
+                  {{
+                    "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.ALL_FIELDS_REQUIRED"
+                      | translate
+                  }}
+                </div>
+                <div class="flex space-x-4 space-x-reverse">
+                  <button
+                    type="button"
+                    (click)="onCancel()"
+                    [disabled]="isSubmitting"
+                    class="px-8 py-3 bg-neutral-100 border border-neutral-300 rounded-lg text-neutral-700 font-medium hover:bg-neutral-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {{ "ADMIN.PAGES.EDIT_CAPTAIN.CANCEL" | translate }}
+                  </button>
+                  <button
+                    type="submit"
+                    [disabled]="isSubmitting || captainForm.invalid"
+                    class="relative px-8 py-3 bg-primary-500 hover:bg-primary-600 text-white font-medium rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 shadow-md"
+                  >
+                    <span *ngIf="!isSubmitting" class="flex items-center">
+                      <svg
+                        class="w-5 h-5 mr-2"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M5 13l4 4L19 7"
+                        ></path>
+                      </svg>
+                      {{ "ADMIN.PAGES.EDIT_CAPTAIN.SUBMIT" | translate }}
+                    </span>
+                    <span *ngIf="isSubmitting" class="flex items-center">
+                      <svg
+                        class="animate-spin w-5 h-5 mr-2"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          class="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          stroke-width="4"
+                        ></circle>
+                        <path
+                          class="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      {{ "ADMIN.PAGES.EDIT_CAPTAIN.SUBMITTING" | translate }}
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+

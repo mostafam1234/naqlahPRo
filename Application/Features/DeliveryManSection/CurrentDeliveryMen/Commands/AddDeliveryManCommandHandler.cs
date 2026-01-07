@@ -58,11 +58,28 @@ namespace Application.Features.DeliveryManSection.CurrentDeliveryMen.Commands
             // Step 2: Load the user with delivery man from context
             var user = await _context.Users
                 .Include(u => u.DeliveryMan)
+                .Include(u => u.AspNetUserRoles)
                 .FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
 
             if (user == null || user.DeliveryMan == null)
             {
                 return Result.Failure<int>("Failed to load created user or delivery man");
+            }
+
+            // Ensure UserRole record exists for DeliveryMan role
+            var deliveryManRoleId = Domain.Models.Role.DeliveryMan.Id;
+            var hasUserRole = user.AspNetUserRoles.Any(ur => ur.RoleId == deliveryManRoleId);
+            if (!hasUserRole)
+            {
+                var userRole = Domain.Models.UserRole.Instance(deliveryManRoleId);
+                userRole.UserId = user.Id;
+                user.AspNetUserRoles.Add(userRole);
+                // Save the UserRole immediately
+                var userRoleSaveResult = await _context.SaveChangesAsyncWithResult();
+                if (userRoleSaveResult.IsFailure)
+                {
+                    return Result.Failure<int>($"Failed to save UserRole: {userRoleSaveResult.Error}");
+                }
             }
 
             var deliveryMan = user.DeliveryMan;

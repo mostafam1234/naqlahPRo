@@ -736,215 +736,10 @@
         </svg>
         {{ "ADMIN.SIDEBAR.USERSPAGE.CAPTAIN" | translate }}
       </a>
-      <a
-        routerLink="/admin/newRequest"
-        routerLinkActive="bg-primary-500 text-white"
-        [routerLinkActiveOptions]="{ exact: false }"
-        class="px-4 py-2.5 rounded-lg flex items-center gap-3 text-sm text-neutral-600 font-medium transition-all duration-200 hover:bg-primary-100 hover:text-primary-700"
-      >
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M7.63021 9.05866C7.54687 9.05033 7.44687 9.05033 7.35521 9.05866C5.37187 8.99199 3.79688 7.36699 3.79688 5.36699C3.79687 3.32533 5.44687 1.66699 7.49687 1.66699C9.53854 1.66699 11.1969 3.32533 11.1969 5.36699C11.1885 7.36699 9.61354 8.99199 7.63021 9.05866Z"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M13.6747 3.33301C15.2914 3.33301 16.5914 4.64134 16.5914 6.24967C16.5914 7.82467 15.3414 9.10801 13.7831 9.16634C13.7164 9.15801 13.6414 9.15801 13.5664 9.16634"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M3.46563 12.133C1.44896 13.483 1.44896 15.683 3.46563 17.0247C5.75729 18.558 9.51563 18.558 11.8073 17.0247C13.824 15.6747 13.824 13.4747 11.8073 12.133C9.52396 10.608 5.76562 10.608 3.46563 12.133Z"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M15.2812 16.667C15.8813 16.542 16.4479 16.3003 16.9146 15.942C18.2146 14.967 18.2146 13.3587 16.9146 12.3837C16.4562 12.0337 15.8979 11.8003 15.3063 11.667"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-        {{ "ADMIN.SIDEBAR.USERSPAGE.SERVICEREQUEST" | translate }}
-      </a>
     </div>
   </div>
 
   <!-- MESSAGES -->
-  <div>
-    <div
-      (click)="toggleDropdown('messages')"
-      class="flex justify-between items-center cursor-pointer px-4 py-3 rounded-lg gap-3 text-neutral-700 font-medium text-sm transition-all duration-200 hover:bg-primary-100 hover:text-primary-700 group"
-      [ngClass]="{
-        'bg-primary-50 text-primary-700': openDropdown === 'messages'
-      }"
-    >
-      <div class="flex gap-3 items-center">
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M18.3346 5.20768V9.45766C18.3346 10.516 17.9846 11.4077 17.3596 12.0243C16.743 12.6493 15.8513 12.9993 14.793 12.9993V14.5077C14.793 15.0743 14.1596 15.416 13.693 15.0993L12.8846 14.566C12.9596 14.3077 12.993 14.0243 12.993 13.7243V10.3327C12.993 8.6327 11.8596 7.49935 10.1596 7.49935H4.5013C4.38463 7.49935 4.2763 7.5077 4.16797 7.51603V5.20768C4.16797 3.08268 5.58464 1.66602 7.70964 1.66602H14.793C16.918 1.66602 18.3346 3.08268 18.3346 5.20768Z"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-miterlimit="10"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M12.993 10.3334V13.725C12.993 14.025 12.9596 14.3083 12.8846 14.5667C12.5763 15.7917 11.5596 16.5583 10.1596 16.5583H7.89297L5.3763 18.2333C5.0013 18.4917 4.5013 18.2167 4.5013 17.7667V16.5583C3.6513 16.5583 2.94297 16.275 2.4513 15.7833C1.9513 15.2833 1.66797 14.575 1.66797 13.725V10.3334C1.66797 8.75002 2.6513 7.65835 4.16797 7.51668C4.2763 7.50835 4.38463 7.5 4.5013 7.5H10.1596C11.8596 7.5 12.993 8.63335 12.993 10.3334Z"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-miterlimit="10"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-        <span>{{ "ADMIN.SIDEBAR.MESSAGES" | translate }}</span>
-      </div>
-      <span
-        [ngClass]="{
-          'rotate-90 transition-transform duration-200':
-            openDropdown === 'messages'
-        }"
-        class="transition-transform duration-200"
-      >
-        <svg
-          width="21"
-          height="21"
-          viewBox="0 0 21 21"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          class="text-neutral-500 group-hover:text-primary-600"
-        >
-          <path
-            d="M12.662 17.8299L6.47716 11.5155C6.39067 11.4275 6.3224 11.3233 6.27627 11.2089C6.23013 11.0944 6.20704 10.972 6.20832 10.8486C6.2096 10.7252 6.23522 10.6033 6.28372 10.4899C6.33222 10.3764 6.40263 10.2736 6.49093 10.1874L12.8054 4.00256C12.9833 3.82828 13.2232 3.73182 13.4723 3.7344C13.7213 3.73698 13.9591 3.83839 14.1334 4.01633C14.3077 4.19427 14.4042 4.43415 14.4016 4.68321C14.399 4.93227 14.2976 5.1701 14.1197 5.34438L8.47534 10.8729L14.0046 16.5172C14.1789 16.6952 14.2754 16.935 14.2728 17.1841C14.2702 17.4332 14.1688 17.671 13.9909 17.8453C13.8129 18.0196 13.573 18.116 13.324 18.1134C13.0749 18.1109 12.8371 18.0095 12.6628 17.8315L12.662 17.8299Z"
-            fill="currentColor"
-            fill-opacity="0.68"
-          />
-        </svg>
-      </span>
-    </div>
-    <div
-      *ngIf="openDropdown === 'messages'"
-      class="ml-4 mt-1 space-y-1 border-r-2 border-primary-100 pr-2"
-    >
-      <a
-        routerLink="/admin/chat/serviceRequest"
-        routerLinkActive="bg-primary-500 text-white"
-        [routerLinkActiveOptions]="{ exact: false }"
-        class="px-4 py-2.5 rounded-lg flex items-center gap-3 text-sm text-neutral-600 font-medium transition-all duration-200 hover:bg-primary-100 hover:text-primary-700"
-      >
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M18.3346 5.20768V9.45766C18.3346 10.516 17.9846 11.4077 17.3596 12.0243C16.743 12.6493 15.8513 12.9993 14.793 12.9993V14.5077C14.793 15.0743 14.1596 15.416 13.693 15.0993L12.8846 14.566C12.9596 14.3077 12.993 14.0243 12.993 13.7243V10.3327C12.993 8.6327 11.8596 7.49935 10.1596 7.49935H4.5013C4.38463 7.49935 4.2763 7.5077 4.16797 7.51603V5.20768C4.16797 3.08268 5.58464 1.66602 7.70964 1.66602H14.793C16.918 1.66602 18.3346 3.08268 18.3346 5.20768Z"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-miterlimit="10"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M12.993 10.3334V13.725C12.993 14.025 12.9596 14.3083 12.8846 14.5667C12.5763 15.7917 11.5596 16.5583 10.1596 16.5583H7.89297L5.3763 18.2333C5.0013 18.4917 4.5013 18.2167 4.5013 17.7667V16.5583C3.6513 16.5583 2.94297 16.275 2.4513 15.7833C1.9513 15.2833 1.66797 14.575 1.66797 13.725V10.3334C1.66797 8.75002 2.6513 7.65835 4.16797 7.51668C4.2763 7.50835 4.38463 7.5 4.5013 7.5H10.1596C11.8596 7.5 12.993 8.63335 12.993 10.3334Z"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-miterlimit="10"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-        {{ "ADMIN.SIDEBAR.USERSPAGE.CAPTAIN" | translate }}
-      </a>
-      <a
-        routerLink="/admin/chat/serviceRequest"
-        routerLinkActive="bg-primary-500 text-white"
-        [routerLinkActiveOptions]="{ exact: false }"
-        class="px-4 py-2.5 rounded-lg flex items-center gap-3 text-sm text-neutral-600 font-medium transition-all duration-200 hover:bg-primary-100 hover:text-primary-700"
-      >
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M18.3346 5.20768V9.45766C18.3346 10.516 17.9846 11.4077 17.3596 12.0243C16.743 12.6493 15.8513 12.9993 14.793 12.9993V14.5077C14.793 15.0743 14.1596 15.416 13.693 15.0993L12.8846 14.566C12.9596 14.3077 12.993 14.0243 12.993 13.7243V10.3327C12.993 8.6327 11.8596 7.49935 10.1596 7.49935H4.5013C4.38463 7.49935 4.2763 7.5077 4.16797 7.51603V5.20768C4.16797 3.08268 5.58464 1.66602 7.70964 1.66602H14.793C16.918 1.66602 18.3346 3.08268 18.3346 5.20768Z"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-miterlimit="10"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M12.993 10.3334V13.725C12.993 14.025 12.9596 14.3083 12.8846 14.5667C12.5763 15.7917 11.5596 16.5583 10.1596 16.5583H7.89297L5.3763 18.2333C5.0013 18.4917 4.5013 18.2167 4.5013 17.7667V16.5583C3.6513 16.5583 2.94297 16.275 2.4513 15.7833C1.9513 15.2833 1.66797 14.575 1.66797 13.725V10.3334C1.66797 8.75002 2.6513 7.65835 4.16797 7.51668C4.2763 7.50835 4.38463 7.5 4.5013 7.5H10.1596C11.8596 7.5 12.993 8.63335 12.993 10.3334Z"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-miterlimit="10"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-        {{ "ADMIN.SIDEBAR.USERSPAGE.SERVICEREQUEST" | translate }}
-      </a>
-      <a
-        routerLink="/admin/chat/review"
-        routerLinkActive="bg-primary-500 text-white"
-        [routerLinkActiveOptions]="{ exact: false }"
-        class="px-4 py-2.5 rounded-lg flex items-center gap-3 text-sm text-neutral-600 font-medium transition-all duration-200 hover:bg-primary-100 hover:text-primary-700"
-      >
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M18.3346 5.20768V9.45766C18.3346 10.516 17.9846 11.4077 17.3596 12.0243C16.743 12.6493 15.8513 12.9993 14.793 12.9993V14.5077C14.793 15.0743 14.1596 15.416 13.693 15.0993L12.8846 14.566C12.9596 14.3077 12.993 14.0243 12.993 13.7243V10.3327C12.993 8.6327 11.8596 7.49935 10.1596 7.49935H4.5013C4.38463 7.49935 4.2763 7.5077 4.16797 7.51603V5.20768C4.16797 3.08268 5.58464 1.66602 7.70964 1.66602H14.793C16.918 1.66602 18.3346 3.08268 18.3346 5.20768Z"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-miterlimit="10"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M12.993 10.3334V13.725C12.993 14.025 12.9596 14.3083 12.8846 14.5667C12.5763 15.7917 11.5596 16.5583 10.1596 16.5583H7.89297L5.3763 18.2333C5.0013 18.4917 4.5013 18.2167 4.5013 17.7667V16.5583C3.6513 16.5583 2.94297 16.275 2.4513 15.7833C1.9513 15.2833 1.66797 14.575 1.66797 13.725V10.3334C1.66797 8.75002 2.6513 7.65835 4.16797 7.51668C4.2763 7.50835 4.38463 7.5 4.5013 7.5H10.1596C11.8596 7.5 12.993 8.63335 12.993 10.3334Z"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-miterlimit="10"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-        {{ "ADMIN.SIDEBAR.CHAT.REVIEW" | translate }}
-      </a>
-    </div>
-  </div>
-
   <!-- TECH SUPPORT -->
   <div>
     <div
@@ -967,7 +762,7 @@
             fill="currentColor"
           />
         </svg>
-        <span>{{ "ADMIN.SIDEBAR.TECH_SUPPORT" | translate }}</span>
+        <span>{{ "ADMIN.SIDEBAR.TECH_SUPPORT.LABEL" | translate }}</span>
       </div>
       <span
         [ngClass]="{
@@ -997,12 +792,51 @@
       class="ml-4 mt-1 space-y-1 border-r-2 border-primary-100 pr-2"
     >
       <a
-        routerLink="/go-admin/dashboard/tech-support/tickets"
+        routerLink="/admin/tech-support/complains"
         routerLinkActive="bg-primary-500 text-white"
         [routerLinkActiveOptions]="{ exact: false }"
-        class="block px-4 py-2.5 rounded-lg text-sm text-neutral-600 font-medium transition-all duration-200 hover:bg-primary-100 hover:text-primary-700"
-        >Tickets</a
+        class="px-4 py-2.5 rounded-lg flex items-center gap-3 text-sm text-neutral-600 font-medium transition-all duration-200 hover:bg-primary-100 hover:text-primary-700"
       >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        {{ "ADMIN.SIDEBAR.TECH_SUPPORT.COMPLAINS" | translate }}
+      </a>
+      <a
+        routerLink="/admin/tech-support/suggestions"
+        routerLinkActive="bg-primary-500 text-white"
+        [routerLinkActiveOptions]="{ exact: false }"
+        class="px-4 py-2.5 rounded-lg flex items-center gap-3 text-sm text-neutral-600 font-medium transition-all duration-200 hover:bg-primary-100 hover:text-primary-700"
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+        {{ "ADMIN.SIDEBAR.TECH_SUPPORT.SUGGESTIONS" | translate }}
+      </a>
     </div>
   </div>
 
@@ -1074,417 +908,6 @@
           />
         </svg>
       </span>
-    </div>
-  </div>
-
-  <!-- COMPLAINTS -->
-  <div>
-    <div
-      (click)="toggleDropdown('complaints')"
-      class="flex justify-between items-center cursor-pointer px-4 py-3 rounded-lg gap-3 text-neutral-700 font-medium text-sm transition-all duration-200 hover:bg-primary-100 hover:text-primary-700 group"
-      [ngClass]="{
-        'bg-primary-50 text-primary-700': openDropdown === 'complaints'
-      }"
-    >
-      <div class="flex gap-3 items-center">
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M17.2164 6.36297H18.1818C18.664 6.36297 19.1265 6.55454 19.4675 6.89553C19.8084 7.23652 20 7.699 20 8.18124V11.8178C20 12.3 19.8084 12.7625 19.4675 13.1035C19.1265 13.4445 18.664 13.6361 18.1818 13.6361H17.2164C16.9949 15.3938 16.1396 17.0102 14.8109 18.182C13.4822 19.3537 11.7715 20.0002 10 20V18.1817C11.4466 18.1817 12.834 17.607 13.8569 16.5841C14.8799 15.5611 15.4545 14.1736 15.4545 12.7269V7.2721C15.4545 5.8254 14.8799 4.43795 13.8569 3.41497C12.834 2.39199 11.4466 1.81729 10 1.81729C8.55336 1.81729 7.16598 2.39199 6.14305 3.41497C5.12013 4.43795 4.54545 5.8254 4.54545 7.2721V13.6361H1.81818C1.33597 13.6361 0.873508 13.4445 0.532533 13.1035C0.191558 12.7625 0 12.3 0 11.8178V8.18124C0 7.699 0.191558 7.23652 0.532533 6.89553C0.873508 6.55454 1.33597 6.36297 1.81818 6.36297H2.78364C3.00548 4.60552 3.86098 2.98942 5.18961 1.81791C6.51824 0.646398 8.22869 0 10 0C11.7713 0 13.4818 0.646398 14.8104 1.81791C16.139 2.98942 16.9945 4.60552 17.2164 6.36297ZM1.81818 8.18124V11.8178H2.72727V8.18124H1.81818ZM17.2727 8.18124V11.8178H18.1818V8.18124H17.2727ZM6.14545 13.4406L7.10909 11.8987C7.97548 12.4416 8.97759 12.7287 10 12.7269C11.0224 12.7287 12.0245 12.4416 12.8909 11.8987L13.8545 13.4406C12.6994 14.1645 11.3632 14.5474 10 14.5452C8.63676 14.5474 7.30061 14.1645 6.14545 13.4406Z"
-            fill="currentColor"
-          />
-        </svg>
-        <span>{{ "ADMIN.SIDEBAR.COMPLAINTS" | translate }}</span>
-      </div>
-      <span
-        [ngClass]="{
-          'rotate-90 transition-transform duration-200':
-            openDropdown === 'complaints'
-        }"
-        class="transition-transform duration-200"
-      >
-        <svg
-          width="21"
-          height="21"
-          viewBox="0 0 21 21"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          class="text-neutral-500 group-hover:text-primary-600"
-        >
-          <path
-            d="M12.662 17.8299L6.47716 11.5155C6.39067 11.4275 6.3224 11.3233 6.27627 11.2089C6.23013 11.0944 6.20704 10.972 6.20832 10.8486C6.2096 10.7252 6.23522 10.6033 6.28372 10.4899C6.33222 10.3764 6.40263 10.2736 6.49093 10.1874L12.8054 4.00256C12.9833 3.82828 13.2232 3.73182 13.4723 3.7344C13.7213 3.73698 13.9591 3.83839 14.1334 4.01633C14.3077 4.19427 14.4042 4.43415 14.4016 4.68321C14.399 4.93227 14.2976 5.1701 14.1197 5.34438L8.47534 10.8729L14.0046 16.5172C14.1789 16.6952 14.2754 16.935 14.2728 17.1841C14.2702 17.4332 14.1688 17.671 13.9909 17.8453C13.8129 18.0196 13.573 18.116 13.324 18.1134C13.0749 18.1109 12.8371 18.0095 12.6628 17.8315L12.662 17.8299Z"
-            fill="currentColor"
-            fill-opacity="0.68"
-          />
-        </svg>
-      </span>
-    </div>
-    <div
-      *ngIf="openDropdown === 'complaints'"
-      class="ml-4 mt-1 space-y-1 border-r-2 border-primary-100 pr-2"
-    >
-      <a
-        routerLink="/go-admin/dashboard/complaints/all"
-        routerLinkActive="bg-primary-500 text-white"
-        [routerLinkActiveOptions]="{ exact: false }"
-        class="block px-4 py-2.5 rounded-lg text-sm text-neutral-600 font-medium transition-all duration-200 hover:bg-primary-100 hover:text-primary-700"
-        >All Complaints</a
-      >
-    </div>
-  </div>
-
-  <!-- INVOICES -->
-  <div>
-    <div
-      (click)="toggleDropdown('invoices')"
-      class="flex justify-between items-center cursor-pointer px-4 py-3 rounded-lg gap-3 text-neutral-700 font-medium text-sm transition-all duration-200 hover:bg-primary-100 hover:text-primary-700 group"
-      [ngClass]="{
-        'bg-primary-50 text-primary-700': openDropdown === 'invoices'
-      }"
-    >
-      <div class="flex gap-3 items-center">
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M18.332 4.99935V7.01601C18.332 8.33268 17.4987 9.16602 16.182 9.16602H13.332V3.34101C13.332 2.41601 14.0904 1.66602 15.0154 1.66602C15.9237 1.67435 16.757 2.04101 17.357 2.64101C17.957 3.24935 18.332 4.08268 18.332 4.99935Z"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-miterlimit="10"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M1.66797 5.83268V17.4993C1.66797 18.191 2.4513 18.5827 3.0013 18.166L4.4263 17.0993C4.75964 16.8493 5.2263 16.8827 5.5263 17.1827L6.90964 18.5744C7.23464 18.8994 7.76797 18.8994 8.09297 18.5744L9.49297 17.1744C9.78464 16.8827 10.2513 16.8493 10.5763 17.0993L12.0013 18.166C12.5513 18.5744 13.3346 18.1827 13.3346 17.4993V3.33268C13.3346 2.41602 14.0846 1.66602 15.0013 1.66602H5.83464H5.0013C2.5013 1.66602 1.66797 3.15768 1.66797 4.99935V5.83268Z"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-miterlimit="10"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M7.5 10.8418H10"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M7.5 7.50781H10"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M4.99609 10.834H5.00358"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M4.99609 7.5H5.00358"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-        <span>{{ "ADMIN.SIDEBAR.INVOICES" | translate }}</span>
-      </div>
-      <span
-        [ngClass]="{
-          'rotate-90 transition-transform duration-200':
-            openDropdown === 'invoices'
-        }"
-        class="transition-transform duration-200"
-      >
-        <svg
-          width="21"
-          height="21"
-          viewBox="0 0 21 21"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          class="text-neutral-500 group-hover:text-primary-600"
-        >
-          <path
-            d="M12.662 17.8299L6.47716 11.5155C6.39067 11.4275 6.3224 11.3233 6.27627 11.2089C6.23013 11.0944 6.20704 10.972 6.20832 10.8486C6.2096 10.7252 6.23522 10.6033 6.28372 10.4899C6.33222 10.3764 6.40263 10.2736 6.49093 10.1874L12.8054 4.00256C12.9833 3.82828 13.2232 3.73182 13.4723 3.7344C13.7213 3.73698 13.9591 3.83839 14.1334 4.01633C14.3077 4.19427 14.4042 4.43415 14.4016 4.68321C14.399 4.93227 14.2976 5.1701 14.1197 5.34438L8.47534 10.8729L14.0046 16.5172C14.1789 16.6952 14.2754 16.935 14.2728 17.1841C14.2702 17.4332 14.1688 17.671 13.9909 17.8453C13.8129 18.0196 13.573 18.116 13.324 18.1134C13.0749 18.1109 12.8371 18.0095 12.6628 17.8315L12.662 17.8299Z"
-            fill="currentColor"
-            fill-opacity="0.68"
-          />
-        </svg>
-      </span>
-    </div>
-    <div
-      *ngIf="openDropdown === 'invoices'"
-      class="ml-4 mt-1 space-y-1 border-r-2 border-primary-100 pr-2"
-    >
-      <a
-        routerLink="/go-admin/dashboard/invoices/all"
-        routerLinkActive="bg-primary-500 text-white"
-        [routerLinkActiveOptions]="{ exact: false }"
-        class="block px-4 py-2.5 rounded-lg text-sm text-neutral-600 font-medium transition-all duration-200 hover:bg-primary-100 hover:text-primary-700"
-        >All Invoices</a
-      >
-    </div>
-  </div>
-
-  <!-- WALLET -->
-  <div>
-    <div
-      (click)="toggleDropdown('wallet')"
-      class="flex justify-between items-center cursor-pointer px-4 py-3 rounded-lg gap-3 text-neutral-700 font-medium text-sm transition-all duration-200 hover:bg-primary-100 hover:text-primary-700 group"
-      [ngClass]="{
-        'bg-primary-50 text-primary-700': openDropdown === 'wallet'
-      }"
-    >
-      <div class="flex gap-3 items-center">
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M10.832 9.29297H5.83203"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M1.66797 9.29219V5.44219C1.66797 3.74219 3.04297 2.36719 4.74297 2.36719H9.4263C11.1263 2.36719 12.5013 3.42552 12.5013 5.12552"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M14.568 10.1667C14.1513 10.5667 13.9513 11.1833 14.118 11.8166C14.3263 12.5916 15.093 13.0833 15.893 13.0833H16.668V14.2917C16.668 16.1333 15.1763 17.625 13.3346 17.625H5.0013C3.15964 17.625 1.66797 16.1333 1.66797 14.2917V8.45833C1.66797 6.61667 3.15964 5.125 5.0013 5.125H13.3346C15.168 5.125 16.668 6.625 16.668 8.45833V9.66663H15.768C15.3013 9.66663 14.8763 9.84999 14.568 10.1667Z"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M18.3329 10.516V12.2327C18.3329 12.6994 17.9495 13.0827 17.4745 13.0827H15.8662C14.9662 13.0827 14.1412 12.4244 14.0662 11.5244C14.0162 10.9994 14.2162 10.5077 14.5662 10.166C14.8745 9.84938 15.2995 9.66602 15.7662 9.66602H17.4745C17.9495 9.66602 18.3329 10.0494 18.3329 10.516Z"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-        <span>{{ "ADMIN.SIDEBAR.WALLET" | translate }}</span>
-      </div>
-      <span
-        [ngClass]="{
-          'rotate-90 transition-transform duration-200':
-            openDropdown === 'wallet'
-        }"
-        class="transition-transform duration-200"
-      >
-        <svg
-          width="21"
-          height="21"
-          viewBox="0 0 21 21"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          class="text-neutral-500 group-hover:text-primary-600"
-        >
-          <path
-            d="M12.662 17.8299L6.47716 11.5155C6.39067 11.4275 6.3224 11.3233 6.27627 11.2089C6.23013 11.0944 6.20704 10.972 6.20832 10.8486C6.2096 10.7252 6.23522 10.6033 6.28372 10.4899C6.33222 10.3764 6.40263 10.2736 6.49093 10.1874L12.8054 4.00256C12.9833 3.82828 13.2232 3.73182 13.4723 3.7344C13.7213 3.73698 13.9591 3.83839 14.1334 4.01633C14.3077 4.19427 14.4042 4.43415 14.4016 4.68321C14.399 4.93227 14.2976 5.1701 14.1197 5.34438L8.47534 10.8729L14.0046 16.5172C14.1789 16.6952 14.2754 16.935 14.2728 17.1841C14.2702 17.4332 14.1688 17.671 13.9909 17.8453C13.8129 18.0196 13.573 18.116 13.324 18.1134C13.0749 18.1109 12.8371 18.0095 12.6628 17.8315L12.662 17.8299Z"
-            fill="currentColor"
-            fill-opacity="0.68"
-          />
-        </svg>
-      </span>
-    </div>
-    <div
-      *ngIf="openDropdown === 'wallet'"
-      class="ml-4 mt-1 space-y-1 border-r-2 border-primary-100 pr-2"
-    >
-      <a
-        routerLink="/admin/wallet/captain"
-        routerLinkActive="bg-primary-500 text-white"
-        [routerLinkActiveOptions]="{ exact: false }"
-        class="px-4 py-2.5 rounded-lg flex items-center gap-3 text-sm text-neutral-600 font-medium transition-all duration-200 hover:bg-primary-100 hover:text-primary-700"
-      >
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M7.63021 9.05866C7.54687 9.05033 7.44687 9.05033 7.35521 9.05866C5.37187 8.99199 3.79688 7.36699 3.79688 5.36699C3.79687 3.32533 5.44687 1.66699 7.49687 1.66699C9.53854 1.66699 11.1969 3.32533 11.1969 5.36699C11.1885 7.36699 9.61354 8.99199 7.63021 9.05866Z"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M13.6747 3.33301C15.2914 3.33301 16.5914 4.64134 16.5914 6.24967C16.5914 7.82467 15.3414 9.10801 13.7831 9.16634C13.7164 9.15801 13.6414 9.15801 13.5664 9.16634"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M3.46563 12.133C1.44896 13.483 1.44896 15.683 3.46563 17.0247C5.75729 18.558 9.51563 18.558 11.8073 17.0247C13.824 15.6747 13.824 13.4747 11.8073 12.133C9.52396 10.608 5.76562 10.608 3.46563 12.133Z"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M15.2812 16.667C15.8813 16.542 16.4479 16.3003 16.9146 15.942C18.2146 14.967 18.2146 13.3587 16.9146 12.3837C16.4562 12.0337 15.8979 11.8003 15.3063 11.667"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-        {{ "ADMIN.SIDEBAR.USERSPAGE.CAPTAIN" | translate }}
-      </a>
-      <a
-        routerLink="/admin/newRequest"
-        routerLinkActive="bg-primary-500 text-white"
-        [routerLinkActiveOptions]="{ exact: false }"
-        class="px-4 py-2.5 rounded-lg flex items-center gap-3 text-sm text-neutral-600 font-medium transition-all duration-200 hover:bg-primary-100 hover:text-primary-700"
-      >
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M7.63021 9.05866C7.54687 9.05033 7.44687 9.05033 7.35521 9.05866C5.37187 8.99199 3.79688 7.36699 3.79688 5.36699C3.79687 3.32533 5.44687 1.66699 7.49687 1.66699C9.53854 1.66699 11.1969 3.32533 11.1969 5.36699C11.1885 7.36699 9.61354 8.99199 7.63021 9.05866Z"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M13.6747 3.33301C15.2914 3.33301 16.5914 4.64134 16.5914 6.24967C16.5914 7.82467 15.3414 9.10801 13.7831 9.16634C13.7164 9.15801 13.6414 9.15801 13.5664 9.16634"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M3.46563 12.133C1.44896 13.483 1.44896 15.683 3.46563 17.0247C5.75729 18.558 9.51563 18.558 11.8073 17.0247C13.824 15.6747 13.824 13.4747 11.8073 12.133C9.52396 10.608 5.76562 10.608 3.46563 12.133Z"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M15.2812 16.667C15.8813 16.542 16.4479 16.3003 16.9146 15.942C18.2146 14.967 18.2146 13.3587 16.9146 12.3837C16.4562 12.0337 15.8979 11.8003 15.3063 11.667"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-        {{ "ADMIN.SIDEBAR.USERSPAGE.SERVICEREQUEST" | translate }}
-      </a>
-    </div>
-  </div>
-
-  <!-- LEGAL -->
-  <div>
-    <div
-      (click)="toggleDropdown('legal')"
-      class="flex justify-between items-center cursor-pointer px-4 py-3 rounded-lg gap-3 text-neutral-700 font-medium text-sm transition-all duration-200 hover:bg-primary-100 hover:text-primary-700 group"
-      [ngClass]="{ 'bg-primary-50 text-primary-700': openDropdown === 'legal' }"
-    >
-      <div class="flex gap-3 items-center">
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M10.832 9.29297H5.83203"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M1.66797 9.29219V5.44219C1.66797 3.74219 3.04297 2.36719 4.74297 2.36719H9.4263C11.1263 2.36719 12.5013 3.42552 12.5013 5.12552"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M14.568 10.1667C14.1513 10.5667 13.9513 11.1833 14.118 11.8166C14.3263 12.5916 15.093 13.0833 15.893 13.0833H16.668V14.2917C16.668 16.1333 15.1763 17.625 13.3346 17.625H5.0013C3.15964 17.625 1.66797 16.1333 1.66797 14.2917V8.45833C1.66797 6.61667 3.15964 5.125 5.0013 5.125H13.3346C15.168 5.125 16.668 6.625 16.668 8.45833V9.66663H15.768C15.3013 9.66663 14.8763 9.84999 14.568 10.1667Z"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M18.3329 10.516V12.2327C18.3329 12.6994 17.9495 13.0827 17.4745 13.0827H15.8662C14.9662 13.0827 14.1412 12.4244 14.0662 11.5244C14.0162 10.9994 14.2162 10.5077 14.5662 10.166C14.8745 9.84938 15.2995 9.66602 15.7662 9.66602H17.4745C17.9495 9.66602 18.3329 10.0494 18.3329 10.516Z"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
-        <span>{{ "ADMIN.SIDEBAR.LEGAL" | translate }}</span>
-      </div>
-      <span
-        [ngClass]="{
-          'rotate-90 transition-transform duration-200':
-            openDropdown === 'legal'
-        }"
-        class="transition-transform duration-200"
-      >
-        <svg
-          width="21"
-          height="21"
-          viewBox="0 0 21 21"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          class="text-neutral-500 group-hover:text-primary-600"
-        >
-          <path
-            d="M12.662 17.8299L6.47716 11.5155C6.39067 11.4275 6.3224 11.3233 6.27627 11.2089C6.23013 11.0944 6.20704 10.972 6.20832 10.8486C6.2096 10.7252 6.23522 10.6033 6.28372 10.4899C6.33222 10.3764 6.40263 10.2736 6.49093 10.1874L12.8054 4.00256C12.9833 3.82828 13.2232 3.73182 13.4723 3.7344C13.7213 3.73698 13.9591 3.83839 14.1334 4.01633C14.3077 4.19427 14.4042 4.43415 14.4016 4.68321C14.399 4.93227 14.2976 5.1701 14.1197 5.34438L8.47534 10.8729L14.0046 16.5172C14.1789 16.6952 14.2754 16.935 14.2728 17.1841C14.2702 17.4332 14.1688 17.671 13.9909 17.8453C13.8129 18.0196 13.573 18.116 13.324 18.1134C13.0749 18.1109 12.8371 18.0095 12.6628 17.8315L12.662 17.8299Z"
-            fill="currentColor"
-            fill-opacity="0.68"
-          />
-        </svg>
-      </span>
-    </div>
-    <div
-      *ngIf="openDropdown === 'legal'"
-      class="ml-4 mt-1 space-y-1 border-r-2 border-primary-100 pr-2"
-    >
-      <a
-        routerLink="/go-admin/dashboard/legal/terms"
-        routerLinkActive="bg-primary-500 text-white"
-        [routerLinkActiveOptions]="{ exact: false }"
-        class="block px-4 py-2.5 rounded-lg text-sm text-neutral-600 font-medium transition-all duration-200 hover:bg-primary-100 hover:text-primary-700"
-        >Terms & Conditions</a
-      >
     </div>
   </div>
 

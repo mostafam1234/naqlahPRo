@@ -208,10 +208,30 @@ export class CaptainActionComponent implements OnInit, OnDestroy {
     }
   }
 
-  formatDate(date: Date | string): string {
+  formatDate(date: Date | string | null): string {
     if (!date) return 'غير محدد';
     const d = typeof date === 'string' ? new Date(date) : date;
     return d.toLocaleDateString('ar-EG');
+  }
+
+  getDeliveryLicenseTypeLabel(licenseType: string): string {
+    if (!licenseType) return 'غير متوفر';
+    const type = licenseType.toLowerCase();
+    if (type.includes('public') || type.includes('عامة')) return 'رخصة عامة';
+    if (type.includes('private') || type.includes('خاصة')) return 'رخصة خاصة';
+    return licenseType;
+  }
+
+  isIdentityValid(): boolean {
+    if (!this.deliveryManDetails || !this.deliveryManDetails.identityExpirationDate) return false;
+    const expirationDate = new Date(this.deliveryManDetails.identityExpirationDate);
+    return expirationDate > new Date();
+  }
+
+  isLicenseValid(): boolean {
+    if (!this.deliveryManDetails || !this.deliveryManDetails.drivingLicenseExpirationDate) return false;
+    const expirationDate = new Date(this.deliveryManDetails.drivingLicenseExpirationDate);
+    return expirationDate > new Date();
   }
 
   getStateLabel(state: string): string {

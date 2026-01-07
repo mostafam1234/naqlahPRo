@@ -99,13 +99,83 @@
 }
 
 .G-container {
-  width: calc(100% - 10px);;
-  padding: 15px;
+  width: calc(100% - 10px);
+  padding: 10px;
   margin: 0 auto;
 }
+
+/* Small screens (mobile) - 640px and up */
+@media (min-width: 640px) {
+  .G-container {
+    padding: 12px;
+  }
+}
+
+/* Medium screens (tablet) - 768px and up */
+@media (min-width: 768px) {
+  .G-container {
+    padding: 15px;
+  }
+}
+
+/* Large screens - 992px and up */
+@media (min-width: 992px) {
+  .G-container {
+    padding: 18px;
+  }
+}
+
+/* XLarge screens - 1280px and up */
+@media (min-width: 1280px) {
+  .G-container {
+    padding: 20px;
+  }
+}
+
+/* 2XLarge screens - 1536px and up */
+@media (min-width: 1536px) {
+  .G-container {
+    padding: 24px;
+  }
+}
 .G-sub_container {
-  padding: 40px 40px 10px 40px;
+  padding: 16px 16px 10px 16px;
   min-height: 100vh;
+}
+
+/* Small screens (mobile) - 640px and up */
+@media (min-width: 640px) {
+  .G-sub_container {
+    padding: 24px 24px 10px 24px;
+  }
+}
+
+/* Medium screens (tablet) - 768px and up */
+@media (min-width: 768px) {
+  .G-sub_container {
+    padding: 32px 32px 10px 32px;
+  }
+}
+
+/* Large screens - 992px and up */
+@media (min-width: 992px) {
+  .G-sub_container {
+    padding: 40px 40px 10px 40px;
+  }
+}
+
+/* XLarge screens - 1280px and up */
+@media (min-width: 1280px) {
+  .G-sub_container {
+    padding: 48px 48px 10px 48px;
+  }
+}
+
+/* 2XLarge screens - 1536px and up */
+@media (min-width: 1536px) {
+  .G-sub_container {
+    padding: 56px 56px 10px 56px;
+  }
 }
 
 .loading-spinner {

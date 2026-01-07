@@ -4152,6 +4152,195 @@
         }
       }
     },
+    "/api/OrderAdmin/GetAllOrderPackages": {
+      "get": {
+        "tags": [
+          "OrderAdmin"
+        ],
+        "operationId": "OrderAdmin_GetAllOrderPackages",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            },
+            "x-position": 1
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            },
+            "x-position": 2
+          },
+          {
+            "name": "searchTerm",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfOrderPackageDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/OrderAdmin/AddOrderPackage": {
+      "post": {
+        "tags": [
+          "OrderAdmin"
+        ],
+        "operationId": "OrderAdmin_AddOrderPackage",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddOrderPackageCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/OrderAdmin/UpdateOrderPackage": {
+      "post": {
+        "tags": [
+          "OrderAdmin"
+        ],
+        "operationId": "OrderAdmin_UpdateOrderPackage",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOrderPackageCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/OrderAdmin/DeleteOrderPackage": {
+      "post": {
+        "tags": [
+          "OrderAdmin"
+        ],
+        "operationId": "OrderAdmin_DeleteOrderPackage",
+        "parameters": [
+          {
+            "name": "orderPackageId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/SystemConfiguration/GetSystemConfiguration": {
       "get": {
         "tags": [
@@ -4472,6 +4661,128 @@
                   "items": {
                     "$ref": "#/components/schemas/RoleLookupDto"
                   }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/TechSupportAdmin/GetAllComplains": {
+      "get": {
+        "tags": [
+          "TechSupportAdmin"
+        ],
+        "operationId": "TechSupportAdmin_GetAllComplains",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            },
+            "x-position": 1
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            },
+            "x-position": 2
+          },
+          {
+            "name": "searchTerm",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfComplainDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/TechSupportAdmin/GetAllSuggestions": {
+      "get": {
+        "tags": [
+          "TechSupportAdmin"
+        ],
+        "operationId": "TechSupportAdmin_GetAllSuggestions",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            },
+            "x-position": 1
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            },
+            "x-position": 2
+          },
+          {
+            "name": "searchTerm",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfSuggestionDto"
                 }
               }
             }
@@ -7546,6 +7857,9 @@
           "state": {
             "type": "string"
           },
+          "stateName": {
+            "type": "string"
+          },
           "frontIdentityImagePath": {
             "type": "string"
           },
@@ -7589,6 +7903,24 @@
             "type": "string"
           },
           "vehicleModel": {
+            "type": "string"
+          },
+          "vehicleFrontImagePath": {
+            "type": "string"
+          },
+          "vehicleSideImagePath": {
+            "type": "string"
+          },
+          "vehicleFrontLicenseImagePath": {
+            "type": "string"
+          },
+          "vehicleBackLicenseImagePath": {
+            "type": "string"
+          },
+          "vehicleFrontInsuranceImagePath": {
+            "type": "string"
+          },
+          "vehicleBackInsuranceImagePath": {
             "type": "string"
           }
         }
@@ -8432,6 +8764,70 @@
           }
         }
       },
+      "PagedResultOfOrderPackageDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderPackageDto"
+            }
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "AddOrderPackageCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "arabicDescription": {
+            "type": "string"
+          },
+          "englishDescription": {
+            "type": "string"
+          },
+          "minWeightInKiloGram": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "maxWeightInKiloGram": {
+            "type": "number",
+            "format": "decimal"
+          }
+        }
+      },
+      "UpdateOrderPackageCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "arabicDescription": {
+            "type": "string"
+          },
+          "englishDescription": {
+            "type": "string"
+          },
+          "minWeightInKiloGram": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "maxWeightInKiloGram": {
+            "type": "number",
+            "format": "decimal"
+          }
+        }
+      },
       "SystemConfigurationDto": {
         "type": "object",
         "additionalProperties": false,
@@ -8642,6 +9038,106 @@
           },
           "arabicName": {
             "type": "string"
+          }
+        }
+      },
+      "PagedResultOfComplainDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ComplainDto"
+            }
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "ComplainDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "customerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "customerName": {
+            "type": "string"
+          },
+          "customerMobileNumber": {
+            "type": "string"
+          },
+          "customerAddress": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "creationDate": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PagedResultOfSuggestionDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SuggestionDto"
+            }
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "SuggestionDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "customerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "customerName": {
+            "type": "string"
+          },
+          "customerMobileNumber": {
+            "type": "string"
+          },
+          "customerAddress": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "creationDate": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       },

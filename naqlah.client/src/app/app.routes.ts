@@ -230,6 +230,20 @@ const routes: Routes = [
           import('./Pages/admin/customer-wallet-transactions/customer-wallet-transactions.component').then(
             (m) => m.CustomerWalletTransactionsComponent
           ),
+      },
+      {
+        path: 'tech-support/complains',
+        loadComponent: () =>
+          import('./Pages/admin/tech-support/complains/complains.component').then(
+            (m) => m.ComplainsComponent
+          ),
+      },
+      {
+        path: 'tech-support/suggestions',
+        loadComponent: () =>
+          import('./Pages/admin/tech-support/suggestions/suggestions.component').then(
+            (m) => m.SuggestionsComponent
+          ),
       }
     ],
   }

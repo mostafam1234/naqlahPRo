@@ -34,6 +34,7 @@ namespace Presentaion.Controllers.Admin
         }
 
         [HttpPost]
+        [AllowAnonymous]
         [ProducesResponseType(typeof(AdminResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
         [Route("LoginAdmin")]

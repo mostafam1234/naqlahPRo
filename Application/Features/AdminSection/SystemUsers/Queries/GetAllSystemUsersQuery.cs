@@ -2,6 +2,7 @@ using Application.Features.AdminSection.SystemUsers.Dtos;
 using Application.Shared.Dtos;
 using CSharpFunctionalExtensions;
 using Domain.InterFaces;
+using Domain.Models;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -35,9 +36,22 @@ namespace Application.Features.AdminSection.SystemUsers.Queries
 
             public async Task<Result<PagedResult<SystemUserAdminDto>>> Handle(GetAllSystemUsersQuery request, CancellationToken cancellationToken)
             {
-                // Get all system users (users with roles)
+                // Get Customer and DeliveryMan role IDs to exclude
+                var customerRoleId = Domain.Models.Role.Customer.Id; // 3
+                var deliveryManRoleId = Domain.Models.Role.DeliveryMan.Id; // 2
+
+                // Get user IDs that have Customer or DeliveryMan roles
+                var excludedUserIds = await _context.UserRoles
+                    .Where(ur => ur.RoleId == customerRoleId || ur.RoleId == deliveryManRoleId)
+                    .Select(ur => ur.UserId)
+                    .Distinct()
+                    .ToListAsync(cancellationToken);
+
+                // Get all system users (users with roles) excluding Customer and DeliveryMan
                 var query = _context.Users
-                    .Where(u => !u.IsDeleted && _context.UserRoles.Any(ur => ur.UserId == u.Id))
+                    .Where(u => !u.IsDeleted && 
+                           _context.UserRoles.Any(ur => ur.UserId == u.Id) &&
+                           !excludedUserIds.Contains(u.Id))
                     .AsQueryable();
 
                 // Apply role filter if specified
