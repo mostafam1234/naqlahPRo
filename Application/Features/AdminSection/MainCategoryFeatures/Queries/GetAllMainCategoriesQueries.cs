@@ -22,13 +22,19 @@ namespace Application.Features.AdminSection.MainCategoryFeatures.Queries
         private class GetAllMainCategoriesQueriesHandler : IRequestHandler<GetAllMainCategoriesQueries, Result<PagedResult<MainCategoryAdminDto>>>
         {
             private readonly INaqlahContext _context;
-            public GetAllMainCategoriesQueriesHandler(INaqlahContext context)
+            private readonly IReadFromAppSetting _config;
+            private const string MainCategoryFolderPrefix = "main-categories";
+            
+            public GetAllMainCategoriesQueriesHandler(INaqlahContext context, IReadFromAppSetting config)
             {
                 _context = context;
+                _config = config;
             }
+            
             public async Task<Result<PagedResult<MainCategoryAdminDto>>> Handle(GetAllMainCategoriesQueries request, CancellationToken cancellationToken)
             {
                 var query = _context.MainCategories.AsQueryable();
+                var baseUrl = _config.GetValue<string>("apiBaseUrl");
 
                 if (!string.IsNullOrWhiteSpace(request.SearchTerm))
                 {
@@ -46,6 +52,9 @@ namespace Application.Features.AdminSection.MainCategoryFeatures.Queries
                         Id = x.Id,
                         ArabicName = x.ArabicName,
                         EnglishName = x.EnglishName,
+                        ImagePath = !string.IsNullOrEmpty(x.ImagePath) 
+                            ? $"{baseUrl}/ImageBank/{MainCategoryFolderPrefix}/{x.ImagePath}" 
+                            : string.Empty
                     })
                     .ToListAsync(cancellationToken);
 

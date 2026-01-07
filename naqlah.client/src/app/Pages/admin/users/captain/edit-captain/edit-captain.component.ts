@@ -3,17 +3,20 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { SubSink } from 'subsink';
-import Swal from 'sweetalert2';
-import { DeliveryManAdminClient, GetDeliveryManRequestDetailsDto, DeliveryManVehicleDto, VehicleAdminClient, VehicleTypeDto } from 'src/app/Core/services/NaqlahClient';
+import { DeliveryManAdminClient, GetDeliveryManRequestDetailsDto, DeliveryManVehicleDto, VehicleAdminClient, VehicleTypeDto, AddDeliveryManDto } from 'src/app/Core/services/NaqlahClient';
 import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
+import { ConfirmationModalComponent } from 'src/app/shared/components/confirmation-modal/confirmation-modal.component';
 import { DeliveryType, DeliveryLicenseType, VehicleOwnerType } from 'src/app/Core/enums/delivery.enums';
 import { ImageService } from 'src/app/Core/services/image.service';
+import { ToasterService } from 'src/app/Core/services/toaster.service';
+import { AppConfigService } from 'src/app/shared/services/AppConfigService';
 
 @Component({
   selector: 'app-edit-captain',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslateModule, PageHeaderComponent],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule, PageHeaderComponent, ConfirmationModalComponent],
   providers: [DatePipe, DeliveryManAdminClient, VehicleAdminClient],
   templateUrl: './edit-captain.component.html',
   styleUrl: './edit-captain.component.css'
@@ -24,6 +27,7 @@ export class EditCaptainComponent implements OnInit, OnDestroy {
   isSubmitting = false;
   deliveryManId!: number;
   deliveryManDetails: GetDeliveryManRequestDetailsDto | null = null;
+  lang: string = 'ar';
 
   // Image previews
   imagesPreviews = {
@@ -64,6 +68,12 @@ export class EditCaptainComponent implements OnInit, OnDestroy {
   vehicleTypes: VehicleTypeDto[] = [];
   vehicleBrands: VehicleTypeDto[] = [];
 
+  // Confirmation Modal Properties
+  showConfirmModal = false;
+  confirmationTitle = '';
+  confirmationMessage = '';
+  private pendingAction?: () => void;
+
   private subs = new SubSink();
 
   constructor(
@@ -74,12 +84,17 @@ export class EditCaptainComponent implements OnInit, OnDestroy {
     private deliveryManClient: DeliveryManAdminClient,
     private datePipe: DatePipe,
     private vehicleClient: VehicleAdminClient,
-    private imageService: ImageService
+    private imageService: ImageService,
+    private toasterService: ToasterService,
+    private http: HttpClient,
+    private appConfigService: AppConfigService
   ) {
     this.initializeForm();
   }
 
   ngOnInit(): void {
+    this.lang = localStorage.getItem('language') || 'ar';
+    
     // Get delivery man ID from route
     this.route.params.subscribe(params => {
       this.deliveryManId = +params['id'];
@@ -126,18 +141,33 @@ export class EditCaptainComponent implements OnInit, OnDestroy {
         this.populateForm(details);
         this.isLoading = false;
       },
-      error: (error) => {
-        console.error('Error loading delivery man details:', error);
-        this.isLoading = false;
-        Swal.fire({
-          title: 'خطأ!',
-          text: 'حدث خطأ أثناء تحميل بيانات الكابتن',
-          icon: 'error',
-          confirmButtonText: 'موافق'
-        }).then(() => {
-          this.router.navigate(['/admin/users/captain']);
-        });
-      }
+        error: (error) => {
+          console.error('Error loading delivery man details:', error);
+          this.isLoading = false;
+          
+          // Extract error message from backend response
+          let errorMessage = 'حدث خطأ أثناء تحميل بيانات الكابتن';
+          if (error?.error) {
+            if (error.error.detail) {
+              errorMessage = error.error.detail;
+            } else if (error.error.errorMessage) {
+              errorMessage = error.error.errorMessage;
+            } else if (error.error.title) {
+              errorMessage = error.error.title;
+            } else if (error.error.message) {
+              errorMessage = error.error.message;
+            } else if (typeof error.error === 'string') {
+              errorMessage = error.error;
+            }
+          } else if (error?.message) {
+            errorMessage = error.message;
+          }
+          
+          this.toasterService.error('خطأ', errorMessage);
+          setTimeout(() => {
+            this.router.navigate(['/admin/users/captain']);
+          }, 2000);
+        }
     });
   }
 
@@ -151,18 +181,41 @@ export class EditCaptainComponent implements OnInit, OnDestroy {
       return this.datePipe.transform(dateObj, 'yyyy-MM-dd') || '';
     };
 
+    // Convert deliveryLicenseType string to enum
+    let deliveryLicenseTypeValue = DeliveryLicenseType.Private;
+    if (details.deliveryLicenseType) {
+      const licenseTypeStr = details.deliveryLicenseType.toLowerCase();
+      if (licenseTypeStr === 'public' || licenseTypeStr === 'عامة') {
+        deliveryLicenseTypeValue = DeliveryLicenseType.Public;
+      } else if (licenseTypeStr === 'private' || licenseTypeStr === 'خاصة') {
+        deliveryLicenseTypeValue = DeliveryLicenseType.Private;
+      }
+    }
+
+    // Convert deliveryType string to enum
+    let deliveryTypeValue = DeliveryType.Citizen;
+    if (details.deliveryType) {
+      const deliveryTypeStr = details.deliveryType.toLowerCase();
+      if (deliveryTypeStr === 'resident' || deliveryTypeStr === 'مقيم') {
+        deliveryTypeValue = DeliveryType.Resident;
+      } else if (deliveryTypeStr === 'citizen' || deliveryTypeStr === 'مواطن') {
+        deliveryTypeValue = DeliveryType.Citizen;
+      }
+    }
+
     this.captainForm.patchValue({
+      email: details.email || '',
       fullName: details.fullName || '',
       phoneNumber: details.phoneNumber || '',
       identityNumber: details.identityNumber || '',
-      deliveryType: details.deliveryType || DeliveryType.Citizen,
+      deliveryType: deliveryTypeValue,
       address: details.address || '',
       identityExpirationDate: formatDateForInput(details.identityExpirationDate),
-      deliveryLicenseType: details.deliveryLicenseType || DeliveryLicenseType.Private,
+      deliveryLicenseType: deliveryLicenseTypeValue,
       drivingLicenseExpirationDate: formatDateForInput(details.drivingLicenseExpirationDate),
-      // Vehicle fields - these might need to be fetched separately if not in DTO
-      vehicleTypeId: (details as any).vehicleTypeId || '',
-      vehicleBrandId: (details as any).vehicleBrandId || '',
+      // Vehicle fields
+      vehicleTypeId: details.vehicleTypeId || null,
+      vehicleBrandId: details.vehicleBrandId || null,
       vehiclePlateNumber: details.vehiclePlateNumber || '',
       vehicleOwnerTypeId: (details as any).vehicleOwnerTypeId || VehicleOwnerType.Resident,
       vehicleLicenseExpirationDate: formatDateForInput((details as any).vehicleLicenseExpirationDate),
@@ -267,41 +320,22 @@ export class EditCaptainComponent implements OnInit, OnDestroy {
   // Form submission
   onSubmit(): void {
     if (this.captainForm.valid) {
-      this.isSubmitting = true;
-
-      Swal.fire({
-        title: 'تأكيد التعديل',
-        text: 'هل أنت متأكد من حفظ التعديلات؟',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#10b981',
-        cancelButtonColor: '#ef4444',
-        confirmButtonText: 'نعم، احفظ التعديلات',
-        cancelButtonText: 'إلغاء',
-        backdrop: true,
-        allowOutsideClick: false
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.updateDeliveryMan();
-        } else {
-          this.isSubmitting = false;
-        }
-      });
+      this.confirmationTitle = 'تأكيد التعديل';
+      this.confirmationMessage = 'هل أنت متأكد من حفظ التعديلات؟';
+      this.pendingAction = () => this.updateDeliveryMan();
+      this.showConfirmModal = true;
     } else {
       Object.keys(this.captainForm.controls).forEach(key => {
         this.captainForm.get(key)?.markAsTouched();
       });
 
-      Swal.fire({
-        title: 'خطأ في البيانات',
-        text: 'يرجى تصحيح الأخطاء في النموذج قبل المتابعة',
-        icon: 'error',
-        confirmButtonText: 'موافق'
-      });
+      this.toasterService.error('خطأ في البيانات', 'يرجى تصحيح الأخطاء في النموذج قبل المتابعة');
     }
   }
 
   private updateDeliveryMan(): void {
+    this.isSubmitting = true;
+    
     // Format dates for backend
     const formatDateForBackend = (date: any): string | null => {
       if (!date) return null;
@@ -312,56 +346,94 @@ export class EditCaptainComponent implements OnInit, OnDestroy {
 
     const rawFormData = this.captainForm.value;
 
-    const updateData = {
-      ...rawFormData,
-      identityExpirationDate: formatDateForBackend(rawFormData.identityExpirationDate),
-      drivingLicenseExpirationDate: formatDateForBackend(rawFormData.drivingLicenseExpirationDate),
-      vehicleLicenseExpirationDate: formatDateForBackend(rawFormData.vehicleLicenseExpirationDate),
-      vehicleInsuranceExpirationDate: formatDateForBackend(rawFormData.vehicleInsuranceExpirationDate),
-    };
+    // Build update DTO - only send base64 images if they're new, otherwise send empty to keep existing
+    const updateData = new AddDeliveryManDto();
+    updateData.email = rawFormData.email || '';
+    updateData.password = rawFormData.password || ''; // Optional - only update if provided
+    updateData.fullName = rawFormData.fullName || '';
+    updateData.address = rawFormData.address || '';
+    updateData.phoneNumber = rawFormData.phoneNumber || '';
+    updateData.identityNumber = rawFormData.identityNumber || '';
+    updateData.deliveryType = rawFormData.deliveryType || DeliveryType.Citizen;
+    updateData.identityExpirationDate = formatDateForBackend(rawFormData.identityExpirationDate) || '';
+    updateData.deliveryLicenseType = rawFormData.deliveryLicenseType || DeliveryLicenseType.Private;
+    updateData.drivingLicenseExpirationDate = formatDateForBackend(rawFormData.drivingLicenseExpirationDate) || '';
+    updateData.vehiclePlateNumber = rawFormData.vehiclePlateNumber || null;
+    updateData.vehicleTypeId = rawFormData.vehicleTypeId || null;
+    updateData.vehicleBrandId = rawFormData.vehicleBrandId || null;
+    updateData.vehicleOwnerTypeId = rawFormData.vehicleOwnerTypeId || null;
+    updateData.vehicleLicenseExpirationDate = formatDateForBackend(rawFormData.vehicleLicenseExpirationDate) || null;
+    updateData.vehicleInsuranceExpirationDate = formatDateForBackend(rawFormData.vehicleInsuranceExpirationDate) || null;
+    updateData.inSuranceExpirationDate = formatDateForBackend(rawFormData.vehicleInsuranceExpirationDate) || null;
+    // Images - send base64 if new, or existing URL if it's a URL
+    updateData.personalImagePath = rawFormData.personalImagePath || null;
+    updateData.frontIdentityImagePath = rawFormData.frontIdentityImagePath || null;
+    updateData.backIdentityImagePath = rawFormData.backIdentityImagePath || null;
+    updateData.frontDrivingLicenseImagePath = rawFormData.frontDrivingLicenseImagePath || null;
+    updateData.backDrivingLicenseImagePath = rawFormData.backDrivingLicenseImagePath || null;
+    updateData.vehicleFrontImagePath = rawFormData.vehicleFrontImagePath || null;
+    updateData.vehicleSideImagePath = rawFormData.vehicleSideImagePath || null;
+    updateData.vehicleFrontLicenseImagePath = rawFormData.vehicleFrontLicenseImagePath || null;
+    updateData.vehicleBackLicenseImagePath = rawFormData.vehicleBackLicenseImagePath || null;
+    updateData.vehicleFrontInsuranceImagePath = rawFormData.vehicleFrontInsuranceImagePath || null;
+    updateData.vehicleBackInsuranceImagePath = rawFormData.vehicleBackInsuranceImagePath || null;
+    updateData.active = rawFormData.active !== undefined ? rawFormData.active : true;
+    updateData.androidDevice = null;
+    updateData.iosDevice = null;
 
-    // TODO: Replace with actual update API call when available
-    // For now, this is a placeholder structure
-    console.log('Update data:', updateData);
+    // Get base URL from app config
+    const config = this.appConfigService.getConfig();
+    const baseUrl = config.apiBaseUrl || '';
+    const url = `${baseUrl}/api/DeliveryManAdmin/UpdateDeliveryMan/${this.deliveryManId}`;
+    
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
 
-    // Example API call structure (uncomment when API is available):
-    /*
-    this.subs.sink = this.deliveryManClient.updateDeliveryMan(this.deliveryManId, updateData).subscribe({
+    this.subs.sink = this.http.post<number>(url, updateData, { headers }).subscribe({
       next: (result) => {
         this.isSubmitting = false;
-        Swal.fire({
-          title: 'تمت العملية بنجاح!',
-          text: 'تم تحديث بيانات الكابتن بنجاح',
-          icon: 'success',
-          confirmButtonText: 'موافق'
-        }).then(() => {
+        this.toasterService.success('تمت العملية بنجاح', 'تم تحديث بيانات الكابتن بنجاح');
+        setTimeout(() => {
           this.router.navigate(['/admin/users/captain']);
-        });
+        }, 1500);
       },
       error: (error) => {
         this.isSubmitting = false;
-        Swal.fire({
-          title: 'خطأ!',
-          text: 'حدث خطأ أثناء تحديث بيانات الكابتن',
-          icon: 'error',
-          confirmButtonText: 'موافق'
-        });
+        
+        // Extract error message from backend response
+        let errorMessage = 'حدث خطأ أثناء تحديث بيانات الكابتن';
+        if (error?.error) {
+          if (error.error.detail) {
+            errorMessage = error.error.detail;
+          } else if (error.error.errorMessage) {
+            errorMessage = error.error.errorMessage;
+          } else if (error.error.title) {
+            errorMessage = error.error.title;
+          } else if (error.error.message) {
+            errorMessage = error.error.message;
+          } else if (error.error.errors && typeof error.error.errors === 'object') {
+            // Handle validation errors
+            const errorMessages: string[] = [];
+            Object.keys(error.error.errors).forEach(key => {
+              const messages = error.error.errors[key];
+              if (Array.isArray(messages)) {
+                errorMessages.push(...messages);
+              }
+            });
+            if (errorMessages.length > 0) {
+              errorMessage = errorMessages.join(', ');
+            }
+          } else if (typeof error.error === 'string') {
+            errorMessage = error.error;
+          }
+        } else if (error?.message) {
+          errorMessage = error.message;
+        }
+        
+        this.toasterService.error('خطأ', errorMessage);
       }
     });
-    */
-
-    // Temporary success message for testing
-    setTimeout(() => {
-      this.isSubmitting = false;
-      Swal.fire({
-        title: 'تمت العملية بنجاح!',
-        text: 'تم تحديث بيانات الكابتن بنجاح',
-        icon: 'success',
-        confirmButtonText: 'موافق'
-      }).then(() => {
-        this.router.navigate(['/admin/users/captain']);
-      });
-    }, 1000);
   }
 
   // Image upload handlers
@@ -465,22 +537,29 @@ export class EditCaptainComponent implements OnInit, OnDestroy {
 
   onCancel(): void {
     if (this.captainForm.dirty) {
-      Swal.fire({
-        title: 'هل أنت متأكد؟',
-        text: 'سيتم فقدان جميع التعديلات',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#ef4444',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: 'نعم، إلغاء',
-        cancelButtonText: 'الرجوع للنموذج'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.router.navigate(['/admin/users/captain']);
-        }
-      });
+      this.confirmationTitle = 'هل أنت متأكد؟';
+      this.confirmationMessage = 'سيتم فقدان جميع التعديلات';
+      this.pendingAction = () => this.router.navigate(['/admin/users/captain']);
+      this.showConfirmModal = true;
     } else {
       this.router.navigate(['/admin/users/captain']);
+    }
+  }
+
+  // Confirmation Modal Methods
+  onConfirmationConfirmed(): void {
+    this.showConfirmModal = false;
+    if (this.pendingAction) {
+      this.pendingAction();
+      this.pendingAction = undefined;
+    }
+  }
+
+  onConfirmationCancelled(): void {
+    this.showConfirmModal = false;
+    this.pendingAction = undefined;
+    if (this.isSubmitting) {
+      this.isSubmitting = false;
     }
   }
 
@@ -500,6 +579,16 @@ export class EditCaptainComponent implements OnInit, OnDestroy {
       key: 'drivingLicense',
       title: 'رخصة القيادة',
       icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z'
+    },
+    {
+      key: 'vehicleInfo',
+      title: 'المركبة',
+      icon: 'M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z'
+    },
+    {
+      key: 'documentsUpload',
+      title: 'الوثائق',
+      icon: 'M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12'
     }
   ];
 
@@ -545,8 +634,8 @@ export class EditCaptainComponent implements OnInit, OnDestroy {
       personalInfo: ['email', 'fullName', 'phoneNumber', 'identityNumber', 'deliveryType', 'address'],
       identityInfo: ['identityExpirationDate'],
       drivingLicense: ['deliveryLicenseType', 'drivingLicenseExpirationDate'],
-      vehicleInfo: [],
-      documentsUpload: []
+      vehicleInfo: ['vehiclePlateNumber', 'vehicleTypeId', 'vehicleBrandId', 'vehicleLicenseExpirationDate', 'vehicleInsuranceExpirationDate', 'vehicleOwnerTypeId'],
+      documentsUpload: ['personalImagePath', 'frontIdentityImagePath', 'backIdentityImagePath', 'frontDrivingLicenseImagePath', 'backDrivingLicenseImagePath', 'vehicleFrontImagePath', 'vehicleSideImagePath', 'vehicleFrontInsuranceImagePath', 'vehicleBackInsuranceImagePath']
     };
 
     return fieldMap[stepKey as keyof typeof fieldMap] || [];

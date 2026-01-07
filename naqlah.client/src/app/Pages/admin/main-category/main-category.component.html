@@ -92,6 +92,11 @@
               <th
                 class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider"
               >
+                الصورة
+              </th>
+              <th
+                class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider"
+              >
                 الإجراءات
               </th>
             </tr>
@@ -112,6 +117,25 @@
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="text-sm text-neutral-700">
                   {{ item.englishName }}
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="w-12 h-12 rounded-lg border border-neutral-200 bg-neutral-100 flex items-center justify-center overflow-hidden">
+                  <img
+                    *ngIf="item.imagePath; else noImage"
+                    [src]="item.imagePath"
+                    alt="صورة الفئة"
+                    class="w-full h-full object-cover"
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"
+                  />
+                  <ng-template #noImage>
+                    <svg class="w-8 h-8 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </ng-template>
+                  <svg class="w-8 h-8 text-neutral-400 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
                 </div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-right">
@@ -158,7 +182,7 @@
 
             <!-- Empty State -->
             <tr *ngIf="items.length === 0">
-              <td colspan="4" class="px-6 py-12 text-center">
+              <td colspan="5" class="px-6 py-12 text-center">
                 <div class="text-neutral-400 mb-2">
                   <i class="bi bi-inbox text-4xl"></i>
                 </div>
@@ -315,105 +339,6 @@
           </div>
         </div>
 
-        <!-- Multi-Select with Search -->
-        <div>
-          <label class="block text-sm font-medium text-neutral-700 mb-2">
-            الخدمات المتاحة <span class="text-red-500">*</span>
-          </label>
-          <div class="relative multi-select-container">
-            <!-- Selected Items Display -->
-            <div
-              class="w-full min-h-[40px] px-3 py-2 border border-neutral-300 rounded-lg focus-within:ring-2 focus-within:ring-primary-500 focus-within:border-primary-500 bg-white cursor-pointer"
-              (click)="toggleMultiSelect()"
-            >
-              <div
-                class="flex flex-wrap gap-1"
-                *ngIf="selectedServices.length > 0; else placeholderTemplate"
-              >
-                <span
-                  *ngFor="let service of selectedServices"
-                  class="inline-flex items-center px-2 py-1 text-xs font-medium text-primary-700 bg-primary-50 rounded-md border border-primary-200"
-                >
-                  {{ service.name }}
-                  <button
-                    type="button"
-                    (click)="removeService(service, $event)"
-                    class="ml-1 text-primary-500 hover:text-primary-700"
-                  >
-                    <i class="bi bi-x text-xs"></i>
-                  </button>
-                </span>
-              </div>
-              <ng-template #placeholderTemplate>
-                <span class="text-neutral-500">اختر الخدمات المتاحة...</span>
-              </ng-template>
-              <div class="absolute left-3 top-1/2 transform -translate-y-1/2">
-                <i
-                  class="bi bi-chevron-down text-neutral-400 transition-transform duration-200"
-                  [class.rotate-180]="isMultiSelectOpen"
-                ></i>
-              </div>
-            </div>
-
-            <!-- Dropdown Menu -->
-            <div
-              *ngIf="isMultiSelectOpen"
-              class="absolute z-10 w-full mt-1 bg-white border border-neutral-300 rounded-lg shadow-lg max-h-60 overflow-hidden"
-            >
-              <!-- Search Input -->
-              <div class="p-3 border-b border-neutral-200">
-                <div class="relative">
-                  <input
-                    type="text"
-                    [(ngModel)]="serviceSearchTerm"
-                    [ngModelOptions]="{ standalone: true }"
-                    placeholder="البحث في الخدمات..."
-                    class="w-full pl-8 pr-3 py-2 text-sm border border-neutral-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  />
-                  <i
-                    class="bi bi-search absolute left-2.5 top-1/2 transform -translate-y-1/2 text-neutral-400 text-sm"
-                  ></i>
-                </div>
-              </div>
-
-              <!-- Options List -->
-              <div class="max-h-40 overflow-y-auto">
-                <label
-                  *ngFor="let service of filteredServices"
-                  class="flex items-center px-3 py-2 hover:bg-neutral-50 cursor-pointer border-b border-neutral-100 last:border-b-0"
-                >
-                  <input
-                    type="checkbox"
-                    [checked]="isServiceSelected(service)"
-                    (change)="toggleService(service)"
-                    class="w-4 h-4 text-primary-600 border-neutral-300 rounded focus:ring-primary-500"
-                  />
-                  <span class="mr-2 text-sm text-neutral-700">{{
-                    service.name
-                  }}</span>
-                </label>
-
-                <!-- No Results -->
-                <div
-                  *ngIf="filteredServices.length === 0"
-                  class="px-3 py-4 text-center text-sm text-neutral-500"
-                >
-                  لا توجد نتائج للبحث
-                </div>
-              </div>
-            </div>
-          </div>
-          <div
-            *ngIf="
-              itemForm.get('services')?.touched &&
-              itemForm.get('services')?.invalid
-            "
-            class="mt-1 text-xs text-red-600"
-          >
-            يرجى اختيار خدمة واحدة على الأقل
-          </div>
-        </div>
-
         <!-- Image Upload Section -->
         <div>
           <label class="block text-sm font-medium text-neutral-700 mb-2">
@@ -475,9 +400,9 @@
                 </div>
                 <div class="flex-1 min-w-0">
                   <p class="text-sm font-medium text-neutral-900 truncate">
-                    {{ selectedImageName }}
+                    {{ selectedImageName || 'الصورة الحالية' }}
                   </p>
-                  <p class="text-xs text-neutral-500">
+                  <p class="text-xs text-neutral-500" *ngIf="selectedImageSize > 0">
                     {{ formatFileSize(selectedImageSize) }}
                   </p>
                   <div class="mt-2 flex items-center space-x-2 space-x-reverse">
@@ -485,7 +410,7 @@
                       class="inline-flex items-center px-2 py-1 text-xs font-medium text-primary-600 bg-primary-50 border border-primary-200 rounded hover:bg-primary-100 cursor-pointer transition-colors duration-200"
                     >
                       <i class="bi bi-arrow-repeat ml-1"></i>
-                      تغيير
+                      {{ selectedImageName ? 'تغيير' : 'استبدال' }}
                       <input
                         type="file"
                         class="hidden"
@@ -509,6 +434,15 @@
 
           <div *ngIf="imageError" class="mt-1 text-xs text-red-600">
             {{ imageError }}
+          </div>
+          <div
+            *ngIf="
+              itemForm.get('imageBase64')?.touched &&
+              itemForm.get('imageBase64')?.invalid
+            "
+            class="mt-1 text-xs text-red-600"
+          >
+            صورة الفئة مطلوبة
           </div>
         </div>
 
@@ -610,105 +544,6 @@
           </div>
         </div>
 
-        <!-- Multi-Select with Search -->
-        <div>
-          <label class="block text-sm font-medium text-neutral-700 mb-2">
-            الخدمات المتاحة <span class="text-red-500">*</span>
-          </label>
-          <div class="relative multi-select-container">
-            <!-- Selected Items Display -->
-            <div
-              class="w-full min-h-[40px] px-3 py-2 border border-neutral-300 rounded-lg focus-within:ring-2 focus-within:ring-primary-500 focus-within:border-primary-500 bg-white cursor-pointer"
-              (click)="toggleMultiSelect()"
-            >
-              <div
-                class="flex flex-wrap gap-1"
-                *ngIf="selectedServices.length > 0; else placeholderTemplate"
-              >
-                <span
-                  *ngFor="let service of selectedServices"
-                  class="inline-flex items-center px-2 py-1 text-xs font-medium text-primary-700 bg-primary-50 rounded-md border border-primary-200"
-                >
-                  {{ service.name }}
-                  <button
-                    type="button"
-                    (click)="removeService(service, $event)"
-                    class="ml-1 text-primary-500 hover:text-primary-700"
-                  >
-                    <i class="bi bi-x text-xs"></i>
-                  </button>
-                </span>
-              </div>
-              <ng-template #placeholderTemplate>
-                <span class="text-neutral-500">اختر الخدمات المتاحة...</span>
-              </ng-template>
-              <div class="absolute left-3 top-1/2 transform -translate-y-1/2">
-                <i
-                  class="bi bi-chevron-down text-neutral-400 transition-transform duration-200"
-                  [class.rotate-180]="isMultiSelectOpen"
-                ></i>
-              </div>
-            </div>
-
-            <!-- Dropdown Menu -->
-            <div
-              *ngIf="isMultiSelectOpen"
-              class="absolute z-10 w-full mt-1 bg-white border border-neutral-300 rounded-lg shadow-lg max-h-60 overflow-hidden"
-            >
-              <!-- Search Input -->
-              <div class="p-3 border-b border-neutral-200">
-                <div class="relative">
-                  <input
-                    type="text"
-                    [(ngModel)]="serviceSearchTerm"
-                    [ngModelOptions]="{ standalone: true }"
-                    placeholder="البحث في الخدمات..."
-                    class="w-full pl-8 pr-3 py-2 text-sm border border-neutral-300 rounded-md focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  />
-                  <i
-                    class="bi bi-search absolute left-2.5 top-1/2 transform -translate-y-1/2 text-neutral-400 text-sm"
-                  ></i>
-                </div>
-              </div>
-
-              <!-- Options List -->
-              <div class="max-h-40 overflow-y-auto">
-                <label
-                  *ngFor="let service of filteredServices"
-                  class="flex items-center px-3 py-2 hover:bg-neutral-50 cursor-pointer border-b border-neutral-100 last:border-b-0"
-                >
-                  <input
-                    type="checkbox"
-                    [checked]="isServiceSelected(service)"
-                    (change)="toggleService(service)"
-                    class="w-4 h-4 text-primary-600 border-neutral-300 rounded focus:ring-primary-500"
-                  />
-                  <span class="mr-2 text-sm text-neutral-700">{{
-                    service.name
-                  }}</span>
-                </label>
-
-                <!-- No Results -->
-                <div
-                  *ngIf="filteredServices.length === 0"
-                  class="px-3 py-4 text-center text-sm text-neutral-500"
-                >
-                  لا توجد نتائج للبحث
-                </div>
-              </div>
-            </div>
-          </div>
-          <div
-            *ngIf="
-              itemForm.get('services')?.touched &&
-              itemForm.get('services')?.invalid
-            "
-            class="mt-1 text-xs text-red-600"
-          >
-            يرجى اختيار خدمة واحدة على الأقل
-          </div>
-        </div>
-
         <!-- Image Upload Section -->
         <div>
           <label class="block text-sm font-medium text-neutral-700 mb-2">
@@ -770,9 +605,9 @@
                 </div>
                 <div class="flex-1 min-w-0">
                   <p class="text-sm font-medium text-neutral-900 truncate">
-                    {{ selectedImageName }}
+                    {{ selectedImageName || 'الصورة الحالية' }}
                   </p>
-                  <p class="text-xs text-neutral-500">
+                  <p class="text-xs text-neutral-500" *ngIf="selectedImageSize > 0">
                     {{ formatFileSize(selectedImageSize) }}
                   </p>
                   <div class="mt-2 flex items-center space-x-2 space-x-reverse">
@@ -780,7 +615,7 @@
                       class="inline-flex items-center px-2 py-1 text-xs font-medium text-primary-600 bg-primary-50 border border-primary-200 rounded hover:bg-primary-100 cursor-pointer transition-colors duration-200"
                     >
                       <i class="bi bi-arrow-repeat ml-1"></i>
-                      تغيير
+                      {{ selectedImageName ? 'تغيير' : 'استبدال' }}
                       <input
                         type="file"
                         class="hidden"

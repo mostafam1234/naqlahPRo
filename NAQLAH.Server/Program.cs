@@ -84,6 +84,17 @@ namespace NAQLAH.Server
                 document.Title = "Naqlah API";
             });
 
+            // Add CORS
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
+                });
+            });
+
             builder.Services.AddHangfireServer();
 
             // Add SignalR
@@ -140,6 +151,10 @@ namespace NAQLAH.Server
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
+            
+            // Enable CORS - must be before UseAuthentication and UseAuthorization
+            app.UseCors("AllowAll");
+            
             // Configure the HTTP request pipeline.
             app.UseSwagger();
             app.UseSwaggerUI();

@@ -18,10 +18,13 @@ namespace Application.Features.DeliveryManSection.CurrentDeliveryMen.Queries
         private class GetAllApprovedDeliveryMenQueryHandler : IRequestHandler<GetAllApprovedDeliveryMenQuery, Result<PagedGetAllApprovedDeliveryMenPaged>>
         {
             private readonly INaqlahContext _context;
+            private readonly IReadFromAppSetting _config;
+            private const string DeliveryFolderPrefix = "DeliveryMan";
 
-            public GetAllApprovedDeliveryMenQueryHandler(INaqlahContext context)
+            public GetAllApprovedDeliveryMenQueryHandler(INaqlahContext context, IReadFromAppSetting config)
             {
                 _context = context;
+                _config = config;
             }
 
             public async Task<Result<PagedGetAllApprovedDeliveryMenPaged>> Handle(GetAllApprovedDeliveryMenQuery request, CancellationToken cancellationToken)
@@ -42,6 +45,7 @@ namespace Application.Features.DeliveryManSection.CurrentDeliveryMen.Queries
                 }
 
                 var totalCount = await approvedQuery.CountAsync(cancellationToken);
+                var baseUrl = _config.GetValue<string>("apiBaseUrl");
 
                 var approvedDeliveryMen = await approvedQuery
                     .Select(x => new GetAllApprovedDeliveryMenDto
@@ -51,7 +55,9 @@ namespace Application.Features.DeliveryManSection.CurrentDeliveryMen.Queries
                         PhoneNumber = x.PhoneNumber,
                         Address = x.Address,
                         IdentityNumber = x.IdentityNumber,
-                        PersonalImagePath = x.PersonalImagePath,
+                        PersonalImagePath = !string.IsNullOrEmpty(x.PersonalImagePath) 
+                            ? $"{baseUrl}/ImageBank/{DeliveryFolderPrefix}_{x.Id}/{x.PersonalImagePath}" 
+                            : null,
                         DeliveryType = x.DeliveryType.ToString(),
                         State = (int)x.DeliveryState,
                         Active = x.Active,

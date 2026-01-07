@@ -3270,6 +3270,61 @@
         }
       }
     },
+    "/api/DeliveryManAdmin/UpdateDeliveryMan/{deliveryManId}": {
+      "post": {
+        "tags": [
+          "DeliveryManAdmin"
+        ],
+        "operationId": "DeliveryManAdmin_UpdateDeliveryMan",
+        "parameters": [
+          {
+            "name": "deliveryManId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "deliveryManDto",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddDeliveryManDto"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/DeliveryManAdmin/GetAllDeliveryMen": {
       "get": {
         "tags": [
@@ -7888,6 +7943,9 @@
             "type": "integer",
             "format": "int32"
           },
+          "email": {
+            "type": "string"
+          },
           "vehicleId": {
             "type": "integer",
             "format": "int32",
@@ -7899,11 +7957,21 @@
           "vehicleType": {
             "type": "string"
           },
+          "vehicleTypeId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
           "vehicleColor": {
             "type": "string"
           },
           "vehicleModel": {
             "type": "string"
+          },
+          "vehicleBrandId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
           },
           "vehicleFrontImagePath": {
             "type": "string"
@@ -8364,6 +8432,9 @@
           },
           "englishName": {
             "type": "string"
+          },
+          "imagePath": {
+            "type": "string"
           }
         }
       },
@@ -8389,6 +8460,9 @@
           },
           "englishName": {
             "type": "string"
+          },
+          "imageBase64": {
+            "type": "string"
           }
         }
       },
@@ -8405,6 +8479,10 @@
           },
           "englishName": {
             "type": "string"
+          },
+          "imageBase64": {
+            "type": "string",
+            "nullable": true
           }
         }
       },

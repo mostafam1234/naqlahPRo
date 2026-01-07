@@ -25,7 +25,7 @@ import { CommonModule } from '@angular/common';
             <button
               (click)="confirm()"
               class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg">
-              حذف
+              تأكيد
             </button>
           </div>
         </div>
