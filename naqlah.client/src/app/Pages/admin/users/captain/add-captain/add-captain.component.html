@@ -1,71 +1,46 @@
-<div class="min-h-screen bg-gray-50">
-  <!-- Background Pattern -->
-  <div class="absolute inset-0 bg-grid-pattern opacity-5"></div>
-
-  <div class="relative">
+<div class="min-h-screen bg-neutral-50">
+  <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
     <app-page-header
       title="ADMIN.PAGES.ADD_CAPTAIN.HEADER_TITLE"
       subtitle="ADMIN.PAGES.ADD_CAPTAIN.HEADER_SUBTITLE"
       [showBackButton]="true"
       iconPath="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+      (onBackClick)="onCancel()"
     >
     </app-page-header>
 
-    <!-- Main Content Container -->
-    <div class="container mx-auto px-6 py-8">
-      <form [formGroup]="captainForm" (ngSubmit)="onSubmit()">
-        <!-- Progress Steps -->
-        <div class="mb-8">
+    <form [formGroup]="captainForm" (ngSubmit)="onSubmit()" class="mt-8">
+      <!-- Progress Steps -->
+      <div class="mb-8 hidden md:block">
+        <div class="flex items-center justify-center gap-4 mb-6">
           <div
-            class="flex items-center justify-center space-x-4 space-x-reverse mb-6"
+            *ngFor="let step of formSteps; let i = index"
+            class="flex items-center"
+            [class.opacity-50]="!formSections[step.key]"
           >
             <div
-              *ngFor="let step of formSteps; let i = index"
-              class="flex items-center"
-              [class.opacity-50]="!formSections[step.key]"
+              class="flex items-center justify-center w-10 h-10 rounded-full transition-all duration-300"
+              [class]="getStepClass(step.key)"
             >
-              <div
-                class="flex items-center justify-center w-10 h-10 rounded-full transition-all duration-300"
-                [class]="getStepClass(step.key)"
-              >
-                <svg
-                  class="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    [attr.d]="step.icon"
-                  ></path>
-                </svg>
-              </div>
-              <span class="mr-3 text-gray-700 font-medium">{{
-                step.title
-              }}</span>
-              <div
-                *ngIf="i < formSteps.length - 1"
-                class="w-16 h-0.5 bg-gray-300 mr-4"
-              ></div>
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="step.icon"></path>
+              </svg>
             </div>
+            <span class="mr-3 text-neutral-700 font-medium">{{ step.title }}</span>
+            <div *ngIf="i < formSteps.length - 1" class="w-16 h-0.5 bg-neutral-300 mr-4"></div>
           </div>
         </div>
+      </div>
 
         <!-- Form Grid Layout -->
         <div class="grid grid-cols-12 gap-6">
-          <!-- Personal Information - Large Card -->
-          <div class="col-span-12 lg:col-span-6">
-            <div
-              class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-lg"
-            >
-              <div class="bg-blue-500 p-6">
+      <!-- Personal Information - Large Card -->
+      <div class="col-span-12 lg:col-span-6">
+        <div class="bg-white border border-neutral-200 rounded-xl overflow-hidden shadow-sm">
+          <div class="bg-primary-500 p-6">
                 <div class="flex items-center justify-between">
-                  <div class="flex items-center space-x-3 space-x-reverse">
-                    <div
-                      class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center"
-                    >
+            <div class="flex items-center space-x-3 space-x-reverse">
+              <div class="w-12 h-12 bg-primary-600 rounded-xl flex items-center justify-center">
                       <svg
                         class="w-6 h-6 text-white"
                         fill="none"
@@ -95,11 +70,11 @@
                       </p>
                     </div>
                   </div>
-                  <button
-                    type="button"
-                    (click)="toggleSection('personalInfo')"
-                    class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center hover:bg-blue-700 transition-colors"
-                  >
+            <button
+              type="button"
+              (click)="toggleSection('personalInfo')"
+              class="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center hover:bg-primary-700 transition-colors"
+            >
                     <svg
                       class="w-4 h-4 text-white transform transition-transform duration-200"
                       [class.rotate-180]="!formSections.personalInfo"
@@ -118,23 +93,20 @@
                 </div>
               </div>
 
-              <div *ngIf="formSections.personalInfo" class="p-6 space-y-6">
-                <!-- Email -->
-                <div class="space-y-2">
-                  <label class="block text-sm font-semibold text-gray-700">{{
-                    "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.EMAIL" | translate
-                  }}</label>
-                  <input
-                    type="email"
-                    formControlName="email"
-                    placeholder="example@email.com"
-                    class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
-                    [class.border-red-500]="isFieldInvalid('email')"
-                    [class.border-green-500]="
-                      captainForm.get('email')?.valid &&
-                      captainForm.get('email')?.touched
-                    "
-                  />
+          <div *ngIf="formSections.personalInfo" class="p-6 space-y-6">
+            <!-- Email -->
+            <div class="space-y-2">
+              <label class="block text-sm font-semibold text-neutral-700">{{
+                "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.EMAIL" | translate
+              }}</label>
+              <input
+                type="email"
+                formControlName="email"
+                placeholder="example@email.com"
+                class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 placeholder-neutral-500 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
+                [class.border-red-500]="isFieldInvalid('email')"
+                [class.border-green-500]="captainForm.get('email')?.valid && captainForm.get('email')?.touched"
+              />
                   <p
                     *ngIf="isFieldInvalid('email')"
                     class="text-red-500 text-sm mt-1"
@@ -152,7 +124,7 @@
                     type="password"
                     formControlName="password"
                     placeholder="••••••••"
-                    class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
+                    class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 placeholder-neutral-500 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
                     [class.border-red-500]="isFieldInvalid('password')"
                     [class.border-green-500]="
                       captainForm.get('password')?.valid &&
@@ -179,7 +151,7 @@
                       'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.FULL_NAME_PLACEHOLDER'
                         | translate
                     }}"
-                    class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
+                    class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 placeholder-neutral-500 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
                     [class.border-red-500]="isFieldInvalid('fullName')"
                     [class.border-green-500]="
                       captainForm.get('fullName')?.valid &&
@@ -203,7 +175,7 @@
                     type="tel"
                     formControlName="phoneNumber"
                     placeholder="05xxxxxxxx"
-                    class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
+                    class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 placeholder-neutral-500 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
                     [class.border-red-500]="isFieldInvalid('phoneNumber')"
                     [class.border-green-500]="
                       captainForm.get('phoneNumber')?.valid &&
@@ -227,7 +199,7 @@
                     type="text"
                     formControlName="identityNumber"
                     placeholder="1234567890"
-                    class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
+                    class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 placeholder-neutral-500 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
                     [class.border-red-500]="isFieldInvalid('identityNumber')"
                     [class.border-green-500]="
                       captainForm.get('identityNumber')?.valid &&
@@ -296,7 +268,7 @@
             <div class="space-y-6">
               <!-- Identity Info -->
               <div
-                class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-lg"
+                class="bg-white border border-neutral-200 rounded-xl overflow-hidden shadow-sm"
               >
                 <div class="bg-green-500 p-6">
                   <div class="flex items-center justify-between">
@@ -336,7 +308,7 @@
                     <button
                       type="button"
                       (click)="toggleSection('identityInfo')"
-                      class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center hover:bg-green-700 transition-colors"
+                      class="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center hover:bg-emerald-700 transition-colors"
                     >
                       <svg
                         class="w-4 h-4 text-white transform transition-transform duration-200"
@@ -358,13 +330,11 @@
 
                 <div *ngIf="formSections.identityInfo" class="p-6">
                   <div class="space-y-2">
-                    <label class="block text-sm font-semibold text-gray-700"
-                      >تاريخ انتهاء الهوية</label
-                    >
+                    <label class="block text-sm font-semibold text-gray-700">تاريخ انتهاء الهوية</label>
                     <input
                       type="date"
                       formControlName="identityExpirationDate"
-                      class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all"
+                      class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all"
                     />
                   </div>
                 </div>
@@ -372,7 +342,7 @@
 
               <!-- Driving License -->
               <div
-                class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-lg"
+                class="bg-white border border-neutral-200 rounded-xl overflow-hidden shadow-sm"
               >
                 <div class="bg-purple-500 p-6">
                   <div class="flex items-center justify-between">
@@ -438,10 +408,9 @@
                       "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.DRIVING_LICENSE_TYPE"
                         | translate
                     }}</label>
-                    >
                     <select
                       formControlName="deliveryLicenseType"
-                      class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+                      class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
                     >
                       <option
                         *ngFor="let licenseType of deliveryLicenseTypes"
@@ -458,11 +427,10 @@
                       "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.DRIVING_LICENSE_EXPIRY"
                         | translate
                     }}</label>
-                    >
                     <input
                       type="date"
                       formControlName="drivingLicenseExpirationDate"
-                      class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
+                      class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
                     />
                   </div>
                 </div>
@@ -473,7 +441,7 @@
           <!-- Vehicle Information - Full Width -->
           <div class="col-span-12">
             <div
-              class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-lg"
+              class="bg-white border border-neutral-200 rounded-xl overflow-hidden shadow-sm"
             >
               <div class="bg-orange-500 p-6">
                 <div class="flex items-center justify-between">
@@ -549,7 +517,7 @@
                     >
                     <select
                       formControlName="vehicleTypeId"
-                      class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
+                      class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
                     >
                       <option *ngFor="let t of vehicleTypes" [value]="t.id">
                         {{ t.name }}
@@ -563,7 +531,7 @@
                     >
                     <select
                       formControlName="vehicleBrandId"
-                      class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
+                      class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
                     >
                       <option *ngFor="let b of vehicleBrands" [value]="b.id">
                         {{ b.name }}
@@ -577,7 +545,7 @@
                     >
                     <select
                       formControlName="vehicleOwnerTypeId"
-                      class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
+                      class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
                     >
                       <option [value]="1">
                         {{
@@ -619,7 +587,7 @@
                     <input
                       type="date"
                       formControlName="vehicleLicenseExpirationDate"
-                      class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
+                      class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
                     />
                   </div>
 
@@ -631,7 +599,7 @@
                     <input
                       type="date"
                       formControlName="vehicleInsuranceExpirationDate"
-                      class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
+                      class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
                     />
                   </div>
                 </div>
@@ -642,7 +610,7 @@
           <!-- Documents Upload - Full Width -->
           <div class="col-span-12">
             <div
-              class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-lg"
+              class="bg-white border border-neutral-200 rounded-xl overflow-hidden shadow-sm"
             >
               <div class="bg-cyan-500 p-6">
                 <div class="flex items-center justify-between">
@@ -708,7 +676,7 @@
                 >
                   <!-- Personal Image -->
                   <div class="space-y-4">
-                    <h4 class="text-lg font-semibold text-gray-700">
+                    <h4 class="text-lg font-semibold text-neutral-700">
                       {{
                         "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.PERSONAL_IMAGE"
                           | translate
@@ -716,7 +684,7 @@
                     </h4>
                     <div class="relative group">
                       <div
-                        class="aspect-square w-full max-w-xs mx-auto border-2 border-dashed border-gray-300 rounded-2xl bg-gray-50 flex items-center justify-center overflow-hidden hover:border-cyan-400 transition-colors"
+                        class="aspect-square w-full max-w-xs mx-auto border-2 border-dashed border-neutral-300 rounded-xl bg-neutral-50 flex items-center justify-center overflow-hidden hover:border-cyan-400 transition-colors"
                       >
                         <img
                           *ngIf="
@@ -776,7 +744,7 @@
 
                   <!-- Identity Images -->
                   <div class="space-y-4">
-                    <h4 class="text-lg font-semibold text-gray-700">
+                    <h4 class="text-lg font-semibold text-neutral-700">
                       {{
                         "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.IDENTITY_IMAGES"
                           | translate
@@ -786,7 +754,7 @@
                       <!-- Front Identity -->
                       <div>
                         <label
-                          class="block text-sm font-medium text-gray-600 mb-2"
+                          class="block text-sm font-medium text-neutral-600 mb-2"
                         >
                           {{
                             "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.IDENTITY_FRONT_LABEL"
@@ -794,7 +762,7 @@
                           }}</label
                         >
                         <div
-                          class="aspect-video border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 flex items-center justify-center overflow-hidden hover:border-green-400 transition-colors"
+                          class="aspect-video border-2 border-dashed border-neutral-300 rounded-lg bg-neutral-50 flex items-center justify-center overflow-hidden hover:border-emerald-400 transition-colors"
                         >
                           <img
                             *ngIf="
@@ -834,7 +802,7 @@
                         <div class="flex space-x-2 space-x-reverse mt-2">
                           <label
                             for="frontIdentityImage"
-                            class="button flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-center cursor-pointer transition-colors text-sm"
+                            class="button flex-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 px-3 py-2 rounded-lg text-center cursor-pointer transition-colors text-sm"
                           >
                             {{ "COMMON.CHOOSE_IMAGE" | translate }}
                           </label>
@@ -859,7 +827,7 @@
                           }}</label
                         >
                         <div
-                          class="aspect-video border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 flex items-center justify-center overflow-hidden hover:border-green-400 transition-colors"
+                          class="aspect-video border-2 border-dashed border-neutral-300 rounded-lg bg-neutral-50 flex items-center justify-center overflow-hidden hover:border-emerald-400 transition-colors"
                         >
                           <img
                             *ngIf="
@@ -899,7 +867,7 @@
                         <div class="flex space-x-2 space-x-reverse mt-2">
                           <label
                             for="backIdentityImage"
-                            class="button flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-center cursor-pointer transition-colors text-sm"
+                            class="button flex-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 px-3 py-2 rounded-lg text-center cursor-pointer transition-colors text-sm"
                           >
                             {{ "COMMON.CHOOSE_IMAGE" | translate }}
                           </label>
@@ -918,7 +886,7 @@
 
                   <!-- Driving License Images -->
                   <div class="space-y-4">
-                    <h4 class="text-lg font-semibold text-gray-700">
+                    <h4 class="text-lg font-semibold text-neutral-700">
                       {{
                         "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.DRIVING_LICENSE_IMAGES"
                           | translate
@@ -935,7 +903,7 @@
                           }}</label
                         >
                         <div
-                          class="aspect-video border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 flex items-center justify-center overflow-hidden hover:border-purple-400 transition-colors"
+                          class="aspect-video border-2 border-dashed border-neutral-300 rounded-lg bg-neutral-50 flex items-center justify-center overflow-hidden hover:border-purple-400 transition-colors"
                         >
                           <img
                             *ngIf="
@@ -977,7 +945,7 @@
                         <div class="flex space-x-2 space-x-reverse mt-2">
                           <label
                             for="frontDrivingLicenseImage"
-                            class="button flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-center cursor-pointer transition-colors text-sm"
+                            class="button flex-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 px-3 py-2 rounded-lg text-center cursor-pointer transition-colors text-sm"
                           >
                             {{ "COMMON.CHOOSE_IMAGE" | translate }}
                           </label>
@@ -1002,7 +970,7 @@
                           }}</label
                         >
                         <div
-                          class="aspect-video border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 flex items-center justify-center overflow-hidden hover:border-purple-400 transition-colors"
+                          class="aspect-video border-2 border-dashed border-neutral-300 rounded-lg bg-neutral-50 flex items-center justify-center overflow-hidden hover:border-purple-400 transition-colors"
                         >
                           <img
                             *ngIf="
@@ -1044,7 +1012,7 @@
                         <div class="flex space-x-2 space-x-reverse mt-2">
                           <label
                             for="backDrivingLicenseImage"
-                            class="button flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-center cursor-pointer transition-colors text-sm"
+                            class="button flex-1 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 px-3 py-2 rounded-lg text-center cursor-pointer transition-colors text-sm"
                           >
                             {{ "COMMON.CHOOSE_IMAGE" | translate }}
                           </label>
@@ -1083,7 +1051,7 @@
                       }}</label
                     >
                     <div
-                      class="aspect-video border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 flex items-center justify-center overflow-hidden hover:border-orange-400 transition-colors"
+                      class="aspect-video border-2 border-dashed border-neutral-300 rounded-lg bg-neutral-50 flex items-center justify-center overflow-hidden hover:border-orange-400 transition-colors"
                     >
                       <img
                         *ngIf="
@@ -1144,7 +1112,7 @@
                       }}</label
                     >
                     <div
-                      class="aspect-video border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 flex items-center justify-center overflow-hidden hover:border-orange-400 transition-colors"
+                      class="aspect-video border-2 border-dashed border-neutral-300 rounded-lg bg-neutral-50 flex items-center justify-center overflow-hidden hover:border-orange-400 transition-colors"
                     >
                       <img
                         *ngIf="
@@ -1205,7 +1173,7 @@
                       }}</label
                     >
                     <div
-                      class="aspect-video border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 flex items-center justify-center overflow-hidden hover:border-orange-400 transition-colors"
+                      class="aspect-video border-2 border-dashed border-neutral-300 rounded-lg bg-neutral-50 flex items-center justify-center overflow-hidden hover:border-orange-400 transition-colors"
                     >
                       <img
                         *ngIf="
@@ -1268,7 +1236,7 @@
                       }}</label
                     >
                     <div
-                      class="aspect-video border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 flex items-center justify-center overflow-hidden hover:border-orange-400 transition-colors"
+                      class="aspect-video border-2 border-dashed border-neutral-300 rounded-lg bg-neutral-50 flex items-center justify-center overflow-hidden hover:border-orange-400 transition-colors"
                     >
                       <img
                         *ngIf="
@@ -1326,10 +1294,10 @@
           <!-- Action Buttons - Full Width -->
           <div class="col-span-12">
             <div
-              class="bg-white border border-gray-200 rounded-2xl p-6 shadow-lg"
+              class="bg-white border border-neutral-200 rounded-xl p-6 shadow-sm"
             >
               <div class="flex items-center justify-between">
-                <div class="text-gray-600 text-sm">
+                <div class="text-neutral-600 text-sm">
                   <span class="text-red-500">*</span>
                   {{
                     "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.ALL_FIELDS_REQUIRED"
@@ -1341,14 +1309,14 @@
                     type="button"
                     (click)="onCancel()"
                     [disabled]="isSubmitting"
-                    class="px-8 py-3 bg-gray-100 border border-gray-300 rounded-xl text-gray-700 font-medium hover:bg-gray-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    class="px-8 py-3 bg-neutral-100 border border-neutral-300 rounded-lg text-neutral-700 font-medium hover:bg-neutral-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {{ "ADMIN.PAGES.ADD_CAPTAIN.CANCEL" | translate }}
                   </button>
                   <button
                     type="submit"
                     [disabled]="isSubmitting || captainForm.invalid"
-                    class="relative px-8 py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 shadow-lg"
+                    class="relative px-8 py-3 bg-primary-500 hover:bg-primary-600 text-white font-medium rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 shadow-md"
                   >
                     <span *ngIf="!isSubmitting" class="flex items-center">
                       <svg
@@ -1398,4 +1366,3 @@
       </form>
     </div>
   </div>
-</div>

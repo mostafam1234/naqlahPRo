@@ -1,6 +1,7 @@
 using Application.Features.AdminSection.SystemUsers.Dtos;
 using CSharpFunctionalExtensions;
 using Domain.InterFaces;
+using Domain.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -24,7 +25,12 @@ namespace Application.Features.AdminSection.SystemUsers.Queries
 
             public async Task<Result<List<RoleLookupDto>>> Handle(GetAllRolesLookupQuery request, CancellationToken cancellationToken)
             {
+                // Get Customer and DeliveryMan role IDs to exclude
+                var customerRoleId = Domain.Models.Role.Customer.Id; // 3
+                var deliveryManRoleId = Domain.Models.Role.DeliveryMan.Id; // 2
+
                 var roles = await _context.Roles
+                    .Where(x => x.Id != customerRoleId && x.Id != deliveryManRoleId)
                     .Select(x => new RoleLookupDto
                     {
                         Id = x.Id,

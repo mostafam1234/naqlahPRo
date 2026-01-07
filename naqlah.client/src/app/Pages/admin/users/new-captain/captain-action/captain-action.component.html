@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-gray-50 py-6">
+<div class="min-h-screen bg-neutral-50 py-6">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <!-- Header Section -->
     <div class="mb-8">
@@ -6,7 +6,7 @@
         <div class="header-content" [class.rtl]="lang === 'ar'">
           <button
             (click)="goBack()"
-            class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
+            class="inline-flex items-center px-3 py-2 border border-neutral-300 shadow-sm text-sm leading-4 font-medium rounded-lg text-neutral-700 bg-white hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
           >
             <svg
               class="w-4 h-4"
@@ -39,7 +39,7 @@
     <!-- Loading State -->
     <div *ngIf="isLoading" class="flex justify-center items-center py-12">
       <div
-        class="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"
+        class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"
       ></div>
     </div>
 
@@ -47,25 +47,23 @@
     <div *ngIf="deliveryManDetails && !isLoading" class="space-y-6">
       <!-- Captain Header Card -->
       <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-8">
+        <div class="bg-gradient-to-r from-primary-600 to-primary-700 px-6 py-8">
           <div class="flex items-center justify-between">
             <div class="profile-section" [class.rtl]="lang === 'ar'">
               <div class="h-20 w-20 rounded-full bg-white p-2">
                 <img
                   [src]="
-                    deliveryManDetails.personalImagePath ||
-                    './assets/images/user.png'
+                    deliveryManDetails.personalImagePath
                   "
                   [alt]="deliveryManDetails.fullName"
                   class="h-full w-full rounded-full object-cover"
-                  onerror="this.src='./assets/images/user.png'"
                 />
               </div>
               <div class="text-white">
                 <h2 class="text-2xl font-bold">
                   {{ deliveryManDetails.fullName }}
                 </h2>
-                <p class="text-indigo-100">
+                <p class="text-primary-100">
                   {{
                     "ADMIN.PAGES.CAPTAIN_DETAILS.IDENTITY_NUMBER_LABEL"
                       | translate
@@ -250,12 +248,12 @@
         <!-- Personal Information -->
         <div class="lg:col-span-2 space-y-6">
           <!-- Contact Information Card -->
-          <div class="bg-white shadow-md rounded-lg p-6">
+          <div class="bg-white shadow-sm rounded-xl border border-neutral-200 p-6">
             <h3
-              class="text-lg font-semibold text-gray-900 mb-4 flex items-center"
+              class="text-lg font-semibold text-neutral-900 mb-4 flex items-center"
             >
               <svg
-                class="h-5 w-5 text-indigo-500"
+                class="h-5 w-5 text-primary-500"
                 [class.ml-2]="lang === 'ar'"
                 [class.mr-2]="lang === 'en'"
                 fill="none"
@@ -276,37 +274,37 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-3">
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">{{
+                  <label class="block text-sm font-medium text-neutral-700 mb-1">{{
                     "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.FULL_NAME" | translate
                   }}</label>
-                  <p class="text-gray-900 bg-gray-50 p-3 rounded-md">
+                  <p class="text-neutral-900 bg-neutral-50 p-3 rounded-lg">
                     {{ deliveryManDetails.fullName }}
                   </p>
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">{{
+                  <label class="block text-sm font-medium text-neutral-700 mb-1">{{
                     "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.PHONE" | translate
                   }}</label>
-                  <p class="text-gray-900 bg-gray-50 p-3 rounded-md">
+                  <p class="text-neutral-900 bg-neutral-50 p-3 rounded-lg">
                     {{ deliveryManDetails.phoneNumber }}
                   </p>
                 </div>
               </div>
               <div class="space-y-3">
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">{{
+                  <label class="block text-sm font-medium text-neutral-700 mb-1">{{
                     "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.ADDRESS" | translate
                   }}</label>
-                  <p class="text-gray-900 bg-gray-50 p-3 rounded-md">
+                  <p class="text-neutral-900 bg-neutral-50 p-3 rounded-lg">
                     {{ deliveryManDetails.address }}
                   </p>
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">{{
+                  <label class="block text-sm font-medium text-neutral-700 mb-1">{{
                     "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.DELIVERY_TYPE"
                       | translate
                   }}</label>
-                  <p class="text-gray-900 bg-gray-50 p-3 rounded-md">
+                  <p class="text-neutral-900 bg-neutral-50 p-3 rounded-lg">
                     {{ deliveryManDetails.deliveryType }}
                   </p>
                 </div>
@@ -315,9 +313,9 @@
           </div>
 
           <!-- Identity Information Card -->
-          <div class="bg-white shadow-md rounded-lg p-6">
+          <div class="bg-white shadow-sm rounded-xl border border-neutral-200 p-6">
             <h3
-              class="text-lg font-semibold text-gray-900 mb-4 flex items-center"
+              class="text-lg font-semibold text-neutral-900 mb-4 flex items-center"
             >
               <svg
                 class="h-5 w-5 text-blue-500"
@@ -341,46 +339,64 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-3">
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">{{
+                  <label class="block text-sm font-medium text-neutral-700 mb-1">{{
                     "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.IDENTITY_NUMBER"
                       | translate
                   }}</label>
-                  <p class="text-gray-900 bg-gray-50 p-3 rounded-md">
+                  <p class="text-neutral-900 bg-neutral-50 p-3 rounded-lg">
                     {{ deliveryManDetails.identityNumber }}
                   </p>
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">{{
+                  <label class="block text-sm font-medium text-neutral-700 mb-1">{{
                     "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.IDENTITY_EXPIRY"
                       | translate
                   }}</label>
-                  <p class="text-gray-900 bg-gray-50 p-3 rounded-md">
-                    {{ formatDate(deliveryManDetails.identityExpirationDate) }}
-                  </p>
+                  <div class="flex items-center gap-2">
+                    <p class="text-neutral-900 bg-neutral-50 p-3 rounded-lg flex-1">
+                      {{ formatDate(deliveryManDetails.identityExpirationDate) }}
+                    </p>
+                    <span class="inline-flex items-center px-2 py-1 rounded text-xs"
+                      [ngClass]="{
+                        'bg-green-100 text-green-700': isIdentityValid(),
+                        'bg-red-100 text-red-700': !isIdentityValid()
+                      }">
+                      {{ isIdentityValid() ? 'سارية' : 'منتهية' }}
+                    </span>
+                  </div>
                 </div>
               </div>
               <div class="space-y-3">
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">{{
+                  <label class="block text-sm font-medium text-neutral-700 mb-1">{{
                     "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.LICENSE_TYPE"
                       | translate
                   }}</label>
-                  <p class="text-gray-900 bg-gray-50 p-3 rounded-md">
-                    {{ deliveryManDetails.deliveryLicenseType }}
+                  <p class="text-neutral-900 bg-neutral-50 p-3 rounded-lg">
+                    {{ getDeliveryLicenseTypeLabel(deliveryManDetails.deliveryLicenseType) }}
                   </p>
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">{{
+                  <label class="block text-sm font-medium text-neutral-700 mb-1">{{
                     "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.LICENSE_EXPIRY"
                       | translate
                   }}</label>
-                  <p class="text-gray-900 bg-gray-50 p-3 rounded-md">
-                    {{
-                      formatDate(
-                        deliveryManDetails.drivingLicenseExpirationDate
-                      )
-                    }}
-                  </p>
+                  <div class="flex items-center gap-2">
+                    <p class="text-neutral-900 bg-neutral-50 p-3 rounded-lg flex-1">
+                      {{
+                        formatDate(
+                          deliveryManDetails.drivingLicenseExpirationDate
+                        )
+                      }}
+                    </p>
+                    <span class="inline-flex items-center px-2 py-1 rounded text-xs"
+                      [ngClass]="{
+                        'bg-green-100 text-green-700': isLicenseValid(),
+                        'bg-red-100 text-red-700': !isLicenseValid()
+                      }">
+                      {{ isLicenseValid() ? 'سارية' : 'منتهية' }}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -416,11 +432,11 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div class="space-y-3">
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">{{
+                  <label class="block text-sm font-medium text-neutral-700 mb-1">{{
                     "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.PLATE_NUMBER"
                       | translate
                   }}</label>
-                  <p class="text-gray-900 bg-gray-50 p-3 rounded-md">
+                  <p class="text-neutral-900 bg-neutral-50 p-3 rounded-lg">
                     {{
                       deliveryManDetails.vehiclePlateNumber ||
                         ("ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.NOT_SPECIFIED"
@@ -429,11 +445,11 @@
                   </p>
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">{{
+                  <label class="block text-sm font-medium text-neutral-700 mb-1">{{
                     "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.VEHICLE_TYPE"
                       | translate
                   }}</label>
-                  <p class="text-gray-900 bg-gray-50 p-3 rounded-md">
+                  <p class="text-neutral-900 bg-neutral-50 p-3 rounded-lg">
                     {{
                       deliveryManDetails.vehicleType ||
                         ("ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.NOT_SPECIFIED"
@@ -444,11 +460,11 @@
               </div>
               <div class="space-y-3">
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">{{
+                  <label class="block text-sm font-medium text-neutral-700 mb-1">{{
                     "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.VEHICLE_MODEL"
                       | translate
                   }}</label>
-                  <p class="text-gray-900 bg-gray-50 p-3 rounded-md">
+                  <p class="text-neutral-900 bg-neutral-50 p-3 rounded-lg">
                     {{
                       deliveryManDetails.vehicleModel ||
                         ("ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.NOT_SPECIFIED"
@@ -457,11 +473,11 @@
                   </p>
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">{{
+                  <label class="block text-sm font-medium text-neutral-700 mb-1">{{
                     "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.VEHICLE_MODEL"
                       | translate
                   }}</label>
-                  <p class="text-gray-900 bg-gray-50 p-3 rounded-md">
+                  <p class="text-neutral-900 bg-neutral-50 p-3 rounded-lg">
                     {{
                       deliveryManDetails.vehicleModel ||
                         ("ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.NOT_SPECIFIED"
@@ -470,11 +486,11 @@
                   </p>
                 </div>
                 <div *ngIf="deliveryManDetails.vehicleColor">
-                  <label class="block text-sm font-medium text-gray-700 mb-1">{{
+                  <label class="block text-sm font-medium text-neutral-700 mb-1">{{
                     "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.VEHICLE_COLOR"
                       | translate
                   }}</label>
-                  <p class="text-gray-900 bg-gray-50 p-3 rounded-md">
+                  <p class="text-neutral-900 bg-neutral-50 p-3 rounded-lg">
                     {{ deliveryManDetails.vehicleColor }}
                   </p>
                 </div>
@@ -510,12 +526,12 @@
             <div class="space-y-4">
               <!-- Personal Image -->
               <div class="text-center">
-                <label class="block text-sm font-medium text-gray-700 mb-2">{{
+                <label class="block text-sm font-medium text-neutral-700 mb-2">{{
                   "ADMIN.PAGES.CAPTAIN_DETAILS.DOCUMENTS_LABELS.PERSONAL_IMAGE"
                     | translate
                 }}</label>
                 <div
-                  class="mx-auto h-32 w-32 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center"
+                      class="mx-auto h-32 w-32 rounded-lg overflow-hidden bg-neutral-100 flex items-center justify-center"
                 >
                   <img
                     *ngIf="deliveryManDetails.personalImagePath; else noImage"
@@ -525,8 +541,8 @@
                     onerror="this.style.display='none'"
                   />
                   <ng-template #noImage>
-                    <svg
-                      class="h-12 w-12 text-gray-400"
+                      <svg
+                        class="h-12 w-12 text-neutral-400"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -544,7 +560,7 @@
 
               <!-- Identity Images -->
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">{{
+                <label class="block text-sm font-medium text-neutral-700 mb-2">{{
                   "ADMIN.PAGES.CAPTAIN_DETAILS.DOCUMENTS_LABELS.IDENTITY_IMAGES"
                     | translate
                 }}</label>
@@ -557,7 +573,7 @@
                       }}
                     </p>
                     <div
-                      class="h-24 w-full rounded bg-gray-100 flex items-center justify-center"
+                      class="h-24 w-full rounded bg-neutral-100 flex items-center justify-center"
                     >
                       <img
                         *ngIf="
@@ -571,7 +587,7 @@
                       />
                       <ng-template #noDoc>
                         <svg
-                          class="h-8 w-8 text-gray-400"
+                          class="h-8 w-8 text-neutral-400"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -594,7 +610,7 @@
                       }}
                     </p>
                     <div
-                      class="h-24 w-full rounded bg-gray-100 flex items-center justify-center"
+                      class="h-24 w-full rounded bg-neutral-100 flex items-center justify-center"
                     >
                       <img
                         *ngIf="
@@ -608,7 +624,7 @@
                       />
                       <ng-template #noDoc2>
                         <svg
-                          class="h-8 w-8 text-gray-400"
+                          class="h-8 w-8 text-neutral-400"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -628,7 +644,7 @@
 
               <!-- License Images -->
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">{{
+                <label class="block text-sm font-medium text-neutral-700 mb-2">{{
                   "ADMIN.PAGES.CAPTAIN_DETAILS.DOCUMENTS_LABELS.LICENSE_IMAGES"
                     | translate
                 }}</label>
@@ -641,7 +657,7 @@
                       }}
                     </p>
                     <div
-                      class="h-24 w-full rounded bg-gray-100 flex items-center justify-center"
+                      class="h-24 w-full rounded bg-neutral-100 flex items-center justify-center"
                     >
                       <img
                         *ngIf="
@@ -655,7 +671,7 @@
                       />
                       <ng-template #noLicense>
                         <svg
-                          class="h-8 w-8 text-gray-400"
+                          class="h-8 w-8 text-neutral-400"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -678,7 +694,7 @@
                       }}
                     </p>
                     <div
-                      class="h-24 w-full rounded bg-gray-100 flex items-center justify-center"
+                      class="h-24 w-full rounded bg-neutral-100 flex items-center justify-center"
                     >
                       <img
                         *ngIf="
@@ -692,7 +708,197 @@
                       />
                       <ng-template #noLicense2>
                         <svg
-                          class="h-8 w-8 text-gray-400"
+                          class="h-8 w-8 text-neutral-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                          ></path>
+                        </svg>
+                      </ng-template>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Vehicle Images (if available) -->
+              <div *ngIf="deliveryManDetails.vehicleId" class="border-t pt-4">
+                <label class="block text-sm font-medium text-neutral-700 mb-2">{{
+                  "ADMIN.PAGES.CAPTAIN_DETAILS.DOCUMENTS_LABELS.VEHICLE_IMAGES"
+                    | translate
+                }}</label>
+                <div class="grid grid-cols-2 gap-2">
+                  <!-- Vehicle Front -->
+                  <div class="text-center">
+                    <p class="text-xs text-gray-500 mb-1">أمامي</p>
+                    <div
+                      class="h-24 w-full rounded bg-neutral-100 flex items-center justify-center"
+                    >
+                      <img
+                        *ngIf="deliveryManDetails.vehicleFrontImagePath; else noVehicleFront"
+                        [src]="deliveryManDetails.vehicleFrontImagePath"
+                        alt="المركبة - أمامي"
+                        class="h-full w-full object-cover rounded"
+                        onerror="this.style.display='none'"
+                      />
+                      <ng-template #noVehicleFront>
+                        <svg
+                          class="h-8 w-8 text-neutral-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                          ></path>
+                        </svg>
+                      </ng-template>
+                    </div>
+                  </div>
+                  <!-- Vehicle Side -->
+                  <div class="text-center">
+                    <p class="text-xs text-gray-500 mb-1">جانبي</p>
+                    <div
+                      class="h-24 w-full rounded bg-neutral-100 flex items-center justify-center"
+                    >
+                      <img
+                        *ngIf="deliveryManDetails.vehicleSideImagePath; else noVehicleSide"
+                        [src]="deliveryManDetails.vehicleSideImagePath"
+                        alt="المركبة - جانبي"
+                        class="h-full w-full object-cover rounded"
+                        onerror="this.style.display='none'"
+                      />
+                      <ng-template #noVehicleSide>
+                        <svg
+                          class="h-8 w-8 text-neutral-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                          ></path>
+                        </svg>
+                      </ng-template>
+                    </div>
+                  </div>
+                  <!-- Vehicle License Front -->
+                  <div class="text-center">
+                    <p class="text-xs text-gray-500 mb-1">رخصة أمامية</p>
+                    <div
+                      class="h-24 w-full rounded bg-neutral-100 flex items-center justify-center"
+                    >
+                      <img
+                        *ngIf="deliveryManDetails.vehicleFrontLicenseImagePath; else noVehicleLicenseFront"
+                        [src]="deliveryManDetails.vehicleFrontLicenseImagePath"
+                        alt="رخصة المركبة - أمامي"
+                        class="h-full w-full object-cover rounded"
+                        onerror="this.style.display='none'"
+                      />
+                      <ng-template #noVehicleLicenseFront>
+                        <svg
+                          class="h-8 w-8 text-neutral-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                          ></path>
+                        </svg>
+                      </ng-template>
+                    </div>
+                  </div>
+                  <!-- Vehicle License Back -->
+                  <div class="text-center">
+                    <p class="text-xs text-gray-500 mb-1">رخصة خلفية</p>
+                    <div
+                      class="h-24 w-full rounded bg-neutral-100 flex items-center justify-center"
+                    >
+                      <img
+                        *ngIf="deliveryManDetails.vehicleBackLicenseImagePath; else noVehicleLicenseBack"
+                        [src]="deliveryManDetails.vehicleBackLicenseImagePath"
+                        alt="رخصة المركبة - خلفي"
+                        class="h-full w-full object-cover rounded"
+                        onerror="this.style.display='none'"
+                      />
+                      <ng-template #noVehicleLicenseBack>
+                        <svg
+                          class="h-8 w-8 text-neutral-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                          ></path>
+                        </svg>
+                      </ng-template>
+                    </div>
+                  </div>
+                  <!-- Vehicle Insurance Front -->
+                  <div class="text-center">
+                    <p class="text-xs text-gray-500 mb-1">تأمين أمامي</p>
+                    <div
+                      class="h-24 w-full rounded bg-neutral-100 flex items-center justify-center"
+                    >
+                      <img
+                        *ngIf="deliveryManDetails.vehicleFrontInsuranceImagePath; else noVehicleInsuranceFront"
+                        [src]="deliveryManDetails.vehicleFrontInsuranceImagePath"
+                        alt="تأمين المركبة - أمامي"
+                        class="h-full w-full object-cover rounded"
+                        onerror="this.style.display='none'"
+                      />
+                      <ng-template #noVehicleInsuranceFront>
+                        <svg
+                          class="h-8 w-8 text-neutral-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                          ></path>
+                        </svg>
+                      </ng-template>
+                    </div>
+                  </div>
+                  <!-- Vehicle Insurance Back -->
+                  <div class="text-center">
+                    <p class="text-xs text-gray-500 mb-1">تأمين خلفي</p>
+                    <div
+                      class="h-24 w-full rounded bg-neutral-100 flex items-center justify-center"
+                    >
+                      <img
+                        *ngIf="deliveryManDetails.vehicleBackInsuranceImagePath; else noVehicleInsuranceBack"
+                        [src]="deliveryManDetails.vehicleBackInsuranceImagePath"
+                        alt="تأمين المركبة - خلفي"
+                        class="h-full w-full object-cover rounded"
+                        onerror="this.style.display='none'"
+                      />
+                      <ng-template #noVehicleInsuranceBack>
+                        <svg
+                          class="h-8 w-8 text-neutral-400"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -720,7 +926,7 @@
                 </h4>
                 <div class="space-y-2 text-sm">
                   <div class="flex justify-between">
-                    <span class="text-gray-500">{{
+                    <span class="text-neutral-500">{{
                       "ADMIN.PAGES.CAPTAIN_DETAILS.DOCUMENTS_LABELS.ACTIVE_STATUS"
                         | translate
                     }}</span>
@@ -742,7 +948,7 @@
                     </span>
                   </div>
                   <div class="flex justify-between">
-                    <span class="text-gray-500">{{
+                    <span class="text-neutral-500">{{
                       "ADMIN.PAGES.CAPTAIN_DETAILS.DOCUMENTS_LABELS.USER_ID"
                         | translate
                     }}</span>
@@ -754,7 +960,7 @@
                     *ngIf="deliveryManDetails.vehicleId"
                     class="flex justify-between"
                   >
-                    <span class="text-gray-500">{{
+                    <span class="text-neutral-500">{{
                       "ADMIN.PAGES.CAPTAIN_DETAILS.DOCUMENTS_LABELS.VEHICLE_ID"
                         | translate
                     }}</span>

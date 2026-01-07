@@ -93,13 +93,22 @@ namespace NAQLAH.Server
             var app = builder.Build();
             app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
 
-            // Migration and seeding temporarily disabled for NSwag to work
-
-            using (var scope = app.Services.CreateScope())
+            // Migration and seeding - skip during NSwag generation
+            try
             {
-                
-                scope.ServiceProvider.GetRequiredService<NaqlahContext>().Database.Migrate();
-                await SeedDefaultUsers(scope);
+                using (var scope = app.Services.CreateScope())
+                {
+                    var context = scope.ServiceProvider.GetRequiredService<NaqlahContext>();
+                    if (context.Database.CanConnect())
+                    {
+                        context.Database.Migrate();
+                        await SeedDefaultUsers(scope);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // Ignore migration errors during NSwag generation or if database is not available
             }
 
             async Task SeedDefaultUsers(IServiceScope scope)

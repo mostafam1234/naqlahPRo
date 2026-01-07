@@ -97,15 +97,37 @@ namespace Application.Features.AdminSection.SystemUsers.Commands
                     return Result.Failure<int>("الدور المحدد غير موجود");
                 }
 
-                // Assign role
+                // Create UserRole record explicitly and add to user's collection
+                var userRole = Domain.Models.UserRole.Instance(command.RoleId);
+                userRole.UserId = user.Id;
+                user.AspNetUserRoles.Add(userRole);
+
+                // Save changes to persist the UserRole record
+                var saveResult = await _context.SaveChangesAsyncWithResult();
+                if (saveResult.IsFailure)
+                {
+                    await _userManager.DeleteAsync(user);
+                    return Result.Failure<int>($"فشل في حفظ سجل الدور: {saveResult.Error}");
+                }
+
+                // Assign role using Identity for consistency (this should detect existing record)
                 var roleResult = await _userManager.AddToRoleAsync(user, role.Name!);
                 if (!roleResult.Succeeded)
                 {
-                    // If role assignment fails, delete the user
-                    await _userManager.DeleteAsync(user);
-                    var errors = roleResult.Errors.ToList();
-                    var errorMessage = string.Join(", ", errors.Select(e => e.Description));
-                    return Result.Failure<int>($"فشل في تعيين الدور: {errorMessage}");
+                    // Check if the error is due to role already existing (which is fine)
+                    var isDuplicateError = roleResult.Errors.Any(e => 
+                        e.Code == "DuplicateRole" || 
+                        e.Description.Contains("already", StringComparison.OrdinalIgnoreCase));
+                    
+                    if (!isDuplicateError)
+                    {
+                        // If it's a different error, clean up and return failure
+                        await _userManager.DeleteAsync(user);
+                        var errors = roleResult.Errors.ToList();
+                        var errorMessage = string.Join(", ", errors.Select(e => e.Description));
+                        return Result.Failure<int>($"فشل في تعيين الدور: {errorMessage}");
+                    }
+                    // If it's a duplicate error, that's fine - the UserRole record already exists
                 }
 
                 // Store FullName as claim

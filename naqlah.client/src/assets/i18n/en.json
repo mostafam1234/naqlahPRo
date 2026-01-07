@@ -13,7 +13,11 @@
       "REQUESTS": "Requests",
       "CAPTAINREQUESTS": "Control Captain Requests",
       "MESSAGES": "Messages",
-      "TECH_SUPPORT": "Technical Support",
+      "TECH_SUPPORT": {
+        "LABEL": "Technical Support",
+        "COMPLAINS": "Complains",
+        "SUGGESTIONS": "Suggestions"
+      },
       "NOTIFICATIONS": "Notifications",
       "CATEGORY_CONTROL": "Category Control",
       "MAIN_CATEGORIES": "Main Categories",
@@ -246,6 +250,8 @@
         "NO_REQUESTS": "No Captain Requests",
         "NO_REQUESTS_DESC": "No requests found in this section",
         "TABLE": {
+          "TITLE": "Captain Requests Table",
+          "CAPTAIN": "Captains",
           "NUMBER": "#",
           "IMAGE": "Image",
           "CAPTAIN_NAME": "Captain Name",
@@ -389,6 +395,8 @@
       "ADD_CAPTAIN_FIELDS": {
         "PERSONAL_INFO_TITLE": "Personal Information",
         "PERSONAL_INFO_SUBTITLE": "Captain basic information",
+        "EMAIL": "Email",
+        "PASSWORD": "Password",
         "IDENTITY_INFO_TITLE": "Identity Information",
         "IDENTITY_INFO_SUBTITLE": "Personal identity data",
         "DRIVING_LICENSE_TITLE": "Driving License",
@@ -467,6 +475,42 @@
         "EDIT_MODAL": {
           "TITLE": "Edit Assistant Work"
         }
+      },
+      "ORDER_PACKAGES": {
+        "TITLE": "Order Packages Management",
+        "SUBTITLE": "Manage order package types and weight ranges",
+        "ADD_TITLE": "Add Order Package",
+        "EDIT_TITLE": "Edit Order Package",
+        "TABLE_HEADERS": {
+          "ARABIC_DESCRIPTION": "Arabic Description",
+          "ENGLISH_DESCRIPTION": "English Description",
+          "MIN_WEIGHT": "Min Weight (Kg)",
+          "MAX_WEIGHT": "Max Weight (Kg)",
+          "ACTIONS": "Actions"
+        },
+        "FIELDS": {
+          "ARABIC_DESCRIPTION": "Arabic Description",
+          "ARABIC_DESCRIPTION_PLACEHOLDER": "Enter Arabic description",
+          "ENGLISH_DESCRIPTION": "English Description",
+          "ENGLISH_DESCRIPTION_PLACEHOLDER": "Enter English description",
+          "MIN_WEIGHT": "Minimum Weight (Kg)",
+          "MIN_WEIGHT_PLACEHOLDER": "Enter minimum weight",
+          "MAX_WEIGHT": "Maximum Weight (Kg)",
+          "MAX_WEIGHT_PLACEHOLDER": "Enter maximum weight"
+        },
+        "KG": "Kg",
+        "NO_DATA": "No Order Packages",
+        "NO_DATA_DESC": "No order packages found. Click Add to create a new one."
+      },
+      "TECH_SUPPORT": {
+        "COMPLAINS": {
+          "TITLE": "Complains Management",
+          "SUBTITLE": "View and manage customer complains"
+        },
+        "SUGGESTIONS": {
+          "TITLE": "Suggestions Management",
+          "SUBTITLE": "View and manage customer suggestions"
+        }
       }
     },
     "PAGESHEADER": {
@@ -518,7 +562,9 @@
     "SHOWING": "Showing",
     "TO": "to",
     "OF": "of",
-    "RESULTS": "results"
+    "RESULTS": "results",
+    "PREVIOUS": "Previous",
+    "NEXT": "Next"
   },
   "VALIDATION": {
     "REQUIRED": "This field is required"

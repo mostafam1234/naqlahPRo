@@ -63,6 +63,8 @@ namespace Infrastructure
         public DbSet<Neighborhood> Neighborhoods { get; set; }
         public DbSet<WalletTransctions> WalletTransctions { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Complain> Complains { get; set; }
+        public DbSet<Suggestion> Suggestions { get; set; }
 
 
         public async Task<Result> SaveChangesAsyncWithResult()
