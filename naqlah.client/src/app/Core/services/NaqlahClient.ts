@@ -5104,6 +5104,69 @@ export class DeliveryManAdminClient {
         return _observableOf(null as any);
     }
 
+    updateDeliveryMan(deliveryManId: number, deliveryManDto: AddDeliveryManDto): Observable<number> {
+        let url_ = this.baseUrl + "/api/DeliveryManAdmin/UpdateDeliveryMan/{deliveryManId}";
+        if (deliveryManId === undefined || deliveryManId === null)
+            throw new Error("The parameter 'deliveryManId' must be defined.");
+        url_ = url_.replace("{deliveryManId}", encodeURIComponent("" + deliveryManId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(deliveryManDto);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdateDeliveryMan(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdateDeliveryMan(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<number>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<number>;
+        }));
+    }
+
+    protected processUpdateDeliveryMan(response: HttpResponseBase): Observable<number> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
     getAllDeliveryMen(skip?: number | undefined, take?: number | undefined, searchTerm?: string | null | undefined): Observable<PagedResultOfGetAllDeliveryMenDto> {
         let url_ = this.baseUrl + "/api/DeliveryManAdmin/GetAllDeliveryMen?";
         if (skip === null)
@@ -11834,11 +11897,14 @@ export class GetDeliveryManRequestDetailsDto {
     androidDevice!: string;
     iosDevice!: string;
     userId!: number;
+    email!: string;
     vehicleId!: number | null;
     vehiclePlateNumber!: string;
     vehicleType!: string;
+    vehicleTypeId!: number | null;
     vehicleColor!: string;
     vehicleModel!: string;
+    vehicleBrandId!: number | null;
     vehicleFrontImagePath!: string;
     vehicleSideImagePath!: string;
     vehicleFrontLicenseImagePath!: string;
@@ -11868,11 +11934,14 @@ export class GetDeliveryManRequestDetailsDto {
             this.androidDevice = _data["androidDevice"] !== undefined ? _data["androidDevice"] : <any>null;
             this.iosDevice = _data["iosDevice"] !== undefined ? _data["iosDevice"] : <any>null;
             this.userId = _data["userId"] !== undefined ? _data["userId"] : <any>null;
+            this.email = _data["email"] !== undefined ? _data["email"] : <any>null;
             this.vehicleId = _data["vehicleId"] !== undefined ? _data["vehicleId"] : <any>null;
             this.vehiclePlateNumber = _data["vehiclePlateNumber"] !== undefined ? _data["vehiclePlateNumber"] : <any>null;
             this.vehicleType = _data["vehicleType"] !== undefined ? _data["vehicleType"] : <any>null;
+            this.vehicleTypeId = _data["vehicleTypeId"] !== undefined ? _data["vehicleTypeId"] : <any>null;
             this.vehicleColor = _data["vehicleColor"] !== undefined ? _data["vehicleColor"] : <any>null;
             this.vehicleModel = _data["vehicleModel"] !== undefined ? _data["vehicleModel"] : <any>null;
+            this.vehicleBrandId = _data["vehicleBrandId"] !== undefined ? _data["vehicleBrandId"] : <any>null;
             this.vehicleFrontImagePath = _data["vehicleFrontImagePath"] !== undefined ? _data["vehicleFrontImagePath"] : <any>null;
             this.vehicleSideImagePath = _data["vehicleSideImagePath"] !== undefined ? _data["vehicleSideImagePath"] : <any>null;
             this.vehicleFrontLicenseImagePath = _data["vehicleFrontLicenseImagePath"] !== undefined ? _data["vehicleFrontLicenseImagePath"] : <any>null;
@@ -11911,11 +11980,14 @@ export class GetDeliveryManRequestDetailsDto {
         data["androidDevice"] = this.androidDevice !== undefined ? this.androidDevice : <any>null;
         data["iosDevice"] = this.iosDevice !== undefined ? this.iosDevice : <any>null;
         data["userId"] = this.userId !== undefined ? this.userId : <any>null;
+        data["email"] = this.email !== undefined ? this.email : <any>null;
         data["vehicleId"] = this.vehicleId !== undefined ? this.vehicleId : <any>null;
         data["vehiclePlateNumber"] = this.vehiclePlateNumber !== undefined ? this.vehiclePlateNumber : <any>null;
         data["vehicleType"] = this.vehicleType !== undefined ? this.vehicleType : <any>null;
+        data["vehicleTypeId"] = this.vehicleTypeId !== undefined ? this.vehicleTypeId : <any>null;
         data["vehicleColor"] = this.vehicleColor !== undefined ? this.vehicleColor : <any>null;
         data["vehicleModel"] = this.vehicleModel !== undefined ? this.vehicleModel : <any>null;
+        data["vehicleBrandId"] = this.vehicleBrandId !== undefined ? this.vehicleBrandId : <any>null;
         data["vehicleFrontImagePath"] = this.vehicleFrontImagePath !== undefined ? this.vehicleFrontImagePath : <any>null;
         data["vehicleSideImagePath"] = this.vehicleSideImagePath !== undefined ? this.vehicleSideImagePath : <any>null;
         data["vehicleFrontLicenseImagePath"] = this.vehicleFrontLicenseImagePath !== undefined ? this.vehicleFrontLicenseImagePath : <any>null;
@@ -12479,12 +12551,14 @@ export class MainCategoryAdminDto {
     id!: number;
     arabicName!: string;
     englishName!: string;
+    imagePath!: string;
 
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
             this.arabicName = _data["arabicName"] !== undefined ? _data["arabicName"] : <any>null;
             this.englishName = _data["englishName"] !== undefined ? _data["englishName"] : <any>null;
+            this.imagePath = _data["imagePath"] !== undefined ? _data["imagePath"] : <any>null;
         }
     }
 
@@ -12500,6 +12574,7 @@ export class MainCategoryAdminDto {
         data["id"] = this.id !== undefined ? this.id : <any>null;
         data["arabicName"] = this.arabicName !== undefined ? this.arabicName : <any>null;
         data["englishName"] = this.englishName !== undefined ? this.englishName : <any>null;
+        data["imagePath"] = this.imagePath !== undefined ? this.imagePath : <any>null;
         return data;
     }
 }
@@ -12533,11 +12608,13 @@ export class MainCategoryAdminLookupDto {
 export class AddMainAdminCategory {
     arabicName!: string;
     englishName!: string;
+    imageBase64!: string;
 
     init(_data?: any) {
         if (_data) {
             this.arabicName = _data["arabicName"] !== undefined ? _data["arabicName"] : <any>null;
             this.englishName = _data["englishName"] !== undefined ? _data["englishName"] : <any>null;
+            this.imageBase64 = _data["imageBase64"] !== undefined ? _data["imageBase64"] : <any>null;
         }
     }
 
@@ -12552,6 +12629,7 @@ export class AddMainAdminCategory {
         data = typeof data === 'object' ? data : {};
         data["arabicName"] = this.arabicName !== undefined ? this.arabicName : <any>null;
         data["englishName"] = this.englishName !== undefined ? this.englishName : <any>null;
+        data["imageBase64"] = this.imageBase64 !== undefined ? this.imageBase64 : <any>null;
         return data;
     }
 }
@@ -12560,12 +12638,14 @@ export class UpdateMainAdminCategory {
     id!: number;
     arabicName!: string;
     englishName!: string;
+    imageBase64!: string | null;
 
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
             this.arabicName = _data["arabicName"] !== undefined ? _data["arabicName"] : <any>null;
             this.englishName = _data["englishName"] !== undefined ? _data["englishName"] : <any>null;
+            this.imageBase64 = _data["imageBase64"] !== undefined ? _data["imageBase64"] : <any>null;
         }
     }
 
@@ -12581,6 +12661,7 @@ export class UpdateMainAdminCategory {
         data["id"] = this.id !== undefined ? this.id : <any>null;
         data["arabicName"] = this.arabicName !== undefined ? this.arabicName : <any>null;
         data["englishName"] = this.englishName !== undefined ? this.englishName : <any>null;
+        data["imageBase64"] = this.imageBase64 !== undefined ? this.imageBase64 : <any>null;
         return data;
     }
 }

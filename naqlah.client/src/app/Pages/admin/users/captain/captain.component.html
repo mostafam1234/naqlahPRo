@@ -131,11 +131,23 @@
         <div class="bg-gradient-to-r from-primary-50 to-primary-100 px-4 py-2 border-b border-neutral-200">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-4">
-              <img
-                [src]="captain.personalImagePath"
-                alt="avatar"
-                class="w-12 h-12 rounded-lg object-cover border-2 border-white shadow-sm"
-              />
+              <div class="w-12 h-12 rounded-lg border-2 border-white shadow-sm bg-neutral-100 flex items-center justify-center overflow-hidden">
+                <img
+                  *ngIf="captain.personalImagePath; else noCardImage"
+                  [src]="captain.personalImagePath"
+                  alt="avatar"
+                  class="w-full h-full object-cover"
+                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"
+                />
+                <ng-template #noCardImage>
+                  <svg class="w-8 h-8 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </ng-template>
+                <svg class="w-8 h-8 text-neutral-400 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </div>
               <div>
                 <h3 class="font-semibold text-neutral-900 text-lg">{{ captain.fullName }}</h3>
                 <p class="text-xs text-neutral-600 mt-0.5">{{ captain.deliveryType }}</p>
@@ -247,11 +259,23 @@
                 <span class="text-sm font-medium text-neutral-900">{{ getRowNumber(i) }}</span>
               </td>
               <td class="px-4 py-2 whitespace-nowrap">
-                <img
-                  [src]="captain.personalImagePath"
-                  alt="avatar"
-                  class="w-10 h-10 rounded-lg object-cover border border-neutral-200"
-                />
+                <div class="w-10 h-10 rounded-lg border border-neutral-200 bg-neutral-100 flex items-center justify-center overflow-hidden">
+                  <img
+                    *ngIf="captain.personalImagePath; else noTableImage"
+                    [src]="captain.personalImagePath"
+                    alt="avatar"
+                    class="w-full h-full object-cover"
+                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'"
+                  />
+                  <ng-template #noTableImage>
+                    <svg class="w-6 h-6 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                  </ng-template>
+                  <svg class="w-6 h-6 text-neutral-400 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
               </td>
               <td class="px-4 py-2 whitespace-nowrap">
                 <div class="flex items-center gap-3">

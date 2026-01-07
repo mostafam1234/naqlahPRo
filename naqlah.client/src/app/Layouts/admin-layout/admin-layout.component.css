@@ -153,34 +153,28 @@
 /* Medium screens (tablet) - 768px and up */
 @media (min-width: 768px) {
   .G-sub_container {
-    padding: 32px 32px 10px 32px;
+    padding: 30px 30px 10px 30px;
   }
 }
 
 /* Large screens - 992px and up */
 @media (min-width: 992px) {
   .G-sub_container {
-    padding: 40px 40px 10px 40px;
+    padding: 30px 30px 10px 30px;
   }
 }
 
 /* XLarge screens - 1280px and up */
 @media (min-width: 1280px) {
   .G-sub_container {
-    padding: 48px 48px 10px 48px;
+    padding: 35px 35px 10px 35px;
   }
 }
 
-/* 2XLarge screens - 1536px and up */
-@media (min-width: 1536px) {
-  .G-sub_container {
-    padding: 56px 56px 10px 56px;
-  }
-}
 
 .loading-spinner {
   border: 4px solid #f3f3f3;
-  border-top: 4px solid #3498db;
+  border-top: 4px solid #14b8a6;
   border-radius: 50%;
   width: 50px;
   height: 50px;

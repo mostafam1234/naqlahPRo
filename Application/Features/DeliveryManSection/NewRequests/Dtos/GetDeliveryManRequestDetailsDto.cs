@@ -35,13 +35,16 @@ namespace Application.Features.DeliveryManSection.NewRequests.Dtos
         
         // بيانات المستخدم المرتبط
         public int UserId { get; set; }
+        public string Email { get; set; }
         
         // بيانات المركبة (إذا وجدت)
         public int? VehicleId { get; set; }
         public string VehiclePlateNumber { get; set; }
         public string VehicleType { get; set; }
+        public int? VehicleTypeId { get; set; }
         public string VehicleColor { get; set; }
         public string VehicleModel { get; set; }
+        public int? VehicleBrandId { get; set; }
         
         // صور المركبة
         public string VehicleFrontImagePath { get; set; }

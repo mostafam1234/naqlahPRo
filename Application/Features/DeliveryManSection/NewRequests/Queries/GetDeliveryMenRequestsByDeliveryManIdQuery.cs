@@ -32,6 +32,7 @@ namespace Application.Features.DeliveryManSection.NewRequests.Queries
                         .ThenInclude(v => v.VehicleType)
                     .Include(x => x.Vehicle)
                         .ThenInclude(v => v.VehicleBrand)
+                    .Include(x => x.User)
                     .Where(x => x.Id == request.DeliveryManId)
                     .Select(x => new GetDeliveryManRequestDetailsDto
                     {
@@ -65,10 +66,13 @@ namespace Application.Features.DeliveryManSection.NewRequests.Queries
                         AndroidDevice = x.AndriodDevice,
                         IosDevice = x.IosDevice,
                         UserId = x.UserId,
+                        Email = x.User != null ? x.User.Email ?? string.Empty : string.Empty,
                         VehicleId = x.VehicleId,
                         VehiclePlateNumber = x.Vehicle != null ? x.Vehicle.LicensePlateNumber : null,
                         VehicleType = x.Vehicle != null && x.Vehicle.VehicleType != null ? x.Vehicle.VehicleType.ArabicName : null,
+                        VehicleTypeId = x.Vehicle != null && x.Vehicle.VehicleType != null ? (int?)x.Vehicle.VehicleType.Id : null,
                         VehicleModel = x.Vehicle != null && x.Vehicle.VehicleBrand != null ? x.Vehicle.VehicleBrand.ArabicName : null,
+                        VehicleBrandId = x.Vehicle != null && x.Vehicle.VehicleBrand != null ? (int?)x.Vehicle.VehicleBrand.Id : null,
                         VehicleFrontImagePath = x.Vehicle != null && !string.IsNullOrEmpty(x.Vehicle.FrontImagePath) 
                             ? $"{baseUrl}/ImageBank/{DeliveryFolderPrefix}_{x.Id}/{x.Vehicle.FrontImagePath}" 
                             : null,

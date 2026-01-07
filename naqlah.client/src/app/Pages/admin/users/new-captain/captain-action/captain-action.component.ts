@@ -4,7 +4,8 @@ import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { DeliveryManAdminClient, GetDeliveryManRequestDetailsDto } from '../../../../../Core/services/NaqlahClient';
 import { LanguageService } from '../../../../../Core/services/language.service';
-import { ConfirmationDialogService } from '../../../../../shared/services/confirmation-dialog.service';
+import { ConfirmationModalComponent } from '../../../../../shared/components/confirmation-modal/confirmation-modal.component';
+import { ToasterService } from '../../../../../Core/services/toaster.service';
 import { SubSink } from 'subsink';
 
 // Enum للحالات
@@ -19,7 +20,7 @@ enum DeliveryRequesState {
 @Component({
   selector: 'app-captain-action',
   standalone: true,
-  imports: [CommonModule, TranslateModule],
+  imports: [CommonModule, TranslateModule, ConfirmationModalComponent],
   templateUrl: './captain-action.component.html',
   styleUrl: './captain-action.component.css'
 })
@@ -37,6 +38,12 @@ export class CaptainActionComponent implements OnInit, OnDestroy {
     block: false
   };
 
+  // Confirmation Modal Properties
+  showConfirmModal = false;
+  confirmationTitle = '';
+  confirmationMessage = '';
+  private pendingAction?: () => void;
+
   private sub = new SubSink();
 
   constructor(
@@ -44,7 +51,7 @@ export class CaptainActionComponent implements OnInit, OnDestroy {
     private router: Router,
     private deliveryManClient: DeliveryManAdminClient,
     private languageService: LanguageService,
-    private confirmationService: ConfirmationDialogService
+    private toasterService: ToasterService
   ) {}
 
   ngOnInit() {
@@ -68,7 +75,26 @@ export class CaptainActionComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error('خطأ في جلب تفاصيل الكابتن:', error);
-          this.confirmationService.showError('حدث خطأ في جلب البيانات');
+          
+          // Extract error message from backend response
+          let errorMessage = 'حدث خطأ في جلب البيانات';
+          if (error?.error) {
+            if (error.error.detail) {
+              errorMessage = error.error.detail;
+            } else if (error.error.errorMessage) {
+              errorMessage = error.error.errorMessage;
+            } else if (error.error.title) {
+              errorMessage = error.error.title;
+            } else if (error.error.message) {
+              errorMessage = error.error.message;
+            } else if (typeof error.error === 'string') {
+              errorMessage = error.error;
+            }
+          } else if (error?.message) {
+            errorMessage = error.message;
+          }
+          
+          this.toasterService.error('خطأ', errorMessage);
           this.isLoading = false;
         }
       });
@@ -79,63 +105,43 @@ export class CaptainActionComponent implements OnInit, OnDestroy {
   }
 
   approveDeliveryMan() {
-    console.log('approveDeliveryMan called');
     if (!this.deliveryManDetails || this.actionInProgress.approve) return;
 
     const captainName = this.deliveryManDetails.fullName || 'الكابتن';
-    console.log('Opening confirmation dialog for:', captainName);
-
-    this.sub.sink = this.confirmationService.confirmApprove(captainName)
-      .subscribe({
-        next: (confirmed) => {
-          console.log('Confirmation result:', confirmed);
-          if (confirmed) {
-            this.executeStateChange(DeliveryRequesState.Approved, 'approve');
-          }
-        },
-        error: (error) => {
-          console.error('Error in confirmation dialog:', error);
-        }
-      });
+    this.confirmationTitle = 'تأكيد الموافقة';
+    this.confirmationMessage = `هل أنت متأكد من موافقة طلب الكابتن "${captainName}"؟`;
+    this.pendingAction = () => this.executeStateChange(DeliveryRequesState.Approved, 'approve');
+    this.showConfirmModal = true;
   }
 
   rejectDeliveryMan() {
     if (!this.deliveryManDetails || this.actionInProgress.reject) return;
 
     const captainName = this.deliveryManDetails.fullName || 'الكابتن';
-
-    this.sub.sink = this.confirmationService.confirmReject(captainName)
-      .subscribe((confirmed) => {
-        if (confirmed) {
-          this.executeStateChange(DeliveryRequesState.Rejected, 'reject');
-        }
-      });
+    this.confirmationTitle = 'تأكيد الرفض';
+    this.confirmationMessage = `هل أنت متأكد من رفض طلب الكابتن "${captainName}"؟`;
+    this.pendingAction = () => this.executeStateChange(DeliveryRequesState.Rejected, 'reject');
+    this.showConfirmModal = true;
   }
 
   suspendDeliveryMan() {
     if (!this.deliveryManDetails || this.actionInProgress.suspend) return;
 
     const captainName = this.deliveryManDetails.fullName || 'الكابتن';
-
-    this.sub.sink = this.confirmationService.confirmSuspend(captainName)
-      .subscribe((confirmed) => {
-        if (confirmed) {
-          this.executeStateChange(DeliveryRequesState.Suspended, 'suspend');
-        }
-      });
+    this.confirmationTitle = 'تأكيد التعليق';
+    this.confirmationMessage = `هل أنت متأكد من تعليق حساب الكابتن "${captainName}"؟`;
+    this.pendingAction = () => this.executeStateChange(DeliveryRequesState.Suspended, 'suspend');
+    this.showConfirmModal = true;
   }
 
   blockDeliveryMan() {
     if (!this.deliveryManDetails || this.actionInProgress.block) return;
 
     const captainName = this.deliveryManDetails.fullName || 'الكابتن';
-
-    this.sub.sink = this.confirmationService.confirmBlock(captainName)
-      .subscribe((confirmed) => {
-        if (confirmed) {
-          this.executeStateChange(DeliveryRequesState.Blocked, 'block');
-        }
-      });
+    this.confirmationTitle = 'تأكيد الحظر';
+    this.confirmationMessage = `هل أنت متأكد من حظر الكابتن "${captainName}"؟ هذا الإجراء سيمنع الكابتن من استخدام التطبيق.`;
+    this.pendingAction = () => this.executeStateChange(DeliveryRequesState.Blocked, 'block');
+    this.showConfirmModal = true;
   }
 
   private executeStateChange(state: DeliveryRequesState, actionType: keyof typeof this.actionInProgress) {
@@ -158,14 +164,14 @@ export class CaptainActionComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (response) => {
           console.log('نجح تحديث حالة الكابتن:', response);
-          if (this.deliveryManDetails) {
-            this.deliveryManDetails.state = this.getStateStringFromEnum(state);
-          }
           this.actionInProgress[actionType] = false;
 
-          // إظهار رسالة نجاح باستخدام SweetAlert2
+          // Reload delivery man details to get updated state and active status
+          this.loadDeliveryManDetails();
+
+          // إظهار رسالة نجاح باستخدام Toaster
           const successMessage = this.getActionSuccessMessage(actionType);
-          this.confirmationService.showSuccess(successMessage);
+          this.toasterService.success('نجح العملية', successMessage);
         },
         error: (error) => {
           console.error('خطأ في تحديث حالة الكابتن:', error);
@@ -180,9 +186,25 @@ export class CaptainActionComponent implements OnInit, OnDestroy {
           // إعادة تفعيل الزر
           this.actionInProgress[actionType] = false;
 
-          // إظهار رسالة خطأ باستخدام SweetAlert2
-          const errorMessage = error.error?.message || error.message || 'حدث خطأ في تحديث حالة الكابتن';
-          this.confirmationService.showError(errorMessage);
+          // Extract error message from backend response
+          let errorMessage = 'حدث خطأ في تحديث حالة الكابتن';
+          if (error?.error) {
+            if (error.error.detail) {
+              errorMessage = error.error.detail;
+            } else if (error.error.errorMessage) {
+              errorMessage = error.error.errorMessage;
+            } else if (error.error.title) {
+              errorMessage = error.error.title;
+            } else if (error.error.message) {
+              errorMessage = error.error.message;
+            } else if (typeof error.error === 'string') {
+              errorMessage = error.error;
+            }
+          } else if (error?.message) {
+            errorMessage = error.message;
+          }
+          
+          this.toasterService.error('خطأ', errorMessage);
         }
       });
   }
@@ -254,6 +276,20 @@ export class CaptainActionComponent implements OnInit, OnDestroy {
       case 'Blocked': return 'bg-gray-100 text-gray-800';
       default: return 'bg-gray-100 text-gray-800';
     }
+  }
+
+  // Confirmation Modal Methods
+  onConfirmationConfirmed(): void {
+    this.showConfirmModal = false;
+    if (this.pendingAction) {
+      this.pendingAction();
+      this.pendingAction = undefined;
+    }
+  }
+
+  onConfirmationCancelled(): void {
+    this.showConfirmModal = false;
+    this.pendingAction = undefined;
   }
 
   ngOnDestroy() {

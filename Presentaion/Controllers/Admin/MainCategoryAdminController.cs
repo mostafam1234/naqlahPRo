@@ -81,7 +81,8 @@ namespace Presentaion.Controllers.Admin
             var result = await mediator.Send(new AddMainAdminCategory
             {
                 ArabicName = command.ArabicName,
-                EnglishName = command.EnglishName
+                EnglishName = command.EnglishName,
+                ImageBase64 = command.ImageBase64
             });
 
             if (result.IsSuccess)
@@ -121,7 +122,8 @@ namespace Presentaion.Controllers.Admin
             {
                 Id = command.Id,
                 ArabicName = command.ArabicName,
-                EnglishName = command.EnglishName
+                EnglishName = command.EnglishName,
+                ImageBase64 = command.ImageBase64
             });
 
             if (result.IsSuccess)
