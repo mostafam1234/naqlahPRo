@@ -9,7 +9,8 @@ namespace Application.Features.AdminSection.MainCategoryFeatures.Dtos
     public class MainCategoryAdminDto
     {
         public int Id { get; set; }
-        public string ArabicName { get; set; }
-        public string EnglishName { get; set; }
+        public string ArabicName { get; set; } = string.Empty;
+        public string EnglishName { get; set; } = string.Empty;
+        public string ImagePath { get; set; } = string.Empty;
     }
 }

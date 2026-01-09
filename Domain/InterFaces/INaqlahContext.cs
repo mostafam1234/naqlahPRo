@@ -34,6 +34,9 @@ namespace Domain.InterFaces
         DbSet<Neighborhood> Neighborhoods { get; set; }
         DbSet<WalletTransctions> WalletTransctions { get; set; }
         DbSet<Notification> Notifications { get; set; }
+        DbSet<Complain> Complains { get; set; }
+        DbSet<Suggestion> Suggestions { get; set; }
+
         Task<Result> SaveChangesAsyncWithResult();
     }
 }

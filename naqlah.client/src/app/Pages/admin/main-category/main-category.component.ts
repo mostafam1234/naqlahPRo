@@ -8,6 +8,7 @@ import { SubSink } from 'subsink';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ToasterService } from 'src/app/Core/services/toaster.service';
 import { ConfirmationModalComponent } from 'src/app/shared/components/confirmation-modal/confirmation-modal.component';
+import { ImageService } from 'src/app/Core/services/image.service';
 
 @Component({
   selector: 'app-main-category',
@@ -30,19 +31,6 @@ export class MainCategoryComponent implements OnInit, OnDestroy {
 
   // Data
   items: MainCategoryAdminDto[] = [];
-
-  // Multi-Select Properties
-  isMultiSelectOpen = false;
-  serviceSearchTerm = '';
-  selectedServices: any[] = [];
-  availableServices: any[] = [
-    { id: 1, name: 'نقل البضائع' },
-    { id: 2, name: 'توصيل الطلبات' },
-    { id: 3, name: 'النقل السريع' },
-    { id: 4, name: 'النقل المبرد' },
-    { id: 5, name: 'نقل الأثاث' },
-    { id: 6, name: 'التوصيل المجدول' }
-  ];
 
   // Image Upload Properties
   selectedImagePreview: string | null = null;
@@ -69,29 +57,21 @@ export class MainCategoryComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private mainCategoryClient: MainCategoryAdminClient,
-    private toasterService: ToasterService
+    private toasterService: ToasterService,
+    private imageService: ImageService
   ) {
     this.itemForm = this.fb.group({
       arabicName: ['', [Validators.required, Validators.maxLength(100)]],
       englishName: ['', [Validators.required, Validators.maxLength(100)]],
-      services: [[], [Validators.required]]
+      imageBase64: ['', [Validators.required]]
     });
   }
 
   ngOnInit(): void {
     this.loadItems();
     this.setupSearch();
-    this.setupDocumentClick();
   }
 
-  private setupDocumentClick(): void {
-    document.addEventListener('click', (event) => {
-      const target = event.target as HTMLElement;
-      if (!target.closest('.multi-select-container')) {
-        this.isMultiSelectOpen = false;
-      }
-    });
-  }
 
   ngOnDestroy(): void {
     this.sub.unsubscribe();
@@ -133,9 +113,6 @@ export class MainCategoryComponent implements OnInit, OnDestroy {
   openAdd(): void {
     this.editingItem = null;
     this.itemForm.reset();
-    this.selectedServices = [];
-    this.isMultiSelectOpen = false;
-    this.serviceSearchTerm = '';
     this.removeImage();
     this.showModal = true;
   }
@@ -144,8 +121,21 @@ export class MainCategoryComponent implements OnInit, OnDestroy {
     this.editingItem = item;
     this.itemForm.patchValue({
       arabicName: item.arabicName,
-      englishName: item.englishName
+      englishName: item.englishName,
+      imageBase64: '' // Empty - will only be set if user uploads new image
     });
+    
+    // Set preview to show existing image
+    if (item.imagePath) {
+      this.selectedImagePreview = item.imagePath;
+      // Don't set file info since it's an existing image from server
+      this.selectedImageFile = null;
+      this.selectedImageName = '';
+      this.selectedImageSize = 0;
+    } else {
+      this.removeImage();
+    }
+    
     this.showUpdateModal = true;
   }
 
@@ -154,36 +144,44 @@ export class MainCategoryComponent implements OnInit, OnDestroy {
     this.showUpdateModal = false;
     this.editingItem = null;
     this.itemForm.reset();
-
-    // Reset multi-select
-    this.selectedServices = [];
-    this.isMultiSelectOpen = false;
-    this.serviceSearchTerm = '';
-
-    // Reset image upload
     this.removeImage();
   }
 
   submit(): void {
-    if (this.itemForm.invalid) return;
-
-    // يمكنك إضافة confirmation للإضافة إذا أردت:
-    // this.showConfirmation(
-    //   'تأكيد الإضافة',
-    //   'هل أنت متأكد من إضافة هذه الفئة؟',
-    //   () => this.performAdd(),
-    //   'primary'
-    // );
+    // Mark all fields as touched to show validation errors
+    this.itemForm.markAllAsTouched();
     
-    // أو مباشرة:
+    if (this.itemForm.invalid) {
+      // Check which field is invalid
+      if (this.itemForm.get('imageBase64')?.invalid) {
+        this.toasterService.error('خطأ', 'يرجى رفع صورة الفئة');
+      }
+      return;
+    }
+
     this.performAdd();
   }
 
   private performAdd(): void {
     const value = this.itemForm.value;
+    
+    // Validate image is present
+    if (!value.imageBase64 || value.imageBase64.trim() === '') {
+      this.toasterService.error('خطأ', 'يرجى رفع صورة الفئة');
+      return;
+    }
+    
     const command = new AddMainAdminCategory();
     command.arabicName = value.arabicName;
     command.englishName = value.englishName;
+    command.imageBase64 = value.imageBase64;
+
+    console.log('Sending command:', {
+      arabicName: command.arabicName,
+      englishName: command.englishName,
+      hasImage: !!command.imageBase64,
+      imageLength: command.imageBase64?.length || 0
+    });
 
     this.sub.sink = this.mainCategoryClient.addMainCategoryAdmin(command).subscribe({
       next: () => {
@@ -192,13 +190,34 @@ export class MainCategoryComponent implements OnInit, OnDestroy {
         this.loadItems();
       },
       error: (error) => {
-        this.toasterService.error('خطأ', error?.message || 'حدث خطأ أثناء إضافة الفئة');
+        console.error('Error adding category:', error);
+        
+        // Extract error message from backend response
+        let errorMessage = 'حدث خطأ أثناء إضافة الفئة';
+        
+        if (error?.error) {
+          // Check for ProblemDetail format (detail, title, or errorMessage)
+          if (error.error.detail) {
+            errorMessage = error.error.detail;
+          } else if (error.error.errorMessage) {
+            errorMessage = error.error.errorMessage;
+          } else if (error.error.title) {
+            errorMessage = error.error.title;
+          } else if (error.error.message) {
+            errorMessage = error.error.message;
+          } else if (typeof error.error === 'string') {
+            errorMessage = error.error;
+          }
+        } else if (error?.message) {
+          errorMessage = error.message;
+        }
+        
+        this.toasterService.error('خطأ', errorMessage);
       }
     });
   }
 
   update(): void {
-    debugger;
     if (this.itemForm.invalid) return;
 
     const itemId = this.editingItem?.id;
@@ -207,6 +226,9 @@ export class MainCategoryComponent implements OnInit, OnDestroy {
     command.id = itemId;
     command.arabicName = value.arabicName;
     command.englishName = value.englishName;
+    // Only send imageBase64 if user uploaded a new image (not empty string)
+    // If empty string, send null so backend keeps existing image
+    command.imageBase64 = value.imageBase64 && value.imageBase64.trim() !== '' ? value.imageBase64 : null;
 
     this.sub.sink = this.mainCategoryClient.updateMainCategoryAdmin(command).subscribe({
       next: () => {
@@ -215,7 +237,27 @@ export class MainCategoryComponent implements OnInit, OnDestroy {
         this.loadItems();
       },
       error: (error) => {
-        this.toasterService.error('خطأ', error?.message || 'حدث خطأ أثناء تحديث الفئة');
+        console.error('Error updating category:', error);
+        
+        // Extract error message from backend response
+        let errorMessage = 'حدث خطأ أثناء تحديث الفئة';
+        
+        if (error?.error) {
+          // Check for ProblemDetail format (detail or title)
+          if (error.error.detail) {
+            errorMessage = error.error.detail;
+          } else if (error.error.title) {
+            errorMessage = error.error.title;
+          } else if (error.error.message) {
+            errorMessage = error.error.message;
+          } else if (typeof error.error === 'string') {
+            errorMessage = error.error;
+          }
+        } else if (error?.message) {
+          errorMessage = error.message;
+        }
+        
+        this.toasterService.error('خطأ', errorMessage);
       }
     });
   }
@@ -234,7 +276,27 @@ export class MainCategoryComponent implements OnInit, OnDestroy {
         this.loadItems();
       },
       error: (error) => {
-        this.toasterService.error('خطأ', error?.message || 'حدث خطأ أثناء حذف الفئة');
+        console.error('Error deleting category:', error);
+        
+        // Extract error message from backend response
+        let errorMessage = 'حدث خطأ أثناء حذف الفئة';
+        
+        if (error?.error) {
+          // Check for ProblemDetail format (detail or title)
+          if (error.error.detail) {
+            errorMessage = error.error.detail;
+          } else if (error.error.title) {
+            errorMessage = error.error.title;
+          } else if (error.error.message) {
+            errorMessage = error.error.message;
+          } else if (typeof error.error === 'string') {
+            errorMessage = error.error;
+          }
+        } else if (error?.message) {
+          errorMessage = error.message;
+        }
+        
+        this.toasterService.error('خطأ', errorMessage);
       }
     });
   }
@@ -300,49 +362,52 @@ export class MainCategoryComponent implements OnInit, OnDestroy {
     window.history.back();
   }
 
-  // Multi-Select Methods
-  toggleMultiSelect(): void {
-    this.isMultiSelectOpen = !this.isMultiSelectOpen;
-  }
-
-  get filteredServices(): any[] {
-    if (!this.serviceSearchTerm) {
-      return this.availableServices;
-    }
-    return this.availableServices.filter(service =>
-      service.name.toLowerCase().includes(this.serviceSearchTerm.toLowerCase())
-    );
-  }
-
-  isServiceSelected(service: any): boolean {
-    return this.selectedServices.some(selected => selected.id === service.id);
-  }
-
-  toggleService(service: any): void {
-    const index = this.selectedServices.findIndex(selected => selected.id === service.id);
-    if (index > -1) {
-      this.selectedServices.splice(index, 1);
-    } else {
-      this.selectedServices.push(service);
-    }
-    this.itemForm.patchValue({ services: this.selectedServices });
-  }
-
-  removeService(service: any, event: Event): void {
-    event.stopPropagation();
-    const index = this.selectedServices.findIndex(selected => selected.id === service.id);
-    if (index > -1) {
-      this.selectedServices.splice(index, 1);
-      this.itemForm.patchValue({ services: this.selectedServices });
-    }
-  }
-
   // Image Upload Methods
-  onImageSelect(event: any): void {
-    const file = event.target.files[0];
-    if (file) {
-      this.handleImageFile(file);
+  async onImageSelect(event: Event): Promise<void> {
+    const result = await this.imageService.handleImageUpload(event, {
+      maxSizeMB: 2,
+      allowedTypes: ['image/png', 'image/jpg', 'image/jpeg'],
+      showErrorAlert: true
+    });
+
+    if (!result?.success) {
+      this.imageError = result?.error || 'فشل في رفع الصورة';
+      return;
     }
+
+    // Clear any previous errors
+    this.imageError = '';
+
+    // Set preview
+    this.selectedImagePreview = result.preview || null;
+    
+    // Set form value with Base64 - ensure it's a string
+    const base64Value = result.base64 || '';
+    this.itemForm.patchValue({ imageBase64: base64Value });
+    this.itemForm.get('imageBase64')?.markAsTouched();
+    this.itemForm.get('imageBase64')?.updateValueAndValidity();
+    
+    // Verify the value was set
+    console.log('Form imageBase64 value after setting:', {
+      formValue: this.itemForm.get('imageBase64')?.value,
+      isValid: this.itemForm.get('imageBase64')?.valid,
+      base64Length: base64Value.length
+    });
+    
+    // Get file info for display
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      this.selectedImageFile = file;
+      this.selectedImageName = file.name;
+      this.selectedImageSize = file.size;
+    }
+    
+    console.log('Image selected:', {
+      hasBase64: !!result.base64,
+      base64Length: result.base64?.length || 0,
+      fileName: this.selectedImageName
+    });
   }
 
   onDragOver(event: DragEvent): void {
@@ -355,43 +420,55 @@ export class MainCategoryComponent implements OnInit, OnDestroy {
     this.isDragOver = false;
   }
 
-  onDrop(event: DragEvent): void {
+  async onDrop(event: DragEvent): Promise<void> {
     event.preventDefault();
     this.isDragOver = false;
     const files = event.dataTransfer?.files;
     if (files && files.length > 0) {
-      this.handleImageFile(files[0]);
+      const file = files[0];
+      const result = await this.imageService.convertFileToBase64(file, {
+        maxSizeMB: 2,
+        allowedTypes: ['image/png', 'image/jpg', 'image/jpeg'],
+        showErrorAlert: true
+      });
+
+      if (!result?.success) {
+        this.imageError = result?.error || 'فشل في رفع الصورة';
+        return;
+      }
+
+      // Clear any previous errors
+      this.imageError = '';
+
+      // Set preview
+      this.selectedImagePreview = result.preview || null;
+      
+      // Set form value with Base64 - ensure it's a string
+      const base64Value = result.base64 || '';
+      this.itemForm.patchValue({ imageBase64: base64Value });
+      this.itemForm.get('imageBase64')?.markAsTouched();
+      this.itemForm.get('imageBase64')?.updateValueAndValidity();
+      
+      // Verify the value was set
+      console.log('Form imageBase64 value after drop:', {
+        formValue: this.itemForm.get('imageBase64')?.value,
+        isValid: this.itemForm.get('imageBase64')?.valid,
+        base64Length: base64Value.length
+      });
+      
+      // Get file info for display
+      this.selectedImageFile = file;
+      this.selectedImageName = file.name;
+      this.selectedImageSize = file.size;
+      
+      console.log('Image dropped:', {
+        hasBase64: !!result.base64,
+        base64Length: result.base64?.length || 0,
+        fileName: this.selectedImageName
+      });
     }
   }
 
-  private handleImageFile(file: File): void {
-    this.imageError = '';
-
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
-      this.imageError = 'يرجى اختيار ملف صورة صحيح';
-      return;
-    }
-
-    // Validate file size (2MB)
-    if (file.size > 2 * 1024 * 1024) {
-      this.imageError = 'حجم الصورة يجب أن يكون أقل من 2 ميجابايت';
-      return;
-    }
-
-    this.selectedImageFile = file;
-    this.selectedImageName = file.name;
-    this.selectedImageSize = file.size;
-
-    // Create preview
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      this.selectedImagePreview = e.target?.result as string;
-    };
-    reader.readAsDataURL(file);
-
-    this.itemForm.patchValue({ image: file });
-  }
 
   removeImage(): void {
     this.selectedImageFile = null;
@@ -399,7 +476,9 @@ export class MainCategoryComponent implements OnInit, OnDestroy {
     this.selectedImageName = '';
     this.selectedImageSize = 0;
     this.imageError = '';
-    this.itemForm.patchValue({ image: null });
+    // Clear imageBase64 - if editing, this will keep existing image (null = keep existing)
+    // If adding, this will require user to upload an image
+    this.itemForm.patchValue({ imageBase64: '' });
   }
 
   formatFileSize(bytes: number): string {

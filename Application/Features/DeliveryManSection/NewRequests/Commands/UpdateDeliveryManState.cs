@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using Domain.Enums;
 using Domain.InterFaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -23,14 +24,25 @@ namespace Application.Features.DeliveryManSection.NewRequests.Commands
             }
             public async Task<Result<string>> Handle(UpdateDeliveryManState request, CancellationToken cancellationToken)
             {
-                var deliveryMan = await _context.DeliveryMen.AsTracking().Where(x => x.Id == request.DeliveryId).FirstOrDefaultAsync();
+                var deliveryMan = await _context.DeliveryMen.AsTracking().Where(x => x.Id == request.DeliveryId).FirstOrDefaultAsync(cancellationToken);
                 if(deliveryMan == null)
                 {
                     return Result.Failure<string>("Delivery Man Not Exists");
                 }
                 
                 deliveryMan.UpdateDeliveryManRequestState(request.State);
-                await _context.SaveChangesAsyncWithResult();
+                
+                // When approving (state = 2), automatically set Active = true
+                if (request.State == (int)DeliveryRequesState.Approved)
+                {
+                    deliveryMan.ChangeActivation(true);
+                }
+                
+                var saveResult = await _context.SaveChangesAsyncWithResult();
+                if (saveResult.IsFailure)
+                {
+                    return Result.Failure<string>(saveResult.Error);
+                }
 
                 return Result.Success("Saved");
             }

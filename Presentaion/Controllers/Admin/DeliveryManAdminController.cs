@@ -137,6 +137,25 @@ namespace Presentaion.Controllers.Admin
             return Ok(result.Value);
         }
 
+        [HttpPost]
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("UpdateDeliveryMan/{deliveryManId}")]
+        public async Task<IActionResult> UpdateDeliveryMan(int deliveryManId, [FromBody] AddDeliveryManDto deliveryManDto)
+        {
+            var result = await mediator.Send(new UpdateDeliveryManCommand
+            {
+                DeliveryManId = deliveryManId,
+                DeliveryMan = deliveryManDto
+            });
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+            return Ok(result.Value);
+        }
+
         [HttpGet]
         [ProducesResponseType(typeof(PagedResult<GetAllDeliveryMenDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]

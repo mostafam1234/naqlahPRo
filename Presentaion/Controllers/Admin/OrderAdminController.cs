@@ -257,6 +257,97 @@ namespace Presentaion.Controllers.Admin
 
             return BadRequest(result.Error);
         }
+
+        // OrderPackage endpoints
+        [HttpGet]
+        [ProducesResponseType(typeof(PagedResult<OrderPackageDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("GetAllOrderPackages")]
+        public async Task<IActionResult> GetAllOrderPackages(
+            [FromQuery] int skip = 0,
+            [FromQuery] int take = 10,
+            [FromQuery] string? searchTerm = null)
+        {
+            var query = new GetAllOrderPackagesQuery
+            {
+                Skip = skip,
+                Take = take,
+                SearchTerm = searchTerm
+            };
+
+            var result = await mediator.Send(query);
+
+            if (result.IsSuccess)
+            {
+                return Ok(result.Value);
+            }
+
+            return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("AddOrderPackage")]
+        public async Task<IActionResult> AddOrderPackage([FromBody] AddOrderPackageCommand command)
+        {
+            var result = await mediator.Send(new AddOrderPackageCommand
+            {
+                ArabicDescription = command.ArabicDescription,
+                EnglishDescription = command.EnglishDescription,
+                MinWeightInKiloGram = command.MinWeightInKiloGram,
+                MaxWeightInKiloGram = command.MaxWeightInKiloGram
+            });
+
+            if (result.IsSuccess)
+            {
+                return Ok(result.Value);
+            }
+
+            return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("UpdateOrderPackage")]
+        public async Task<IActionResult> UpdateOrderPackage([FromBody] UpdateOrderPackageCommand command)
+        {
+            var result = await mediator.Send(new UpdateOrderPackageCommand
+            {
+                Id = command.Id,
+                ArabicDescription = command.ArabicDescription,
+                EnglishDescription = command.EnglishDescription,
+                MinWeightInKiloGram = command.MinWeightInKiloGram,
+                MaxWeightInKiloGram = command.MaxWeightInKiloGram
+            });
+
+            if (result.IsSuccess)
+            {
+                return Ok(result.Value);
+            }
+
+            return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("DeleteOrderPackage")]
+        public async Task<IActionResult> DeleteOrderPackage([FromQuery] int orderPackageId)
+        {
+            var result = await mediator.Send(new DeleteOrderPackageCommand
+            {
+                Id = orderPackageId
+            });
+
+            if (result.IsSuccess)
+            {
+                return Ok(result.Value);
+            }
+
+            return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+        }
     }
 
     public class AssignOrderToDeliveryManRequest

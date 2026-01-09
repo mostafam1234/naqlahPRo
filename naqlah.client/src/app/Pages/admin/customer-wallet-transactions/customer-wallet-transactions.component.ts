@@ -6,11 +6,12 @@ import { SubSink } from 'subsink';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ToasterService } from 'src/app/Core/services/toaster.service';
 import { WalletTransactionAdminDto, CustomerLookupDto, AddWalletTransactionCommand, WalletTransactionsAdminClient } from 'src/app/Core/services/NaqlahClient';
+import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
 
 @Component({
   selector: 'app-customer-wallet-transactions',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, TranslateModule],
+  imports: [CommonModule, ReactiveFormsModule, TranslateModule, PageHeaderComponent],
   templateUrl: './customer-wallet-transactions.component.html',
   styleUrls: ['./customer-wallet-transactions.component.css'],
   providers: [WalletTransactionsAdminClient]

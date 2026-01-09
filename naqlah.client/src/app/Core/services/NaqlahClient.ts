@@ -5220,6 +5220,69 @@ export class DeliveryManAdminClient {
         return _observableOf(null as any);
     }
 
+    updateDeliveryMan(deliveryManId: number, deliveryManDto: AddDeliveryManDto): Observable<number> {
+        let url_ = this.baseUrl + "/api/DeliveryManAdmin/UpdateDeliveryMan/{deliveryManId}";
+        if (deliveryManId === undefined || deliveryManId === null)
+            throw new Error("The parameter 'deliveryManId' must be defined.");
+        url_ = url_.replace("{deliveryManId}", encodeURIComponent("" + deliveryManId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(deliveryManDto);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdateDeliveryMan(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdateDeliveryMan(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<number>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<number>;
+        }));
+    }
+
+    protected processUpdateDeliveryMan(response: HttpResponseBase): Observable<number> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
     getAllDeliveryMen(skip?: number | undefined, take?: number | undefined, searchTerm?: string | null | undefined): Observable<PagedResultOfGetAllDeliveryMenDto> {
         let url_ = this.baseUrl + "/api/DeliveryManAdmin/GetAllDeliveryMen?";
         if (skip === null)
@@ -6369,6 +6432,251 @@ export class OrderAdminClient {
         }
         return _observableOf(null as any);
     }
+
+    getAllOrderPackages(skip?: number | undefined, take?: number | undefined, searchTerm?: string | null | undefined): Observable<PagedResultOfOrderPackageDto> {
+        let url_ = this.baseUrl + "/api/OrderAdmin/GetAllOrderPackages?";
+        if (skip === null)
+            throw new Error("The parameter 'skip' cannot be null.");
+        else if (skip !== undefined)
+            url_ += "skip=" + encodeURIComponent("" + skip) + "&";
+        if (take === null)
+            throw new Error("The parameter 'take' cannot be null.");
+        else if (take !== undefined)
+            url_ += "take=" + encodeURIComponent("" + take) + "&";
+        if (searchTerm !== undefined && searchTerm !== null)
+            url_ += "searchTerm=" + encodeURIComponent("" + searchTerm) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllOrderPackages(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllOrderPackages(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<PagedResultOfOrderPackageDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<PagedResultOfOrderPackageDto>;
+        }));
+    }
+
+    protected processGetAllOrderPackages(response: HttpResponseBase): Observable<PagedResultOfOrderPackageDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PagedResultOfOrderPackageDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    addOrderPackage(command: AddOrderPackageCommand): Observable<number> {
+        let url_ = this.baseUrl + "/api/OrderAdmin/AddOrderPackage";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAddOrderPackage(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAddOrderPackage(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<number>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<number>;
+        }));
+    }
+
+    protected processAddOrderPackage(response: HttpResponseBase): Observable<number> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    updateOrderPackage(command: UpdateOrderPackageCommand): Observable<number> {
+        let url_ = this.baseUrl + "/api/OrderAdmin/UpdateOrderPackage";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdateOrderPackage(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdateOrderPackage(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<number>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<number>;
+        }));
+    }
+
+    protected processUpdateOrderPackage(response: HttpResponseBase): Observable<number> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    deleteOrderPackage(orderPackageId?: number | undefined): Observable<number> {
+        let url_ = this.baseUrl + "/api/OrderAdmin/DeleteOrderPackage?";
+        if (orderPackageId === null)
+            throw new Error("The parameter 'orderPackageId' cannot be null.");
+        else if (orderPackageId !== undefined)
+            url_ += "orderPackageId=" + encodeURIComponent("" + orderPackageId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDeleteOrderPackage(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDeleteOrderPackage(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<number>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<number>;
+        }));
+    }
+
+    protected processDeleteOrderPackage(response: HttpResponseBase): Observable<number> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 @Injectable({
@@ -6859,6 +7167,150 @@ export class SystemUserAdminClient {
             else {
                 result200 = <any>null;
             }
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class TechSupportAdminClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ?? "";
+    }
+
+    getAllComplains(skip?: number | undefined, take?: number | undefined, searchTerm?: string | null | undefined): Observable<PagedResultOfComplainDto> {
+        let url_ = this.baseUrl + "/api/TechSupportAdmin/GetAllComplains?";
+        if (skip === null)
+            throw new Error("The parameter 'skip' cannot be null.");
+        else if (skip !== undefined)
+            url_ += "skip=" + encodeURIComponent("" + skip) + "&";
+        if (take === null)
+            throw new Error("The parameter 'take' cannot be null.");
+        else if (take !== undefined)
+            url_ += "take=" + encodeURIComponent("" + take) + "&";
+        if (searchTerm !== undefined && searchTerm !== null)
+            url_ += "searchTerm=" + encodeURIComponent("" + searchTerm) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllComplains(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllComplains(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<PagedResultOfComplainDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<PagedResultOfComplainDto>;
+        }));
+    }
+
+    protected processGetAllComplains(response: HttpResponseBase): Observable<PagedResultOfComplainDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PagedResultOfComplainDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getAllSuggestions(skip?: number | undefined, take?: number | undefined, searchTerm?: string | null | undefined): Observable<PagedResultOfSuggestionDto> {
+        let url_ = this.baseUrl + "/api/TechSupportAdmin/GetAllSuggestions?";
+        if (skip === null)
+            throw new Error("The parameter 'skip' cannot be null.");
+        else if (skip !== undefined)
+            url_ += "skip=" + encodeURIComponent("" + skip) + "&";
+        if (take === null)
+            throw new Error("The parameter 'take' cannot be null.");
+        else if (take !== undefined)
+            url_ += "take=" + encodeURIComponent("" + take) + "&";
+        if (searchTerm !== undefined && searchTerm !== null)
+            url_ += "searchTerm=" + encodeURIComponent("" + searchTerm) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllSuggestions(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllSuggestions(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<PagedResultOfSuggestionDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<PagedResultOfSuggestionDto>;
+        }));
+    }
+
+    protected processGetAllSuggestions(response: HttpResponseBase): Observable<PagedResultOfSuggestionDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PagedResultOfSuggestionDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status === 400) {
@@ -11854,6 +12306,7 @@ export class GetDeliveryManRequestDetailsDto {
     deliveryType!: string;
     deliveryLicenseType!: string;
     state!: string;
+    stateName!: string;
     frontIdentityImagePath!: string;
     backIdentityImagePath!: string;
     frontDrivingLicenseImagePath!: string;
@@ -11863,11 +12316,20 @@ export class GetDeliveryManRequestDetailsDto {
     androidDevice!: string;
     iosDevice!: string;
     userId!: number;
+    email!: string;
     vehicleId!: number | null;
     vehiclePlateNumber!: string;
     vehicleType!: string;
+    vehicleTypeId!: number | null;
     vehicleColor!: string;
     vehicleModel!: string;
+    vehicleBrandId!: number | null;
+    vehicleFrontImagePath!: string;
+    vehicleSideImagePath!: string;
+    vehicleFrontLicenseImagePath!: string;
+    vehicleBackLicenseImagePath!: string;
+    vehicleFrontInsuranceImagePath!: string;
+    vehicleBackInsuranceImagePath!: string;
 
     init(_data?: any) {
         if (_data) {
@@ -11881,6 +12343,7 @@ export class GetDeliveryManRequestDetailsDto {
             this.deliveryType = _data["deliveryType"] !== undefined ? _data["deliveryType"] : <any>null;
             this.deliveryLicenseType = _data["deliveryLicenseType"] !== undefined ? _data["deliveryLicenseType"] : <any>null;
             this.state = _data["state"] !== undefined ? _data["state"] : <any>null;
+            this.stateName = _data["stateName"] !== undefined ? _data["stateName"] : <any>null;
             this.frontIdentityImagePath = _data["frontIdentityImagePath"] !== undefined ? _data["frontIdentityImagePath"] : <any>null;
             this.backIdentityImagePath = _data["backIdentityImagePath"] !== undefined ? _data["backIdentityImagePath"] : <any>null;
             this.frontDrivingLicenseImagePath = _data["frontDrivingLicenseImagePath"] !== undefined ? _data["frontDrivingLicenseImagePath"] : <any>null;
@@ -11890,11 +12353,20 @@ export class GetDeliveryManRequestDetailsDto {
             this.androidDevice = _data["androidDevice"] !== undefined ? _data["androidDevice"] : <any>null;
             this.iosDevice = _data["iosDevice"] !== undefined ? _data["iosDevice"] : <any>null;
             this.userId = _data["userId"] !== undefined ? _data["userId"] : <any>null;
+            this.email = _data["email"] !== undefined ? _data["email"] : <any>null;
             this.vehicleId = _data["vehicleId"] !== undefined ? _data["vehicleId"] : <any>null;
             this.vehiclePlateNumber = _data["vehiclePlateNumber"] !== undefined ? _data["vehiclePlateNumber"] : <any>null;
             this.vehicleType = _data["vehicleType"] !== undefined ? _data["vehicleType"] : <any>null;
+            this.vehicleTypeId = _data["vehicleTypeId"] !== undefined ? _data["vehicleTypeId"] : <any>null;
             this.vehicleColor = _data["vehicleColor"] !== undefined ? _data["vehicleColor"] : <any>null;
             this.vehicleModel = _data["vehicleModel"] !== undefined ? _data["vehicleModel"] : <any>null;
+            this.vehicleBrandId = _data["vehicleBrandId"] !== undefined ? _data["vehicleBrandId"] : <any>null;
+            this.vehicleFrontImagePath = _data["vehicleFrontImagePath"] !== undefined ? _data["vehicleFrontImagePath"] : <any>null;
+            this.vehicleSideImagePath = _data["vehicleSideImagePath"] !== undefined ? _data["vehicleSideImagePath"] : <any>null;
+            this.vehicleFrontLicenseImagePath = _data["vehicleFrontLicenseImagePath"] !== undefined ? _data["vehicleFrontLicenseImagePath"] : <any>null;
+            this.vehicleBackLicenseImagePath = _data["vehicleBackLicenseImagePath"] !== undefined ? _data["vehicleBackLicenseImagePath"] : <any>null;
+            this.vehicleFrontInsuranceImagePath = _data["vehicleFrontInsuranceImagePath"] !== undefined ? _data["vehicleFrontInsuranceImagePath"] : <any>null;
+            this.vehicleBackInsuranceImagePath = _data["vehicleBackInsuranceImagePath"] !== undefined ? _data["vehicleBackInsuranceImagePath"] : <any>null;
         }
     }
 
@@ -11917,6 +12389,7 @@ export class GetDeliveryManRequestDetailsDto {
         data["deliveryType"] = this.deliveryType !== undefined ? this.deliveryType : <any>null;
         data["deliveryLicenseType"] = this.deliveryLicenseType !== undefined ? this.deliveryLicenseType : <any>null;
         data["state"] = this.state !== undefined ? this.state : <any>null;
+        data["stateName"] = this.stateName !== undefined ? this.stateName : <any>null;
         data["frontIdentityImagePath"] = this.frontIdentityImagePath !== undefined ? this.frontIdentityImagePath : <any>null;
         data["backIdentityImagePath"] = this.backIdentityImagePath !== undefined ? this.backIdentityImagePath : <any>null;
         data["frontDrivingLicenseImagePath"] = this.frontDrivingLicenseImagePath !== undefined ? this.frontDrivingLicenseImagePath : <any>null;
@@ -11926,11 +12399,20 @@ export class GetDeliveryManRequestDetailsDto {
         data["androidDevice"] = this.androidDevice !== undefined ? this.androidDevice : <any>null;
         data["iosDevice"] = this.iosDevice !== undefined ? this.iosDevice : <any>null;
         data["userId"] = this.userId !== undefined ? this.userId : <any>null;
+        data["email"] = this.email !== undefined ? this.email : <any>null;
         data["vehicleId"] = this.vehicleId !== undefined ? this.vehicleId : <any>null;
         data["vehiclePlateNumber"] = this.vehiclePlateNumber !== undefined ? this.vehiclePlateNumber : <any>null;
         data["vehicleType"] = this.vehicleType !== undefined ? this.vehicleType : <any>null;
+        data["vehicleTypeId"] = this.vehicleTypeId !== undefined ? this.vehicleTypeId : <any>null;
         data["vehicleColor"] = this.vehicleColor !== undefined ? this.vehicleColor : <any>null;
         data["vehicleModel"] = this.vehicleModel !== undefined ? this.vehicleModel : <any>null;
+        data["vehicleBrandId"] = this.vehicleBrandId !== undefined ? this.vehicleBrandId : <any>null;
+        data["vehicleFrontImagePath"] = this.vehicleFrontImagePath !== undefined ? this.vehicleFrontImagePath : <any>null;
+        data["vehicleSideImagePath"] = this.vehicleSideImagePath !== undefined ? this.vehicleSideImagePath : <any>null;
+        data["vehicleFrontLicenseImagePath"] = this.vehicleFrontLicenseImagePath !== undefined ? this.vehicleFrontLicenseImagePath : <any>null;
+        data["vehicleBackLicenseImagePath"] = this.vehicleBackLicenseImagePath !== undefined ? this.vehicleBackLicenseImagePath : <any>null;
+        data["vehicleFrontInsuranceImagePath"] = this.vehicleFrontInsuranceImagePath !== undefined ? this.vehicleFrontInsuranceImagePath : <any>null;
+        data["vehicleBackInsuranceImagePath"] = this.vehicleBackInsuranceImagePath !== undefined ? this.vehicleBackInsuranceImagePath : <any>null;
         return data;
     }
 }
@@ -12488,12 +12970,14 @@ export class MainCategoryAdminDto {
     id!: number;
     arabicName!: string;
     englishName!: string;
+    imagePath!: string;
 
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
             this.arabicName = _data["arabicName"] !== undefined ? _data["arabicName"] : <any>null;
             this.englishName = _data["englishName"] !== undefined ? _data["englishName"] : <any>null;
+            this.imagePath = _data["imagePath"] !== undefined ? _data["imagePath"] : <any>null;
         }
     }
 
@@ -12509,6 +12993,7 @@ export class MainCategoryAdminDto {
         data["id"] = this.id !== undefined ? this.id : <any>null;
         data["arabicName"] = this.arabicName !== undefined ? this.arabicName : <any>null;
         data["englishName"] = this.englishName !== undefined ? this.englishName : <any>null;
+        data["imagePath"] = this.imagePath !== undefined ? this.imagePath : <any>null;
         return data;
     }
 }
@@ -12542,11 +13027,13 @@ export class MainCategoryAdminLookupDto {
 export class AddMainAdminCategory {
     arabicName!: string;
     englishName!: string;
+    imageBase64!: string;
 
     init(_data?: any) {
         if (_data) {
             this.arabicName = _data["arabicName"] !== undefined ? _data["arabicName"] : <any>null;
             this.englishName = _data["englishName"] !== undefined ? _data["englishName"] : <any>null;
+            this.imageBase64 = _data["imageBase64"] !== undefined ? _data["imageBase64"] : <any>null;
         }
     }
 
@@ -12561,6 +13048,7 @@ export class AddMainAdminCategory {
         data = typeof data === 'object' ? data : {};
         data["arabicName"] = this.arabicName !== undefined ? this.arabicName : <any>null;
         data["englishName"] = this.englishName !== undefined ? this.englishName : <any>null;
+        data["imageBase64"] = this.imageBase64 !== undefined ? this.imageBase64 : <any>null;
         return data;
     }
 }
@@ -12569,12 +13057,14 @@ export class UpdateMainAdminCategory {
     id!: number;
     arabicName!: string;
     englishName!: string;
+    imageBase64!: string | null;
 
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
             this.arabicName = _data["arabicName"] !== undefined ? _data["arabicName"] : <any>null;
             this.englishName = _data["englishName"] !== undefined ? _data["englishName"] : <any>null;
+            this.imageBase64 = _data["imageBase64"] !== undefined ? _data["imageBase64"] : <any>null;
         }
     }
 
@@ -12590,6 +13080,7 @@ export class UpdateMainAdminCategory {
         data["id"] = this.id !== undefined ? this.id : <any>null;
         data["arabicName"] = this.arabicName !== undefined ? this.arabicName : <any>null;
         data["englishName"] = this.englishName !== undefined ? this.englishName : <any>null;
+        data["imageBase64"] = this.imageBase64 !== undefined ? this.imageBase64 : <any>null;
         return data;
     }
 }
@@ -13083,6 +13574,113 @@ export class AvailableDeliveryManDto {
     }
 }
 
+export class PagedResultOfOrderPackageDto {
+    data!: OrderPackageDto[];
+    totalCount!: number;
+    totalPages!: number;
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data!.push(OrderPackageDto.fromJS(item));
+            }
+            else {
+                this.data = <any>null;
+            }
+            this.totalCount = _data["totalCount"] !== undefined ? _data["totalCount"] : <any>null;
+            this.totalPages = _data["totalPages"] !== undefined ? _data["totalPages"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): PagedResultOfOrderPackageDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultOfOrderPackageDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item.toJSON());
+        }
+        data["totalCount"] = this.totalCount !== undefined ? this.totalCount : <any>null;
+        data["totalPages"] = this.totalPages !== undefined ? this.totalPages : <any>null;
+        return data;
+    }
+}
+
+export class AddOrderPackageCommand {
+    arabicDescription!: string;
+    englishDescription!: string;
+    minWeightInKiloGram!: number;
+    maxWeightInKiloGram!: number;
+
+    init(_data?: any) {
+        if (_data) {
+            this.arabicDescription = _data["arabicDescription"] !== undefined ? _data["arabicDescription"] : <any>null;
+            this.englishDescription = _data["englishDescription"] !== undefined ? _data["englishDescription"] : <any>null;
+            this.minWeightInKiloGram = _data["minWeightInKiloGram"] !== undefined ? _data["minWeightInKiloGram"] : <any>null;
+            this.maxWeightInKiloGram = _data["maxWeightInKiloGram"] !== undefined ? _data["maxWeightInKiloGram"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): AddOrderPackageCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new AddOrderPackageCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["arabicDescription"] = this.arabicDescription !== undefined ? this.arabicDescription : <any>null;
+        data["englishDescription"] = this.englishDescription !== undefined ? this.englishDescription : <any>null;
+        data["minWeightInKiloGram"] = this.minWeightInKiloGram !== undefined ? this.minWeightInKiloGram : <any>null;
+        data["maxWeightInKiloGram"] = this.maxWeightInKiloGram !== undefined ? this.maxWeightInKiloGram : <any>null;
+        return data;
+    }
+}
+
+export class UpdateOrderPackageCommand {
+    id!: number;
+    arabicDescription!: string;
+    englishDescription!: string;
+    minWeightInKiloGram!: number;
+    maxWeightInKiloGram!: number;
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.arabicDescription = _data["arabicDescription"] !== undefined ? _data["arabicDescription"] : <any>null;
+            this.englishDescription = _data["englishDescription"] !== undefined ? _data["englishDescription"] : <any>null;
+            this.minWeightInKiloGram = _data["minWeightInKiloGram"] !== undefined ? _data["minWeightInKiloGram"] : <any>null;
+            this.maxWeightInKiloGram = _data["maxWeightInKiloGram"] !== undefined ? _data["maxWeightInKiloGram"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): UpdateOrderPackageCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateOrderPackageCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["arabicDescription"] = this.arabicDescription !== undefined ? this.arabicDescription : <any>null;
+        data["englishDescription"] = this.englishDescription !== undefined ? this.englishDescription : <any>null;
+        data["minWeightInKiloGram"] = this.minWeightInKiloGram !== undefined ? this.minWeightInKiloGram : <any>null;
+        data["maxWeightInKiloGram"] = this.maxWeightInKiloGram !== undefined ? this.maxWeightInKiloGram : <any>null;
+        return data;
+    }
+}
+
 export class SystemConfigurationDto {
     id!: number;
     baseKm!: number;
@@ -13371,6 +13969,168 @@ export class RoleLookupDto {
         data["id"] = this.id !== undefined ? this.id : <any>null;
         data["name"] = this.name !== undefined ? this.name : <any>null;
         data["arabicName"] = this.arabicName !== undefined ? this.arabicName : <any>null;
+        return data;
+    }
+}
+
+export class PagedResultOfComplainDto {
+    data!: ComplainDto[];
+    totalCount!: number;
+    totalPages!: number;
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data!.push(ComplainDto.fromJS(item));
+            }
+            else {
+                this.data = <any>null;
+            }
+            this.totalCount = _data["totalCount"] !== undefined ? _data["totalCount"] : <any>null;
+            this.totalPages = _data["totalPages"] !== undefined ? _data["totalPages"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): PagedResultOfComplainDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultOfComplainDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item.toJSON());
+        }
+        data["totalCount"] = this.totalCount !== undefined ? this.totalCount : <any>null;
+        data["totalPages"] = this.totalPages !== undefined ? this.totalPages : <any>null;
+        return data;
+    }
+}
+
+export class ComplainDto {
+    id!: number;
+    customerId!: number;
+    customerName!: string;
+    customerMobileNumber!: string;
+    customerAddress!: string;
+    description!: string;
+    creationDate!: Date;
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.customerId = _data["customerId"] !== undefined ? _data["customerId"] : <any>null;
+            this.customerName = _data["customerName"] !== undefined ? _data["customerName"] : <any>null;
+            this.customerMobileNumber = _data["customerMobileNumber"] !== undefined ? _data["customerMobileNumber"] : <any>null;
+            this.customerAddress = _data["customerAddress"] !== undefined ? _data["customerAddress"] : <any>null;
+            this.description = _data["description"] !== undefined ? _data["description"] : <any>null;
+            this.creationDate = _data["creationDate"] ? new Date(_data["creationDate"].toString()) : <any>null;
+        }
+    }
+
+    static fromJS(data: any): ComplainDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ComplainDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["customerId"] = this.customerId !== undefined ? this.customerId : <any>null;
+        data["customerName"] = this.customerName !== undefined ? this.customerName : <any>null;
+        data["customerMobileNumber"] = this.customerMobileNumber !== undefined ? this.customerMobileNumber : <any>null;
+        data["customerAddress"] = this.customerAddress !== undefined ? this.customerAddress : <any>null;
+        data["description"] = this.description !== undefined ? this.description : <any>null;
+        data["creationDate"] = this.creationDate ? this.creationDate.toISOString() : <any>null;
+        return data;
+    }
+}
+
+export class PagedResultOfSuggestionDto {
+    data!: SuggestionDto[];
+    totalCount!: number;
+    totalPages!: number;
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data!.push(SuggestionDto.fromJS(item));
+            }
+            else {
+                this.data = <any>null;
+            }
+            this.totalCount = _data["totalCount"] !== undefined ? _data["totalCount"] : <any>null;
+            this.totalPages = _data["totalPages"] !== undefined ? _data["totalPages"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): PagedResultOfSuggestionDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultOfSuggestionDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item.toJSON());
+        }
+        data["totalCount"] = this.totalCount !== undefined ? this.totalCount : <any>null;
+        data["totalPages"] = this.totalPages !== undefined ? this.totalPages : <any>null;
+        return data;
+    }
+}
+
+export class SuggestionDto {
+    id!: number;
+    customerId!: number;
+    customerName!: string;
+    customerMobileNumber!: string;
+    customerAddress!: string;
+    description!: string;
+    creationDate!: Date;
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.customerId = _data["customerId"] !== undefined ? _data["customerId"] : <any>null;
+            this.customerName = _data["customerName"] !== undefined ? _data["customerName"] : <any>null;
+            this.customerMobileNumber = _data["customerMobileNumber"] !== undefined ? _data["customerMobileNumber"] : <any>null;
+            this.customerAddress = _data["customerAddress"] !== undefined ? _data["customerAddress"] : <any>null;
+            this.description = _data["description"] !== undefined ? _data["description"] : <any>null;
+            this.creationDate = _data["creationDate"] ? new Date(_data["creationDate"].toString()) : <any>null;
+        }
+    }
+
+    static fromJS(data: any): SuggestionDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SuggestionDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["customerId"] = this.customerId !== undefined ? this.customerId : <any>null;
+        data["customerName"] = this.customerName !== undefined ? this.customerName : <any>null;
+        data["customerMobileNumber"] = this.customerMobileNumber !== undefined ? this.customerMobileNumber : <any>null;
+        data["customerAddress"] = this.customerAddress !== undefined ? this.customerAddress : <any>null;
+        data["description"] = this.description !== undefined ? this.description : <any>null;
+        data["creationDate"] = this.creationDate ? this.creationDate.toISOString() : <any>null;
         return data;
     }
 }

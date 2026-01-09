@@ -1,67 +1,300 @@
-<section class="captain flex flex-col gap-[30px]">
-  <div class="flex justify-center">
-    <div class="bg-mainButtonBg text-white text-[18px] font-bold p-2 rounded-xl shadow w-[100%] md:w[70%] lg:w-[50%] flex justify-center items-center gap-4">
-      <p
-        class="bg-white flex items-center justify-center text-black w-[143px] text-base py-2 rounded-full font-bold shadow transition-colors duration-200"
-      >
-        أفراد
-      </p>
-       الكابتن / السيد أحمد محمود
-    </div>
-  </div>
+<div class="min-h-screen bg-slate-50">
+  <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+    <!-- Page Header -->
+    <app-page-header
+      title="ADMIN.PAGES.CAPTAIN_DETAILS.TITLE"
+      subtitle="ADMIN.PAGES.CAPTAIN_DETAILS.SUBTITLE"
+      [showBackButton]="true"
+      iconPath="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+      (onBackClick)="goBack()"
+    >
+    </app-page-header>
 
-  <div class="header flex justify-between items-center">
-    <h1 class="text-[20px] font-bold">الشحنات الى تم العمل بها خلال اليوم</h1>
-    <svg width="46" height="40" viewBox="0 0 46 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="0.470068" y="0.470068" width="44.1442" height="39.0599" rx="10.8116" fill="white"/>
-      <rect x="0.470068" y="0.470068" width="44.1442" height="39.0599" rx="10.8116" stroke="#C5C5D3" stroke-width="0.940136"/>
-      <path d="M15.0422 15H30.0422M17.5422 20H27.5422M20.5422 25H24.5422" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-  </div>
-  <div class="overflow-x-auto shadow rounded-lg">
-    <table class="min-w-full divide-y divide-gray-200 text-sm text-center">
-      <thead class="bg-gray-100 text-gray-700">
-        <tr>
-          <th class="px-4 py-3">#</th>
-          <th class="px-4 py-3">نوع النقل</th>
-          <th class="px-4 py-3">الوصف</th>
-          <th class="px-4 py-3">السعر</th>
-          <th class="px-4 py-3">حالة الشحنة</th>
-        </tr>
-      </thead>
-      <tbody class="bg-white divide-y divide-gray-200">
-        <tr *ngFor="let shipping of paginatedshipping; let i = index" class="hover:bg-gray-50">
-          <td class="px-4 py-3 font-bold">{{ i + 1 }}</td>
-          <td class="px-4 py-3 rounded">{{ shipping.type }}</td>
-          <td class="px-4 py-3 rounded">{{ shipping.destination }}</td>
-          <td class="px-4 py-3 rounded">{{ shipping.price }}</td>
-          <td class="flex items-center justify-center p-2">
-            <p class="w-[50%] p-2 rounded-md"
-              [ngClass]="{
-              'bg-yellow-100 text-yellow-800': shipping.stateId === 1,
-              'bg-blue-100 text-blue-700': shipping.stateId === 2,
-              'bg-green-100 text-greed-700': shipping.stateId === 3,
-              'bg-red-100 text-red-700': shipping.stateId === 4,
-              }">
-              {{ shipping.state }}
-            </p>
-            </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="flex w-full justify-start gap-2" *ngIf="totalPages > 1">
-      <button
-        *ngFor="let page of [].constructor(totalPages); let i = index"
-        (click)="changePage(i + 1)"
-        [ngClass]="{
-          'bg-mainButtonBg text-white': currentPage === (i + 1),
-          'bg-gray-200 text-gray-700': currentPage !== (i + 1)
-        }"
-        class="w-10 h-10 rounded-full font-bold flex items-center justify-center transition-colors duration-200"
-      >
-        {{ i + 1 }}
-      </button>
+    <!-- Profile Header -->
+    <div class="mt-6 bg-white rounded-lg border border-slate-200 overflow-hidden">
+      <div class="bg-teal-500 px-6 py-4">
+        <div class="flex flex-col sm:flex-row items-center gap-4">
+          <div class="relative">
+            <div class="w-24 h-24 rounded-full bg-white p-1">
+              <img
+                [src]="captainImage"
+                alt="Captain"
+                class="w-full h-full rounded-full object-cover"
+              />
+            </div>
+            <div class="absolute bottom-0 right-0 w-8 h-8 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
+              <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="flex-1 text-center sm:text-right">
+            <h1 class="text-xl font-semibold text-white mb-1">{{ captainName}}</h1>
+            <p class="text-teal-100 text-sm mb-3">{{ deliveryType}}</p>
+            <div class="flex flex-wrap items-center justify-center sm:justify-end gap-3 text-white/90">
+              <div class="flex items-center gap-1.5">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+                <span class="text-xs">{{ captainDetails.stateName}}</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span class="text-xs">{{ totalCount}} شحنة</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-</section>
+
+    <!-- Main Content Grid -->
+    <div class="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <!-- Left Column - Information Cards -->
+      <div class="lg:col-span-2 space-y-4">
+        <!-- Personal Information -->
+        <div class="bg-white rounded-lg border border-slate-200 overflow-hidden">
+          <div class="bg-teal-500 px-4 py-3">
+            <h2 class="text-sm font-semibold text-white">المعلومات الشخصية</h2>
+          </div>
+          <div class="p-4" *ngIf="!isLoading && captainDetails">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="text-xs text-slate-500 mb-1 block">رقم الهاتف</label>
+                <p class="text-sm text-slate-900">{{ captainDetails.phoneNumber}}</p>
+              </div>
+              <div>
+                <label class="text-xs text-slate-500 mb-1 block">الاسم الكامل</label>
+                <p class="text-sm text-slate-900">{{ captainDetails.fullName}}</p>
+              </div>
+              <div>
+                <label class="text-xs text-slate-500 mb-1 block">رقم الهوية</label>
+                <p class="text-sm text-slate-900">{{ captainDetails.identityNumber }}</p>
+              </div>
+              <div>
+                <label class="text-xs text-slate-500 mb-1 block">نوع التوصيل</label>
+                <span class="inline-flex items-center px-2 py-1 bg-teal-100 text-teal-700 rounded text-xs">
+                  {{ deliveryType}}
+                </span>
+              </div>
+              <div class="md:col-span-2">
+                <label class="text-xs text-slate-500 mb-1 block">العنوان</label>
+                <p class="text-sm text-slate-900">{{ captainDetails.address}}</p>
+              </div>
+              <div>
+                <label class="text-xs text-slate-500 mb-1 block">الحالة</label>
+                <span class="inline-flex items-center px-2 py-1 rounded text-xs"
+                  [ngClass]="{
+                    'bg-green-100 text-green-700': captainDetails.active,
+                    'bg-red-100 text-red-700': !captainDetails.active
+                  }">
+                  {{ captainDetails.active ? 'نشط' : 'غير نشط' }}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="isLoading" class="p-6 text-center">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-500 mx-auto"></div>
+          </div>
+        </div>
+
+        <!-- Identity Information -->
+        <div class="bg-white rounded-lg border border-slate-200 overflow-hidden">
+          <div class="bg-blue-500 px-4 py-3">
+            <h2 class="text-sm font-semibold text-white">معلومات الهوية</h2>
+          </div>
+          <div class="p-4" *ngIf="!isLoading && captainDetails">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="text-xs text-slate-500 mb-1 block">تاريخ انتهاء الهوية</label>
+                <p class="text-sm text-slate-900">{{ formatDate(captainDetails.identityExpirationDate) }}</p>
+              </div>
+              <div>
+                <label class="text-xs text-slate-500 mb-1 block">حالة الهوية</label>
+                <span class="inline-flex items-center px-2 py-1 rounded text-xs"
+                  [ngClass]="{
+                    'bg-green-100 text-green-700': isIdentityValid(),
+                    'bg-red-100 text-red-700': !isIdentityValid()
+                  }">
+                  {{ isIdentityValid() ? 'سارية' : 'منتهية' }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Driving License Information -->
+        <div class="bg-white rounded-lg border border-slate-200 overflow-hidden">
+          <div class="bg-indigo-500 px-4 py-3">
+            <h2 class="text-sm font-semibold text-white">معلومات رخصة القيادة</h2>
+          </div>
+          <div class="p-4" *ngIf="!isLoading && captainDetails">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="text-xs text-slate-500 mb-1 block">نوع الرخصة</label>
+                <p class="text-sm text-slate-900">{{ getDeliveryLicenseTypeLabel(captainDetails.deliveryLicenseType) }}</p>
+              </div>
+              <div>
+                <label class="text-xs text-slate-500 mb-1 block">تاريخ انتهاء الرخصة</label>
+                <p class="text-sm text-slate-900">{{ formatDate(captainDetails.drivingLicenseExpirationDate) }}</p>
+              </div>
+              <div>
+                <label class="text-xs text-slate-500 mb-1 block">حالة الرخصة</label>
+                <span class="inline-flex items-center px-2 py-1 rounded text-xs"
+                  [ngClass]="{
+                    'bg-green-100 text-green-700': isLicenseValid(),
+                    'bg-red-100 text-red-700': !isLicenseValid()
+                  }">
+                  {{ isLicenseValid() ? 'سارية' : 'منتهية' }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Vehicle Information -->
+        <div class="bg-white rounded-lg border border-slate-200 overflow-hidden">
+          <div class="bg-purple-500 px-4 py-3">
+            <h2 class="text-sm font-semibold text-white">معلومات المركبة</h2>
+          </div>
+          <div class="p-4" *ngIf="!isLoading && captainDetails">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="text-xs text-slate-500 mb-1 block">نوع المركبة</label>
+                <p class="text-sm text-slate-900">{{ captainDetails.vehicleType}}</p>
+              </div>
+              <div>
+                <label class="text-xs text-slate-500 mb-1 block">ماركة المركبة</label>
+                <p class="text-sm text-slate-900">{{ captainDetails.vehicleModel}}</p>
+              </div>
+              <div>
+                <label class="text-xs text-slate-500 mb-1 block">لون المركبة</label>
+                <p class="text-sm text-slate-900">{{ captainDetails.vehicleColor}}</p>
+              </div>
+              <div>
+                <label class="text-xs text-slate-500 mb-1 block">رقم اللوحة</label>
+                <p class="text-sm text-slate-900">{{ captainDetails.vehiclePlateNumber}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column - Statistics -->
+      <div class="space-y-4">
+        <!-- Statistics Card -->
+        <div class="bg-white rounded-lg border border-slate-200 overflow-hidden">
+          <div class="bg-orange-500 px-4 py-3">
+            <h2 class="text-sm font-semibold text-white">الإحصائيات</h2>
+          </div>
+          <div class="p-4 space-y-3">
+            <div class="flex items-center justify-between p-3 bg-slate-50 rounded">
+              <div>
+                <p class="text-xs text-slate-600">إجمالي الشحنات</p>
+                <p class="text-lg font-semibold text-slate-900">{{ totalCount }}</p>
+              </div>
+              <div class="w-10 h-10 bg-teal-100 rounded flex items-center justify-center">
+                <svg class="w-5 h-5 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- All Images Section -->
+    <div class="mt-6 bg-white rounded-lg border border-slate-200 overflow-hidden">
+      <div class="bg-teal-500 px-4 py-3">
+        <h2 class="text-sm font-semibold text-white">المستندات والصور</h2>
+      </div>
+      <div class="p-4" *ngIf="!isLoading && captainDetails">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          <!-- Personal Image -->
+          <div class="text-center">
+            <div class="aspect-square bg-slate-100 rounded border border-slate-200 flex items-center justify-center mb-2 overflow-hidden">
+              <img *ngIf="captainDetails.personalImagePath; else noPersonalImage" 
+                   [src]="captainDetails.personalImagePath" 
+                   alt="الصورة الشخصية" 
+                   class="w-full h-full object-cover">
+              <ng-template #noPersonalImage>
+                <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+              </ng-template>
+            </div>
+            <p class="text-xs text-slate-600">الصورة الشخصية</p>
+          </div>
+
+          <!-- Front Identity -->
+          <div class="text-center">
+            <div class="aspect-square bg-slate-100 rounded border border-slate-200 flex items-center justify-center mb-2 overflow-hidden">
+              <img *ngIf="captainDetails.frontIdentityImagePath; else noFrontIdentity" 
+                   [src]="captainDetails.frontIdentityImagePath" 
+                   alt="الهوية الأمامية" 
+                   class="w-full h-full object-cover">
+              <ng-template #noFrontIdentity>
+                <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+              </ng-template>
+            </div>
+            <p class="text-xs text-slate-600">الهوية الأمامية</p>
+          </div>
+
+          <!-- Back Identity -->
+          <div class="text-center">
+            <div class="aspect-square bg-slate-100 rounded border border-slate-200 flex items-center justify-center mb-2 overflow-hidden">
+              <img *ngIf="captainDetails.backIdentityImagePath; else noBackIdentity" 
+                   [src]="captainDetails.backIdentityImagePath" 
+                   alt="الهوية الخلفية" 
+                   class="w-full h-full object-cover">
+              <ng-template #noBackIdentity>
+                <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+              </ng-template>
+            </div>
+            <p class="text-xs text-slate-600">الهوية الخلفية</p>
+          </div>
+
+          <!-- Front Driving License -->
+          <div class="text-center">
+            <div class="aspect-square bg-slate-100 rounded border border-slate-200 flex items-center justify-center mb-2 overflow-hidden">
+              <img *ngIf="captainDetails.frontDrivingLicenseImagePath; else noFrontLicense" 
+                   [src]="captainDetails.frontDrivingLicenseImagePath" 
+                   alt="رخصة القيادة الأمامية" 
+                   class="w-full h-full object-cover">
+              <ng-template #noFrontLicense>
+                <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+              </ng-template>
+            </div>
+            <p class="text-xs text-slate-600">رخصة القيادة الأمامية</p>
+          </div>
+
+          <!-- Back Driving License -->
+          <div class="text-center">
+            <div class="aspect-square bg-slate-100 rounded border border-slate-200 flex items-center justify-center mb-2 overflow-hidden">
+              <img *ngIf="captainDetails.backDrivingLicenseImagePath; else noBackLicense" 
+                   [src]="captainDetails.backDrivingLicenseImagePath" 
+                   alt="رخصة القيادة الخلفية" 
+                   class="w-full h-full object-cover">
+              <ng-template #noBackLicense>
+                <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+              </ng-template>
+            </div>
+            <p class="text-xs text-slate-600">رخصة القيادة الخلفية</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

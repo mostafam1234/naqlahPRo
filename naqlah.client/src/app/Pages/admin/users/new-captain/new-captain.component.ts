@@ -203,6 +203,38 @@ export class NewCaptainComponent {
     window.history.back();
   }
 
+  getStateClass(state: string): string {
+    const stateLower = state?.toLowerCase() || '';
+    if (stateLower.includes('جديد') || stateLower.includes('new')) {
+      return 'bg-blue-100 text-blue-700';
+    } else if (stateLower.includes('موافق') || stateLower.includes('approved')) {
+      return 'bg-green-100 text-green-700';
+    } else if (stateLower.includes('معلق') || stateLower.includes('suspended')) {
+      return 'bg-yellow-100 text-yellow-700';
+    } else if (stateLower.includes('مرفوض') || stateLower.includes('rejected')) {
+      return 'bg-red-100 text-red-700';
+    } else if (stateLower.includes('محظور') || stateLower.includes('blocked')) {
+      return 'bg-gray-100 text-gray-700';
+    }
+    return 'bg-neutral-100 text-neutral-700';
+  }
+
+  getStateDotClass(state: string): string {
+    const stateLower = state?.toLowerCase() || '';
+    if (stateLower.includes('جديد') || stateLower.includes('new')) {
+      return 'bg-blue-500';
+    } else if (stateLower.includes('موافق') || stateLower.includes('approved')) {
+      return 'bg-green-500';
+    } else if (stateLower.includes('معلق') || stateLower.includes('suspended')) {
+      return 'bg-yellow-500';
+    } else if (stateLower.includes('مرفوض') || stateLower.includes('rejected')) {
+      return 'bg-red-500';
+    } else if (stateLower.includes('محظور') || stateLower.includes('blocked')) {
+      return 'bg-gray-500';
+    }
+    return 'bg-neutral-500';
+  }
+
   ngOnDestroy() {
     this.sub.unsubscribe();
   }
