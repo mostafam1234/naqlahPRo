@@ -6396,6 +6396,14 @@
           "deliveryManName": {
             "type": "string"
           },
+          "isScheduled": {
+            "type": "boolean"
+          },
+          "expectedPickUpTime": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
           "wayPoints": {
             "type": "array",
             "items": {

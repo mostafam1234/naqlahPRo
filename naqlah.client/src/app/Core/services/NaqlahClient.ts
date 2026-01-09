@@ -9509,6 +9509,8 @@ export class CustomerOrderListDto {
     statusName!: string;
     total!: number;
     deliveryManName!: string;
+    isScheduled!: boolean;
+    expectedPickUpTime!: Date | null;
     wayPoints!: CustomerOrderWayPointDto[];
 
     init(_data?: any) {
@@ -9520,6 +9522,8 @@ export class CustomerOrderListDto {
             this.statusName = _data["statusName"] !== undefined ? _data["statusName"] : <any>null;
             this.total = _data["total"] !== undefined ? _data["total"] : <any>null;
             this.deliveryManName = _data["deliveryManName"] !== undefined ? _data["deliveryManName"] : <any>null;
+            this.isScheduled = _data["isScheduled"] !== undefined ? _data["isScheduled"] : <any>null;
+            this.expectedPickUpTime = _data["expectedPickUpTime"] ? new Date(_data["expectedPickUpTime"].toString()) : <any>null;
             if (Array.isArray(_data["wayPoints"])) {
                 this.wayPoints = [] as any;
                 for (let item of _data["wayPoints"])
@@ -9547,6 +9551,8 @@ export class CustomerOrderListDto {
         data["statusName"] = this.statusName !== undefined ? this.statusName : <any>null;
         data["total"] = this.total !== undefined ? this.total : <any>null;
         data["deliveryManName"] = this.deliveryManName !== undefined ? this.deliveryManName : <any>null;
+        data["isScheduled"] = this.isScheduled !== undefined ? this.isScheduled : <any>null;
+        data["expectedPickUpTime"] = this.expectedPickUpTime ? this.expectedPickUpTime.toISOString() : <any>null;
         if (Array.isArray(this.wayPoints)) {
             data["wayPoints"] = [];
             for (let item of this.wayPoints)
