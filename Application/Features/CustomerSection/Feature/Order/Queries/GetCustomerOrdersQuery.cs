@@ -115,6 +115,8 @@ namespace Application.Features.CustomerSection.Feature.Order.Queries
                     {
                         Id = x.Order.Id,
                         OrderNumber = x.Order.OrderNumber,
+                        IsScheduled= x.Order.IsScheduled,
+                        ExpectedPickUpTime= x.Order.ExpectedPickUpTime,
                         CreatedDate = x.Order.OrderStatusHistories
                             .OrderBy(h => h.CreationDate)
                             .First().CreationDate,

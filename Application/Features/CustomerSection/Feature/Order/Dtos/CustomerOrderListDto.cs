@@ -16,6 +16,8 @@ namespace Application.Features.CustomerSection.Feature.Order.Dtos
         public string StatusName { get; set; }
         public decimal Total { get; set; }
         public string DeliveryManName { get; set; }
+        public bool IsScheduled { get; set; }
+        public DateTime? ExpectedPickUpTime { get; set; }
         public List<CustomerOrderWayPointDto> WayPoints { get; set; }
 
         public CustomerOrderListDto()
