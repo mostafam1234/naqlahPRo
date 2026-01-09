@@ -93,6 +93,23 @@ namespace Presentaion.Controllers
             return Ok(result.Value);
         }
 
+
+        [HttpGet]
+        [ProducesResponseType(typeof(List<AcceptedOrder>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("GetCompletedDeliveryManOrders")]
+        public async Task<IActionResult> GetCompletedDeliveryManOrders(int pageNumber,int pageSize)
+        {
+            var result = await mediator.Send(new GetDeliveryManCompletedOrdersQuery {PageSize=pageSize,PageNumber=pageNumber});
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+
+            return Ok(result.Value);
+        }
+
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
