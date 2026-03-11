@@ -1,0 +1,130 @@
+<div class="backup-page w-full min-h-[calc(100vh-120px)]" dir="rtl">
+  <!-- Header -->
+  <app-page-header
+    [title]="'ADMIN.BACKUP.TITLE' | translate"
+    [subtitle]="'ADMIN.BACKUP.SUBTITLE' | translate"
+  ></app-page-header>
+
+  <div class="backup-content w-full grid grid-cols-1 xl:grid-cols-12 gap-6 xl:gap-8">
+    <!-- Left: Date range + Export action -->
+    <div class="xl:col-span-4 space-y-6">
+      <!-- Date range card -->
+      <div class="backup-card">
+        <div class="backup-card-header">
+          <span class="backup-card-icon">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+          </span>
+          <div>
+            <h3 class="backup-card-title">{{ 'ADMIN.BACKUP.DATE_RANGE' | translate }}</h3>
+            <p class="backup-card-hint">{{ 'ADMIN.BACKUP.DATE_RANGE_HINT' | translate }}</p>
+          </div>
+        </div>
+        <div class="backup-card-body">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="fromDate" class="backup-label">{{ 'ADMIN.BACKUP.FROM' | translate }}</label>
+              <input
+                id="fromDate"
+                type="date"
+                [(ngModel)]="fromDate"
+                class="backup-input"
+              />
+            </div>
+            <div>
+              <label for="toDate" class="backup-label">{{ 'ADMIN.BACKUP.TO' | translate }}</label>
+              <input
+                id="toDate"
+                type="date"
+                [(ngModel)]="toDate"
+                class="backup-input"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Export action card -->
+      <div class="backup-card backup-card-action">
+        <div class="backup-card-body flex flex-col items-stretch gap-4">
+          <!-- Progress -->
+          <div *ngIf="exporting && progressMessage" class="backup-progress">
+            <svg class="backup-spinner" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span>{{ progressMessage }}</span>
+          </div>
+          <!-- Error -->
+          <div *ngIf="errorMessage" class="backup-error">
+            {{ errorMessage }}
+          </div>
+          <button
+            type="button"
+            (click)="export()"
+            [disabled]="exporting || selectedModules.size === 0"
+            class="backup-export-btn"
+          >
+            <svg *ngIf="!exporting" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+            <svg *ngIf="exporting" class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+            <span>{{ exporting ? ('ADMIN.BACKUP.EXPORTING' | translate) : ('ADMIN.BACKUP.EXPORT_BUTTON' | translate) }}</span>
+          </button>
+          <p class="text-xs text-neutral-500 text-center">
+            {{ 'ADMIN.BACKUP.SELECT_MODULES' | translate }} ({{ selectedModules.size }})
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Module selection -->
+    <div class="xl:col-span-8">
+      <div class="backup-card h-full">
+        <div class="backup-card-header backup-card-header-modules">
+          <span class="backup-card-icon">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+            </svg>
+          </span>
+          <div class="flex-1">
+            <h3 class="backup-card-title">{{ 'ADMIN.BACKUP.SELECT_MODULES' | translate }}</h3>
+          </div>
+          <div class="flex gap-2">
+            <button type="button" (click)="selectAll()" class="backup-link-btn">
+              {{ 'ADMIN.BACKUP.SELECT_ALL' | translate }}
+            </button>
+            <span class="text-neutral-300">|</span>
+            <button type="button" (click)="clearAll()" class="backup-link-btn backup-link-btn-muted">
+              {{ 'ADMIN.BACKUP.CLEAR_ALL' | translate }}
+            </button>
+          </div>
+        </div>
+        <div class="backup-card-body backup-modules-body">
+          <div *ngFor="let group of groupedModules" class="backup-module-group">
+            <p class="backup-group-label">{{ group.groupKey | translate }}</p>
+            <div class="backup-modules-grid">
+              <label
+                *ngFor="let item of group.items"
+                class="backup-module-chip"
+                [class.backup-module-chip-selected]="selectedModules.has(item.key)"
+              >
+                <input
+                  type="checkbox"
+                  [checked]="selectedModules.has(item.key)"
+                  (change)="toggleModule(item.key)"
+                  class="backup-module-checkbox"
+                />
+                <span class="backup-module-label">{{ item.labelKey | translate }}</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
