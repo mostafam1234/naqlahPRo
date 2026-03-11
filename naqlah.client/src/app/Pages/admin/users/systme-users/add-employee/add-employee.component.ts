@@ -26,7 +26,7 @@ export class AddEmployeeComponent implements OnInit, OnDestroy {
   private sub = new SubSink();
 
   constructor(
-    private fb: FormBuilder, 
+    private fb: FormBuilder,
     private imageService: ImageService,
     private systemUserClient: SystemUserAdminClient,
     private toasterService: ToasterService,
@@ -126,17 +126,17 @@ export class AddEmployeeComponent implements OnInit, OnDestroy {
   onPhoneInput(event: Event) {
     const input = event.target as HTMLInputElement;
     let value = input.value.replace(/\D/g, ''); // Remove non-digits
-    
+
     // Ensure it starts with 05
     if (value.length > 0 && !value.startsWith('05')) {
       value = '05' + value.replace(/^05/, '');
     }
-    
+
     // Limit to 10 digits
     if (value.length > 10) {
       value = value.substring(0, 10);
     }
-    
+
     // Update form control value
     this.empForm.patchValue({ phoneNumber: value }, { emitEvent: false });
   }
@@ -148,10 +148,10 @@ export class AddEmployeeComponent implements OnInit, OnDestroy {
     if (this.empForm.valid) {
       this.isLoading = true;
       const formValue = this.empForm.value;
-      
+
       // Clean phone number (remove spaces and dashes)
       const cleanPhoneNumber = formValue.phoneNumber.trim().replace(/\s+/g, '').replace(/-/g, '');
-      
+
       const command = new AddSystemUserCommand();
       command.userName = formValue.userName.trim();
       command.email = formValue.email.trim();
@@ -172,25 +172,11 @@ export class AddEmployeeComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.isLoading = false;
-          
+
           // Extract error message from backend response
           let errorMessage = 'حدث خطأ أثناء إضافة المستخدم';
-          
-          if (error?.error) {
-            // Try to get error from ProblemDetail or direct error message
-            if (error.error.detail) {
-              errorMessage = error.error.detail;
-            } else if (error.error.title) {
-              errorMessage = error.error.title;
-            } else if (typeof error.error === 'string') {
-              errorMessage = error.error;
-            } else if (error.error.message) {
-              errorMessage = error.error.message;
-            }
-          } else if (error?.message) {
-            errorMessage = error.message;
-          }
-          
+          errorMessage = error.errorMessage;
+
           this.toasterService.error('خطأ', errorMessage);
         }
       });

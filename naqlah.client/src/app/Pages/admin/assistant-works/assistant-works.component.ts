@@ -8,7 +8,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ToasterService } from 'src/app/Core/services/toaster.service';
 import { ConfirmationModalComponent } from 'src/app/shared/components/confirmation-modal/confirmation-modal.component';
 import { AddAssistantWorkCommand, AssistantWorkAdminDto, AssistantWorkClient, UpdateAssistantWorkCommand } from 'src/app/Core/services/NaqlahClient';
-
+import { PermissionService } from 'src/app/shared/services/permission.service';
 
 @Component({
   selector: 'app-assistant-works',
@@ -49,7 +49,8 @@ export class AssistantWorksComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private assistantWorkClient: AssistantWorkClient,
-    private toasterService: ToasterService
+    private toasterService: ToasterService,
+    private permissionService: PermissionService
   ) {
     this.itemForm = this.fb.group({
       arabicName: ['', [Validators.required, Validators.maxLength(100)]],
@@ -58,7 +59,12 @@ export class AssistantWorksComponent implements OnInit, OnDestroy {
     });
   }
 
+  hasPermission(permission: string): boolean {
+    return this.permissionService.hasPermission(permission);
+  }
+
   ngOnInit(): void {
+    this.permissionService.getPermissions().subscribe(() => {});
     this.loadItems();
     this.setupSearch();
   }

@@ -17,9 +17,21 @@
           <!-- Search Bar -->
           <div class="mb-6">
             <div class="relative max-w-2xl">
-              <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                <svg class="h-5 w-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              <div
+                class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+              >
+                <svg
+                  class="h-5 w-5 text-neutral-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
                 </svg>
               </div>
               <input
@@ -33,8 +45,18 @@
                 (click)="clearSearch()"
                 class="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400 hover:text-neutral-600 transition-colors"
               >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </div>
@@ -44,13 +66,16 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Customer Type Filter -->
             <div>
-              <label class="block text-sm font-semibold text-neutral-700 mb-3">نوع العميل</label>
+              <label class="block text-sm font-semibold text-neutral-700 mb-3"
+                >نوع العميل</label
+              >
               <div class="flex gap-2 flex-wrap">
                 <button
                   (click)="setActiveTab('all')"
                   [ngClass]="{
                     'bg-primary-600 text-white shadow-md': activeTab === 'all',
-                    'bg-neutral-100 text-neutral-700 hover:bg-neutral-200': activeTab !== 'all'
+                    'bg-neutral-100 text-neutral-700 hover:bg-neutral-200':
+                      activeTab !== 'all',
                   }"
                   class="px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200"
                 >
@@ -59,8 +84,10 @@
                 <button
                   (click)="setActiveTab('individual')"
                   [ngClass]="{
-                    'bg-primary-600 text-white shadow-md': activeTab === 'individual',
-                    'bg-neutral-100 text-neutral-700 hover:bg-neutral-200': activeTab !== 'individual'
+                    'bg-primary-600 text-white shadow-md':
+                      activeTab === 'individual',
+                    'bg-neutral-100 text-neutral-700 hover:bg-neutral-200':
+                      activeTab !== 'individual',
                   }"
                   class="px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200"
                 >
@@ -69,8 +96,10 @@
                 <button
                   (click)="setActiveTab('institution')"
                   [ngClass]="{
-                    'bg-primary-600 text-white shadow-md': activeTab === 'institution',
-                    'bg-neutral-100 text-neutral-700 hover:bg-neutral-200': activeTab !== 'institution'
+                    'bg-primary-600 text-white shadow-md':
+                      activeTab === 'institution',
+                    'bg-neutral-100 text-neutral-700 hover:bg-neutral-200':
+                      activeTab !== 'institution',
                   }"
                   class="px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200"
                 >
@@ -81,13 +110,17 @@
 
             <!-- Status Filter -->
             <div>
-              <label class="block text-sm font-semibold text-neutral-700 mb-3">حالة الطلب</label>
+              <label class="block text-sm font-semibold text-neutral-700 mb-3"
+                >حالة الطلب</label
+              >
               <div class="flex gap-2 flex-wrap">
                 <button
                   (click)="setActiveProgressTab('all')"
                   [ngClass]="{
-                    'bg-primary-600 text-white shadow-md': activeProgressTab === 'all',
-                    'bg-neutral-100 text-neutral-700 hover:bg-neutral-200': activeProgressTab !== 'all'
+                    'bg-primary-600 text-white shadow-md':
+                      activeProgressTab === 'all',
+                    'bg-neutral-100 text-neutral-700 hover:bg-neutral-200':
+                      activeProgressTab !== 'all',
                   }"
                   class="px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200"
                 >
@@ -96,30 +129,36 @@
                 <button
                   (click)="setActiveProgressTab('pending')"
                   [ngClass]="{
-                    'bg-blue-700 text-white shadow-md': activeProgressTab === 'pending',
-                    'bg-neutral-100 text-neutral-700 hover:bg-neutral-200': activeProgressTab !== 'current'
+                    'bg-blue-700 text-white shadow-md':
+                      activeProgressTab === 'pending',
+                    'bg-neutral-100 text-neutral-700 hover:bg-neutral-200':
+                      activeProgressTab !== 'current',
                   }"
                   class="px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200"
                 >
-                 معلقة 
+                  معلقة
                 </button>
 
                 <button
-                (click)="setActiveProgressTab('assigned')"
-                [ngClass]="{
-                  'bg-primary-800 text-white shadow-md': activeProgressTab === 'assigned',
-                  'bg-neutral-100 text-neutral-700 hover:bg-neutral-200': activeProgressTab !== 'current'
-                }"
-                class="px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200"
-              >
-                منسوبة الى مندوب 
-              </button>
+                  (click)="setActiveProgressTab('assigned')"
+                  [ngClass]="{
+                    'bg-primary-800 text-white shadow-md':
+                      activeProgressTab === 'assigned',
+                    'bg-neutral-100 text-neutral-700 hover:bg-neutral-200':
+                      activeProgressTab !== 'current',
+                  }"
+                  class="px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200"
+                >
+                  منسوبة الى مندوب
+                </button>
 
                 <button
                   (click)="setActiveProgressTab('expired')"
                   [ngClass]="{
-                    'bg-red-600 text-white shadow-md': activeProgressTab === 'expired',
-                    'bg-neutral-100 text-neutral-700 hover:bg-neutral-200': activeProgressTab !== 'expired'
+                    'bg-red-600 text-white shadow-md':
+                      activeProgressTab === 'expired',
+                    'bg-neutral-100 text-neutral-700 hover:bg-neutral-200':
+                      activeProgressTab !== 'expired',
                   }"
                   class="px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200"
                 >
@@ -128,8 +167,10 @@
                 <button
                   (click)="setActiveProgressTab('completed')"
                   [ngClass]="{
-                    'bg-green-600 text-white shadow-md': activeProgressTab === 'completed',
-                    'bg-neutral-100 text-neutral-700 hover:bg-neutral-200': activeProgressTab !== 'completed'
+                    'bg-green-600 text-white shadow-md':
+                      activeProgressTab === 'completed',
+                    'bg-neutral-100 text-neutral-700 hover:bg-neutral-200':
+                      activeProgressTab !== 'completed',
                   }"
                   class="px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200"
                 >
@@ -142,13 +183,33 @@
       </div>
 
       <!-- Orders Table -->
-      <div class="bg-white rounded-xl shadow-sm border border-neutral-200 overflow-hidden">
+      <div
+        class="bg-white rounded-xl shadow-sm border border-neutral-200 overflow-hidden"
+      >
         <!-- Loading State -->
         <div *ngIf="isLoading" class="p-12 text-center">
-          <div class="inline-flex items-center px-4 py-2 font-semibold leading-6 text-sm shadow rounded-md text-primary-600 bg-primary-50">
-            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-primary-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          <div
+            class="inline-flex items-center px-4 py-2 font-semibold leading-6 text-sm shadow rounded-md text-primary-600 bg-primary-50"
+          >
+            <svg
+              class="animate-spin -ml-1 mr-3 h-5 w-5 text-primary-600"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
             </svg>
             جاري تحميل البيانات...
           </div>
@@ -157,13 +218,29 @@
         <!-- Empty State -->
         <div *ngIf="!isLoading && orders.length === 0" class="p-12 text-center">
           <div class="max-w-md mx-auto">
-            <div class="w-16 h-16 mx-auto mb-4 bg-neutral-100 rounded-full flex items-center justify-center">
-              <svg class="w-8 h-8 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 009.586 13H7" />
+            <div
+              class="w-16 h-16 mx-auto mb-4 bg-neutral-100 rounded-full flex items-center justify-center"
+            >
+              <svg
+                class="w-8 h-8 text-neutral-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 009.586 13H7"
+                />
               </svg>
             </div>
-            <h3 class="text-lg font-semibold text-neutral-900 mb-2">لا توجد طلبات</h3>
-            <p class="text-sm text-neutral-500">لم يتم العثور على أي طلبات تطابق المعايير المحددة</p>
+            <h3 class="text-lg font-semibold text-neutral-900 mb-2">
+              لا توجد طلبات
+            </h3>
+            <p class="text-sm text-neutral-500">
+              لم يتم العثور على أي طلبات تطابق المعايير المحددة
+            </p>
           </div>
         </div>
 
@@ -172,77 +249,130 @@
           <table class="min-w-full divide-y divide-neutral-200">
             <thead class="bg-neutral-50">
               <tr>
-                <th scope="col" class="px-6 py-4 text-right text-xs font-semibold text-neutral-700 uppercase tracking-wider">
+                <th
+                  scope="col"
+                  class="px-6 py-4 text-right text-xs font-semibold text-neutral-700 uppercase tracking-wider"
+                >
                   رقم الطلب
                 </th>
-                <th scope="col" class="px-6 py-4 text-right text-xs font-semibold text-neutral-700 uppercase tracking-wider">
+                <th
+                  scope="col"
+                  class="px-6 py-4 text-right text-xs font-semibold text-neutral-700 uppercase tracking-wider"
+                >
                   العميل
                 </th>
-                <th scope="col" class="px-6 py-4 text-right text-xs font-semibold text-neutral-700 uppercase tracking-wider">
+                <th
+                  scope="col"
+                  class="px-6 py-4 text-right text-xs font-semibold text-neutral-700 uppercase tracking-wider"
+                >
                   نقطة البداية
                 </th>
-                <th scope="col" class="px-6 py-4 text-right text-xs font-semibold text-neutral-700 uppercase tracking-wider">
+                <th
+                  scope="col"
+                  class="px-6 py-4 text-right text-xs font-semibold text-neutral-700 uppercase tracking-wider"
+                >
                   نقطة النهاية
                 </th>
-                <th scope="col" class="px-6 py-4 text-right text-xs font-semibold text-neutral-700 uppercase tracking-wider">
+                <th
+                  scope="col"
+                  class="px-6 py-4 text-right text-xs font-semibold text-neutral-700 uppercase tracking-wider"
+                >
                   المبلغ
                 </th>
-                <th scope="col" class="px-6 py-4 text-right text-xs font-semibold text-neutral-700 uppercase tracking-wider">
+                <th
+                  scope="col"
+                  class="px-6 py-4 text-right text-xs font-semibold text-neutral-700 uppercase tracking-wider"
+                >
                   الحالة
                 </th>
-                <th scope="col" class="px-6 py-4 text-center text-xs font-semibold text-neutral-700 uppercase tracking-wider">
+                <th
+                  scope="col"
+                  class="px-6 py-4 text-center text-xs font-semibold text-neutral-700 uppercase tracking-wider"
+                >
                   الإجراءات
                 </th>
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-neutral-200">
-              <tr 
-                *ngFor="let order of orders" 
+              <tr
+                *ngFor="let order of orders"
                 class="hover:bg-neutral-50 transition-colors duration-150"
               >
                 <!-- Order Number -->
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm font-semibold text-neutral-900">{{ order.orderNumber || 'غير محدد' }}</div>
+                  <div class="text-sm font-semibold text-neutral-900">
+                    {{ order.orderNumber || "غير محدد" }}
+                  </div>
                 </td>
 
                 <!-- Customer -->
                 <td class="px-6 py-4">
-                  <div class="text-sm font-medium text-neutral-900">{{ order.customerName || 'غير محدد' }}</div>
+                  <div class="text-sm font-medium text-neutral-900">
+                    {{ order.customerName || "غير محدد" }}
+                  </div>
                   <div class="text-xs text-neutral-500">
-                    {{ order.customerType === 1 ? 'عميل فردي' : 'مؤسسة' }}
+                    {{ order.customerType === 1 ? "عميل فردي" : "مؤسسة" }}
                   </div>
                 </td>
 
                 <!-- Origin Waypoint -->
                 <td class="px-6 py-4">
-                  <div *ngIf="getOriginWayPoint(order.wayPoints)" class="flex items-center gap-2">
+                  <div
+                    *ngIf="getOriginWayPoint(order.wayPoints)"
+                    class="flex items-center gap-2"
+                  >
                     <div class="w-2 h-2 bg-green-500 rounded-full"></div>
                     <div>
-                      <div class="text-sm font-medium text-neutral-900">{{ getOriginWayPoint(order.wayPoints)?.address || 'غير محدد' }}</div>
+                      <div class="text-sm font-medium text-neutral-900">
+                        {{
+                          getOriginWayPoint(order.wayPoints)?.address ||
+                            "غير محدد"
+                        }}
+                      </div>
                     </div>
                   </div>
-                  <div *ngIf="!getOriginWayPoint(order.wayPoints)" class="text-sm text-neutral-400">غير محدد</div>
+                  <div
+                    *ngIf="!getOriginWayPoint(order.wayPoints)"
+                    class="text-sm text-neutral-400"
+                  >
+                    غير محدد
+                  </div>
                 </td>
 
                 <!-- Destination Waypoint -->
                 <td class="px-6 py-4">
-                  <div *ngIf="getDestinationWayPoint(order.wayPoints)" class="flex items-center gap-2">
+                  <div
+                    *ngIf="getDestinationWayPoint(order.wayPoints)"
+                    class="flex items-center gap-2"
+                  >
                     <div class="w-2 h-2 bg-red-500 rounded-full"></div>
                     <div>
-                      <div class="text-sm font-medium text-neutral-900">{{ getDestinationWayPoint(order.wayPoints)?.address || 'غير محدد' }}</div>
+                      <div class="text-sm font-medium text-neutral-900">
+                        {{
+                          getDestinationWayPoint(order.wayPoints)?.address ||
+                            "غير محدد"
+                        }}
+                      </div>
                     </div>
                   </div>
-                  <div *ngIf="!getDestinationWayPoint(order.wayPoints)" class="text-sm text-neutral-400">غير محدد</div>
+                  <div
+                    *ngIf="!getDestinationWayPoint(order.wayPoints)"
+                    class="text-sm text-neutral-400"
+                  >
+                    غير محدد
+                  </div>
                 </td>
 
                 <!-- Amount -->
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm font-semibold text-green-600">{{ order.total || 0 }} ر.س</div>
+                  <div class="text-sm font-semibold text-green-600">
+                    {{ order.total || 0 }} ر.س
+                  </div>
                 </td>
 
                 <!-- Status -->
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <span 
+                  <span
                     [ngClass]="getStatusClass(order.status)"
                     class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold"
                   >
@@ -253,12 +383,28 @@
                 <!-- Actions -->
                 <td class="px-6 py-4 whitespace-nowrap text-center">
                   <button
+                    *ngIf="hasPermission('CanViewOrderDetails')"
                     (click)="viewOrderDetails(order.id)"
                     class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-primary-600 bg-primary-50 hover:bg-primary-100 rounded-lg transition-colors duration-200"
                   >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    <svg
+                      class="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                      />
                     </svg>
                     <span>عرض</span>
                   </button>
@@ -269,13 +415,28 @@
         </div>
 
         <!-- Pagination -->
-        <div *ngIf="!isLoading && totalPages > 1" class="bg-neutral-50 border-t border-neutral-200 px-6 py-4">
-          <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div
+          *ngIf="!isLoading && totalPages > 1"
+          class="bg-neutral-50 border-t border-neutral-200 px-6 py-4"
+        >
+          <div
+            class="flex flex-col sm:flex-row items-center justify-between gap-4"
+          >
             <!-- Results Info -->
             <div class="text-sm text-neutral-600">
-              عرض <span class="font-semibold text-neutral-900">{{ displayStartCount }}</span> - 
-              <span class="font-semibold text-neutral-900">{{ displayEndCount }}</span> من 
-              <span class="font-semibold text-neutral-900">{{ totalCount }}</span> طلب
+              عرض
+              <span class="font-semibold text-neutral-900">{{
+                displayStartCount
+              }}</span>
+              -
+              <span class="font-semibold text-neutral-900">{{
+                displayEndCount
+              }}</span>
+              من
+              <span class="font-semibold text-neutral-900">{{
+                totalCount
+              }}</span>
+              طلب
             </div>
 
             <!-- Pagination Controls -->
@@ -286,8 +447,18 @@
                 [disabled]="currentPage === 1"
                 class="px-3 py-2 text-sm font-medium text-neutral-700 bg-white border border-neutral-300 rounded-lg hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
               >
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 19l-7-7 7-7"
+                  />
                 </svg>
               </button>
 
@@ -298,8 +469,10 @@
                     *ngIf="isPageNumber(page)"
                     (click)="changePage(page)"
                     [ngClass]="{
-                      'bg-primary-600 text-white shadow-md': currentPage === page,
-                      'text-neutral-700 hover:bg-neutral-100': currentPage !== page
+                      'bg-primary-600 text-white shadow-md':
+                        currentPage === page,
+                      'text-neutral-700 hover:bg-neutral-100':
+                        currentPage !== page,
                     }"
                     class="min-w-[40px] h-10 px-3 text-sm font-medium rounded-lg transition-all duration-200"
                   >
@@ -320,8 +493,18 @@
                 [disabled]="currentPage >= totalPages"
                 class="px-3 py-2 text-sm font-medium text-neutral-700 bg-white border border-neutral-300 rounded-lg hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
               >
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
                 </svg>
               </button>
             </div>

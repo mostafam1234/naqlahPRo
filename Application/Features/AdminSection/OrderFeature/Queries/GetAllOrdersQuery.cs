@@ -71,14 +71,14 @@ namespace Application.Features.AdminSection.OrderFeature.Queries
 
                     if (request.FromDate.HasValue)
                     {
-                        // Use Id as proxy for creation order since CreatedDate doesn't exist
-                        query = query.Where(x => x.Order.Id >= request.FromDate.Value.Day);
+                        var fromDate = request.FromDate.Value.Date.ToUniversalTime();
+                        query = query.Where(x => x.Order.CreationDate >= fromDate);
                     }
 
                     if (request.ToDate.HasValue)
                     {
-                        // Use Id as proxy for creation order since CreatedDate doesn't exist
-                        query = query.Where(x => x.Order.Id <= request.ToDate.Value.Day * 1000);
+                        var toDate = request.ToDate.Value.Date.AddDays(1).AddTicks(-1).ToUniversalTime();
+                        query = query.Where(x => x.Order.CreationDate <= toDate);
                     }
 
                     // Get total count
@@ -128,6 +128,7 @@ namespace Application.Features.AdminSection.OrderFeature.Queries
                     {
                         Id = x.Order.Id,
                         OrderNumber = x.Order.OrderNumber,
+                        CreatedDate = x.Order.CreationDate,
                         Status = x.Order.OrderStatus,
                         StatusName = GetOrderStatusName(x.Order.OrderStatus, request.LanguageId),
                         OrderType = x.Order.OrderType,

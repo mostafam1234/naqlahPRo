@@ -7,6 +7,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ToasterService } from 'src/app/Core/services/toaster.service';
 import { WalletTransactionAdminDto, CustomerLookupDto, AddWalletTransactionCommand, WalletTransactionsAdminClient } from 'src/app/Core/services/NaqlahClient';
 import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
+import { PermissionService } from 'src/app/shared/services/permission.service';
 
 @Component({
   selector: 'app-customer-wallet-transactions',
@@ -43,7 +44,8 @@ export class CustomerWalletTransactionsComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private toasterService: ToasterService,
-    private walletTransactionsClient: WalletTransactionsAdminClient
+    private walletTransactionsClient: WalletTransactionsAdminClient,
+    private permissionService: PermissionService
   ) {
     this.transactionForm = this.fb.group({
       customerId: [null, [Validators.required]],
@@ -62,7 +64,12 @@ export class CustomerWalletTransactionsComponent implements OnInit, OnDestroy {
     });
   }
 
+  hasPermission(permission: string): boolean {
+    return this.permissionService.hasPermission(permission);
+  }
+
   ngOnInit(): void {
+    this.permissionService.getPermissions().subscribe(() => {});
     this.setupCustomerSearch();
     this.setupFilterChanges();
   }

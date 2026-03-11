@@ -86,28 +86,25 @@ namespace Application.Features.AdminSection.SystemUsers.Commands
                     }
                 }
 
-                // Update role if changed
-                var currentRoles = await _userManager.GetRolesAsync(user);
+                // User has exactly one role: replace with the new one if different
                 var newRole = await _context.Roles.FirstOrDefaultAsync(x => x.Id == command.RoleId, cancellationToken);
                 if (newRole == null)
                 {
                     return Result.Failure<int>("الدور المحدد غير موجود");
                 }
 
-                // Remove user from all current roles
-                if (currentRoles.Any())
+                var existingUserRoles = await _context.UserRoles
+                    .Where(ur => ur.UserId == user.Id)
+                    .ToListAsync(cancellationToken);
+
+                if (existingUserRoles.Any())
                 {
-                    await _userManager.RemoveFromRolesAsync(user, currentRoles);
+                    _context.UserRoles.RemoveRange(existingUserRoles);
                 }
 
-                // Add user to new role
-                var roleResult = await _userManager.AddToRoleAsync(user, newRole.Name!);
-                if (!roleResult.Succeeded)
-                {
-                    var errors = roleResult.Errors.ToList();
-                    var errorMessage = string.Join(", ", errors.Select(e => e.Description));
-                    return Result.Failure<int>($"فشل في تحديث الدور: {errorMessage}");
-                }
+                var newUserRole = Domain.Models.UserRole.Instance(command.RoleId);
+                newUserRole.UserId = user.Id;
+                await _context.UserRoles.AddAsync(newUserRole, cancellationToken);
 
                 // Update claims
                 var existingClaims = await _userManager.GetClaimsAsync(user);

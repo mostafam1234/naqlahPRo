@@ -1,4 +1,4 @@
-﻿using Application.Features.AdminSection.OrderFeature.Commands;
+using Application.Features.AdminSection.OrderFeature.Commands;
 using Application.Features.AdminSection.OrderFeature.Dtos;
 using Application.Features.AdminSection.OrderFeature.Queries;
 using Application.Shared.Dtos;
@@ -14,13 +14,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Domain.Constants;
 using Microsoft.AspNetCore.Authorization;
+using Presentaion.Authorization;
 
 namespace Presentaion.Controllers.Admin
 {
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
+    [RequirePermission(PermissionNames.CanViewAllOrders)]
     public class OrderAdminController : ControllerBase
     {
         private readonly IMediator mediator;

@@ -32,7 +32,7 @@
     <app-header (dataEmitter)="handleSideBarVisibility($event)"></app-header>
     <div class="bg-adminBodyBG">
       <div class="G-sub_container">
-        <router-outlet></router-outlet>
+        <router-outlet (activate)="onOutletActivated()"></router-outlet>
         <span *ngIf="loading" class="loading-spinner" ></span>
       </div>
     </div>

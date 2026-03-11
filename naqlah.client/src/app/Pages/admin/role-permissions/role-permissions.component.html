@@ -1,0 +1,195 @@
+<div class="backup-page w-full min-h-[calc(100vh-120px)]" dir="rtl">
+  <app-page-header
+    [title]="'ADMIN.ROLE_PERMISSIONS.TITLE' | translate"
+    [subtitle]="'ADMIN.ROLE_PERMISSIONS.SELECT_ROLE_HINT' | translate"
+  ></app-page-header>
+
+  <div class="backup-content w-full grid grid-cols-1 xl:grid-cols-12 gap-6 xl:gap-8">
+    <!-- Left column: Role + Add role + Save -->
+    <div class="xl:col-span-4 space-y-6">
+      <!-- Select role card -->
+      <div class="backup-card">
+        <div class="backup-card-header">
+          <span class="backup-card-icon">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+            </svg>
+          </span>
+          <div>
+            <h3 class="backup-card-title">{{ 'ADMIN.ROLE_PERMISSIONS.SELECT_ROLE' | translate }}</h3>
+            <p class="backup-card-hint">{{ 'ADMIN.ROLE_PERMISSIONS.SELECT_ROLE_HINT' | translate }}</p>
+          </div>
+        </div>
+        <div class="backup-card-body">
+          <label for="roleSelect" class="backup-label">{{ 'ADMIN.ROLE_PERMISSIONS.SELECT_ROLE' | translate }}</label>
+          <select
+            id="roleSelect"
+            [(ngModel)]="selectedRoleId"
+            (ngModelChange)="onRoleChange()"
+            class="backup-select"
+          >
+            <option [ngValue]="null">— {{ 'ADMIN.ROLE_PERMISSIONS.SELECT_ROLE' | translate }} —</option>
+            <option *ngFor="let r of roles" [ngValue]="r.id">{{ r.name }} ({{ r.arabicName }})</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Add new role card -->
+      <div class="backup-card">
+        <div class="backup-card-header">
+          <span class="backup-card-icon">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+            </svg>
+          </span>
+          <div>
+            <h3 class="backup-card-title">{{ 'ADMIN.ROLE_PERMISSIONS.ADD_NEW_ROLE' | translate }}</h3>
+            <p class="backup-card-hint">{{ 'ADMIN.ROLE_PERMISSIONS.ADD_NEW_ROLE_HINT' | translate }}</p>
+          </div>
+        </div>
+        <div class="backup-card-body">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="newRoleName" class="backup-label">{{ 'ADMIN.ROLE_PERMISSIONS.ROLE_NAME' | translate }}</label>
+              <input
+                id="newRoleName"
+                type="text"
+                [(ngModel)]="newRoleName"
+                [disabled]="creatingRole"
+                (keydown.enter)="addRole()"
+                placeholder="e.g. Manager"
+                class="backup-input"
+              />
+            </div>
+            <div>
+              <label for="newRoleArabic" class="backup-label">{{ 'ADMIN.ROLE_PERMISSIONS.ROLE_ARABIC_NAME' | translate }}</label>
+              <input
+                id="newRoleArabic"
+                type="text"
+                [(ngModel)]="newRoleArabicName"
+                [disabled]="creatingRole"
+                (keydown.enter)="addRole()"
+                placeholder="مدير"
+                class="backup-input"
+              />
+            </div>
+          </div>
+          <button
+            type="button"
+            (click)="addRole()"
+            [disabled]="creatingRole || !newRoleName?.trim()"
+            class="backup-export-btn mt-4"
+          >
+            <svg *ngIf="!creatingRole" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+            </svg>
+            <svg *ngIf="creatingRole" class="backup-spinner w-5 h-5" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span>{{ creatingRole ? ('ADMIN.ROLE_PERMISSIONS.ADDING_ROLE' | translate) : ('ADMIN.ROLE_PERMISSIONS.ADD_ROLE' | translate) }}</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right column: Permissions + fixed Save bar at bottom -->
+    <div class="xl:col-span-8 rp-right-col">
+      <div class="backup-card rp-permissions-card">
+        <div class="backup-card-header backup-card-header-modules">
+          <span class="backup-card-icon" aria-hidden="true">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+            </svg>
+          </span>
+          <div class="flex-1 flex items-center gap-2 flex-wrap">
+            <h3 class="backup-card-title mb-0">{{ 'ADMIN.ROLE_PERMISSIONS.PERMISSIONS' | translate }}</h3>
+            <span *ngIf="selectedRoleId != null" class="backup-header-badge">{{ selectedRole?.name }}</span>
+          </div>
+          <div class="flex gap-2" *ngIf="selectedRoleId != null">
+            <button type="button" (click)="selectAllPermissions()" class="backup-link-btn">
+              {{ 'ADMIN.ROLE_PERMISSIONS.SELECT_ALL' | translate }}
+            </button>
+            <span class="backup-link-sep" aria-hidden="true">|</span>
+            <button type="button" (click)="deselectAllPermissions()" class="backup-link-btn backup-link-btn-muted">
+              {{ 'ADMIN.ROLE_PERMISSIONS.DESELECT_ALL' | translate }}
+            </button>
+          </div>
+        </div>
+        <div class="backup-card-body backup-modules-body">
+          <!-- Loading -->
+          <div *ngIf="loading" class="backup-loading-state" aria-live="polite" aria-busy="true">
+            <div class="backup-loading-spinner" aria-hidden="true"></div>
+            <p class="backup-loading-text">{{ 'ADMIN.ROLE_PERMISSIONS.LOADING' | translate }}</p>
+          </div>
+
+          <!-- Permissions grouped by module (like backup modules) -->
+          <div *ngIf="!loading && selectedRoleId != null" class="backup-permissions-list">
+            <div *ngFor="let group of groupedByModule" class="backup-module-group">
+              <h4 class="backup-group-title">{{ group.module }} <span class="backup-group-count">({{ getSelectedCountInModule(group.items) }}/{{ group.items.length }})</span></h4>
+              <div class="backup-modules-grid">
+                <label
+                  *ngFor="let p of group.items"
+                  class="backup-module-chip"
+                  [class.backup-module-chip-selected]="selectedPermissions.has(p.name)"
+                >
+                  <input
+                    type="checkbox"
+                    [checked]="selectedPermissions.has(p.name)"
+                    (change)="togglePermission(p.name)"
+                    class="backup-module-checkbox"
+                  />
+                  <span class="backup-module-label">{{ getPermissionLabel(p) }}</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty: no role selected -->
+          <div *ngIf="!loading && selectedRoleId == null && roles.length > 0" class="backup-empty-state">
+            <div class="backup-empty-icon" aria-hidden="true">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+              </svg>
+            </div>
+            <h4 class="backup-empty-title">{{ 'ADMIN.ROLE_PERMISSIONS.SELECT_ROLE' | translate }}</h4>
+            <p class="backup-empty-text">{{ 'ADMIN.ROLE_PERMISSIONS.SELECT_ROLE_HINT' | translate }}</p>
+            <p class="backup-empty-hint">{{ 'ADMIN.ROLE_PERMISSIONS.USE_DROPDOWN_ABOVE' | translate }}</p>
+          </div>
+        </div>
+
+        <!-- Fixed Save bar at bottom (when role selected) -->
+        <div *ngIf="selectedRoleId != null" class="rp-save-bar">
+          <div *ngIf="error" class="backup-error rp-save-bar-error" role="alert">{{ error }}</div>
+          <div *ngIf="saving" class="backup-progress rp-save-bar-progress" aria-live="polite" aria-busy="true">
+            <svg class="backup-spinner" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+            <span>{{ 'ADMIN.ROLE_PERMISSIONS.SAVING' | translate }}</span>
+          </div>
+          <div class="rp-save-bar-actions">
+            <span class="rp-save-bar-count">{{ 'ADMIN.ROLE_PERMISSIONS.PERMISSIONS' | translate }} ({{ selectedPermissionsCount }} / {{ totalPermissionsCount }})</span>
+            <button
+              type="button"
+              (click)="save()"
+              [disabled]="saving"
+              class="backup-export-btn rp-save-bar-btn"
+              [attr.aria-busy]="saving"
+            >
+              <svg *ngIf="!saving" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+              </svg>
+              <svg *ngIf="saving" class="backup-spinner w-5 h-5" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+              </svg>
+              <span>{{ saving ? ('ADMIN.ROLE_PERMISSIONS.SAVING' | translate) : ('ADMIN.ROLE_PERMISSIONS.SAVE' | translate) }}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

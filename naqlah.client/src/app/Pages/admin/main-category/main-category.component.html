@@ -33,6 +33,7 @@
 
           <!-- Add Button -->
           <button
+            *ngIf="hasPermission('MainCategoryActions')"
             (click)="openAdd()"
             class="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 active:bg-primary-800 text-white px-4 py-2.5 rounded-lg shadow-sm transition-all duration-200 text-sm font-medium"
           >
@@ -141,6 +142,7 @@
               <td class="px-6 py-4 whitespace-nowrap text-right">
                 <div class="inline-flex items-center gap-2">
                   <button
+                    *ngIf="hasPermission('MainCategoryActions')"
                     (click)="openEdit(item)"
                     class="flex items-center justify-center w-8 h-8 bg-yellow-100 text-yellow-600 rounded-lg hover:bg-yellow-200 transition-colors"
                   >
@@ -159,6 +161,7 @@
                     </svg>
                   </button>
                   <button
+                    *ngIf="hasPermission('MainCategoryActions')"
                     class="flex items-center justify-center w-8 h-8 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
                     (click)="confirmDelete(item.id)"
                   >

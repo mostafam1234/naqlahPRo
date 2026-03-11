@@ -18,6 +18,8 @@ namespace Application.Features.AdminSection.NotificationFeature.Queries
         public int Take { get; init; } = 20;
         public bool? UnreadOnly { get; init; }
         public int LanguageId { get; init; } = 1;
+        public DateTime? FromDate { get; init; }
+        public DateTime? ToDate { get; init; }
 
         private class GetNotificationsQueryHandler : IRequestHandler<GetNotificationsQuery, Result<PagedResult<NotificationDto>>>
         {
@@ -39,6 +41,18 @@ namespace Application.Features.AdminSection.NotificationFeature.Queries
                 if (request.UnreadOnly == true)
                 {
                     query = query.Where(n => !n.IsRead);
+                }
+
+                if (request.FromDate.HasValue)
+                {
+                    var fromDate = request.FromDate.Value.Date.ToUniversalTime();
+                    query = query.Where(n => n.CreationDate >= fromDate);
+                }
+
+                if (request.ToDate.HasValue)
+                {
+                    var toDate = request.ToDate.Value.Date.AddDays(1).AddTicks(-1).ToUniversalTime();
+                    query = query.Where(n => n.CreationDate <= toDate);
                 }
 
                 var totalCount = await query.CountAsync(cancellationToken);

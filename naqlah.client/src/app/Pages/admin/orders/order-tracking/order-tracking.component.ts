@@ -14,6 +14,7 @@ import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-
 import { catchError, finalize, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { SubSink } from 'subsink';
+import { PermissionService } from 'src/app/shared/services/permission.service';
 
 @Component({
   selector: 'app-order-tracking',
@@ -45,10 +46,16 @@ export class OrderTrackingComponent implements OnInit, AfterViewInit, OnDestroy 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private deliveryManClient: DeliveryManAdminClient
+    private deliveryManClient: DeliveryManAdminClient,
+    private permissionService: PermissionService
   ) {}
 
+  hasPermission(permission: string): boolean {
+    return this.permissionService.hasPermission(permission);
+  }
+
   ngOnInit(): void {
+    this.permissionService.getPermissions().subscribe(() => {});
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
       if (id) {

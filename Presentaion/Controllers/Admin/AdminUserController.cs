@@ -1,10 +1,12 @@
-﻿using Application.Features.AdminSection.LogIn;
+using Application.Features.AdminSection.LogIn;
 using Application.Features.AdminSection.UserProfile.Commands;
 using Application.Features.AdminSection.UserProfile.Dtos;
 using Application.Features.AdminSection.UserProfile.Queries;
+using Domain.Constants;
 using Domain.InterFaces;
 using Domain.Models;
 using MediatR;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
@@ -58,10 +60,6 @@ namespace Presentaion.Controllers.Admin
         {
             try
             {
-                // لوج عملية تسجيل الخروج
-                Console.WriteLine($"Admin user {userSession.Username} (ID: {userSession.UserId}) logged out at {DateTime.Now}");
-
-                // إرجاع استجابة نجاح
                 return Ok(new { 
                     Message = "تم تسجيل الخروج بنجاح",
                     Success = true,
@@ -70,7 +68,6 @@ namespace Presentaion.Controllers.Admin
             }
             catch (Exception ex)
             {
-                // في حالة حدوث خطأ، ما زال بإمكان المستخدم تسجيل الخروج من الفرونت
                 return Ok(new { 
                     Message = "تم تسجيل الخروج",
                     Success = true,
@@ -93,6 +90,18 @@ namespace Presentaion.Controllers.Admin
             }
 
             return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(List<string>), StatusCodes.Status200OK)]
+        [Route("GetCurrentUserPermissions")]
+        public IActionResult GetCurrentUserPermissions()
+        {
+            var permissions = User.Claims
+                .Where(c => string.Equals(c.Type, PermissionNames.ClaimType, StringComparison.OrdinalIgnoreCase))
+                .Select(c => c.Value)
+                .ToList();
+            return Ok(permissions);
         }
 
         [HttpPost]

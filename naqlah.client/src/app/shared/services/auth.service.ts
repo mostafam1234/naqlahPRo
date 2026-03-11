@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { EMPTY, Observable, catchError, map, throwError } from 'rxjs';
 import { LoginResponse } from '../Models/login_response';
 import { AppConfigService } from './AppConfigService';
+import { PermissionService } from './permission.service';
 import { AccessTokenResponse, AdminResponse, AdminUserClient, Client, LoginRequest, LoginRquestDto, RefreshRequest, LoginAdminCommand } from 'src/app/Core/services/NaqlahClient';
 import { SubSink } from 'subsink';
 import { Router } from '@angular/router';
@@ -18,7 +19,8 @@ export class AuthService {
     private appConfigService: AppConfigService,
     private adminUser: AdminUserClient,
     private client: Client,
-    private router: Router
+    private router: Router,
+    private permissionService: PermissionService
   ) { }
 
   // Login Method
@@ -33,6 +35,7 @@ export class AuthService {
         }
         
         this.storeAdminTokens(response);
+        this.permissionService.clearCache();
         
         // فحص فوري بعد الحفظ
         const savedToken = this.getAccessToken();
@@ -239,6 +242,7 @@ export class AuthService {
   // Clear tokens without navigation (used internally)
   private clearTokens(): void {
     console.log('🗑️ مسح التوكنات من localStorage');
+    this.permissionService.clearCache();
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('expirationTime');

@@ -68,22 +68,11 @@ export class LoginComponent implements OnInit {
           console.log('🔒 حالة التوثيق:', isAuthenticated);
           console.log('=====================================');
 
-          // التحقق من الدور وإعادة التوجيه
+          // إعادة التوجيه لـ Admin Panel بعد تسجيل الدخول بنجاح (أي دور)
           if (token && isAuthenticated) {
-            if (userRole === 'Admin') {
-              console.log('✅ المستخدم أدمن - إعادة توجيه لـ Admin Panel');
-              this.router.navigate(['/admin/home']).then(() => {
-                console.log('🚀 تم إعادة التوجيه بنجاح');
-              });
-            } else if (userRole) {
-              console.warn(`⚠️ المستخدم له دور "${userRole}" وليس Admin`);
-              this.errorMessage = `غير مصرح لك بالدخول كأدمن. دورك الحالي: ${userRole}`;
-              this.authService.logout();
-            } else {
-              console.warn('⚠️ لم يتم العثور على دور للمستخدم');
-              this.errorMessage = 'لم يتم العثور على دور للمستخدم في النظام';
-              this.authService.logout();
-            }
+            this.router.navigate(['/admin/home']).then(() => {
+              console.log('🚀 تم إعادة التوجيه بنجاح');
+            });
           } else {
             console.error('❌ مشكلة في التوكن أو التوثيق');
             this.errorMessage = 'مشكلة في حفظ بيانات تسجيل الدخول';

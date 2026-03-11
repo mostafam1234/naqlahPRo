@@ -2,6 +2,7 @@ import { NgClass, NgIf } from '@angular/common';
 import { Component, EventEmitter, Output, Input, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { PermissionService } from 'src/app/shared/services/permission.service';
 
 @Component({
   selector: 'app-side-bar',
@@ -11,7 +12,6 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrl: './side-bar.component.css'
 })
 export class SideBarComponent {
-  
   appearSideBarNav: boolean = false;
   @Input() isMobile: boolean = false;
   @Input() isOpen: boolean = false;
@@ -19,8 +19,18 @@ export class SideBarComponent {
   @Output() dataEmitter: EventEmitter<any> = new EventEmitter();
   @Output() closeSidebar: EventEmitter<void> = new EventEmitter<void>();
   openDropdown: string | null = null;
+  permissions: string[] = [];
 
-  constructor(private router: Router){}
+  private router = inject(Router);
+  private permissionService = inject(PermissionService);
+
+  ngOnInit(): void {
+    this.permissionService.getPermissions().subscribe(p => this.permissions = p);
+  }
+
+  hasPermission(name: string): boolean {
+    return this.permissionService.hasPermission(name);
+  }
 
   DisAppearSideBar() {
     this.appearSideBarNav = false;

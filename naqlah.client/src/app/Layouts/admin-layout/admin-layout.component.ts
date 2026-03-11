@@ -1,6 +1,6 @@
 import { CommonModule, NgClass, NgIf } from '@angular/common';
 import { Component, HostListener } from '@angular/core';
-import { NavigationEnd, NavigationError, NavigationStart, Router, RouterModule, RouterOutlet } from '@angular/router';
+import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterModule, RouterOutlet } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { LanguageService } from 'src/app/Core/services/language.service';
@@ -49,12 +49,12 @@ export class AdminLayoutComponent {
     this.routerSubscription = this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
         this.loaderService.showLoader();
-      } else if (event instanceof NavigationEnd || event instanceof NavigationError) {
+      } else if (event instanceof NavigationEnd || event instanceof NavigationError || event instanceof NavigationCancel) {
         this.loaderService.hideLoader();
       }
     });
   }
-  @HostListener('window:resize', ['$event'])
+  @HostListener('window:resize')
   onResize(): void {
     this.checkScreenSize();
   }
@@ -74,6 +74,11 @@ export class AdminLayoutComponent {
 
   closeSidebar() {
     this.appearSideBar = false;
+  }
+
+  /** Hide layout loader when the routed component is actually shown (fixes first-load stuck spinner). */
+  onOutletActivated() {
+    this.loaderService.hideLoader();
   }
   getLanuage() {
     this.language = this.languageService.getLanguage();

@@ -1,4 +1,4 @@
-﻿using Application.DependencyInjection;
+using Application.DependencyInjection;
 using Domain.Models;
 using NAQLAH.Server.ApiDependencyInjection;
 using Hangfire;
@@ -114,6 +114,8 @@ namespace NAQLAH.Server
                     {
                         context.Database.Migrate();
                         await SeedDefaultUsers(scope);
+                        await NAQLAH.Server.SeedData.RolePermissionsSeed.SeedAdminRolePermissionsAsync(
+                            scope.ServiceProvider.GetRequiredService<RoleManager<Role>>());
                     }
                 }
             }
@@ -151,10 +153,10 @@ namespace NAQLAH.Server
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
-            
+
             // Enable CORS - must be before UseAuthentication and UseAuthorization
             app.UseCors("AllowAll");
-            
+
             // Configure the HTTP request pipeline.
             app.UseSwagger();
             app.UseSwaggerUI();

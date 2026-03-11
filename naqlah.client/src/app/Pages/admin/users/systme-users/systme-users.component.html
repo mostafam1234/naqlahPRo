@@ -63,6 +63,7 @@
 
             <!-- Add Button -->
             <a
+              *ngIf="hasPermission('SystemUserActions')"
               routerLink="add-employee"
               class="inline-flex items-center gap-2 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 text-sm font-semibold"
             >
@@ -151,6 +152,7 @@
             <span>عرض</span>
           </a>
           <a
+            *ngIf="hasPermission('SystemUserActions')"
             routerLink="edit-employee/{{user.id}}"
             class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-amber-600 hover:text-amber-700 hover:bg-amber-50 rounded-lg transition-all duration-200"
             title="تعديل"
@@ -161,6 +163,7 @@
             <span>تعديل</span>
           </a>
           <button
+            *ngIf="hasPermission('SystemUserActions')"
             (click)="deleteUser(user.id)"
             class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-200"
             title="حذف"
@@ -243,6 +246,7 @@
                     </svg>
                   </a>
                   <a
+                    *ngIf="hasPermission('SystemUserActions')"
                     routerLink="edit-employee/{{user.id}}"
                     class="inline-flex items-center p-2 text-amber-600 hover:text-amber-700 hover:bg-amber-50 rounded-lg transition-all duration-200"
                     title="تعديل"
@@ -252,6 +256,7 @@
                     </svg>
                   </a>
                   <button
+                    *ngIf="hasPermission('SystemUserActions')"
                     (click)="deleteUser(user.id)"
                     class="inline-flex items-center p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-all duration-200"
                     title="حذف"

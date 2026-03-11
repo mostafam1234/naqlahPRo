@@ -8,6 +8,7 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { provideToastr } from 'ngx-toastr';
 import { authInterceptor } from './app/shared/services/auth.interceptor';
+import { RolePermissionsAdminClient } from './app/Core/services/NaqlahClient';
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
@@ -27,6 +28,7 @@ bootstrapApplication(AppComponent, {
       preventDuplicates: true,
     }),
     appRouterProviders,
+    RolePermissionsAdminClient,
     importProvidersFrom(
       TranslateModule.forRoot({
         loader: {

@@ -9,6 +9,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ToasterService } from 'src/app/Core/services/toaster.service';
 import { ConfirmationModalComponent } from 'src/app/shared/components/confirmation-modal/confirmation-modal.component';
 import { ImageService } from 'src/app/Core/services/image.service';
+import { PermissionService } from 'src/app/shared/services/permission.service';
 
 @Component({
   selector: 'app-main-category',
@@ -58,7 +59,8 @@ export class MainCategoryComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private mainCategoryClient: MainCategoryAdminClient,
     private toasterService: ToasterService,
-    private imageService: ImageService
+    private imageService: ImageService,
+    private permissionService: PermissionService
   ) {
     this.itemForm = this.fb.group({
       arabicName: ['', [Validators.required, Validators.maxLength(100)]],
@@ -67,7 +69,12 @@ export class MainCategoryComponent implements OnInit, OnDestroy {
     });
   }
 
+  hasPermission(permission: string): boolean {
+    return this.permissionService.hasPermission(permission);
+  }
+
   ngOnInit(): void {
+    this.permissionService.getPermissions().subscribe(() => {});
     this.loadItems();
     this.setupSearch();
   }

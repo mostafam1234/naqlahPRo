@@ -16,6 +16,7 @@ import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-
 import { catchError, finalize, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { SubSink } from 'subsink';
+import { PermissionService } from 'src/app/shared/services/permission.service';
 
 @Component({
   selector: 'app-orders',
@@ -49,10 +50,16 @@ export class OrdersComponent implements OnInit, OnDestroy {
     private languageService: LanguageService,
     private translateService: TranslateService,
     private router: Router,
-    private orderClient: OrderAdminClient
+    private orderClient: OrderAdminClient,
+    private permissionService: PermissionService
   ) {}
 
+  hasPermission(permission: string): boolean {
+    return this.permissionService.hasPermission(permission);
+  }
+
   ngOnInit(): void {
+    this.permissionService.getPermissions().subscribe(() => {});
     this.loadOrders();
     this.setupSearch();
   }

@@ -6,6 +6,7 @@ import { SubSink } from 'subsink';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
 import { TechSupportAdminClient, SuggestionDto } from 'src/app/Core/services/NaqlahClient';
+import { PermissionService } from 'src/app/shared/services/permission.service';
 
 @Component({
   selector: 'app-suggestions',
@@ -24,9 +25,17 @@ export class SuggestionsComponent implements OnInit, OnDestroy {
   itemsPerPage = 10;
   private sub = new SubSink();
 
-  constructor(private techSupportClient: TechSupportAdminClient) {}
+  constructor(
+    private techSupportClient: TechSupportAdminClient,
+    private permissionService: PermissionService
+  ) {}
+
+  hasPermission(permission: string): boolean {
+    return this.permissionService.hasPermission(permission);
+  }
 
   ngOnInit(): void {
+    this.permissionService.getPermissions().subscribe(() => {});
     this.loadItems();
     this.setupSearch();
   }

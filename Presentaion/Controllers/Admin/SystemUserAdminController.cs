@@ -4,9 +4,11 @@ using Application.Features.AdminSection.SystemUsers.Queries;
 using Application.Shared.Dtos;
 using Domain.InterFaces;
 using MediatR;
+using Domain.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Presentaion.Authorization;
 using Presentaion.Reponse;
 using System;
 using System.Collections.Generic;
@@ -19,6 +21,7 @@ namespace Presentaion.Controllers.Admin
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
+    [RequirePermission(PermissionNames.CanViewSystemUsers)]
     public class SystemUserAdminController : ControllerBase
     {
         private readonly IMediator mediator;

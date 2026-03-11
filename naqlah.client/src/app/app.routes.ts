@@ -2,6 +2,7 @@ import { provideRouter, Routes } from '@angular/router';
 import { AdminLayoutComponent } from './Layouts/admin-layout/admin-layout.component';
 import { LandingPageLayoutComponent } from './Layouts/landing-page-layout/landing-page-layout.component';
 import { authGuard } from './shared/services/auth.guard';
+import { permissionGuard } from './shared/services/permission.guard';
 
 const routes: Routes = [
   { path:'', redirectTo:'/home', pathMatch:'full' },
@@ -30,7 +31,6 @@ const routes: Routes = [
     path: 'admin',
     component: AdminLayoutComponent,
     canActivate: [authGuard],
-    data: { expectedRole: 'Admin' },
     children: [
       {
         path: 'home',
@@ -244,6 +244,24 @@ const routes: Routes = [
           import('./Pages/admin/tech-support/suggestions/suggestions.component').then(
             (m) => m.SuggestionsComponent
           ),
+      },
+      {
+        path: 'role-permissions',
+        loadComponent: () =>
+          import('./Pages/admin/role-permissions/role-permissions.component').then(
+            (m) => m.RolePermissionsComponent
+          ),
+        canActivate: [permissionGuard],
+        data: { requiredPermission: 'CanManageRolePermissions' },
+      },
+      {
+        path: 'backup',
+        loadComponent: () =>
+          import('./Pages/admin/backup/backup.component').then(
+            (m) => m.BackupComponent
+          ),
+        canActivate: [permissionGuard],
+        data: { requiredPermission: 'CanExportData' },
       }
     ],
   }

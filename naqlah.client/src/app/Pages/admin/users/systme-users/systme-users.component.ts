@@ -11,6 +11,7 @@ import { ToasterService } from 'src/app/Core/services/toaster.service';
 import { ConfirmationModalComponent } from 'src/app/shared/components/confirmation-modal/confirmation-modal.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
+import { PermissionService } from 'src/app/shared/services/permission.service';
 
 @Component({
   selector: 'app-systme-users',
@@ -30,7 +31,8 @@ export class SystmeUsersComponent implements OnInit, OnDestroy {
     private languageService: LanguageService,
     private router: Router,
     private systemUserClient: SystemUserAdminClient,
-    private toasterService: ToasterService) {}
+    private toasterService: ToasterService,
+    private permissionService: PermissionService) {}
 
   activeTab = 'all';
   currentPage = 0;
@@ -51,7 +53,12 @@ export class SystmeUsersComponent implements OnInit, OnDestroy {
     return this.languageService.getLanguage();
   }
 
+  hasPermission(permission: string): boolean {
+    return this.permissionService.hasPermission(permission);
+  }
+
   ngOnInit(): void {
+    this.permissionService.getPermissions().subscribe(() => {});
     this.loadUsers();
     this.setupSearch();
   }

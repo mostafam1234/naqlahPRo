@@ -7,7 +7,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ToasterService } from 'src/app/Core/services/toaster.service';
 import { ConfirmationModalComponent } from 'src/app/shared/components/confirmation-modal/confirmation-modal.component';
 import { RegionAdminDto, AddRegionCommand, UpdateRegionCommand, AreasSettingsAdminClient } from 'src/app/Core/services/NaqlahClient';
-
+import { PermissionService } from 'src/app/shared/services/permission.service';
 
 @Component({
   selector: 'app-regions',
@@ -42,7 +42,8 @@ export class RegionsComponent implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private toasterService: ToasterService,
-    private areasSettingsClient: AreasSettingsAdminClient
+    private areasSettingsClient: AreasSettingsAdminClient,
+    private permissionService: PermissionService
   ) {
     this.itemForm = this.fb.group({
       arabicName: ['', [Validators.required, Validators.maxLength(100)]],
@@ -50,7 +51,12 @@ export class RegionsComponent implements OnInit, OnDestroy {
     });
   }
 
+  hasPermission(permission: string): boolean {
+    return this.permissionService.hasPermission(permission);
+  }
+
   ngOnInit(): void {
+    this.permissionService.getPermissions().subscribe(() => {});
     this.loadItems();
     this.setupSearch();
   }

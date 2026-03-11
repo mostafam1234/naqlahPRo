@@ -1,4 +1,4 @@
-﻿using Azure.Core;
+using Azure.Core;
 using CSharpFunctionalExtensions;
 using Domain.InterFaces;
 using Domain.Models;
@@ -114,34 +114,6 @@ namespace NAQLAH.Server.Services
                 if (user == null)
                 {
                     return Result.Failure<TokenAdminResponse>("البريد الإلكتروني غير صحيح");
-                }
-
-                // التحقق من الدور - استخدم عدة طرق للتأكد
-                var isAdmin = await userManager.IsInRoleAsync(user, "Admin");
-                
-                // إذا لم يجد الدور باستخدام Identity، تحقق مباشرة من قاعدة البيانات
-                if (!isAdmin)
-                {
-                    // البحث مباشرة في قاعدة البيانات للتأكد من وجود الدور
-                    var adminRole = await context.Roles
-                        .FirstOrDefaultAsync(r => r.NormalizedName == "ADMIN" || r.Name == "Admin");
-                    
-                    if (adminRole != null)
-                    {
-                        var hasRoleInDb = await context.UserRoles
-                            .AnyAsync(ur => ur.UserId == user.Id && ur.RoleId == adminRole.Id);
-                        
-                        if (hasRoleInDb)
-                        {
-                            // الدور موجود في قاعدة البيانات - استخدمه مباشرة
-                            isAdmin = true;
-                        }
-                    }
-                }
-                
-                if (!isAdmin)
-                {
-                    return Result.Failure<TokenAdminResponse>("غير مصرح لك بالدخول كأدمن");
                 }
 
                 // التحقق من كلمة المرور

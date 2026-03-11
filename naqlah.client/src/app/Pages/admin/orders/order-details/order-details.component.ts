@@ -18,6 +18,7 @@ import {
 } from 'src/app/Core/services/NaqlahClient';
 import { catchError, finalize } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { PermissionService } from 'src/app/shared/services/permission.service';
 
 interface TimelineEvent {
   title: string;
@@ -59,10 +60,16 @@ export class OrderDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
     private router: Router,
     private translate: TranslateService,
     private orderClient: OrderAdminClient,
-    private toasterService: ToasterService
+    private toasterService: ToasterService,
+    private permissionService: PermissionService
   ) {}
 
+  hasPermission(permission: string): boolean {
+    return this.permissionService.hasPermission(permission);
+  }
+
   ngOnInit(): void {
+    this.permissionService.getPermissions().subscribe(() => {});
     this.routeSubscription = this.route.params.subscribe(params => {
       this.orderId = +params['id']; // Convert to number
       this.loadOrderDetails();

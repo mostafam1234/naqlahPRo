@@ -1,4 +1,4 @@
-﻿using CSharpFunctionalExtensions;
+using CSharpFunctionalExtensions;
 using Domain.DomainEventsHelper;
 using Domain.InterFaces;
 using Domain.Models;

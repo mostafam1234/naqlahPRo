@@ -1,4 +1,4 @@
-﻿using CSharpFunctionalExtensions;
+using CSharpFunctionalExtensions;
 using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using System;

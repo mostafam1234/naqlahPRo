@@ -9,7 +9,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ImageService } from 'src/app/Core/services/image.service';
 import { ToasterService } from 'src/app/Core/services/toaster.service';
 import { ConfirmationModalComponent } from 'src/app/shared/components/confirmation-modal/confirmation-modal.component';
-
+import { PermissionService } from 'src/app/shared/services/permission.service';
 
 @Component({
   selector: 'app-vehicles',
@@ -65,7 +65,8 @@ export class VehiclesComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private vehicleClient: VehicleAdminClient,
     private toasterService: ToasterService,
-    private imageService: ImageService
+    private imageService: ImageService,
+    private permissionService: PermissionService
   ) {
     this.itemForm = this.fb.group({
       arabicName: ['', [Validators.required, Validators.maxLength(100)]],
@@ -76,7 +77,12 @@ export class VehiclesComponent implements OnInit, OnDestroy {
     });
   }
 
+  hasPermission(permission: string): boolean {
+    return this.permissionService.hasPermission(permission);
+  }
+
   ngOnInit(): void {
+    this.permissionService.getPermissions().subscribe(() => {});
     this.loadItems();
     this.setupSearch();
     this.loadMainCategories();

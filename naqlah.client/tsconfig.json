@@ -2,9 +2,10 @@
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
+    "target": "ES2022",
+    "useDefineForClassFields": false,
     "module": "esnext",
     "moduleResolution": "node",
-    "target": "es2020",
     "experimentalDecorators": true,
     "importHelpers": true,
     "typeRoots": [
@@ -14,7 +15,6 @@
       "es2020",
       "dom"
     ],
-    "useDefineForClassFields": false,
     "skipLibCheck": true,
     "strict": false,
     "noImplicitAny": false,

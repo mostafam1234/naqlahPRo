@@ -1936,6 +1936,29 @@
         }
       }
     },
+    "/api/AdminUser/GetCurrentUserPermissions": {
+      "get": {
+        "tags": [
+          "AdminUser"
+        ],
+        "operationId": "AdminUser_GetCurrentUserPermissions",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/AdminUser/UpdateCurrentUserProfile": {
       "post": {
         "tags": [
@@ -2816,6 +2839,67 @@
                 "schema": {
                   "type": "integer",
                   "format": "int32"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/BackupAdmin/Export": {
+      "get": {
+        "tags": [
+          "BackupAdmin"
+        ],
+        "operationId": "BackupAdmin_Export",
+        "parameters": [
+          {
+            "name": "module",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-position": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
                 }
               }
             }
@@ -4379,6 +4463,173 @@
                 "schema": {
                   "type": "integer",
                   "format": "int32"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/RolePermissionsAdmin/GetAllPermissionDefinitions": {
+      "get": {
+        "tags": [
+          "RolePermissionsAdmin"
+        ],
+        "operationId": "RolePermissionsAdmin_GetAllPermissionDefinitions",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PermissionDefinitionDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/RolePermissionsAdmin/GetRolePermissions": {
+      "get": {
+        "tags": [
+          "RolePermissionsAdmin"
+        ],
+        "operationId": "RolePermissionsAdmin_GetRolePermissions",
+        "parameters": [
+          {
+            "name": "roleId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/RolePermissionsAdmin/UpdateRolePermissions": {
+      "post": {
+        "tags": [
+          "RolePermissionsAdmin"
+        ],
+        "operationId": "RolePermissionsAdmin_UpdateRolePermissions",
+        "requestBody": {
+          "x-name": "request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRolePermissionsRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/RolePermissionsAdmin/GetRolesLookup": {
+      "get": {
+        "tags": [
+          "RolePermissionsAdmin"
+        ],
+        "operationId": "RolePermissionsAdmin_GetRolesLookup",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RoleLookupDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/RolePermissionsAdmin/CreateRole": {
+      "post": {
+        "tags": [
+          "RolePermissionsAdmin"
+        ],
+        "operationId": "RolePermissionsAdmin_CreateRole",
+        "requestBody": {
+          "x-name": "request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRoleRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateRoleResponse"
                 }
               }
             }
@@ -8906,6 +9157,83 @@
           }
         }
       },
+      "PermissionDefinitionDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "module": {
+            "type": "string"
+          }
+        }
+      },
+      "UpdateRolePermissionsRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "roleId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "permissionNames": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "RoleLookupDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "arabicName": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateRoleResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "arabicName": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateRoleRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "arabicName": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
       "SystemConfigurationDto": {
         "type": "object",
         "additionalProperties": false,
@@ -9100,22 +9428,6 @@
           "newPassword": {
             "type": "string",
             "nullable": true
-          }
-        }
-      },
-      "RoleLookupDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "name": {
-            "type": "string"
-          },
-          "arabicName": {
-            "type": "string"
           }
         }
       },

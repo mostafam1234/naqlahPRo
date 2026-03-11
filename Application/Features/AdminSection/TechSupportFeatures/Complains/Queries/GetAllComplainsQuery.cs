@@ -15,6 +15,8 @@ namespace Application.Features.AdminSection.TechSupportFeatures.Complains.Querie
         public int Skip { get; init; } = 0;
         public int Take { get; init; } = 10;
         public string? SearchTerm { get; init; }
+        public DateTime? FromDate { get; init; }
+        public DateTime? ToDate { get; init; }
 
         private class GetAllComplainsQueryHandler : IRequestHandler<GetAllComplainsQuery, Result<PagedResult<ComplainDto>>>
         {
@@ -35,6 +37,18 @@ namespace Application.Features.AdminSection.TechSupportFeatures.Complains.Querie
                                            x.CustomerMobileNumber.Contains(request.SearchTerm) ||
                                            x.Description.Contains(request.SearchTerm) ||
                                            x.CustomerAddress.Contains(request.SearchTerm));
+                }
+
+                if (request.FromDate.HasValue)
+                {
+                    var fromDate = request.FromDate.Value.Date.ToUniversalTime();
+                    query = query.Where(x => x.CreationDate >= fromDate);
+                }
+
+                if (request.ToDate.HasValue)
+                {
+                    var toDate = request.ToDate.Value.Date.AddDays(1).AddTicks(-1).ToUniversalTime();
+                    query = query.Where(x => x.CreationDate <= toDate);
                 }
 
                 var totalCount = await query.CountAsync(cancellationToken);
