@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { AuthService } from './auth.service';
 import { PermissionService } from './permission.service';
 import { SignalRService } from './SignalRService';
 
@@ -12,11 +13,18 @@ export class AuditLogNotificationService {
 
   constructor(
     private signalRService: SignalRService,
-    private permissionService: PermissionService
+    private permissionService: PermissionService,
+    private authService: AuthService
   ) {
+    // Start notification hub so we receive NewAuditLog (same hub as notifications)
+    const token = this.authService.getAccessToken();
+    if (token) {
+      this.signalRService.StartNotificationConnection(token);
+    }
     this.signalRService.ListenForNewAuditLog().subscribe(() => {
+      // Always increment so badge shows for users with permission (menu visible only for them)
+      this.countSubject.next(this.countSubject.value + 1);
       if (this.permissionService.hasPermission('CanViewAuditLog')) {
-        this.countSubject.next(this.countSubject.value + 1);
         this.playNotificationSound();
       }
     });

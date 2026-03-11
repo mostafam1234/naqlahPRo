@@ -132,6 +132,12 @@ export class SignalRService {
       });
     });
 
+    connection.on('NewAuditLog', () => {
+      this.ngZone.run(() => {
+        this.newAuditLogSubject.next();
+      });
+    });
+
     // Store connection before starting
     this.notificationConnection = connection;
 
