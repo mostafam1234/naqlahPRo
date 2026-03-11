@@ -169,7 +169,7 @@ namespace Infrastructure
 
                     await AuditLogs.AddAsync(auditLog);
                     await base.SaveChangesAsync();
-                    await auditLogNotifier.NotifyNewAuditLogAsync(cancellationToken);
+                    await auditLogNotifier.NotifyNewAuditLogAsync(CancellationToken.None);
                 }
 
                 await FirePostDomainEvents();
