@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 
 namespace Application.Features.CustomerSection.Feature.Order.Queries
 {
-    public sealed record CheckPendingOrderQuery : IRequest<Result<bool>>
+    public sealed record CheckPendingOrderQuery : IRequest<Result<int>>
     {
-        private class CheckPendingOrderQueryHandler : IRequestHandler<CheckPendingOrderQuery, Result<bool>>
+        private class CheckPendingOrderQueryHandler : IRequestHandler<CheckPendingOrderQuery, Result<int>>
         {
             private readonly INaqlahContext context;
             private readonly IUserSession userSession;
@@ -24,7 +24,7 @@ namespace Application.Features.CustomerSection.Feature.Order.Queries
                 this.userSession = userSession;
             }
 
-            public async Task<Result<bool>> Handle(CheckPendingOrderQuery request, CancellationToken cancellationToken)
+            public async Task<Result<int>> Handle(CheckPendingOrderQuery request, CancellationToken cancellationToken)
             {
                 var customerId = await context.Customers
                     .Where(x => x.UserId == userSession.UserId)
@@ -33,14 +33,19 @@ namespace Application.Features.CustomerSection.Feature.Order.Queries
 
                 if (customerId == 0)
                 {
-                    return Result.Failure<bool>("Customer not found");
+                    return Result.Failure<int>("Customer not found");
                 }
 
-                var hasPendingOrder = await context.Orders
-                    .AnyAsync(o => o.CustomerId == customerId && o.OrderStatus == OrderStatus.Pending, cancellationToken);
+                var pendingOrderId = await context.Orders
+                    .OrderByDescending(o => o.Id)
+                    .Where(o => o.CustomerId == customerId && o.OrderStatus == OrderStatus.Pending)
+                    .Select(x => x.Id)
+                    .FirstOrDefaultAsync();
 
-                return Result.Success(hasPendingOrder);
+                return Result.Success(pendingOrderId);
             }
+
+
         }
     }
 }

@@ -7,9 +7,11 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Application.Features.CustomerSection.Feature.Order.Commands
 {
@@ -47,6 +49,20 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
                     return Result.Failure<CreateOrderResponseDto>(orderWayPointsResult.Error);
                 }
 
+                DateTime expectedPickUpTIme = DateTime.UtcNow ;
+
+                if (request.Order.IsScheduled && !DateTime.TryParseExact(
+                   request.Order.ExpectedPickUpTime,
+                    "yyyy/MM/dd HH:mm:ss",
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.None,
+                    out  expectedPickUpTIme))
+                {
+                    return Result.Failure<CreateOrderResponseDto>("InValid format of expected pickUp Tiem yyyy/MM/dd HH:mm:ss");
+                }
+
+
+
                 var customerId = await context.Customers
                                           .Where(x=>x.UserId==userSession.UserId)
                                           .Select(x => x.Id)
@@ -56,18 +72,24 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
                     return Result.Failure<CreateOrderResponseDto>("Customer not found");
                 }
 
-                // Check if customer has any pending orders
-                var hasPendingOrder = await context.Orders
-                    .AnyAsync(o => o.CustomerId == customerId && o.OrderStatus == OrderStatus.Pending, cancellationToken);
+                //// Check if customer has any pending orders
+                //var hasPendingOrder = await context.Orders
+                //    .AnyAsync(o => o.CustomerId == customerId && o.OrderStatus == OrderStatus.Pending, cancellationToken);
                 
-                if (hasPendingOrder)
-                {
-                    return Result.Failure<CreateOrderResponseDto>("Cannot create new order. Customer has a pending order that needs to be completed first.");
-                }
+                //if (hasPendingOrder)
+                //{
+                //    return Result.Failure<CreateOrderResponseDto>("Cannot create new order. Customer has a pending order that needs to be completed first.");
+                //}
 
                 var orderServices = await BuildOrderService(request.Order.OrderServiceIds); 
 
                 var orderNumber = await GenerateUniqueOrderNumberAsync();
+                DateTime? expectedPickUpTimeValue=null;
+
+                if (request.Order.IsScheduled)
+                {
+                    expectedPickUpTimeValue = expectedPickUpTIme;
+                }
 
                 var orderResult = Domain.Models.Order.Create(customerId: customerId,
                                               (OrderType)request.Order.OrderTypeId,
@@ -76,7 +98,9 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
                                               nowDate: nowDate,
                                               orderDetailsResult.Value,
                                               orderWayPointsResult.Value,
-                                              orderServices);
+                                              orderServices,
+                                              request.Order.IsScheduled,
+                                              expectedPickUpTimeValue);
                 
                 if (orderResult.IsFailure)
                 {

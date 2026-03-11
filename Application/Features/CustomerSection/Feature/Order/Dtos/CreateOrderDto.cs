@@ -18,6 +18,8 @@ namespace Application.Features.CustomerSection.Feature.Order.Dtos
         public int OrderTypeId { get; set; }
         public List<int> MainCategoryIds { get; set; }
         public List<int> OrderServiceIds { get; set; }
+        public bool IsScheduled { get; set; }
+        public string ExpectedPickUpTime { get; set; } = string.Empty;
         public List<CreateWayPointsDto> WayPoints { get; set; }
     }
 }

@@ -27,5 +27,7 @@ namespace Application.Features.DeliveryManSection.Order.Dtos
         public string DeliveryAddress { get; set; }
         public List<string> Categories { get; set; }
         public DateTime CreatedAt { get; set; }
+        public bool IsScheduled { get; set; }
+        public DateTime? ExpectedPickUpTime { get; set; }
     }
 }

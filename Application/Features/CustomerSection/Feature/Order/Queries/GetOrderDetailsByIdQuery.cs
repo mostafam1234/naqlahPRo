@@ -19,16 +19,20 @@ namespace Application.Features.CustomerSection.Feature.Order.Queries
         {
             private readonly INaqlahContext context;
             private readonly IUserSession userSession;
+            private readonly IReadFromAppSetting config;
+            private const string DeliveryOrderFolderPrefix = "DeliveryOrders";
 
             public GetOrderDetailsByIdQueryHandler(INaqlahContext context,
-                                                   IUserSession userSession)
+                                                   IUserSession userSession, IReadFromAppSetting config)
             {
                 this.context = context;
                 this.userSession = userSession;
+                this.config = config;
             }
 
             public async Task<Result<OrderDetailsDto>> Handle(GetOrderDetailsByIdQuery request, CancellationToken cancellationToken)
             {
+                var baseUrl = config.GetValue<string>("apiBaseUrl");
                 var languageId = userSession.LanguageId;
                 
                 // Get customer ID to verify ownership
@@ -131,7 +135,8 @@ namespace Application.Features.CustomerSection.Feature.Order.Queries
                             (languageId == (int)Language.Arabic ? wp.City.ArabicName : wp.City.EnglishName) : null,
                         NeighborhoodName = wp.Neighborhood != null ?
                             (languageId == (int)Language.Arabic ? wp.Neighborhood.ArabicName : wp.Neighborhood.EnglishName) : null,
-                        Address = BuildAddress(wp, languageId)
+                        Address = BuildAddress(wp, languageId),
+                        PackImagePath= $"{baseUrl}/ImageBank/{DeliveryOrderFolderPrefix}/Order_{order.Id}/{wp.PackImagePath}"
                     }).ToList(),
                     PaymentMethods = order.PaymentMethods.Select(pm => new OrderPaymentMethodDto
                     {

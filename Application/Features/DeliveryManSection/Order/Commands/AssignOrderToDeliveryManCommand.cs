@@ -105,10 +105,10 @@ namespace Application.Features.DeliveryManSection.Order.Commands
                     originWaypoint.Latitude,
                     originWaypoint.longitude);
 
-                if (distance > RADIUS_IN_KM)
-                {
-                    return Result.Failure<bool>("Order is outside your service radius");
-                }
+                //if (distance > RADIUS_IN_KM)
+                //{
+                //    return Result.Failure<bool>("Order is outside your service radius");
+                //}
 
                 // Assign the order to the delivery man using domain logic
                 var assignmentResult = order.AssignToDeliveryMan(deliveryMan.Id, dateTimeProvider.Now);
