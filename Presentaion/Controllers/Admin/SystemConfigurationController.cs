@@ -52,7 +52,7 @@ namespace Presentaion.Controllers.Admin
             return BadRequest(result.Error);
         }
 
-        [HttpGet]
+        [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
         [Route("Update")]

@@ -34,10 +34,29 @@ namespace Presentaion.Controllers
         }
 
 
+        [HttpPost("CancelOrder/{orderId:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CancelOrder(int orderId)
+        {
+            var result =await mediator.Send(new CancelCustomerOrderCommand
+            {
+                OrderId = orderId,
+            });
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+
+            return Ok();
+        }
+
         [HttpPost]
         [ProducesResponseType(typeof(CreateOrderResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
         [Route("Create")]
+        
         public async Task<IActionResult> Create([FromBody] CreateOrderDto request)
         {
             var result = await mediator.Send(new CreateNewOrderCommand
@@ -71,6 +90,9 @@ namespace Presentaion.Controllers
 
             return Ok(result.Value);
         }
+
+
+        
 
 
         [HttpPost]
@@ -172,7 +194,7 @@ namespace Presentaion.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
         [Route("CheckPendingOrder")]
         public async Task<IActionResult> CheckPendingOrder()

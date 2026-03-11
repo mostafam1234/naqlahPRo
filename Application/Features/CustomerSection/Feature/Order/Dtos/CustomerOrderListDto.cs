@@ -16,6 +16,8 @@ namespace Application.Features.CustomerSection.Feature.Order.Dtos
         public string StatusName { get; set; }
         public decimal Total { get; set; }
         public string DeliveryManName { get; set; }
+        public bool IsScheduled { get; set; }
+        public DateTime? ExpectedPickUpTime { get; set; }
         public List<CustomerOrderWayPointDto> WayPoints { get; set; }
 
         public CustomerOrderListDto()
@@ -34,6 +36,7 @@ namespace Application.Features.CustomerSection.Feature.Order.Dtos
         public string RegionName { get; set; }
         public string CityName { get; set; }
         public string NeighborhoodName { get; set; }
+        public string PackImagePath { get; set; }
         public OrderWayPointsStatus Status { get; set; }
         public DateTime? PickedUpDate { get; set; }
     }

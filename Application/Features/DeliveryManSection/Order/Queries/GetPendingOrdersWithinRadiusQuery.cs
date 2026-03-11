@@ -19,7 +19,7 @@ namespace Application.Features.DeliveryManSection.Order.Queries
         {
             private readonly INaqlahContext context;
             private readonly IUserSession userSession;
-            private const double RADIUS_IN_KM = 3.0;
+            private const double RADIUS_IN_KM = 100000.0;
             private const double EARTH_RADIUS_KM = 6371.0; // Earth's radius in kilometers
 
             public GetPendingOrdersWithinRadiusQueryHandler(INaqlahContext context,
@@ -66,7 +66,7 @@ namespace Application.Features.DeliveryManSection.Order.Queries
                     .Include(o => o.OrderWayPoints)
                     .Where(o => o.OrderStatus == OrderStatus.Pending && 
                                o.DeliveryManId == null &&
-                               o.VehicleTypeId == deliveryManVehicleTypeId)
+                               o.VehicleTypdId == deliveryManVehicleTypeId)
                     .ToListAsync(cancellationToken);
 
                 var ordersWithinRadius = new List<PendingOrderDto>();
@@ -100,7 +100,9 @@ namespace Application.Features.DeliveryManSection.Order.Queries
                             Categories = order.OrderDetails.Select(od => 
                                 languageId == (int)Language.Arabic ? 
                                 od.ArabicCategoryName : od.EnglishCategoryName).ToList(),
-                            CreatedAt = DateTime.Now
+                            CreatedAt = order.CreationDate,
+                            IsScheduled=order.IsScheduled,
+                            ExpectedPickUpTime=order.ExpectedPickUpTime
                         };
 
                         // Get address information
