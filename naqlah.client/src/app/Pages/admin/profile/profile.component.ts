@@ -7,6 +7,7 @@ import { SubSink } from 'subsink';
 import { AdminUserClient, UpdateCurrentUserProfileCommand, UserProfileDto } from 'src/app/Core/services/NaqlahClient';
 import { ToasterService } from 'src/app/Core/services/toaster.service';
 import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
+import { PermissionService } from 'src/app/shared/services/permission.service';
 
 @Component({
   selector: 'app-profile',
@@ -28,9 +29,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private adminUserClient: AdminUserClient,
     private toasterService: ToasterService,
     private translate: TranslateService,
-    private router: Router
+    private router: Router,
+    private permissionService: PermissionService
   ) {
     this.initializeForm();
+  }
+
+  hasPermission(name: string): boolean {
+    return this.permissionService.hasPermission(name);
   }
 
   ngOnInit(): void {

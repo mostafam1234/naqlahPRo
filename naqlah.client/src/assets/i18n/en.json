@@ -137,7 +137,8 @@
         "ComplainActions": "Complain actions",
         "CanViewSuggestions": "View suggestions",
         "SuggestionActions": "Suggestion actions",
-        "CanExportData": "Export data to Excel (backup)"
+        "CanExportData": "Export data to Excel (backup)",
+        "CanViewAuditLog": "View system audit log"
       }
     },
     "BACKUP": {
@@ -182,6 +183,44 @@
         "NEIGHBORHOODS": "Neighborhoods",
         "ASSISTANT_WORKS": "Assistant Works"
       }
+    },
+    "AUDIT": {
+      "MENU": "Audit Log",
+      "TITLE": "System Audit Log",
+      "SUBTITLE": "View all admin actions and changes in the system.",
+      "FILTERS": "Filters",
+      "FROM_DATE": "From date",
+      "TO_DATE": "To date",
+      "ACTION_NAME": "Action name",
+      "ENTITY_TYPE": "Entity type",
+      "ALL_ACTIONS": "All actions",
+      "ALL_ENTITY_TYPES": "All entity types",
+      "SEARCH_ENTITY_TYPE": "Search entity type...",
+      "SEARCH": "Search",
+      "CLEAR": "Clear",
+      "USER": "User",
+      "ACTION": "Action",
+      "TIME": "Time",
+      "DETAILS": "Changes",
+      "SHOW_DETAILS": "Show details",
+      "HIDE_DETAILS": "Hide details",
+      "ENTITY": "Entity",
+      "CHANGE_TYPE": "Type",
+      "OLD_VALUE": "Old value",
+      "NEW_VALUE": "New value",
+      "INSERT": "Insert",
+      "UPDATE": "Update",
+      "DELETE": "Delete",
+      "NO_RECORDS": "No audit records found.",
+      "EMPTY_HINT": "Change filters or date range to see audit entries.",
+      "PAGE": "Page",
+      "OF": "of",
+      "PREV": "Previous",
+      "NEXT": "Next",
+      "RECORDS": "records",
+      "ACTIONS": "actions",
+      "LOADING": "Loading audit log...",
+      "ERROR_LOAD": "Failed to load audit log."
     },
     "PROFILE": {
       "TITLE": "Profile",

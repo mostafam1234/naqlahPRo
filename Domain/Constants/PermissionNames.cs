@@ -83,6 +83,9 @@ namespace Domain.Constants
         // Data export / backup
         public const string CanExportData = "CanExportData";
 
+        // Audit
+        public const string CanViewAuditLog = "CanViewAuditLog";
+
         /// <summary>
         /// All permission names for listing in admin UI and seeding. Grouped by module.
         /// </summary>
@@ -128,6 +131,7 @@ namespace Domain.Constants
             new PermissionDefinition(CanViewSuggestions, "View suggestions", "TechSupport"),
             new PermissionDefinition(SuggestionActions, "Suggestion actions", "TechSupport"),
             new PermissionDefinition(CanExportData, "Export data to Excel (backup)", "System"),
+            new PermissionDefinition(CanViewAuditLog, "View system audit log", "System"),
         ];
     }
 

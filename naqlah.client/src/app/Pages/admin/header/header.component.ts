@@ -6,6 +6,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { LanguageService } from 'src/app/Core/services/language.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { AdminUserClient } from 'src/app/Core/services/NaqlahClient';
+import { PermissionService } from 'src/app/shared/services/permission.service';
 import { NotificationsComponent } from '../notifications/notifications.component';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 
@@ -145,8 +146,13 @@ export class HeaderComponent {
     private location: Location,
     private elementRef: ElementRef,
     private authService: AuthService,
-    private adminUserClient: AdminUserClient // تغيير من orderAdminClient إلى adminUserClient
+    private adminUserClient: AdminUserClient,
+    private permissionService: PermissionService
   ) {}
+
+  hasPermission(name: string): boolean {
+    return this.permissionService.hasPermission(name);
+  }
 
   ngOnInit() {
     this.isMenuOpen = false;

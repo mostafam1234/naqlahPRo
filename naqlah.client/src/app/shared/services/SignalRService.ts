@@ -15,6 +15,7 @@ export class SignalRService {
   isConnected: boolean = false;
   private orderIdSubject: BehaviorSubject<number> = new BehaviorSubject<number>(0);
   private notificationSubject: Subject<NotificationDto> = new Subject<NotificationDto>();
+  private newAuditLogSubject: Subject<void> = new Subject<void>();
   
   constructor(
     private appConfigService: AppConfigService,
@@ -84,7 +85,6 @@ export class SignalRService {
   }
 
   private proceedWithConnection(accessToken: string) {
-    debugger;
     var config = this.appConfigService.getConfig();
     var url = config.apiBaseUrl;
     
@@ -181,6 +181,10 @@ export class SignalRService {
 
   public ListenForNotifications(): Observable<any> {
     return this.notificationSubject.asObservable();
+  }
+
+  public ListenForNewAuditLog(): Observable<void> {
+    return this.newAuditLogSubject.asObservable();
   }
 
 }

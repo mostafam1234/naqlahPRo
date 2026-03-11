@@ -123,7 +123,7 @@
         </div>
 
         <!-- Actions -->
-        <div class="md:col-span-2 flex justify-end gap-3 pt-4">
+        <div *ngIf="hasPermission('SystemConfigurationActions')" class="md:col-span-2 flex justify-end gap-3 pt-4">
           <button
             type="submit"
             [disabled]="configForm.invalid"

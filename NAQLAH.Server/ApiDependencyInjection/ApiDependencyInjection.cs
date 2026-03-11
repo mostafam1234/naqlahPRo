@@ -1,4 +1,5 @@
-﻿using Application.Services.GoogleMap;
+using Application.Services.GoogleMap;
+using Application.Shared.Services;
 using Domain.InterFaces;
 using Infrastructure.Services;
 using NAQLAH.Server.Services;
@@ -22,6 +23,7 @@ namespace NAQLAH.Server.ApiDependencyInjection
             services.AddScoped<Domain.InterFaces.INotificationService, Infrastructure.Services.NotificationService>();
             services.AddScoped<Application.Shared.Services.INotificationService, Application.Shared.Services.NotificationService>();
             services.AddScoped<NotificationHubService>();
+            services.AddScoped<IAuditLogNotifier, AuditLogNotifier>();
             services.AddSingleton<IReadFromResourceFile, ReadFromResourceFile>();
             services.AddHttpClient();
             services.AddSingleton<IReadFromAppSetting, ReadFromAppSetting>();

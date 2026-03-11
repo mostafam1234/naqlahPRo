@@ -503,9 +503,8 @@
   </div>
 
 
-   <!-- SystemConfig -->
-
- <div>
+   <!-- SystemConfig (إعدادات النظام) -->
+  <div *ngIf="hasPermission('CanViewSystemConfiguration')">
   <a
     routerLink="/admin/systemConfiguration"
     routerLinkActive="bg-primary-500 text-white"
@@ -575,6 +574,28 @@
         <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       <span>{{ 'ADMIN.ROLE_PERMISSIONS.MENU' | translate }}</span>
+    </a>
+  </div>
+
+  <!-- Audit Log -->
+  <div *ngIf="hasPermission('CanViewAuditLog')">
+    <a
+      routerLink="/admin/audit"
+      (click)="onAuditMenuClick()"
+      routerLinkActive="bg-primary-500 text-white"
+      [routerLinkActiveOptions]="{ exact: false }"
+      class="relative flex items-center cursor-pointer px-4 py-3 rounded-lg gap-3 text-neutral-700 font-medium text-sm transition-all duration-200 hover:bg-primary-100 hover:text-primary-700"
+    >
+      <span class="relative inline-flex">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 12h6m-6 4h6m-6-8h2m-2 6H5a1 1 0 01-1-1V5a1 1 0 011-1h4a1 1 0 011 1v2m0 0h6a1 1 0 011 1v10a1 1 0 01-1 1h-6a1 1 0 01-1-1v-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span
+          *ngIf="auditLogNotificationCount > 0"
+          class="absolute -top-2 -end-2 min-w-[18px] h-[18px] flex items-center justify-center rounded-full bg-red-500 text-white text-xs font-bold shadow"
+        >{{ auditLogNotificationCount > 99 ? '99+' : auditLogNotificationCount }}</span>
+      </span>
+      <span>{{ 'ADMIN.AUDIT.MENU' | translate }}</span>
     </a>
   </div>
 

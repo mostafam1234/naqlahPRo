@@ -6,6 +6,7 @@ import { Subject, tap, takeUntil, catchError, finalize, of } from 'rxjs';
 import { SystemConfigurationClient, SystemConfigurationDto, UpdateSystemConfigurationCommand } from 'src/app/Core/services/NaqlahClient';
 import { ToasterService } from 'src/app/Core/services/toaster.service';
 import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
+import { PermissionService } from 'src/app/shared/services/permission.service';
 
 @Component({
   selector: 'app-system-configuration',
@@ -28,6 +29,7 @@ export class SystemConfigurationComponent implements OnInit, OnDestroy {
 
   constructor(
     private fb: FormBuilder,
+    private permissionService: PermissionService,
     private client: SystemConfigurationClient,
     private toasterService: ToasterService
   ) {}
@@ -41,7 +43,10 @@ export class SystemConfigurationComponent implements OnInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
   }
-  
+
+  hasPermission(name: string): boolean {
+    return this.permissionService.hasPermission(name);
+  }
 
   private buildForm(): void {
     this.configForm = this.fb.group({

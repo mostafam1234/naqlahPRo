@@ -137,7 +137,8 @@
         "ComplainActions": "إجراءات الشكاوى",
         "CanViewSuggestions": "عرض الاقتراحات",
         "SuggestionActions": "إجراءات الاقتراحات",
-        "CanExportData": "نسخ احتياطي"
+        "CanExportData": "نسخ احتياطي",
+        "CanViewAuditLog": "عرض سجل تدقيق النظام"
       }
     },
     "BACKUP": {
@@ -182,6 +183,44 @@
         "NEIGHBORHOODS": "الأحياء",
         "ASSISTANT_WORKS": "أعمال المساعد"
       }
+    },
+    "AUDIT": {
+      "MENU": "سجل التدقيق",
+      "TITLE": "سجل تدقيق النظام",
+      "SUBTITLE": "عرض كل إجراءات وتغييرات المشرفين في النظام.",
+      "FILTERS": "الفلاتر",
+      "FROM_DATE": "من تاريخ",
+      "TO_DATE": "إلى تاريخ",
+      "ACTION_NAME": "اسم الإجراء",
+      "ENTITY_TYPE": "نوع الكيان",
+      "ALL_ACTIONS": "جميع الإجراءات",
+      "ALL_ENTITY_TYPES": "جميع أنواع الكيانات",
+      "SEARCH_ENTITY_TYPE": "بحث عن نوع الكيان...",
+      "SEARCH": "بحث",
+      "CLEAR": "مسح",
+      "USER": "المستخدم",
+      "ACTION": "الإجراء",
+      "TIME": "الوقت",
+      "DETAILS": "التغييرات",
+      "SHOW_DETAILS": "عرض التفاصيل",
+      "HIDE_DETAILS": "إخفاء التفاصيل",
+      "ENTITY": "الكيان",
+      "CHANGE_TYPE": "النوع",
+      "OLD_VALUE": "القيمة القديمة",
+      "NEW_VALUE": "القيمة الجديدة",
+      "INSERT": "إضافة",
+      "UPDATE": "تحديث",
+      "DELETE": "حذف",
+      "NO_RECORDS": "لا توجد سجلات تدقيق.",
+      "EMPTY_HINT": "غيّر الفلاتر أو نطاق التاريخ لعرض سجلات التدقيق.",
+      "PAGE": "صفحة",
+      "OF": "من",
+      "PREV": "السابق",
+      "NEXT": "التالي",
+      "RECORDS": "سجلات",
+      "ACTIONS": "إجراءات",
+      "LOADING": "جاري تحميل سجل التدقيق...",
+      "ERROR_LOAD": "فشل تحميل سجل التدقيق."
     },
     "PROFILE": {
       "TITLE": "الملف الشخصي",

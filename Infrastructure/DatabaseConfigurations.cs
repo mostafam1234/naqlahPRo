@@ -1,5 +1,6 @@
-﻿
+
 using Domain.InterFaces;
+using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +23,7 @@ namespace Infrastructure
 
             services.AddScoped<NaqlahContext>();
             services.AddScoped<INaqlahContext>(option => option.GetService<NaqlahContext>());
+            services.AddSingleton<IAuditScopeProvider, AuditScopeProvider>();
 
             return services;
         }

@@ -36,6 +36,8 @@ namespace Domain.InterFaces
         DbSet<Notification> Notifications { get; set; }
         DbSet<Complain> Complains { get; set; }
         DbSet<Suggestion> Suggestions { get; set; }
+        DbSet<AuditLog> AuditLogs { get; set; }
+        DbSet<AuditLogDetail> AuditLogDetails { get; set; }
 
         Task<Result> SaveChangesAsyncWithResult();
     }

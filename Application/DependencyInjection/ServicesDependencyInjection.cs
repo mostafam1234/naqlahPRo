@@ -20,6 +20,7 @@ namespace Application.DependencyInjection
             });
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(AuditBehaviour<,>));
             services.AddValidatorsFromAssembly(currentAssembly);
 
             // Register Notification Service

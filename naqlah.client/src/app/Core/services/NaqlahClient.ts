@@ -4694,6 +4694,148 @@ export class AssistantWorkClient {
 @Injectable({
     providedIn: 'root'
 })
+export class AuditAdminClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ?? "";
+    }
+
+    getAuditLogs(skip?: number | undefined, take?: number | undefined, userId?: number | null | undefined, fromDate?: Date | null | undefined, toDate?: Date | null | undefined, actionName?: string | null | undefined, entityType?: string | null | undefined): Observable<PagedResultOfAuditLogDto> {
+        let url_ = this.baseUrl + "/api/AuditAdmin/GetAuditLogs?";
+        if (skip === null)
+            throw new Error("The parameter 'skip' cannot be null.");
+        else if (skip !== undefined)
+            url_ += "skip=" + encodeURIComponent("" + skip) + "&";
+        if (take === null)
+            throw new Error("The parameter 'take' cannot be null.");
+        else if (take !== undefined)
+            url_ += "take=" + encodeURIComponent("" + take) + "&";
+        if (userId !== undefined && userId !== null)
+            url_ += "userId=" + encodeURIComponent("" + userId) + "&";
+        if (fromDate !== undefined && fromDate !== null)
+            url_ += "fromDate=" + encodeURIComponent(fromDate ? "" + fromDate.toISOString() : "") + "&";
+        if (toDate !== undefined && toDate !== null)
+            url_ += "toDate=" + encodeURIComponent(toDate ? "" + toDate.toISOString() : "") + "&";
+        if (actionName !== undefined && actionName !== null)
+            url_ += "actionName=" + encodeURIComponent("" + actionName) + "&";
+        if (entityType !== undefined && entityType !== null)
+            url_ += "entityType=" + encodeURIComponent("" + entityType) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAuditLogs(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAuditLogs(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<PagedResultOfAuditLogDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<PagedResultOfAuditLogDto>;
+        }));
+    }
+
+    protected processGetAuditLogs(response: HttpResponseBase): Observable<PagedResultOfAuditLogDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PagedResultOfAuditLogDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getAuditFilterOptions(): Observable<AuditFilterOptionsDto> {
+        let url_ = this.baseUrl + "/api/AuditAdmin/GetAuditFilterOptions";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAuditFilterOptions(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAuditFilterOptions(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<AuditFilterOptionsDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<AuditFilterOptionsDto>;
+        }));
+    }
+
+    protected processGetAuditFilterOptions(response: HttpResponseBase): Observable<AuditFilterOptionsDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AuditFilterOptionsDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
 export class BackupAdminClient {
     private http: HttpClient;
     private baseUrl: string;
@@ -12540,6 +12682,193 @@ export class UpdateAssistantWorkCommand {
         data["arabicName"] = this.arabicName !== undefined ? this.arabicName : <any>null;
         data["englishName"] = this.englishName !== undefined ? this.englishName : <any>null;
         data["cost"] = this.cost !== undefined ? this.cost : <any>null;
+        return data;
+    }
+}
+
+export class PagedResultOfAuditLogDto {
+    data!: AuditLogDto[];
+    totalCount!: number;
+    totalPages!: number;
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data!.push(AuditLogDto.fromJS(item));
+            }
+            else {
+                this.data = <any>null;
+            }
+            this.totalCount = _data["totalCount"] !== undefined ? _data["totalCount"] : <any>null;
+            this.totalPages = _data["totalPages"] !== undefined ? _data["totalPages"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): PagedResultOfAuditLogDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultOfAuditLogDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item.toJSON());
+        }
+        data["totalCount"] = this.totalCount !== undefined ? this.totalCount : <any>null;
+        data["totalPages"] = this.totalPages !== undefined ? this.totalPages : <any>null;
+        return data;
+    }
+}
+
+export class AuditLogDto {
+    id!: number;
+    userId!: number;
+    userName!: string;
+    actionName!: string;
+    timestampUtc!: Date;
+    ipAddress!: string | null;
+    userAgent!: string | null;
+    details!: AuditLogDetailDto[];
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.userId = _data["userId"] !== undefined ? _data["userId"] : <any>null;
+            this.userName = _data["userName"] !== undefined ? _data["userName"] : <any>null;
+            this.actionName = _data["actionName"] !== undefined ? _data["actionName"] : <any>null;
+            this.timestampUtc = _data["timestampUtc"] ? new Date(_data["timestampUtc"].toString()) : <any>null;
+            this.ipAddress = _data["ipAddress"] !== undefined ? _data["ipAddress"] : <any>null;
+            this.userAgent = _data["userAgent"] !== undefined ? _data["userAgent"] : <any>null;
+            if (Array.isArray(_data["details"])) {
+                this.details = [] as any;
+                for (let item of _data["details"])
+                    this.details!.push(AuditLogDetailDto.fromJS(item));
+            }
+            else {
+                this.details = <any>null;
+            }
+        }
+    }
+
+    static fromJS(data: any): AuditLogDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AuditLogDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["userId"] = this.userId !== undefined ? this.userId : <any>null;
+        data["userName"] = this.userName !== undefined ? this.userName : <any>null;
+        data["actionName"] = this.actionName !== undefined ? this.actionName : <any>null;
+        data["timestampUtc"] = this.timestampUtc ? this.timestampUtc.toISOString() : <any>null;
+        data["ipAddress"] = this.ipAddress !== undefined ? this.ipAddress : <any>null;
+        data["userAgent"] = this.userAgent !== undefined ? this.userAgent : <any>null;
+        if (Array.isArray(this.details)) {
+            data["details"] = [];
+            for (let item of this.details)
+                data["details"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export class AuditLogDetailDto {
+    id!: number;
+    entityType!: string;
+    entityId!: string;
+    changeType!: AuditChangeType;
+    oldValuesJson!: string | null;
+    newValuesJson!: string | null;
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.entityType = _data["entityType"] !== undefined ? _data["entityType"] : <any>null;
+            this.entityId = _data["entityId"] !== undefined ? _data["entityId"] : <any>null;
+            this.changeType = _data["changeType"] !== undefined ? _data["changeType"] : <any>null;
+            this.oldValuesJson = _data["oldValuesJson"] !== undefined ? _data["oldValuesJson"] : <any>null;
+            this.newValuesJson = _data["newValuesJson"] !== undefined ? _data["newValuesJson"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): AuditLogDetailDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AuditLogDetailDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["entityType"] = this.entityType !== undefined ? this.entityType : <any>null;
+        data["entityId"] = this.entityId !== undefined ? this.entityId : <any>null;
+        data["changeType"] = this.changeType !== undefined ? this.changeType : <any>null;
+        data["oldValuesJson"] = this.oldValuesJson !== undefined ? this.oldValuesJson : <any>null;
+        data["newValuesJson"] = this.newValuesJson !== undefined ? this.newValuesJson : <any>null;
+        return data;
+    }
+}
+
+export enum AuditChangeType {
+    Insert = 1,
+    Update = 2,
+    Delete = 3,
+}
+
+export class AuditFilterOptionsDto {
+    actionNames!: string[];
+    entityTypes!: string[];
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["actionNames"])) {
+                this.actionNames = [] as any;
+                for (let item of _data["actionNames"])
+                    this.actionNames!.push(item);
+            }
+            else {
+                this.actionNames = <any>null;
+            }
+            if (Array.isArray(_data["entityTypes"])) {
+                this.entityTypes = [] as any;
+                for (let item of _data["entityTypes"])
+                    this.entityTypes!.push(item);
+            }
+            else {
+                this.entityTypes = <any>null;
+            }
+        }
+    }
+
+    static fromJS(data: any): AuditFilterOptionsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AuditFilterOptionsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.actionNames)) {
+            data["actionNames"] = [];
+            for (let item of this.actionNames)
+                data["actionNames"].push(item);
+        }
+        if (Array.isArray(this.entityTypes)) {
+            data["entityTypes"] = [];
+            for (let item of this.entityTypes)
+                data["entityTypes"].push(item);
+        }
         return data;
     }
 }

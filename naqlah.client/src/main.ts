@@ -8,7 +8,8 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { provideToastr } from 'ngx-toastr';
 import { authInterceptor } from './app/shared/services/auth.interceptor';
-import { RolePermissionsAdminClient } from './app/Core/services/NaqlahClient';
+import { API_BASE_URL, RolePermissionsAdminClient } from './app/Core/services/NaqlahClient';
+import { AppConfigService } from './app/shared/services/AppConfigService';
 
 export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
@@ -29,6 +30,7 @@ bootstrapApplication(AppComponent, {
     }),
     appRouterProviders,
     RolePermissionsAdminClient,
+    { provide: API_BASE_URL, useFactory: (config: AppConfigService) => config.getConfig().apiBaseUrl || '', deps: [AppConfigService] },
     importProvidersFrom(
       TranslateModule.forRoot({
         loader: {

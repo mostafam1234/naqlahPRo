@@ -1,0 +1,24 @@
+<!-- One card = one change (one entity modified in this action) -->
+<div class="rounded-xl border border-neutral-200 bg-white shadow-sm overflow-hidden">
+  <div class="flex flex-wrap items-center justify-between gap-2 px-4 py-3 bg-neutral-50 border-b border-neutral-100">
+    <span class="font-semibold text-neutral-800">{{ detail.entityType }} #{{ detail.entityId }}</span>
+    <span class="inline-flex items-center rounded-lg px-2.5 py-1 text-xs font-semibold"
+      [ngClass]="{
+        'bg-success-100 text-success-700': detail.changeType === 1,
+        'bg-primary-100 text-primary-700': detail.changeType === 2,
+        'bg-error-100 text-error-700': detail.changeType === 3
+      }">
+      {{ changeTypeLabel(detail.changeType) | translate }}
+    </span>
+  </div>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 p-4">
+    <div *ngIf="detail.oldValuesJson" class="rounded-xl border border-error-200 bg-error-50/50 overflow-hidden shadow-sm">
+      <div class="px-3 py-2 text-xs font-bold uppercase tracking-wider text-error-600 bg-error-100/80">{{ 'ADMIN.AUDIT.OLD_VALUE' | translate }}</div>
+      <pre class="p-4 m-0 text-xs font-mono bg-neutral-900 text-neutral-100 overflow-x-auto overflow-y-auto max-h-56">{{ formatJson(detail.oldValuesJson) }}</pre>
+    </div>
+    <div *ngIf="detail.newValuesJson" class="rounded-xl border border-success-200 bg-success-50/50 overflow-hidden shadow-sm">
+      <div class="px-3 py-2 text-xs font-bold uppercase tracking-wider text-success-600 bg-success-100/80">{{ 'ADMIN.AUDIT.NEW_VALUE' | translate }}</div>
+      <pre class="p-4 m-0 text-xs font-mono bg-neutral-900 text-neutral-100 overflow-x-auto overflow-y-auto max-h-56">{{ formatJson(detail.newValuesJson) }}</pre>
+    </div>
+  </div>
+</div>

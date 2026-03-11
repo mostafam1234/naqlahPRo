@@ -7,6 +7,7 @@ import { ToasterService } from 'src/app/Core/services/toaster.service';
 import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { LanguageService } from 'src/app/Core/services/language.service';
+import { PermissionService } from 'src/app/shared/services/permission.service';
 
 @Component({
   selector: 'app-employee-details',
@@ -27,8 +28,13 @@ export class EmployeeDetailsComponent implements OnInit, OnDestroy {
     private toasterService: ToasterService,
     private router: Router,
     private route: ActivatedRoute,
-    private languageService: LanguageService
+    private languageService: LanguageService,
+    private permissionService: PermissionService
   ) {}
+
+  hasPermission(name: string): boolean {
+    return this.permissionService.hasPermission(name);
+  }
 
   getRoleDisplayName(): string {
     if (!this.user) return 'غير محدد';

@@ -1,0 +1,57 @@
+<!-- One card = one action. When showUserInfo=false we're inside a user module (compact row). -->
+<article class="rounded-xl border border-neutral-200 bg-white shadow-sm overflow-hidden transition-all duration-200"
+  [ngClass]="expanded ? 'ring-2 ring-primary-500 shadow-md' : ''">
+  <!-- Row: with or without user info -->
+  <div class="flex items-center gap-4 px-4 sm:px-5 py-3 hover:bg-neutral-50/80 cursor-pointer transition-colors"
+    (click)="onToggle()" role="button" [attr.aria-expanded]="expanded" tabindex="0"
+    (keydown.enter)="onToggle(); $event.preventDefault()" (keydown.space)="onToggle(); $event.preventDefault()">
+    <ng-container *ngIf="showUserInfo">
+      <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary-500 text-sm font-bold text-white" [title]="displayName">
+        {{ initials }}
+      </div>
+      <div class="min-w-0 flex-1">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="font-semibold text-neutral-900">{{ displayName }}</span>
+          <span class="inline-flex items-center rounded-md bg-neutral-100 px-2 py-0.5 font-mono text-xs text-neutral-600">{{ log.actionName }}</span>
+        </div>
+        <p class="mt-0.5 text-sm text-neutral-500">{{ formatDate(log.timestampUtc) }}</p>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="!showUserInfo">
+      <div class="min-w-0 flex-1 flex items-center gap-3 flex-wrap">
+        <span class="inline-flex items-center rounded-md bg-neutral-100 px-2.5 py-1 font-mono text-xs font-medium text-neutral-700">{{ log.actionName }}</span>
+        <span class="text-sm text-neutral-500">{{ formatDate(log.timestampUtc) }}</span>
+      </div>
+    </ng-container>
+    <div class="flex shrink-0 items-center gap-2">
+      <button type="button" (click)="onToggle($event)"
+        class="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold text-primary-600 hover:bg-primary-50 focus:outline-none focus:ring-2 focus:ring-primary-500/20">
+        {{ expanded ? ('ADMIN.AUDIT.HIDE_DETAILS' | translate) : ('ADMIN.AUDIT.SHOW_DETAILS' | translate) }}
+        ({{ log.details?.length ?? 0 }})
+      </button>
+      <span class="flex text-neutral-400 transition-transform duration-200" [class.rotate-180]="expanded">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </span>
+    </div>
+  </div>
+
+  <!-- Expand: changes (each in its own card) -->
+  <div class="overflow-hidden transition-[max-height] duration-300 ease-out" [style.max-height]="expanded ? '2000px' : '0'">
+    <ng-container *ngIf="log.details && log.details.length > 0">
+      <div class="border-t border-neutral-100 bg-neutral-50/70 px-4 sm:px-5 pt-3 pb-4">
+        <h4 class="text-xs font-bold text-neutral-500 mb-3 flex items-center gap-2">
+          <span>{{ 'ADMIN.AUDIT.DETAILS' | translate }}</span>
+          <span class="rounded-full bg-primary-100 text-primary-700 px-2 py-0.5 text-xs font-semibold">{{ log.details.length }}</span>
+        </h4>
+        <div class="space-y-3">
+          <app-audit-detail-block *ngFor="let d of log.details; trackBy: trackByDetailId" [detail]="d"/>
+        </div>
+      </div>
+    </ng-container>
+    <div *ngIf="!log.details || log.details.length === 0" class="border-t border-neutral-100 px-4 sm:px-5 py-3 text-sm text-neutral-500 bg-neutral-50/50">
+      {{ 'ADMIN.AUDIT.NO_RECORDS' | translate }}
+    </div>
+  </div>
+</article>

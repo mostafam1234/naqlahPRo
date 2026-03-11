@@ -1,5 +1,7 @@
+using Application.Shared.Services;
 using CSharpFunctionalExtensions;
 using Domain.DomainEventsHelper;
+using Domain.Enums;
 using Domain.InterFaces;
 using Domain.Models;
 using MediatR;
@@ -27,13 +29,20 @@ namespace Infrastructure
     {
         private readonly IMediator mediator;
         private readonly IHangfireJobWriter hangfireJobWriter;
+        private readonly IAuditScopeProvider auditScopeProvider;
+        private readonly IAuditLogNotifier auditLogNotifier;
 
-        public NaqlahContext(DbContextOptions<NaqlahContext> options,
-                               IMediator mediator,
-                               IHangfireJobWriter hangfireJobWriter) : base(options)
+        public NaqlahContext(
+            DbContextOptions<NaqlahContext> options,
+            IMediator mediator,
+            IHangfireJobWriter hangfireJobWriter,
+            IAuditScopeProvider auditScopeProvider,
+            IAuditLogNotifier auditLogNotifier) : base(options)
         {
             this.mediator = mediator;
             this.hangfireJobWriter = hangfireJobWriter;
+            this.auditScopeProvider = auditScopeProvider;
+            this.auditLogNotifier = auditLogNotifier;
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -65,6 +74,8 @@ namespace Infrastructure
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Complain> Complains { get; set; }
         public DbSet<Suggestion> Suggestions { get; set; }
+        public DbSet<AuditLog> AuditLogs { get; set; }
+        public DbSet<AuditLogDetail> AuditLogDetails { get; set; }
 
 
         public async Task<Result> SaveChangesAsyncWithResult()
@@ -73,10 +84,96 @@ namespace Infrastructure
             try
             {
                 await FirePreDomainEvents();
+
+                // Capture changes before saving so we can read original values,
+                // but persist the audit entries after the main SaveChanges so keys are available.
+                var auditScope = auditScopeProvider.GetCurrentScope();
+                var hasAuditScope = auditScope != null && auditScope.UserId > 0 && !string.IsNullOrWhiteSpace(auditScope.ActionName);
+
+                List<AuditLogDetail> pendingDetails = new List<AuditLogDetail>();
+
+                if (hasAuditScope)
+                {
+                    var entries = ChangeTracker.Entries()
+                        .Where(e =>
+                            e.Entity is not AuditLog &&
+                            e.Entity is not AuditLogDetail &&
+                            e.State != EntityState.Unchanged &&
+                            e.State != EntityState.Detached)
+                        .ToList();
+
+                    foreach (var entry in entries)
+                    {
+                        var entityType = entry.Entity.GetType().Name;
+
+                        var keyProperties = entry.Properties.Where(p => p.Metadata.IsPrimaryKey()).ToList();
+                        var entityId = keyProperties.Count == 0
+                            ? string.Empty
+                            : string.Join("|", keyProperties.Select(p => p.CurrentValue?.ToString() ?? string.Empty));
+
+                        var changeType = entry.State switch
+                        {
+                            EntityState.Added => AuditChangeType.Insert,
+                            EntityState.Modified => AuditChangeType.Update,
+                            EntityState.Deleted => AuditChangeType.Delete,
+                            _ => AuditChangeType.Update
+                        };
+
+                        string? oldValuesJson = null;
+                        string? newValuesJson = null;
+
+                        if (entry.State == EntityState.Modified || entry.State == EntityState.Deleted)
+                        {
+                            var originalValues = entry.Properties
+                                .Where(p => !p.Metadata.IsPrimaryKey())
+                                .ToDictionary(p => p.Metadata.Name, p => entry.OriginalValues[p.Metadata.Name]);
+
+                            oldValuesJson = System.Text.Json.JsonSerializer.Serialize(originalValues);
+                        }
+
+                        if (entry.State == EntityState.Modified || entry.State == EntityState.Added)
+                        {
+                            var currentValues = entry.Properties
+                                .Where(p => !p.Metadata.IsPrimaryKey())
+                                .ToDictionary(p => p.Metadata.Name, p => p.CurrentValue);
+
+                            newValuesJson = System.Text.Json.JsonSerializer.Serialize(currentValues);
+                        }
+
+                        var detail = AuditLogDetail.Create(
+                            entityType,
+                            entityId,
+                            changeType,
+                            oldValuesJson,
+                            newValuesJson);
+
+                        pendingDetails.Add(detail);
+                    }
+                }
+
                 var result = await base.SaveChangesAsync();
+
+                if (hasAuditScope && pendingDetails.Count > 0)
+                {
+                    var auditLog = AuditLog.Create(
+                        auditScope!.UserId,
+                        auditScope.ActionName,
+                        DateTime.UtcNow,
+                        auditScope.IpAddress,
+                        auditScope.UserAgent);
+
+                    foreach (var detail in pendingDetails)
+                    {
+                        auditLog.AddDetail(detail);
+                    }
+
+                    await AuditLogs.AddAsync(auditLog);
+                    await base.SaveChangesAsync();
+                    await auditLogNotifier.NotifyNewAuditLogAsync(cancellationToken);
+                }
+
                 await FirePostDomainEvents();
                 return Result.Success();
-
             }
             catch (Exception exp)
             {

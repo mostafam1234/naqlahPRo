@@ -48,7 +48,7 @@
             </div>
 
             <!-- Action Button -->
-            <div class="flex gap-3">
+            <div *ngIf="hasPermission('ProfileActions')" class="flex gap-3">
               <button
                 *ngIf="!isEditMode"
                 (click)="toggleEditMode()"
@@ -263,7 +263,7 @@
             </div>
 
             <!-- Save Button -->
-            <div *ngIf="isEditMode" class="flex justify-end gap-4 pt-6 border-t border-neutral-200">
+            <div *ngIf="isEditMode && hasPermission('ProfileActions')" class="flex justify-end gap-4 pt-6 border-t border-neutral-200">
               <button
                 type="button"
                 (click)="toggleEditMode()"

@@ -1,0 +1,5 @@
+/* Audit page: layout uses Tailwind; only expand animation kept here */
+:host {
+  display: block;
+  width: 100%;
+}

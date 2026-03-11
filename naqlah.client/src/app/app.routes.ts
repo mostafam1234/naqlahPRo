@@ -262,6 +262,15 @@ const routes: Routes = [
           ),
         canActivate: [permissionGuard],
         data: { requiredPermission: 'CanExportData' },
+      },
+      {
+        path: 'audit',
+        loadComponent: () =>
+          import('./Pages/admin/audit/audit.component').then(
+            (m) => m.AuditComponent
+          ),
+        canActivate: [permissionGuard],
+        data: { requiredPermission: 'CanViewAuditLog' },
       }
     ],
   }
