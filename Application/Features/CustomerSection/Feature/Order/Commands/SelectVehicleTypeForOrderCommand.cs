@@ -28,7 +28,7 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
             private readonly IGoogleMapService googleMapService;
             private readonly ILogger<SelectVehicleTypeForOrderCommandHandler> logger;
             private readonly IDateTimeProvider dateTimeProvider;
-            private const double RadiusInKilometers = 3.0;
+            private const double RadiusInKilometers = 100000.0;
 
             public SelectVehicleTypeForOrderCommandHandler(INaqlahContext context,
                                                           INotificationService notificationService,

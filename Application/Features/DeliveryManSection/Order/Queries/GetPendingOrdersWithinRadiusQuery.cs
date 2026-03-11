@@ -19,7 +19,7 @@ namespace Application.Features.DeliveryManSection.Order.Queries
         {
             private readonly INaqlahContext context;
             private readonly IUserSession userSession;
-            private const double RADIUS_IN_KM = 3.0;
+            private const double RADIUS_IN_KM = 100000.0;
             private const double EARTH_RADIUS_KM = 6371.0; // Earth's radius in kilometers
 
             public GetPendingOrdersWithinRadiusQueryHandler(INaqlahContext context,
