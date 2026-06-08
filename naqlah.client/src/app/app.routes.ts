@@ -24,6 +24,13 @@ const routes: Routes = [
             (m) => m.HomePageComponent
           ),
       },
+      {
+        path: 'privacy-policy',
+        loadComponent: () =>
+          import('./Pages/landing-page/privacy-policy/privacy-policy.component').then(
+            (m) => m.PrivacyPolicyComponent
+          ),
+      },
     ],
   },
   { path:'admin', redirectTo:'admin/home', pathMatch:'full' },

@@ -1,0 +1,35 @@
+:host {
+  display: block;
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px;
+  color: #222;
+}
+
+h1, h2 {
+  color: #0B1F3A;
+}
+
+h1 {
+  font-size: 1.8rem;
+}
+
+h2 {
+  font-size: 1.2rem;
+  margin-top: 1.5rem;
+}
+
+p, li {
+  font-size: 15px;
+}
+
+ul {
+  padding-left: 1.2rem;
+}
+
+.updated {
+  color: #666;
+  font-size: 14px;
+}
