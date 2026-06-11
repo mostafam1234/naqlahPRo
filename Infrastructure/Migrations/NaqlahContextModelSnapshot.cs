@@ -408,7 +408,7 @@ namespace Infrastructure.Migrations
                     b.HasIndex("DeliveryManId")
                         .IsUnique();
 
-                    b.ToTable("DeliveryManLocations");
+                    b.ToTable("DeliveryManLocations", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Models.DeliveryVehicle", b =>
@@ -596,7 +596,7 @@ namespace Infrastructure.Migrations
                     b.HasIndex("EstablishmentId")
                         .IsUnique();
 
-                    b.ToTable("EstablishMentRepresentitive");
+                    b.ToTable("EstablishMentRepresentitive", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Models.Individual", b =>

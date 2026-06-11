@@ -3,6 +3,8 @@ using Application.Features.CustomerSection.Feature.AssistantWork.Dtos;
 using Application.Features.CustomerSection.Feature.AssistantWork.Queries;
 using Application.Features.CustomerSection.Feature.DiscountCode.Commands;
 using Application.Features.CustomerSection.Feature.DiscountCode.Dtos;
+using Application.Features.CustomerSection.Feature.Payment.Commands;
+using Application.Features.CustomerSection.Feature.Payment.Dtos;
 using Application.Features.CustomerSection.Feature.Order.Commands;
 using Application.Features.CustomerSection.Feature.Order.Dtos;
 using Application.Features.CustomerSection.Feature.Order.Queries;
@@ -215,6 +217,36 @@ namespace Presentaion.Controllers
         [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
         [Route("ValidateDiscountCode")]
         public async Task<IActionResult> ValidateDiscountCode([FromBody] ValidateDiscountCodeCommand command)
+        {
+            var result = await mediator.Send(command);
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+            return Ok(result.Value);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(ProcessPaymentResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("ProcessPayment")]
+        public async Task<IActionResult> ProcessPayment([FromBody] ProcessPaymentCommand command)
+        {
+            var result = await mediator.Send(command);
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+            return Ok(result.Value);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(PayFromWalletResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("PayFromWallet")]
+        public async Task<IActionResult> PayFromWallet([FromBody] PayFromWalletCommand command)
         {
             var result = await mediator.Send(command);
 

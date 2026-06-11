@@ -1715,6 +1715,65 @@ export class CustomerOrderClient {
         }
         return _observableOf(null as any);
     }
+
+    processPayment(command: ProcessPaymentCommand): Observable<ProcessPaymentResponseDto> {
+        let url_ = this.baseUrl + "/api/CustomerOrder/ProcessPayment";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processProcessPayment(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processProcessPayment(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ProcessPaymentResponseDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ProcessPaymentResponseDto>;
+        }));
+    }
+
+    protected processProcessPayment(response: HttpResponseBase): Observable<ProcessPaymentResponseDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ProcessPaymentResponseDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 @Injectable({
@@ -10947,6 +11006,70 @@ export class ValidateDiscountCodeCommand {
         data = typeof data === 'object' ? data : {};
         data["code"] = this.code !== undefined ? this.code : <any>null;
         data["orderId"] = this.orderId !== undefined ? this.orderId : <any>null;
+        return data;
+    }
+}
+
+export class ProcessPaymentResponseDto {
+    success!: boolean;
+    message!: string;
+    transactionId!: string;
+    checkoutId!: string | null;
+    checkoutUrl!: string | null;
+
+    init(_data?: any) {
+        if (_data) {
+            this.success = _data["success"] !== undefined ? _data["success"] : <any>null;
+            this.message = _data["message"] !== undefined ? _data["message"] : <any>null;
+            this.transactionId = _data["transactionId"] !== undefined ? _data["transactionId"] : <any>null;
+            this.checkoutId = _data["checkoutId"] !== undefined ? _data["checkoutId"] : <any>null;
+            this.checkoutUrl = _data["checkoutUrl"] !== undefined ? _data["checkoutUrl"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): ProcessPaymentResponseDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProcessPaymentResponseDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["success"] = this.success !== undefined ? this.success : <any>null;
+        data["message"] = this.message !== undefined ? this.message : <any>null;
+        data["transactionId"] = this.transactionId !== undefined ? this.transactionId : <any>null;
+        data["checkoutId"] = this.checkoutId !== undefined ? this.checkoutId : <any>null;
+        data["checkoutUrl"] = this.checkoutUrl !== undefined ? this.checkoutUrl : <any>null;
+        return data;
+    }
+}
+
+export class ProcessPaymentCommand {
+    orderId!: number;
+    paymentMethodId!: number;
+    discountCode!: string | null;
+
+    init(_data?: any) {
+        if (_data) {
+            this.orderId = _data["orderId"] !== undefined ? _data["orderId"] : <any>null;
+            this.paymentMethodId = _data["paymentMethodId"] !== undefined ? _data["paymentMethodId"] : <any>null;
+            this.discountCode = _data["discountCode"] !== undefined ? _data["discountCode"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): ProcessPaymentCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProcessPaymentCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["orderId"] = this.orderId !== undefined ? this.orderId : <any>null;
+        data["paymentMethodId"] = this.paymentMethodId !== undefined ? this.paymentMethodId : <any>null;
+        data["discountCode"] = this.discountCode !== undefined ? this.discountCode : <any>null;
         return data;
     }
 }

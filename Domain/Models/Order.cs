@@ -36,6 +36,9 @@ namespace Domain.Models
         public OrderStatus OrderStatus { get; private set; }
         public int VehicleTypdId { get; private set; }
         public decimal Total { get; private set; }
+        public int? DiscountCodeId { get; private set; }
+        public string? DiscountCodeName { get; private set; }
+        public decimal DiscountAmount { get; private set; }
         public OrderPackage OrderPackage { get; private set; }
         private List<OrderDetails> _OrderDetails { get; set; }
         public IReadOnlyList<OrderDetails> OrderDetails
@@ -349,6 +352,25 @@ namespace Domain.Models
             {
                 wayPoint.MarkAsCompleted(nowDate);
             }
+
+            return Result.Success();
+        }
+
+        public Result ApplyDiscount(int discountCodeId, string discountCodeName, decimal discountAmount)
+        {
+            if (DiscountCodeId.HasValue)
+                return Result.Failure("A discount code has already been applied to this order.");
+
+            if (discountAmount < 0)
+                return Result.Failure("Discount amount cannot be negative.");
+
+            if (discountAmount > Total)
+                return Result.Failure("Discount amount cannot exceed the order total.");
+
+            DiscountCodeId = discountCodeId;
+            DiscountCodeName = discountCodeName;
+            DiscountAmount = discountAmount;
+            Total = Total - discountAmount;
 
             return Result.Success();
         }

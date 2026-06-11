@@ -26,6 +26,7 @@ namespace NAQLAH.Server.ApiDependencyInjection
             services.AddScoped<IAuditLogNotifier, AuditLogNotifier>();
             services.AddSingleton<IReadFromResourceFile, ReadFromResourceFile>();
             services.AddHttpClient();
+            services.AddHttpClient<IMadaPaymentService, Infrastructure.Services.MadaPaymentService>();
             services.AddSingleton<IReadFromAppSetting, ReadFromAppSetting>();
             return services;
         }

@@ -1075,6 +1075,48 @@
         }
       }
     },
+    "/api/CustomerOrder/ProcessPayment": {
+      "post": {
+        "tags": [
+          "CustomerOrder"
+        ],
+        "operationId": "CustomerOrder_ProcessPayment",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProcessPaymentCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProcessPaymentResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/CustomerWallet/GetBalance": {
       "get": {
         "tags": [
@@ -7395,6 +7437,47 @@
           "orderId": {
             "type": "integer",
             "format": "int32"
+          }
+        }
+      },
+      "ProcessPaymentResponseDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "transactionId": {
+            "type": "string"
+          },
+          "checkoutId": {
+            "type": "string",
+            "nullable": true
+          },
+          "checkoutUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "ProcessPaymentCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "orderId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "paymentMethodId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "discountCode": {
+            "type": "string",
+            "nullable": true
           }
         }
       },
