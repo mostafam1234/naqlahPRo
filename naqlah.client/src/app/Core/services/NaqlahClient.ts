@@ -1115,6 +1115,131 @@ export class CustomerClient {
         }
         return _observableOf(null as any);
     }
+
+    getNotifications(skip?: number | undefined, take?: number | undefined): Observable<CustomerNotificationDto[]> {
+        let url_ = this.baseUrl + "/api/Customer/GetNotifications?";
+        if (skip === null)
+            throw new Error("The parameter 'skip' cannot be null.");
+        else if (skip !== undefined)
+            url_ += "skip=" + encodeURIComponent("" + skip) + "&";
+        if (take === null)
+            throw new Error("The parameter 'take' cannot be null.");
+        else if (take !== undefined)
+            url_ += "take=" + encodeURIComponent("" + take) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetNotifications(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetNotifications(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<CustomerNotificationDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<CustomerNotificationDto[]>;
+        }));
+    }
+
+    protected processGetNotifications(response: HttpResponseBase): Observable<CustomerNotificationDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(CustomerNotificationDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    markNotificationRead(customerNotificationId: number): Observable<void> {
+        let url_ = this.baseUrl + "/api/Customer/MarkNotificationRead";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(customerNotificationId);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processMarkNotificationRead(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processMarkNotificationRead(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processMarkNotificationRead(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 @Injectable({
@@ -6947,6 +7072,131 @@ export class NotificationAdminClient {
         }
         return _observableOf(null as any);
     }
+
+    sendToCustomers(command: SendCustomerNotificationCommand): Observable<number> {
+        let url_ = this.baseUrl + "/api/NotificationAdmin/SendToCustomers";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSendToCustomers(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSendToCustomers(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<number>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<number>;
+        }));
+    }
+
+    protected processSendToCustomers(response: HttpResponseBase): Observable<number> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getBroadcastNotifications(skip?: number | undefined, take?: number | undefined, scheduledOnly?: boolean | null | undefined): Observable<PagedResultOfBroadcastNotificationDto> {
+        let url_ = this.baseUrl + "/api/NotificationAdmin/GetBroadcastNotifications?";
+        if (skip === null)
+            throw new Error("The parameter 'skip' cannot be null.");
+        else if (skip !== undefined)
+            url_ += "skip=" + encodeURIComponent("" + skip) + "&";
+        if (take === null)
+            throw new Error("The parameter 'take' cannot be null.");
+        else if (take !== undefined)
+            url_ += "take=" + encodeURIComponent("" + take) + "&";
+        if (scheduledOnly !== undefined && scheduledOnly !== null)
+            url_ += "scheduledOnly=" + encodeURIComponent("" + scheduledOnly) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetBroadcastNotifications(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetBroadcastNotifications(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<PagedResultOfBroadcastNotificationDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<PagedResultOfBroadcastNotificationDto>;
+        }));
+    }
+
+    protected processGetBroadcastNotifications(response: HttpResponseBase): Observable<PagedResultOfBroadcastNotificationDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PagedResultOfBroadcastNotificationDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 @Injectable({
@@ -10457,6 +10707,74 @@ export class EstablishmentRepresentativeDto {
         data["backIdentityNumberImagePath"] = this.backIdentityNumberImagePath !== undefined ? this.backIdentityNumberImagePath : <any>null;
         return data;
     }
+}
+
+export class CustomerNotificationDto {
+    id!: number;
+    notificationId!: number;
+    arabicTitle!: string;
+    englishTitle!: string;
+    arabicMessage!: string;
+    englishMessage!: string;
+    orderId!: number | null;
+    notificationType!: NotificationType;
+    isRead!: boolean;
+    readDate!: Date | null;
+    createdDate!: Date;
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.notificationId = _data["notificationId"] !== undefined ? _data["notificationId"] : <any>null;
+            this.arabicTitle = _data["arabicTitle"] !== undefined ? _data["arabicTitle"] : <any>null;
+            this.englishTitle = _data["englishTitle"] !== undefined ? _data["englishTitle"] : <any>null;
+            this.arabicMessage = _data["arabicMessage"] !== undefined ? _data["arabicMessage"] : <any>null;
+            this.englishMessage = _data["englishMessage"] !== undefined ? _data["englishMessage"] : <any>null;
+            this.orderId = _data["orderId"] !== undefined ? _data["orderId"] : <any>null;
+            this.notificationType = _data["notificationType"] !== undefined ? _data["notificationType"] : <any>null;
+            this.isRead = _data["isRead"] !== undefined ? _data["isRead"] : <any>null;
+            this.readDate = _data["readDate"] ? new Date(_data["readDate"].toString()) : <any>null;
+            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>null;
+        }
+    }
+
+    static fromJS(data: any): CustomerNotificationDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CustomerNotificationDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["notificationId"] = this.notificationId !== undefined ? this.notificationId : <any>null;
+        data["arabicTitle"] = this.arabicTitle !== undefined ? this.arabicTitle : <any>null;
+        data["englishTitle"] = this.englishTitle !== undefined ? this.englishTitle : <any>null;
+        data["arabicMessage"] = this.arabicMessage !== undefined ? this.arabicMessage : <any>null;
+        data["englishMessage"] = this.englishMessage !== undefined ? this.englishMessage : <any>null;
+        data["orderId"] = this.orderId !== undefined ? this.orderId : <any>null;
+        data["notificationType"] = this.notificationType !== undefined ? this.notificationType : <any>null;
+        data["isRead"] = this.isRead !== undefined ? this.isRead : <any>null;
+        data["readDate"] = this.readDate ? this.readDate.toISOString() : <any>null;
+        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>null;
+        return data;
+    }
+}
+
+export enum NotificationType {
+    NewOrder = 1,
+    OrderStatusChanged = 2,
+    PickUp = 3,
+    RejectORderWayPointFromCustomer = 4,
+    WaititngCustomerAction = 5,
+    RejectOrder = 6,
+    CaptainAssigned = 7,
+    OrderCancelled = 8,
+    OrderCompleted = 9,
+    OrderStatusUpdate = 10,
+    ScheduledMessage = 11,
+    CustomerGeneral = 12,
 }
 
 export class CreateOrderResponseDto {
@@ -15137,13 +15455,164 @@ export class NotificationDto {
     }
 }
 
-export enum NotificationType {
-    NewOrder = 1,
-    OrderStatusChanged = 2,
-    PickUp = 3,
-    RejectORderWayPointFromCustomer = 4,
-    WaititngCustomerAction = 5,
-    RejectOrder = 6,
+export class SendCustomerNotificationCommand {
+    arabicTitle!: string;
+    englishTitle!: string;
+    arabicMessage!: string;
+    englishMessage!: string;
+    notificationType!: NotificationType;
+    targetAll!: boolean;
+    targetCustomerType!: number | null;
+    customerIds!: number[] | null;
+    isScheduled!: boolean;
+    scheduledDate!: Date | null;
+
+    init(_data?: any) {
+        if (_data) {
+            this.arabicTitle = _data["arabicTitle"] !== undefined ? _data["arabicTitle"] : <any>null;
+            this.englishTitle = _data["englishTitle"] !== undefined ? _data["englishTitle"] : <any>null;
+            this.arabicMessage = _data["arabicMessage"] !== undefined ? _data["arabicMessage"] : <any>null;
+            this.englishMessage = _data["englishMessage"] !== undefined ? _data["englishMessage"] : <any>null;
+            this.notificationType = _data["notificationType"] !== undefined ? _data["notificationType"] : <any>null;
+            this.targetAll = _data["targetAll"] !== undefined ? _data["targetAll"] : <any>null;
+            this.targetCustomerType = _data["targetCustomerType"] !== undefined ? _data["targetCustomerType"] : <any>null;
+            if (Array.isArray(_data["customerIds"])) {
+                this.customerIds = [] as any;
+                for (let item of _data["customerIds"])
+                    this.customerIds!.push(item);
+            }
+            else {
+                this.customerIds = <any>null;
+            }
+            this.isScheduled = _data["isScheduled"] !== undefined ? _data["isScheduled"] : <any>null;
+            this.scheduledDate = _data["scheduledDate"] ? new Date(_data["scheduledDate"].toString()) : <any>null;
+        }
+    }
+
+    static fromJS(data: any): SendCustomerNotificationCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new SendCustomerNotificationCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["arabicTitle"] = this.arabicTitle !== undefined ? this.arabicTitle : <any>null;
+        data["englishTitle"] = this.englishTitle !== undefined ? this.englishTitle : <any>null;
+        data["arabicMessage"] = this.arabicMessage !== undefined ? this.arabicMessage : <any>null;
+        data["englishMessage"] = this.englishMessage !== undefined ? this.englishMessage : <any>null;
+        data["notificationType"] = this.notificationType !== undefined ? this.notificationType : <any>null;
+        data["targetAll"] = this.targetAll !== undefined ? this.targetAll : <any>null;
+        data["targetCustomerType"] = this.targetCustomerType !== undefined ? this.targetCustomerType : <any>null;
+        if (Array.isArray(this.customerIds)) {
+            data["customerIds"] = [];
+            for (let item of this.customerIds)
+                data["customerIds"].push(item);
+        }
+        data["isScheduled"] = this.isScheduled !== undefined ? this.isScheduled : <any>null;
+        data["scheduledDate"] = this.scheduledDate ? this.scheduledDate.toISOString() : <any>null;
+        return data;
+    }
+}
+
+export class PagedResultOfBroadcastNotificationDto {
+    data!: BroadcastNotificationDto[];
+    totalCount!: number;
+    totalPages!: number;
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data!.push(BroadcastNotificationDto.fromJS(item));
+            }
+            else {
+                this.data = <any>null;
+            }
+            this.totalCount = _data["totalCount"] !== undefined ? _data["totalCount"] : <any>null;
+            this.totalPages = _data["totalPages"] !== undefined ? _data["totalPages"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): PagedResultOfBroadcastNotificationDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultOfBroadcastNotificationDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item.toJSON());
+        }
+        data["totalCount"] = this.totalCount !== undefined ? this.totalCount : <any>null;
+        data["totalPages"] = this.totalPages !== undefined ? this.totalPages : <any>null;
+        return data;
+    }
+}
+
+export class BroadcastNotificationDto {
+    id!: number;
+    arabicTitle!: string;
+    englishTitle!: string;
+    arabicMessage!: string;
+    englishMessage!: string;
+    notificationType!: NotificationType;
+    targetAll!: boolean;
+    targetCustomerType!: number | null;
+    isScheduled!: boolean;
+    scheduledDate!: Date | null;
+    isProcessed!: boolean;
+    recipientCount!: number;
+    creationDate!: Date;
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.arabicTitle = _data["arabicTitle"] !== undefined ? _data["arabicTitle"] : <any>null;
+            this.englishTitle = _data["englishTitle"] !== undefined ? _data["englishTitle"] : <any>null;
+            this.arabicMessage = _data["arabicMessage"] !== undefined ? _data["arabicMessage"] : <any>null;
+            this.englishMessage = _data["englishMessage"] !== undefined ? _data["englishMessage"] : <any>null;
+            this.notificationType = _data["notificationType"] !== undefined ? _data["notificationType"] : <any>null;
+            this.targetAll = _data["targetAll"] !== undefined ? _data["targetAll"] : <any>null;
+            this.targetCustomerType = _data["targetCustomerType"] !== undefined ? _data["targetCustomerType"] : <any>null;
+            this.isScheduled = _data["isScheduled"] !== undefined ? _data["isScheduled"] : <any>null;
+            this.scheduledDate = _data["scheduledDate"] ? new Date(_data["scheduledDate"].toString()) : <any>null;
+            this.isProcessed = _data["isProcessed"] !== undefined ? _data["isProcessed"] : <any>null;
+            this.recipientCount = _data["recipientCount"] !== undefined ? _data["recipientCount"] : <any>null;
+            this.creationDate = _data["creationDate"] ? new Date(_data["creationDate"].toString()) : <any>null;
+        }
+    }
+
+    static fromJS(data: any): BroadcastNotificationDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new BroadcastNotificationDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["arabicTitle"] = this.arabicTitle !== undefined ? this.arabicTitle : <any>null;
+        data["englishTitle"] = this.englishTitle !== undefined ? this.englishTitle : <any>null;
+        data["arabicMessage"] = this.arabicMessage !== undefined ? this.arabicMessage : <any>null;
+        data["englishMessage"] = this.englishMessage !== undefined ? this.englishMessage : <any>null;
+        data["notificationType"] = this.notificationType !== undefined ? this.notificationType : <any>null;
+        data["targetAll"] = this.targetAll !== undefined ? this.targetAll : <any>null;
+        data["targetCustomerType"] = this.targetCustomerType !== undefined ? this.targetCustomerType : <any>null;
+        data["isScheduled"] = this.isScheduled !== undefined ? this.isScheduled : <any>null;
+        data["scheduledDate"] = this.scheduledDate ? this.scheduledDate.toISOString() : <any>null;
+        data["isProcessed"] = this.isProcessed !== undefined ? this.isProcessed : <any>null;
+        data["recipientCount"] = this.recipientCount !== undefined ? this.recipientCount : <any>null;
+        data["creationDate"] = this.creationDate ? this.creationDate.toISOString() : <any>null;
+        return data;
+    }
 }
 
 export class GetOrderDetailsForAdminDto {

@@ -4,6 +4,7 @@ using NAQLAH.Server.ApiDependencyInjection;
 using Hangfire;
 using Infrastructure;
 using Infrastructure.HangFireDepencies;
+using Infrastructure.Jobs;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
@@ -161,6 +162,11 @@ namespace NAQLAH.Server
             app.UseSwagger();
             app.UseSwaggerUI();
 
+
+            RecurringJob.AddOrUpdate<ProcessScheduledNotificationsJob>(
+                "process-scheduled-notifications",
+                job => job.ProcessAsync(),
+                Cron.Minutely());
 
             app.UseMiddleware<ExceptionHandlingMiddleWare>();
             app.UseHttpsRedirection();

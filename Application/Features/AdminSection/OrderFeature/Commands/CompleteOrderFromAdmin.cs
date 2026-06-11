@@ -1,3 +1,4 @@
+using Application.Shared.Services;
 using CSharpFunctionalExtensions;
 using Domain.Enums;
 using Domain.InterFaces;
@@ -17,10 +18,16 @@ namespace Application.Features.AdminSection.OrderFeature.Commands
         private class CompleteOrderFromAdminHandler : IRequestHandler<CompleteOrderFromAdmin, Result<int>>
         {
             private readonly INaqlahContext _context;
+            private readonly ICustomerNotificationService _customerNotificationService;
+            private readonly IDateTimeProvider _dateTimeProvider;
 
-            public CompleteOrderFromAdminHandler(INaqlahContext context)
+            public CompleteOrderFromAdminHandler(INaqlahContext context,
+                ICustomerNotificationService customerNotificationService,
+                IDateTimeProvider dateTimeProvider)
             {
                 _context = context;
+                _customerNotificationService = customerNotificationService;
+                _dateTimeProvider = dateTimeProvider;
             }
 
             public async Task<Result<int>> Handle(CompleteOrderFromAdmin request, CancellationToken cancellationToken)
@@ -36,24 +43,29 @@ namespace Application.Features.AdminSection.OrderFeature.Commands
                     return Result.Failure<int>(errMessage);
                 }
 
-                // Only assigned orders can be completed
                 if (order.OrderStatus != OrderStatus.Assigned)
                 {
-                    var errMessage = request.LanguageId == 1 
-                        ? "يمكن إكمال الطلبات المعينة فقط." 
+                    var errMessage = request.LanguageId == 1
+                        ? "يمكن إكمال الطلبات المعينة فقط."
                         : "Only assigned orders can be completed.";
                     return Result.Failure<int>(errMessage);
                 }
 
-                // Update order status to Completed
-                var updateResult = order.UpdateStatus(OrderStatus.Completed, DateTime.UtcNow);
+                var updateResult = order.UpdateStatus(OrderStatus.Completed, _dateTimeProvider.Now);
                 if (updateResult.IsFailure)
                 {
-                    var errMessage = request.LanguageId == 1 
-                        ? updateResult.Error 
-                        : updateResult.Error;
-                    return Result.Failure<int>(errMessage);
+                    return Result.Failure<int>(updateResult.Error);
                 }
+
+                await _customerNotificationService.PrepareAsync(
+                    order.CustomerId,
+                    order.Id,
+                    "تم إكمال الطلب",
+                    "Order Completed",
+                    $"تم إكمال طلبك رقم {order.OrderNumber} بنجاح، شكراً لاستخدامك نقلة",
+                    $"Your order #{order.OrderNumber} has been completed. Thank you for using Naqlah!",
+                    NotificationType.OrderCompleted,
+                    cancellationToken);
 
                 await _context.SaveChangesAsyncWithResult();
 
@@ -62,4 +74,3 @@ namespace Application.Features.AdminSection.OrderFeature.Commands
         }
     }
 }
-

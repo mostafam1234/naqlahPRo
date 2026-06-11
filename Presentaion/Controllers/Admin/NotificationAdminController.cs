@@ -2,6 +2,7 @@ using Application.Features.AdminSection.NotificationFeature.Commands;
 using Application.Features.AdminSection.NotificationFeature.Dtos;
 using Application.Features.AdminSection.NotificationFeature.Queries;
 using Application.Shared.Dtos;
+using Application.Shared.Dtos;
 using Domain.InterFaces;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -109,6 +110,42 @@ namespace Presentaion.Controllers.Admin
             {
                 return Ok(result.Value);
             }
+
+            return BadRequest(result.Error);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("SendToCustomers")]
+        public async Task<IActionResult> SendToCustomers([FromBody] SendCustomerNotificationCommand command)
+        {
+            var result = await mediator.Send(command);
+
+            if (result.IsSuccess)
+                return Ok(result.Value);
+
+            return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(PagedResult<BroadcastNotificationDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("GetBroadcastNotifications")]
+        public async Task<IActionResult> GetBroadcastNotifications(
+            [FromQuery] int skip = 0,
+            [FromQuery] int take = 20,
+            [FromQuery] bool? scheduledOnly = null)
+        {
+            var result = await mediator.Send(new GetBroadcastNotificationsQuery
+            {
+                Skip = skip,
+                Take = take,
+                ScheduledOnly = scheduledOnly
+            });
+
+            if (result.IsSuccess)
+                return Ok(result.Value);
 
             return BadRequest(result.Error);
         }

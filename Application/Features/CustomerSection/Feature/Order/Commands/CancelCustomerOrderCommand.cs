@@ -1,4 +1,6 @@
-﻿using CSharpFunctionalExtensions;
+﻿using Application.Shared.Services;
+using CSharpFunctionalExtensions;
+using Domain.Enums;
 using Domain.InterFaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -19,11 +21,14 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
         {
             private readonly INaqlahContext context;
             private readonly IDateTimeProvider dateTimeProvider;
+            private readonly ICustomerNotificationService customerNotificationService;
 
-            public CancelCustomerOrderCommandHandler(INaqlahContext context,IDateTimeProvider dateTimeProvider)
+            public CancelCustomerOrderCommandHandler(INaqlahContext context, IDateTimeProvider dateTimeProvider,
+                ICustomerNotificationService customerNotificationService)
             {
                 this.context = context;
                 this.dateTimeProvider = dateTimeProvider;
+                this.customerNotificationService = customerNotificationService;
             }
             public async Task<Result> Handle(CancelCustomerOrderCommand request, CancellationToken cancellationToken)
             {
@@ -34,6 +39,17 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
                 }
 
                 order.CancelOrder(dateTimeProvider.Now);
+
+                await customerNotificationService.PrepareAsync(
+                    order.CustomerId,
+                    order.Id,
+                    "تم إلغاء الطلب",
+                    "Order Cancelled",
+                    $"تم إلغاء طلبك رقم {order.OrderNumber}",
+                    $"Your order #{order.OrderNumber} has been cancelled",
+                    NotificationType.OrderCancelled,
+                    cancellationToken);
+
                 var saveResult=await context.SaveChangesAsyncWithResult();
                 if (saveResult.IsFailure)
                 {

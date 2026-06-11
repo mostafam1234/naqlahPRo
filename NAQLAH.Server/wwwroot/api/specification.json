@@ -655,6 +655,97 @@
         }
       }
     },
+    "/api/Customer/GetNotifications": {
+      "get": {
+        "tags": [
+          "Customer"
+        ],
+        "operationId": "Customer_GetNotifications",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            },
+            "x-position": 1
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CustomerNotificationDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Customer/MarkNotificationRead": {
+      "post": {
+        "tags": [
+          "Customer"
+        ],
+        "operationId": "Customer_MarkNotificationRead",
+        "requestBody": {
+          "x-name": "customerNotificationId",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/CustomerOrder/CancelOrder/{orderId}": {
       "post": {
         "tags": [
@@ -4635,6 +4726,110 @@
         }
       }
     },
+    "/api/NotificationAdmin/SendToCustomers": {
+      "post": {
+        "tags": [
+          "NotificationAdmin"
+        ],
+        "operationId": "NotificationAdmin_SendToCustomers",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendCustomerNotificationCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/NotificationAdmin/GetBroadcastNotifications": {
+      "get": {
+        "tags": [
+          "NotificationAdmin"
+        ],
+        "operationId": "NotificationAdmin_GetBroadcastNotifications",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            },
+            "x-position": 1
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            },
+            "x-position": 2
+          },
+          {
+            "name": "scheduledOnly",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            },
+            "x-position": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfBroadcastNotificationDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/OrderAdmin/GetAllOrders": {
       "get": {
         "tags": [
@@ -7112,6 +7307,84 @@
             "type": "string"
           }
         }
+      },
+      "CustomerNotificationDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "notificationId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "arabicTitle": {
+            "type": "string"
+          },
+          "englishTitle": {
+            "type": "string"
+          },
+          "arabicMessage": {
+            "type": "string"
+          },
+          "englishMessage": {
+            "type": "string"
+          },
+          "orderId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "notificationType": {
+            "$ref": "#/components/schemas/NotificationType"
+          },
+          "isRead": {
+            "type": "boolean"
+          },
+          "readDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "NotificationType": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "NewOrder",
+          "OrderStatusChanged",
+          "PickUp",
+          "RejectORderWayPointFromCustomer",
+          "WaititngCustomerAction",
+          "RejectOrder",
+          "CaptainAssigned",
+          "OrderCancelled",
+          "OrderCompleted",
+          "OrderStatusUpdate",
+          "ScheduledMessage",
+          "CustomerGeneral"
+        ],
+        "enum": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ]
       },
       "CreateOrderResponseDto": {
         "type": "object",
@@ -10235,25 +10508,122 @@
           }
         }
       },
-      "NotificationType": {
-        "type": "integer",
-        "description": "",
-        "x-enumNames": [
-          "NewOrder",
-          "OrderStatusChanged",
-          "PickUp",
-          "RejectORderWayPointFromCustomer",
-          "WaititngCustomerAction",
-          "RejectOrder"
-        ],
-        "enum": [
-          1,
-          2,
-          3,
-          4,
-          5,
-          6
-        ]
+      "SendCustomerNotificationCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "arabicTitle": {
+            "type": "string"
+          },
+          "englishTitle": {
+            "type": "string"
+          },
+          "arabicMessage": {
+            "type": "string"
+          },
+          "englishMessage": {
+            "type": "string"
+          },
+          "notificationType": {
+            "$ref": "#/components/schemas/NotificationType"
+          },
+          "targetAll": {
+            "type": "boolean"
+          },
+          "targetCustomerType": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "customerIds": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "isScheduled": {
+            "type": "boolean"
+          },
+          "scheduledDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
+      "PagedResultOfBroadcastNotificationDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BroadcastNotificationDto"
+            }
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "BroadcastNotificationDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "arabicTitle": {
+            "type": "string"
+          },
+          "englishTitle": {
+            "type": "string"
+          },
+          "arabicMessage": {
+            "type": "string"
+          },
+          "englishMessage": {
+            "type": "string"
+          },
+          "notificationType": {
+            "$ref": "#/components/schemas/NotificationType"
+          },
+          "targetAll": {
+            "type": "boolean"
+          },
+          "targetCustomerType": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "isScheduled": {
+            "type": "boolean"
+          },
+          "scheduledDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "isProcessed": {
+            "type": "boolean"
+          },
+          "recipientCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "creationDate": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
       },
       "GetOrderDetailsForAdminDto": {
         "type": "object",

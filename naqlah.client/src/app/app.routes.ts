@@ -293,6 +293,13 @@ const routes: Routes = [
             (m) => m.OrderRatingsComponent
           ),
       },
+      {
+        path: 'customer-notifications',
+        loadComponent: () =>
+          import('./Pages/admin/customer-notifications/customer-notifications.component').then(
+            (m) => m.CustomerNotificationsComponent
+          ),
+      },
     ],
   }
 ];

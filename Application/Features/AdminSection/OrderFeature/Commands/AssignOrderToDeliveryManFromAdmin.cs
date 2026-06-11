@@ -1,3 +1,4 @@
+using Application.Shared.Services;
 using CSharpFunctionalExtensions;
 using Domain.Enums;
 using Domain.InterFaces;
@@ -18,10 +19,16 @@ namespace Application.Features.AdminSection.OrderFeature.Commands
         private class AssignOrderToDeliveryManFromAdminHandler : IRequestHandler<AssignOrderToDeliveryManFromAdmin, Result<int>>
         {
             private readonly INaqlahContext _context;
+            private readonly ICustomerNotificationService _customerNotificationService;
+            private readonly IDateTimeProvider _dateTimeProvider;
 
-            public AssignOrderToDeliveryManFromAdminHandler(INaqlahContext context)
+            public AssignOrderToDeliveryManFromAdminHandler(INaqlahContext context,
+                ICustomerNotificationService customerNotificationService,
+                IDateTimeProvider dateTimeProvider)
             {
                 _context = context;
+                _customerNotificationService = customerNotificationService;
+                _dateTimeProvider = dateTimeProvider;
             }
 
             public async Task<Result<int>> Handle(AssignOrderToDeliveryManFromAdmin request, CancellationToken cancellationToken)
@@ -75,14 +82,24 @@ namespace Application.Features.AdminSection.OrderFeature.Commands
                 }
 
                 // Assign the delivery man
-                var assignResult = order.AssignToDeliveryMan(request.DeliveryManId, DateTime.UtcNow);
+                var assignResult = order.AssignToDeliveryMan(request.DeliveryManId, _dateTimeProvider.Now);
                 if (assignResult.IsFailure)
                 {
-                    var errMessage = request.LanguageId == 1 
-                        ? assignResult.Error 
+                    var errMessage = request.LanguageId == 1
+                        ? assignResult.Error
                         : assignResult.Error;
                     return Result.Failure<int>(errMessage);
                 }
+
+                await _customerNotificationService.PrepareAsync(
+                    order.CustomerId,
+                    order.Id,
+                    "تم تعيين الكابتن",
+                    "Captain Assigned",
+                    $"تم تعيين كابتن لطلبك رقم {order.OrderNumber}",
+                    $"A captain has been assigned to your order #{order.OrderNumber}",
+                    NotificationType.CaptainAssigned,
+                    cancellationToken);
 
                 await _context.SaveChangesAsyncWithResult();
 

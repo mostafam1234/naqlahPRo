@@ -1,4 +1,5 @@
 using Application.Features.DeliveryManSection.Order.Dtos;
+using Application.Shared.Services;
 using CSharpFunctionalExtensions;
 using Domain.Enums;
 using Domain.InterFaces;
@@ -22,16 +23,19 @@ namespace Application.Features.DeliveryManSection.Order.Commands
             private readonly INaqlahContext context;
             private readonly IUserSession userSession;
             private readonly IDateTimeProvider dateTimeProvider;
+            private readonly ICustomerNotificationService customerNotificationService;
             private const double RADIUS_IN_KM = 3.0;
             private const double EARTH_RADIUS_KM = 6371.0;
 
             public AssignOrderToDeliveryManCommandHandler(INaqlahContext context,
                                                          IUserSession userSession,
-                                                         IDateTimeProvider dateTimeProvider)
+                                                         IDateTimeProvider dateTimeProvider,
+                                                         ICustomerNotificationService customerNotificationService)
             {
                 this.context = context;
                 this.userSession = userSession;
                 this.dateTimeProvider = dateTimeProvider;
+                this.customerNotificationService = customerNotificationService;
             }
 
             public async Task<Result<bool>> Handle(AssignOrderToDeliveryManCommand request,
@@ -116,6 +120,16 @@ namespace Application.Features.DeliveryManSection.Order.Commands
                 {
                     return Result.Failure<bool>(assignmentResult.Error);
                 }
+
+                await customerNotificationService.PrepareAsync(
+                    order.CustomerId,
+                    order.Id,
+                    "تم تعيين الكابتن",
+                    "Captain Assigned",
+                    $"تم تعيين كابتن لطلبك رقم {order.OrderNumber}",
+                    $"A captain has been assigned to your order #{order.OrderNumber}",
+                    NotificationType.CaptainAssigned,
+                    cancellationToken);
 
                 // Save changes
                 var saveResult = await context.SaveChangesAsyncWithResult();

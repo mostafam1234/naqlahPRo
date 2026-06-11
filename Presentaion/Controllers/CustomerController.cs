@@ -1,5 +1,8 @@
 ﻿using Application.Features.CustomerSection.Feature.CustomerInfo.Dtos;
 using Application.Features.CustomerSection.Feature.CustomerInfo.Queries;
+using Application.Features.CustomerSection.Feature.Notifications.Commands;
+using Application.Features.CustomerSection.Feature.Notifications.Dtos;
+using Application.Features.CustomerSection.Feature.Notifications.Queries;
 using Application.Features.CustomerSection.Feature.Regestration.Commands;
 using Application.Features.CustomerSection.Feature.Regestration.Dtos;
 using Application.Features.DeliveryManSection.LogIn.Dtos;
@@ -9,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Presentaion.Reponse;
+using System.Collections.Generic;
 
 
 namespace Presentaion.Controllers
@@ -194,6 +198,43 @@ namespace Presentaion.Controllers
                 return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
             }
             return Ok(result.Value);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(List<CustomerNotificationDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("GetNotifications")]
+        public async Task<IActionResult> GetNotifications([FromQuery] int skip = 0, [FromQuery] int take = 20)
+        {
+            var result = await mediator.Send(new GetCustomerNotificationsQuery
+            {
+                Skip = skip,
+                Take = take
+            });
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+            return Ok(result.Value);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("MarkNotificationRead")]
+        public async Task<IActionResult> MarkNotificationRead([FromBody] int customerNotificationId)
+        {
+            var result = await mediator.Send(new MarkNotificationReadCommand
+            {
+                CustomerNotificationId = customerNotificationId
+            });
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+            return Ok();
         }
     }
 }

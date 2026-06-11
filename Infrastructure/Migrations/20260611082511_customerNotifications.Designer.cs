@@ -4,6 +4,7 @@ using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(NaqlahContext))]
-    partial class NaqlahContextModelSnapshot : ModelSnapshot
+    [Migration("20260611082511_customerNotifications")]
+    partial class customerNotifications
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -753,12 +756,6 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<bool>("IsAdminBroadcast")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsProcessed")
-                        .HasColumnType("bit");
-
                     b.Property<bool>("IsRead")
                         .HasColumnType("bit");
 
@@ -774,12 +771,6 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime?>("ScheduledDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("TargetAll")
-                        .HasColumnType("bit");
-
-                    b.Property<int?>("TargetCustomerType")
-                        .HasColumnType("int");
-
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
 
@@ -792,8 +783,6 @@ namespace Infrastructure.Migrations
                     b.HasIndex("OrderId");
 
                     b.HasIndex("UserId");
-
-                    b.HasIndex("IsAdminBroadcast", "IsScheduled", "IsProcessed");
 
                     b.ToTable("NA_Notifications", (string)null);
                 });

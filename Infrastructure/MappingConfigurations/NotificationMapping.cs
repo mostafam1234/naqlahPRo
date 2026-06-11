@@ -20,11 +20,18 @@ namespace Infrastructure.MappingConfigurations
             builder.Property(x => x.CreationDate).IsRequired();
             builder.Property(x => x.IsRead).IsRequired();
             builder.Property(x => x.UserId).IsRequired(false);
+            builder.Property(x => x.IsScheduled).IsRequired();
+            builder.Property(x => x.ScheduledDate).IsRequired(false);
+            builder.Property(x => x.TargetAll).IsRequired();
+            builder.Property(x => x.TargetCustomerType).IsRequired(false);
+            builder.Property(x => x.IsProcessed).IsRequired();
+            builder.Property(x => x.IsAdminBroadcast).IsRequired();
 
             builder.HasIndex(x => x.UserId);
             builder.HasIndex(x => x.OrderId);
             builder.HasIndex(x => x.IsRead);
             builder.HasIndex(x => x.CreationDate);
+            builder.HasIndex(x => new { x.IsAdminBroadcast, x.IsScheduled, x.IsProcessed });
         }
     }
 }
