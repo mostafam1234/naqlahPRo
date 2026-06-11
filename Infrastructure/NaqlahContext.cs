@@ -76,6 +76,7 @@ namespace Infrastructure
         public DbSet<Suggestion> Suggestions { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }
         public DbSet<AuditLogDetail> AuditLogDetails { get; set; }
+        public DbSet<DiscountCode> DiscountCodes { get; set; }
 
 
         public async Task<Result> SaveChangesAsyncWithResult()

@@ -24,14 +24,14 @@ const routes: Routes = [
             (m) => m.HomePageComponent
           ),
       },
-      {
-        path: 'privacy-policy',
-        loadComponent: () =>
-          import('./Pages/landing-page/privacy-policy/privacy-policy.component').then(
-            (m) => m.PrivacyPolicyComponent
-          ),
-      },
     ],
+  },
+  {
+    path: 'privacy-policy',
+    loadComponent: () =>
+      import('./Pages/landing-page/privacy-policy/privacy-policy.component').then(
+        (m) => m.PrivacyPolicyComponent
+      ),
   },
   { path:'admin', redirectTo:'admin/home', pathMatch:'full' },
   {
@@ -278,7 +278,14 @@ const routes: Routes = [
           ),
         canActivate: [permissionGuard],
         data: { requiredPermission: 'CanViewAuditLog' },
-      }
+      },
+      {
+        path: 'discount-codes',
+        loadComponent: () =>
+          import('./Pages/admin/discount-codes/discount-codes.component').then(
+            (m) => m.DiscountCodesComponent
+          ),
+      },
     ],
   }
 ];

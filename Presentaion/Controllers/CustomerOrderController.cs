@@ -1,6 +1,8 @@
 ﻿using Application.Features.AdminSection.OrderFeature.Queries;
 using Application.Features.CustomerSection.Feature.AssistantWork.Dtos;
 using Application.Features.CustomerSection.Feature.AssistantWork.Queries;
+using Application.Features.CustomerSection.Feature.DiscountCode.Commands;
+using Application.Features.CustomerSection.Feature.DiscountCode.Dtos;
 using Application.Features.CustomerSection.Feature.Order.Commands;
 using Application.Features.CustomerSection.Feature.Order.Dtos;
 using Application.Features.CustomerSection.Feature.Order.Queries;
@@ -200,6 +202,21 @@ namespace Presentaion.Controllers
         public async Task<IActionResult> CheckPendingOrder()
         {
             var result = await mediator.Send(new CheckPendingOrderQuery());
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+            return Ok(result.Value);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(ValidateDiscountCodeResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("ValidateDiscountCode")]
+        public async Task<IActionResult> ValidateDiscountCode([FromBody] ValidateDiscountCodeCommand command)
+        {
+            var result = await mediator.Send(command);
 
             if (result.IsFailure)
             {

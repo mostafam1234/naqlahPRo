@@ -1656,6 +1656,65 @@ export class CustomerOrderClient {
         }
         return _observableOf(null as any);
     }
+
+    validateDiscountCode(command: ValidateDiscountCodeCommand): Observable<ValidateDiscountCodeResponseDto> {
+        let url_ = this.baseUrl + "/api/CustomerOrder/ValidateDiscountCode";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processValidateDiscountCode(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processValidateDiscountCode(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<ValidateDiscountCodeResponseDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<ValidateDiscountCodeResponseDto>;
+        }));
+    }
+
+    protected processValidateDiscountCode(response: HttpResponseBase): Observable<ValidateDiscountCodeResponseDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ValidateDiscountCodeResponseDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 @Injectable({
@@ -5805,6 +5864,267 @@ export class DeliveryManAdminClient {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result200 = PagedResultOfGetAllOrdersDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class DiscountCodeAdminClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ?? "";
+    }
+
+    getAllDiscountCodes(skip?: number | undefined, take?: number | undefined, searchTerm?: string | null | undefined, isActive?: boolean | null | undefined): Observable<PagedResultOfDiscountCodeAdminDto> {
+        let url_ = this.baseUrl + "/api/DiscountCodeAdmin/GetAllDiscountCodes?";
+        if (skip === null)
+            throw new Error("The parameter 'skip' cannot be null.");
+        else if (skip !== undefined)
+            url_ += "skip=" + encodeURIComponent("" + skip) + "&";
+        if (take === null)
+            throw new Error("The parameter 'take' cannot be null.");
+        else if (take !== undefined)
+            url_ += "take=" + encodeURIComponent("" + take) + "&";
+        if (searchTerm !== undefined && searchTerm !== null)
+            url_ += "searchTerm=" + encodeURIComponent("" + searchTerm) + "&";
+        if (isActive !== undefined && isActive !== null)
+            url_ += "isActive=" + encodeURIComponent("" + isActive) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllDiscountCodes(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllDiscountCodes(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<PagedResultOfDiscountCodeAdminDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<PagedResultOfDiscountCodeAdminDto>;
+        }));
+    }
+
+    protected processGetAllDiscountCodes(response: HttpResponseBase): Observable<PagedResultOfDiscountCodeAdminDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PagedResultOfDiscountCodeAdminDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    addDiscountCode(command: AddDiscountCodeCommand): Observable<number> {
+        let url_ = this.baseUrl + "/api/DiscountCodeAdmin/AddDiscountCode";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAddDiscountCode(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAddDiscountCode(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<number>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<number>;
+        }));
+    }
+
+    protected processAddDiscountCode(response: HttpResponseBase): Observable<number> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    updateDiscountCode(command: UpdateDiscountCodeCommand): Observable<number> {
+        let url_ = this.baseUrl + "/api/DiscountCodeAdmin/UpdateDiscountCode";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUpdateDiscountCode(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUpdateDiscountCode(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<number>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<number>;
+        }));
+    }
+
+    protected processUpdateDiscountCode(response: HttpResponseBase): Observable<number> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    deleteDiscountCode(id?: number | undefined): Observable<number> {
+        let url_ = this.baseUrl + "/api/DiscountCodeAdmin/DeleteDiscountCode?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "id=" + encodeURIComponent("" + id) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDeleteDiscountCode(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDeleteDiscountCode(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<number>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<number>;
+        }));
+    }
+
+    protected processDeleteDiscountCode(response: HttpResponseBase): Observable<number> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
             return _observableOf(result200);
             }));
         } else if (status === 400) {
@@ -10576,6 +10896,61 @@ export class AssistantWorkDto {
     }
 }
 
+export class ValidateDiscountCodeResponseDto {
+    isValid!: boolean;
+    discountAmount!: number;
+    message!: string;
+
+    init(_data?: any) {
+        if (_data) {
+            this.isValid = _data["isValid"] !== undefined ? _data["isValid"] : <any>null;
+            this.discountAmount = _data["discountAmount"] !== undefined ? _data["discountAmount"] : <any>null;
+            this.message = _data["message"] !== undefined ? _data["message"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): ValidateDiscountCodeResponseDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ValidateDiscountCodeResponseDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["isValid"] = this.isValid !== undefined ? this.isValid : <any>null;
+        data["discountAmount"] = this.discountAmount !== undefined ? this.discountAmount : <any>null;
+        data["message"] = this.message !== undefined ? this.message : <any>null;
+        return data;
+    }
+}
+
+export class ValidateDiscountCodeCommand {
+    code!: string;
+    orderId!: number;
+
+    init(_data?: any) {
+        if (_data) {
+            this.code = _data["code"] !== undefined ? _data["code"] : <any>null;
+            this.orderId = _data["orderId"] !== undefined ? _data["orderId"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): ValidateDiscountCodeCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new ValidateDiscountCodeCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["code"] = this.code !== undefined ? this.code : <any>null;
+        data["orderId"] = this.orderId !== undefined ? this.orderId : <any>null;
+        return data;
+    }
+}
+
 export class CustomerWalletBalanceDto {
     customerId!: number;
     balance!: number;
@@ -13767,6 +14142,169 @@ export class OrderWayPointAdminDto {
         data["regionName"] = this.regionName !== undefined ? this.regionName : <any>null;
         data["cityName"] = this.cityName !== undefined ? this.cityName : <any>null;
         data["neighborhoodName"] = this.neighborhoodName !== undefined ? this.neighborhoodName : <any>null;
+        return data;
+    }
+}
+
+export class PagedResultOfDiscountCodeAdminDto {
+    data!: DiscountCodeAdminDto[];
+    totalCount!: number;
+    totalPages!: number;
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data!.push(DiscountCodeAdminDto.fromJS(item));
+            }
+            else {
+                this.data = <any>null;
+            }
+            this.totalCount = _data["totalCount"] !== undefined ? _data["totalCount"] : <any>null;
+            this.totalPages = _data["totalPages"] !== undefined ? _data["totalPages"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): PagedResultOfDiscountCodeAdminDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultOfDiscountCodeAdminDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item.toJSON());
+        }
+        data["totalCount"] = this.totalCount !== undefined ? this.totalCount : <any>null;
+        data["totalPages"] = this.totalPages !== undefined ? this.totalPages : <any>null;
+        return data;
+    }
+}
+
+export class DiscountCodeAdminDto {
+    id!: number;
+    code!: string;
+    discountAmount!: number;
+    isActive!: boolean;
+    usageLimit!: number | null;
+    usageCount!: number;
+    expiryDate!: Date | null;
+    minimumOrderAmount!: number | null;
+    createdDate!: Date;
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.code = _data["code"] !== undefined ? _data["code"] : <any>null;
+            this.discountAmount = _data["discountAmount"] !== undefined ? _data["discountAmount"] : <any>null;
+            this.isActive = _data["isActive"] !== undefined ? _data["isActive"] : <any>null;
+            this.usageLimit = _data["usageLimit"] !== undefined ? _data["usageLimit"] : <any>null;
+            this.usageCount = _data["usageCount"] !== undefined ? _data["usageCount"] : <any>null;
+            this.expiryDate = _data["expiryDate"] ? new Date(_data["expiryDate"].toString()) : <any>null;
+            this.minimumOrderAmount = _data["minimumOrderAmount"] !== undefined ? _data["minimumOrderAmount"] : <any>null;
+            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>null;
+        }
+    }
+
+    static fromJS(data: any): DiscountCodeAdminDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new DiscountCodeAdminDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["code"] = this.code !== undefined ? this.code : <any>null;
+        data["discountAmount"] = this.discountAmount !== undefined ? this.discountAmount : <any>null;
+        data["isActive"] = this.isActive !== undefined ? this.isActive : <any>null;
+        data["usageLimit"] = this.usageLimit !== undefined ? this.usageLimit : <any>null;
+        data["usageCount"] = this.usageCount !== undefined ? this.usageCount : <any>null;
+        data["expiryDate"] = this.expiryDate ? this.expiryDate.toISOString() : <any>null;
+        data["minimumOrderAmount"] = this.minimumOrderAmount !== undefined ? this.minimumOrderAmount : <any>null;
+        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>null;
+        return data;
+    }
+}
+
+export class AddDiscountCodeCommand {
+    code!: string;
+    discountAmount!: number;
+    usageLimit!: number | null;
+    expiryDate!: Date | null;
+    minimumOrderAmount!: number | null;
+
+    init(_data?: any) {
+        if (_data) {
+            this.code = _data["code"] !== undefined ? _data["code"] : <any>null;
+            this.discountAmount = _data["discountAmount"] !== undefined ? _data["discountAmount"] : <any>null;
+            this.usageLimit = _data["usageLimit"] !== undefined ? _data["usageLimit"] : <any>null;
+            this.expiryDate = _data["expiryDate"] ? new Date(_data["expiryDate"].toString()) : <any>null;
+            this.minimumOrderAmount = _data["minimumOrderAmount"] !== undefined ? _data["minimumOrderAmount"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): AddDiscountCodeCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new AddDiscountCodeCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["code"] = this.code !== undefined ? this.code : <any>null;
+        data["discountAmount"] = this.discountAmount !== undefined ? this.discountAmount : <any>null;
+        data["usageLimit"] = this.usageLimit !== undefined ? this.usageLimit : <any>null;
+        data["expiryDate"] = this.expiryDate ? this.expiryDate.toISOString() : <any>null;
+        data["minimumOrderAmount"] = this.minimumOrderAmount !== undefined ? this.minimumOrderAmount : <any>null;
+        return data;
+    }
+}
+
+export class UpdateDiscountCodeCommand {
+    id!: number;
+    code!: string | null;
+    discountAmount!: number | null;
+    usageLimit!: number | null;
+    expiryDate!: Date | null;
+    minimumOrderAmount!: number | null;
+    isActive!: boolean | null;
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.code = _data["code"] !== undefined ? _data["code"] : <any>null;
+            this.discountAmount = _data["discountAmount"] !== undefined ? _data["discountAmount"] : <any>null;
+            this.usageLimit = _data["usageLimit"] !== undefined ? _data["usageLimit"] : <any>null;
+            this.expiryDate = _data["expiryDate"] ? new Date(_data["expiryDate"].toString()) : <any>null;
+            this.minimumOrderAmount = _data["minimumOrderAmount"] !== undefined ? _data["minimumOrderAmount"] : <any>null;
+            this.isActive = _data["isActive"] !== undefined ? _data["isActive"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): UpdateDiscountCodeCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateDiscountCodeCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["code"] = this.code !== undefined ? this.code : <any>null;
+        data["discountAmount"] = this.discountAmount !== undefined ? this.discountAmount : <any>null;
+        data["usageLimit"] = this.usageLimit !== undefined ? this.usageLimit : <any>null;
+        data["expiryDate"] = this.expiryDate ? this.expiryDate.toISOString() : <any>null;
+        data["minimumOrderAmount"] = this.minimumOrderAmount !== undefined ? this.minimumOrderAmount : <any>null;
+        data["isActive"] = this.isActive !== undefined ? this.isActive : <any>null;
         return data;
     }
 }

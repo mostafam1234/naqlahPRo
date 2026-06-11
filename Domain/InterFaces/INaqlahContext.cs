@@ -38,6 +38,7 @@ namespace Domain.InterFaces
         DbSet<Suggestion> Suggestions { get; set; }
         DbSet<AuditLog> AuditLogs { get; set; }
         DbSet<AuditLogDetail> AuditLogDetails { get; set; }
+        DbSet<DiscountCode> DiscountCodes { get; set; }
 
         Task<Result> SaveChangesAsyncWithResult();
     }
