@@ -257,6 +257,21 @@ namespace Presentaion.Controllers
             return Ok(result.Value);
         }
 
+        [HttpPost]
+        [ProducesResponseType(typeof(RateOrderResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("RateOrder")]
+        public async Task<IActionResult> RateOrder([FromBody] RateOrderCommand command)
+        {
+            var result = await mediator.Send(command);
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+            return Ok(result.Value);
+        }
+
         [HttpGet]
         [ProducesResponseType(typeof(OrderInvoiceDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]

@@ -351,6 +351,34 @@ namespace Presentaion.Controllers.Admin
 
             return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
         }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(PagedResult<OrderRatingAdminDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("GetOrderRatings")]
+        public async Task<IActionResult> GetOrderRatings(
+            [FromQuery] int skip = 0,
+            [FromQuery] int take = 10,
+            [FromQuery] DateTime? fromDate = null,
+            [FromQuery] DateTime? toDate = null,
+            [FromQuery] int? minRating = null,
+            [FromQuery] int? maxRating = null)
+        {
+            var result = await mediator.Send(new GetOrderRatingsQuery
+            {
+                Skip = skip,
+                Take = take,
+                FromDate = fromDate,
+                ToDate = toDate,
+                MinRating = minRating,
+                MaxRating = maxRating
+            });
+
+            if (result.IsFailure)
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+
+            return Ok(result.Value);
+        }
     }
 
     public class AssignOrderToDeliveryManRequest

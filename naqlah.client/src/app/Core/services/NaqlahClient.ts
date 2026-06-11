@@ -1834,6 +1834,65 @@ export class CustomerOrderClient {
         return _observableOf(null as any);
     }
 
+    rateOrder(command: RateOrderCommand): Observable<RateOrderResponseDto> {
+        let url_ = this.baseUrl + "/api/CustomerOrder/RateOrder";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processRateOrder(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processRateOrder(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<RateOrderResponseDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<RateOrderResponseDto>;
+        }));
+    }
+
+    protected processRateOrder(response: HttpResponseBase): Observable<RateOrderResponseDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = RateOrderResponseDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
     getOrderInvoice(orderId: number): Observable<OrderInvoiceDto> {
         let url_ = this.baseUrl + "/api/CustomerOrder/GetOrderInvoice/{orderId}";
         if (orderId === undefined || orderId === null)
@@ -7521,6 +7580,77 @@ export class OrderAdminClient {
         }
         return _observableOf(null as any);
     }
+
+    getOrderRatings(skip?: number | undefined, take?: number | undefined, fromDate?: Date | null | undefined, toDate?: Date | null | undefined, minRating?: number | null | undefined, maxRating?: number | null | undefined): Observable<PagedResultOfOrderRatingAdminDto> {
+        let url_ = this.baseUrl + "/api/OrderAdmin/GetOrderRatings?";
+        if (skip === null)
+            throw new Error("The parameter 'skip' cannot be null.");
+        else if (skip !== undefined)
+            url_ += "skip=" + encodeURIComponent("" + skip) + "&";
+        if (take === null)
+            throw new Error("The parameter 'take' cannot be null.");
+        else if (take !== undefined)
+            url_ += "take=" + encodeURIComponent("" + take) + "&";
+        if (fromDate !== undefined && fromDate !== null)
+            url_ += "fromDate=" + encodeURIComponent(fromDate ? "" + fromDate.toISOString() : "") + "&";
+        if (toDate !== undefined && toDate !== null)
+            url_ += "toDate=" + encodeURIComponent(toDate ? "" + toDate.toISOString() : "") + "&";
+        if (minRating !== undefined && minRating !== null)
+            url_ += "minRating=" + encodeURIComponent("" + minRating) + "&";
+        if (maxRating !== undefined && maxRating !== null)
+            url_ += "maxRating=" + encodeURIComponent("" + maxRating) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetOrderRatings(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetOrderRatings(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<PagedResultOfOrderRatingAdminDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<PagedResultOfOrderRatingAdminDto>;
+        }));
+    }
+
+    protected processGetOrderRatings(response: HttpResponseBase): Observable<PagedResultOfOrderRatingAdminDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PagedResultOfOrderRatingAdminDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 @Injectable({
@@ -11242,6 +11372,61 @@ export class PayFromWalletCommand {
         data = typeof data === 'object' ? data : {};
         data["orderId"] = this.orderId !== undefined ? this.orderId : <any>null;
         data["discountCode"] = this.discountCode !== undefined ? this.discountCode : <any>null;
+        return data;
+    }
+}
+
+export class RateOrderResponseDto {
+    success!: boolean;
+    message!: string;
+
+    init(_data?: any) {
+        if (_data) {
+            this.success = _data["success"] !== undefined ? _data["success"] : <any>null;
+            this.message = _data["message"] !== undefined ? _data["message"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): RateOrderResponseDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new RateOrderResponseDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["success"] = this.success !== undefined ? this.success : <any>null;
+        data["message"] = this.message !== undefined ? this.message : <any>null;
+        return data;
+    }
+}
+
+export class RateOrderCommand {
+    orderId!: number;
+    rating!: number;
+    comment!: string | null;
+
+    init(_data?: any) {
+        if (_data) {
+            this.orderId = _data["orderId"] !== undefined ? _data["orderId"] : <any>null;
+            this.rating = _data["rating"] !== undefined ? _data["rating"] : <any>null;
+            this.comment = _data["comment"] !== undefined ? _data["comment"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): RateOrderCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new RateOrderCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["orderId"] = this.orderId !== undefined ? this.orderId : <any>null;
+        data["rating"] = this.rating !== undefined ? this.rating : <any>null;
+        data["comment"] = this.comment !== undefined ? this.comment : <any>null;
         return data;
     }
 }
@@ -15463,6 +15648,90 @@ export class UpdateOrderPackageCommand {
         data["englishDescription"] = this.englishDescription !== undefined ? this.englishDescription : <any>null;
         data["minWeightInKiloGram"] = this.minWeightInKiloGram !== undefined ? this.minWeightInKiloGram : <any>null;
         data["maxWeightInKiloGram"] = this.maxWeightInKiloGram !== undefined ? this.maxWeightInKiloGram : <any>null;
+        return data;
+    }
+}
+
+export class PagedResultOfOrderRatingAdminDto {
+    data!: OrderRatingAdminDto[];
+    totalCount!: number;
+    totalPages!: number;
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data!.push(OrderRatingAdminDto.fromJS(item));
+            }
+            else {
+                this.data = <any>null;
+            }
+            this.totalCount = _data["totalCount"] !== undefined ? _data["totalCount"] : <any>null;
+            this.totalPages = _data["totalPages"] !== undefined ? _data["totalPages"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): PagedResultOfOrderRatingAdminDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultOfOrderRatingAdminDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item.toJSON());
+        }
+        data["totalCount"] = this.totalCount !== undefined ? this.totalCount : <any>null;
+        data["totalPages"] = this.totalPages !== undefined ? this.totalPages : <any>null;
+        return data;
+    }
+}
+
+export class OrderRatingAdminDto {
+    id!: number;
+    orderId!: number;
+    orderNumber!: string;
+    customerName!: string;
+    deliveryManName!: string | null;
+    rating!: number;
+    comment!: string | null;
+    createdDate!: Date;
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.orderId = _data["orderId"] !== undefined ? _data["orderId"] : <any>null;
+            this.orderNumber = _data["orderNumber"] !== undefined ? _data["orderNumber"] : <any>null;
+            this.customerName = _data["customerName"] !== undefined ? _data["customerName"] : <any>null;
+            this.deliveryManName = _data["deliveryManName"] !== undefined ? _data["deliveryManName"] : <any>null;
+            this.rating = _data["rating"] !== undefined ? _data["rating"] : <any>null;
+            this.comment = _data["comment"] !== undefined ? _data["comment"] : <any>null;
+            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>null;
+        }
+    }
+
+    static fromJS(data: any): OrderRatingAdminDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OrderRatingAdminDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["orderId"] = this.orderId !== undefined ? this.orderId : <any>null;
+        data["orderNumber"] = this.orderNumber !== undefined ? this.orderNumber : <any>null;
+        data["customerName"] = this.customerName !== undefined ? this.customerName : <any>null;
+        data["deliveryManName"] = this.deliveryManName !== undefined ? this.deliveryManName : <any>null;
+        data["rating"] = this.rating !== undefined ? this.rating : <any>null;
+        data["comment"] = this.comment !== undefined ? this.comment : <any>null;
+        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>null;
         return data;
     }
 }

@@ -286,6 +286,13 @@ const routes: Routes = [
             (m) => m.DiscountCodesComponent
           ),
       },
+      {
+        path: 'order-ratings',
+        loadComponent: () =>
+          import('./Pages/admin/order-ratings/order-ratings.component').then(
+            (m) => m.OrderRatingsComponent
+          ),
+      },
     ],
   }
 ];
