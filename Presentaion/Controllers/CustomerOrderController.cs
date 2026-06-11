@@ -183,6 +183,21 @@ namespace Presentaion.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(List<AdditionalServiceDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("GetAdditionalServices")]
+        public async Task<IActionResult> GetAdditionalServices()
+        {
+            var result = await mediator.Send(new GetAdditionalServicesQuery());
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+            return Ok(result.Value);
+        }
+
+        [HttpGet]
         [ProducesResponseType(typeof(List<AssistantWorkDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
         [Route("GetAssistantWorks")]

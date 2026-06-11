@@ -562,6 +562,22 @@
     </a>
   </div>
 
+  <!-- Additional Services -->
+  <div>
+    <a
+      routerLink="/admin/additional-services"
+      routerLinkActive="bg-primary-500 text-white"
+      [routerLinkActiveOptions]="{ exact: false }"
+      class="flex items-center cursor-pointer px-4 py-3 rounded-lg gap-3 text-neutral-700 font-medium text-sm transition-all duration-200 hover:bg-primary-100 hover:text-primary-700"
+    >
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+          stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>{{ "ADMIN.SIDEBAR.ADDITIONAL_SERVICES" | translate }}</span>
+    </a>
+  </div>
+
   <!-- Role Permissions (manage permissions per role) -->
   <div *ngIf="hasPermission('CanManageRolePermissions')">
     <a

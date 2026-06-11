@@ -22,6 +22,7 @@
       "CATEGORY_CONTROL": "Category Control",
       "MAIN_CATEGORIES": "Main Categories",
       "ASSISTANT_WORKS": "Assistant Works",
+      "ADDITIONAL_SERVICES": "Additional Services",
       "AREAS_SETTINGS": "Areas Settings",
       "CUSTOMER_WALLET_TRANSACTIONS": "Customer Wallet Transactions",
       "COMPLAINTS": "Complaints",
@@ -625,6 +626,28 @@
         },
         "EDIT_MODAL": {
           "TITLE": "Edit Assistant Work"
+        }
+      },
+      "ADDITIONAL_SERVICES": {
+        "TITLE": "Additional Services",
+        "SUBTITLE": "Manage optional add-on services for orders (cartons, pallets, boxes, wrapping roll)",
+        "SEARCH_PLACEHOLDER": "Search additional services...",
+        "ADD_BUTTON": "Add Additional Service",
+        "TABLE_TITLE": "Additional Services List",
+        "ARABIC_NAME": "Arabic Name",
+        "ENGLISH_NAME": "English Name",
+        "UNIT_PRICE": "Unit Price",
+        "CURRENCY": "SAR",
+        "ACTIONS": "Actions",
+        "NO_DATA": "No additional services added yet",
+        "ARABIC_NAME_PLACEHOLDER": "Enter Arabic name",
+        "ENGLISH_NAME_PLACEHOLDER": "Enter English name",
+        "UNIT_PRICE_PLACEHOLDER": "Enter unit price",
+        "ADD_MODAL": {
+          "TITLE": "Add New Additional Service"
+        },
+        "EDIT_MODAL": {
+          "TITLE": "Edit Additional Service"
         }
       },
       "ORDER_PACKAGES": {

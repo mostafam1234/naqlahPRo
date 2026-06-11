@@ -163,10 +163,10 @@ namespace NAQLAH.Server
             app.UseSwaggerUI();
 
 
-            RecurringJob.AddOrUpdate<ProcessScheduledNotificationsJob>(
-                "process-scheduled-notifications",
-                job => job.ProcessAsync(),
-                Cron.Minutely());
+            //RecurringJob.AddOrUpdate<ProcessScheduledNotificationsJob>(
+            //    "process-scheduled-notifications",
+            //    job => job.ProcessAsync(),
+            //    Cron.Minutely());
 
             app.UseMiddleware<ExceptionHandlingMiddleWare>();
             app.UseHttpsRedirection();

@@ -26,7 +26,14 @@ namespace Application.Features.CustomerSection.Feature.Order.Dtos
         }
         public int Id { get; set; }
         public string Name { get; set; }
-        public decimal Price { get; set; }
         public string IconPath { get; set; }
+        public decimal Price { get; set; }
+        public decimal TotalPrice { get; set; }
+        public decimal BasePrice { get; set; }
+        public decimal TransportAmount { get; set; }
+        public decimal ServiceFee { get; set; }
+        public decimal TaxAmount { get; set; }
+        public decimal DiscountAmount { get; set; }
+        public decimal AdditionalServicesTotal { get; set; }
     }
 }

@@ -22,6 +22,7 @@
       "CATEGORY_CONTROL": "التحكم في الأنواع",
       "MAIN_CATEGORIES": "الأقسام الرئيسية",
       "ASSISTANT_WORKS": "أعمال المساعدين",
+      "ADDITIONAL_SERVICES": "الخدمات الإضافية",
       "AREAS_SETTINGS": "إعدادات المناطق",
       "CUSTOMER_WALLET_TRANSACTIONS": "معاملات محفظة العملاء",
       "COMPLAINTS": "الشكاوي",
@@ -621,6 +622,28 @@
         },
         "EDIT_MODAL": {
           "TITLE": "تعديل عمل المساعد"
+        }
+      },
+      "ADDITIONAL_SERVICES": {
+        "TITLE": "الخدمات الإضافية",
+        "SUBTITLE": "إدارة الخدمات الإضافية للطلبات (كراتين، منصات، صناديق، رول تغليف)",
+        "SEARCH_PLACEHOLDER": "البحث في الخدمات الإضافية...",
+        "ADD_BUTTON": "إضافة خدمة إضافية",
+        "TABLE_TITLE": "قائمة الخدمات الإضافية",
+        "ARABIC_NAME": "الاسم بالعربية",
+        "ENGLISH_NAME": "الاسم بالإنجليزية",
+        "UNIT_PRICE": "سعر الوحدة",
+        "CURRENCY": "ريال",
+        "ACTIONS": "الإجراءات",
+        "NO_DATA": "لا توجد خدمات إضافية مضافة بعد",
+        "ARABIC_NAME_PLACEHOLDER": "أدخل الاسم بالعربية",
+        "ENGLISH_NAME_PLACEHOLDER": "أدخل الاسم بالإنجليزية",
+        "UNIT_PRICE_PLACEHOLDER": "أدخل سعر الوحدة",
+        "ADD_MODAL": {
+          "TITLE": "إضافة خدمة إضافية جديدة"
+        },
+        "EDIT_MODAL": {
+          "TITLE": "تعديل الخدمة الإضافية"
         }
       },
       "ORDER_PACKAGES": {

@@ -41,6 +41,7 @@ namespace Domain.InterFaces
         DbSet<DiscountCode> DiscountCodes { get; set; }
         DbSet<OrderRating> OrderRatings { get; set; }
         DbSet<CustomerNotification> CustomerNotifications { get; set; }
+        DbSet<AdditionalService> AdditionalServices { get; set; }
 
         Task<Result> SaveChangesAsyncWithResult();
     }

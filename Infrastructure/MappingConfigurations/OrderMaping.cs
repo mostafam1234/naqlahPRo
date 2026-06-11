@@ -21,6 +21,7 @@ namespace Infrastructure.MappingConfigurations
             builder.HasMany(x => x.OrderStatusHistories).WithOne().HasForeignKey(x => x.OrderId);
             builder.HasOne(x=>x.OrderPackage).WithMany().HasForeignKey(x=>x.OrderPackageId);
             builder.HasMany(x=>x.OrderServices).WithOne().HasForeignKey(x=>x.OrderId);
+            builder.HasMany(x => x.OrderAdditionalServices).WithOne().HasForeignKey(x => x.OrderId);
         }
     }
 }

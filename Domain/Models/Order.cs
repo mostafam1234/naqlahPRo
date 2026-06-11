@@ -18,6 +18,7 @@ namespace Domain.Models
             this._PaymentMethods = new List<OrderPaymentMethod>();
             this._OrderStatusHistories = new List<OrderStatusHistory>();
             this._OrderServices = new List<OrderService>();
+            this._OrderAdditionalServices = new List<OrderAdditionalService>();
             this.HashedLocation = string.Empty;
         }
         public int Id { get; private set; }
@@ -106,6 +107,19 @@ namespace Domain.Models
             }
         }
 
+        private List<OrderAdditionalService> _OrderAdditionalServices { get; set; }
+        public IReadOnlyList<OrderAdditionalService> OrderAdditionalServices
+        {
+            get
+            {
+                return _OrderAdditionalServices;
+            }
+            private set
+            {
+                _OrderAdditionalServices = (List<OrderAdditionalService>)value.ToList();
+            }
+        }
+
 
         public Result ConfirmOrderWayPointFromCustomer(int orderWayPoint,DateTime nowDate)
         {
@@ -150,8 +164,9 @@ namespace Domain.Models
                                            List<OrderDetails> orderDetails,
                                            List<OrderWayPoint> orderWayPoints,
                                            List<OrderService> orderServices,
-                                           bool isScheduled=false,
-                                           DateTime? expectedPickUpTime=null)
+                                           bool isScheduled = false,
+                                           DateTime? expectedPickUpTime = null,
+                                           List<OrderAdditionalService>? additionalServices = null)
         {
             const int MinOrderWayPointsCount = 2;
             var fixedTotal = 100;
@@ -184,6 +199,7 @@ namespace Domain.Models
                 OrderPackageId = 1,
                 Total = fixedTotal,
                 OrderServices = orderServices,
+                OrderAdditionalServices = additionalServices ?? new List<OrderAdditionalService>(),
                 IsScheduled = isScheduled,
                 ExpectedPickUpTime = expectedPickUpTime,
                 CreationDate=nowDate
@@ -254,9 +270,11 @@ namespace Domain.Models
 
             var orderServicesSubTotal = this.OrderServices.Select(x => x.Amount).DefaultIfEmpty(0).Sum();
 
-            var vatAmount = (distanceCost + timeCost + servicesFees + orderServicesSubTotal) * vatRate / 100.0m;
+            var additionalServicesSubTotal = this.OrderAdditionalServices.Select(x => x.Amount).DefaultIfEmpty(0).Sum();
 
-            var orderTotal= distanceCost + timeCost + servicesFees + orderServicesSubTotal + vatAmount;
+            var vatAmount = (distanceCost + timeCost + servicesFees + orderServicesSubTotal + additionalServicesSubTotal) * vatRate / 100.0m;
+
+            var orderTotal = distanceCost + timeCost + servicesFees + orderServicesSubTotal + additionalServicesSubTotal + vatAmount;
 
             if (customerWalletBalance < orderTotal &&
                 paymentMethodId == (int)PaymentMethodEnum.Wallet)

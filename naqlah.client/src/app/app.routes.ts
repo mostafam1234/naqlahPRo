@@ -162,6 +162,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'additional-services',
+        loadComponent: () =>
+          import('./Pages/admin/additional-services/additional-services.component').then(
+            (m) => m.AdditionalServicesComponent
+          ),
+      },
+      {
         path: 'wallet/captain',
         loadComponent: () =>
           import('./Pages/admin/wallet/wallet-captain/wallet-captain.component').then(

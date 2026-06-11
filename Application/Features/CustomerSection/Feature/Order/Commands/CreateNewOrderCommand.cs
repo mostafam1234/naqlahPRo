@@ -81,7 +81,13 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
                 //    return Result.Failure<CreateOrderResponseDto>("Cannot create new order. Customer has a pending order that needs to be completed first.");
                 //}
 
-                var orderServices = await BuildOrderService(request.Order.OrderServiceIds); 
+                var orderServices = await BuildOrderService(request.Order.OrderServiceIds);
+
+                var additionalServicesResult = await BuildOrderAdditionalServices(request.Order.AdditionalServices);
+                if (additionalServicesResult.IsFailure)
+                {
+                    return Result.Failure<CreateOrderResponseDto>(additionalServicesResult.Error);
+                }
 
                 var orderNumber = await GenerateUniqueOrderNumberAsync();
                 DateTime? expectedPickUpTimeValue=null;
@@ -100,7 +106,8 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
                                               orderWayPointsResult.Value,
                                               orderServices,
                                               request.Order.IsScheduled,
-                                              expectedPickUpTimeValue);
+                                              expectedPickUpTimeValue,
+                                              additionalServicesResult.Value);
                 
                 if (orderResult.IsFailure)
                 {
@@ -115,8 +122,15 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
                     return Result.Failure<CreateOrderResponseDto>(saveResult.Error);
                 }
 
+                var systemConfig = await context.SystemConfigurations.FirstOrDefaultAsync(cancellationToken);
+
+                var additionalServicesTotal = additionalServicesResult.Value
+                    .Select(x => x.Amount).DefaultIfEmpty(0).Sum();
+
                 // Get matching vehicles based on selected categories
-                var matchingVehicles = await GetMatchingVehicles(request.Order.MainCategoryIds);
+                var matchingVehicles = await GetMatchingVehicles(request.Order.MainCategoryIds,
+                                                                 systemConfig,
+                                                                 additionalServicesTotal);
 
                 var response = new CreateOrderResponseDto
                 {
@@ -184,6 +198,37 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
                 return orderServices;
             }
 
+            public async Task<Result<List<Domain.Models.OrderAdditionalService>>> BuildOrderAdditionalServices(
+                List<AdditionalServiceItemDto> items)
+            {
+                if (items == null || items.Count == 0)
+                    return Result.Success(new List<Domain.Models.OrderAdditionalService>());
+
+                var serviceIds = items.Select(x => x.ServiceId).ToList();
+                var catalog = await context.AdditionalServices
+                    .Where(x => serviceIds.Contains(x.Id) && !x.IsDeleted)
+                    .ToListAsync();
+
+                var result = new List<Domain.Models.OrderAdditionalService>();
+                foreach (var item in items)
+                {
+                    var service = catalog.FirstOrDefault(x => x.Id == item.ServiceId);
+                    if (service is null)
+                        return Result.Failure<List<Domain.Models.OrderAdditionalService>>(
+                            $"Additional service with id {item.ServiceId} not found");
+
+                    var createResult = Domain.Models.OrderAdditionalService.Create(service.Id,
+                                                                                   item.Quantity,
+                                                                                   service.UnitPrice);
+                    if (createResult.IsFailure)
+                        return Result.Failure<List<Domain.Models.OrderAdditionalService>>(createResult.Error);
+
+                    result.Add(createResult.Value);
+                }
+
+                return Result.Success(result);
+            }
+
             public async Task<string> GenerateUniqueOrderNumberAsync()
             {
                 string orderNumber;
@@ -206,26 +251,47 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
                 return random.Next(100000, 999999).ToString();
             }
 
-            private async Task<List<OrderVehicleDto>> GetMatchingVehicles(List<int> mainCategoryIds)
+            private async Task<List<OrderVehicleDto>> GetMatchingVehicles(List<int> mainCategoryIds,
+                                                                            Domain.Models.SystemConfiguration? systemConfig,
+                                                                            decimal additionalServicesTotal)
             {
                 var languageId = userSession.LanguageId;
-                
-                // Get all vehicle types that support ALL the selected categories
+
+                var serviceFee = systemConfig?.ServiceFess ?? 0;
+                var vatRate = systemConfig?.VatRate ?? 0;
+
                 var vehicleTypes = await context.VehicleTypes
                     .Include(vt => vt.VehicleTypeCategoies)
-                    .Where(vt => mainCategoryIds.All(categoryId => 
+                    .Where(vt => mainCategoryIds.All(categoryId =>
                         vt.VehicleTypeCategoies.Any(vtc => vtc.MainCategoryId == categoryId)))
-                    .Select(vt => new OrderVehicleDto
+                    .Select(vt => new
                     {
-                        Id = vt.Id,
-                        Name = languageId == (int)Domain.Enums.Language.Arabic ? 
+                        vt.Id,
+                        Name = languageId == (int)Domain.Enums.Language.Arabic ?
                                vt.ArabicName : vt.EnglishName,
-                        Price = vt.Id * 100,
-                        IconPath= "https://naqlah.runasp.net/ImageBank/VehicleType/bigOne.png"
+                        IconPath = "https://naqlah.runasp.net/ImageBank/VehicleType/bigOne.png"
                     })
                     .ToListAsync();
 
-                return vehicleTypes;
+                return vehicleTypes.Select(vt =>
+                {
+                    var taxAmount = (serviceFee + additionalServicesTotal) * vatRate / 100m;
+                    var total = serviceFee + additionalServicesTotal + taxAmount;
+                    return new OrderVehicleDto
+                    {
+                        Id = vt.Id,
+                        Name = vt.Name,
+                        IconPath = vt.IconPath,
+                        Price = total,
+                        TotalPrice = total,
+                        BasePrice = 0,
+                        TransportAmount = 0,
+                        ServiceFee = serviceFee,
+                        TaxAmount = taxAmount,
+                        DiscountAmount = 0,
+                        AdditionalServicesTotal = additionalServicesTotal
+                    };
+                }).ToList();
             }
         }
     }
