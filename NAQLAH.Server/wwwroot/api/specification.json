@@ -1117,6 +1117,90 @@
         }
       }
     },
+    "/api/CustomerOrder/PayFromWallet": {
+      "post": {
+        "tags": [
+          "CustomerOrder"
+        ],
+        "operationId": "CustomerOrder_PayFromWallet",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PayFromWalletCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayFromWalletResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/CustomerOrder/GetOrderInvoice/{orderId}": {
+      "get": {
+        "tags": [
+          "CustomerOrder"
+        ],
+        "operationId": "CustomerOrder_GetOrderInvoice",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderInvoiceDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/CustomerWallet/GetBalance": {
       "get": {
         "tags": [
@@ -7478,6 +7562,122 @@
           "discountCode": {
             "type": "string",
             "nullable": true
+          }
+        }
+      },
+      "PayFromWalletResponseDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "newBalance": {
+            "type": "number",
+            "format": "decimal"
+          }
+        }
+      },
+      "PayFromWalletCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "orderId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "discountCode": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "OrderInvoiceDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "orderId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "orderNumber": {
+            "type": "string"
+          },
+          "customerName": {
+            "type": "string"
+          },
+          "senderName": {
+            "type": "string",
+            "nullable": true
+          },
+          "deliveryManName": {
+            "type": "string",
+            "nullable": true
+          },
+          "isProforma": {
+            "type": "boolean"
+          },
+          "transportAmount": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "serviceFee": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "taxAmount": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "discountAmount": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "totalAmount": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "total": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "refundedAmount": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "pdfUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lineItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InvoiceLineItemDto"
+            }
+          }
+        }
+      },
+      "InvoiceLineItemDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },

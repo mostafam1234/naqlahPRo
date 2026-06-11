@@ -257,5 +257,20 @@ namespace Presentaion.Controllers
             return Ok(result.Value);
         }
 
+        [HttpGet]
+        [ProducesResponseType(typeof(OrderInvoiceDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("GetOrderInvoice/{orderId}")]
+        public async Task<IActionResult> GetOrderInvoice(int orderId)
+        {
+            var result = await mediator.Send(new GetOrderInvoiceQuery(orderId));
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+            return Ok(result.Value);
+        }
+
     }
 }

@@ -1774,6 +1774,123 @@ export class CustomerOrderClient {
         }
         return _observableOf(null as any);
     }
+
+    payFromWallet(command: PayFromWalletCommand): Observable<PayFromWalletResponseDto> {
+        let url_ = this.baseUrl + "/api/CustomerOrder/PayFromWallet";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPayFromWallet(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPayFromWallet(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<PayFromWalletResponseDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<PayFromWalletResponseDto>;
+        }));
+    }
+
+    protected processPayFromWallet(response: HttpResponseBase): Observable<PayFromWalletResponseDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PayFromWalletResponseDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getOrderInvoice(orderId: number): Observable<OrderInvoiceDto> {
+        let url_ = this.baseUrl + "/api/CustomerOrder/GetOrderInvoice/{orderId}";
+        if (orderId === undefined || orderId === null)
+            throw new Error("The parameter 'orderId' must be defined.");
+        url_ = url_.replace("{orderId}", encodeURIComponent("" + orderId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetOrderInvoice(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetOrderInvoice(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<OrderInvoiceDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<OrderInvoiceDto>;
+        }));
+    }
+
+    protected processGetOrderInvoice(response: HttpResponseBase): Observable<OrderInvoiceDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = OrderInvoiceDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 @Injectable({
@@ -11070,6 +11187,169 @@ export class ProcessPaymentCommand {
         data["orderId"] = this.orderId !== undefined ? this.orderId : <any>null;
         data["paymentMethodId"] = this.paymentMethodId !== undefined ? this.paymentMethodId : <any>null;
         data["discountCode"] = this.discountCode !== undefined ? this.discountCode : <any>null;
+        return data;
+    }
+}
+
+export class PayFromWalletResponseDto {
+    success!: boolean;
+    message!: string;
+    newBalance!: number;
+
+    init(_data?: any) {
+        if (_data) {
+            this.success = _data["success"] !== undefined ? _data["success"] : <any>null;
+            this.message = _data["message"] !== undefined ? _data["message"] : <any>null;
+            this.newBalance = _data["newBalance"] !== undefined ? _data["newBalance"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): PayFromWalletResponseDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PayFromWalletResponseDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["success"] = this.success !== undefined ? this.success : <any>null;
+        data["message"] = this.message !== undefined ? this.message : <any>null;
+        data["newBalance"] = this.newBalance !== undefined ? this.newBalance : <any>null;
+        return data;
+    }
+}
+
+export class PayFromWalletCommand {
+    orderId!: number;
+    discountCode!: string | null;
+
+    init(_data?: any) {
+        if (_data) {
+            this.orderId = _data["orderId"] !== undefined ? _data["orderId"] : <any>null;
+            this.discountCode = _data["discountCode"] !== undefined ? _data["discountCode"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): PayFromWalletCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new PayFromWalletCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["orderId"] = this.orderId !== undefined ? this.orderId : <any>null;
+        data["discountCode"] = this.discountCode !== undefined ? this.discountCode : <any>null;
+        return data;
+    }
+}
+
+export class OrderInvoiceDto {
+    orderId!: number;
+    orderNumber!: string;
+    customerName!: string;
+    senderName!: string | null;
+    deliveryManName!: string | null;
+    isProforma!: boolean;
+    transportAmount!: number;
+    serviceFee!: number;
+    taxAmount!: number;
+    discountAmount!: number;
+    totalAmount!: number;
+    total!: number;
+    refundedAmount!: number;
+    pdfUrl!: string | null;
+    createdDate!: Date;
+    lineItems!: InvoiceLineItemDto[];
+
+    init(_data?: any) {
+        if (_data) {
+            this.orderId = _data["orderId"] !== undefined ? _data["orderId"] : <any>null;
+            this.orderNumber = _data["orderNumber"] !== undefined ? _data["orderNumber"] : <any>null;
+            this.customerName = _data["customerName"] !== undefined ? _data["customerName"] : <any>null;
+            this.senderName = _data["senderName"] !== undefined ? _data["senderName"] : <any>null;
+            this.deliveryManName = _data["deliveryManName"] !== undefined ? _data["deliveryManName"] : <any>null;
+            this.isProforma = _data["isProforma"] !== undefined ? _data["isProforma"] : <any>null;
+            this.transportAmount = _data["transportAmount"] !== undefined ? _data["transportAmount"] : <any>null;
+            this.serviceFee = _data["serviceFee"] !== undefined ? _data["serviceFee"] : <any>null;
+            this.taxAmount = _data["taxAmount"] !== undefined ? _data["taxAmount"] : <any>null;
+            this.discountAmount = _data["discountAmount"] !== undefined ? _data["discountAmount"] : <any>null;
+            this.totalAmount = _data["totalAmount"] !== undefined ? _data["totalAmount"] : <any>null;
+            this.total = _data["total"] !== undefined ? _data["total"] : <any>null;
+            this.refundedAmount = _data["refundedAmount"] !== undefined ? _data["refundedAmount"] : <any>null;
+            this.pdfUrl = _data["pdfUrl"] !== undefined ? _data["pdfUrl"] : <any>null;
+            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>null;
+            if (Array.isArray(_data["lineItems"])) {
+                this.lineItems = [] as any;
+                for (let item of _data["lineItems"])
+                    this.lineItems!.push(InvoiceLineItemDto.fromJS(item));
+            }
+            else {
+                this.lineItems = <any>null;
+            }
+        }
+    }
+
+    static fromJS(data: any): OrderInvoiceDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new OrderInvoiceDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["orderId"] = this.orderId !== undefined ? this.orderId : <any>null;
+        data["orderNumber"] = this.orderNumber !== undefined ? this.orderNumber : <any>null;
+        data["customerName"] = this.customerName !== undefined ? this.customerName : <any>null;
+        data["senderName"] = this.senderName !== undefined ? this.senderName : <any>null;
+        data["deliveryManName"] = this.deliveryManName !== undefined ? this.deliveryManName : <any>null;
+        data["isProforma"] = this.isProforma !== undefined ? this.isProforma : <any>null;
+        data["transportAmount"] = this.transportAmount !== undefined ? this.transportAmount : <any>null;
+        data["serviceFee"] = this.serviceFee !== undefined ? this.serviceFee : <any>null;
+        data["taxAmount"] = this.taxAmount !== undefined ? this.taxAmount : <any>null;
+        data["discountAmount"] = this.discountAmount !== undefined ? this.discountAmount : <any>null;
+        data["totalAmount"] = this.totalAmount !== undefined ? this.totalAmount : <any>null;
+        data["total"] = this.total !== undefined ? this.total : <any>null;
+        data["refundedAmount"] = this.refundedAmount !== undefined ? this.refundedAmount : <any>null;
+        data["pdfUrl"] = this.pdfUrl !== undefined ? this.pdfUrl : <any>null;
+        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>null;
+        if (Array.isArray(this.lineItems)) {
+            data["lineItems"] = [];
+            for (let item of this.lineItems)
+                data["lineItems"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export class InvoiceLineItemDto {
+    name!: string;
+    amount!: number;
+    quantity!: number;
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"] !== undefined ? _data["name"] : <any>null;
+            this.amount = _data["amount"] !== undefined ? _data["amount"] : <any>null;
+            this.quantity = _data["quantity"] !== undefined ? _data["quantity"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): InvoiceLineItemDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new InvoiceLineItemDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name !== undefined ? this.name : <any>null;
+        data["amount"] = this.amount !== undefined ? this.amount : <any>null;
+        data["quantity"] = this.quantity !== undefined ? this.quantity : <any>null;
         return data;
     }
 }
