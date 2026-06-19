@@ -13,6 +13,7 @@ import { ToasterService } from 'src/app/Core/services/toaster.service';
 import { ConfirmationModalComponent } from 'src/app/shared/components/confirmation-modal/confirmation-modal.component';
 import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
 import { PermissionService } from 'src/app/shared/services/permission.service';
+import { AppConfigService } from 'src/app/shared/services/AppConfigService';
 import { SubSink } from 'subsink';
 
 @Component({
@@ -38,7 +39,12 @@ export class AdminCustomerDetailComponent implements OnInit, OnDestroy {
   showPasswordModal = false;
   newPasswordControl = new FormControl('');
 
+  previewImage: string | null = null;
+  previewLabel = '';
+  readonly defaultCustomerImage = 'assets/images/customerIcon.png';
+
   private sub = new SubSink();
+  private baseUrl = '';
 
   constructor(
     private customerAdminClient: CustomerAdminClient,
@@ -46,10 +52,12 @@ export class AdminCustomerDetailComponent implements OnInit, OnDestroy {
     private router: Router,
     private toaster: ToasterService,
     private translate: TranslateService,
-    private permissionService: PermissionService
+    private permissionService: PermissionService,
+    private appConfig: AppConfigService
   ) {}
 
   ngOnInit(): void {
+    this.baseUrl = this.appConfig.Config?.apiBaseUrl?.replace(/\/$/, '') || '';
     this.permissionService.getPermissions().subscribe(() => {});
     this.sub.sink = this.route.paramMap.subscribe((pm) => {
       const raw = pm.get('customerId');
@@ -75,6 +83,38 @@ export class AdminCustomerDetailComponent implements OnInit, OnDestroy {
   dash(s: string | null | undefined): string {
     const t = s?.trim();
     return t || this.translate.instant('ADMIN.CUSTOMERS.NO_EMAIL');
+  }
+
+  resolveImageUrl(path: string | null | undefined): string {
+    const trimmed = path?.trim();
+    if (!trimmed) return this.defaultCustomerImage;
+
+    if (/^https?:\/\//i.test(trimmed)) {
+      return trimmed;
+    }
+
+    if (trimmed.includes('/ImageBank/')) {
+      return trimmed.startsWith('/') ? `${this.baseUrl}${trimmed}` : trimmed;
+    }
+
+    const fileName = trimmed.replace(/\\/g, '/').split('/').pop();
+    if (!fileName) return this.defaultCustomerImage;
+
+    return `${this.baseUrl}/ImageBank/Customer/${fileName}`;
+  }
+
+  openPreview(imageUrl: string, label: string): void {
+    this.previewImage = imageUrl;
+    this.previewLabel = label;
+  }
+
+  openPreviewByKey(imageUrl: string, labelKey: string): void {
+    this.openPreview(imageUrl, this.translate.instant(labelKey));
+  }
+
+  closePreview(): void {
+    this.previewImage = null;
+    this.previewLabel = '';
   }
 
   loadDetail(): void {

@@ -18,6 +18,7 @@ export class LoginComponent implements OnInit {
   isSubmitting = false;
   errorMessage = '';
   showPassword = false;
+  readonly currentYear = new Date().getFullYear();
 
   constructor(
     private fb: FormBuilder,

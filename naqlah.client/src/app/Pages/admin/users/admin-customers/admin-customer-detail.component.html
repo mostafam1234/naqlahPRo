@@ -178,11 +178,23 @@
               </div>
               <div class="cust-info-tile cust-info-tile--full cust-info-tile--file">
                 <span class="cust-info-tile__label">{{ 'ADMIN.CUSTOMERS.DETAIL_COL_COMMERCIAL_RECORD_FILE' | translate }}</span>
-                <span class="cust-info-tile__value cust-info-tile__value--path">{{ dash(c.establishmentCommercialRecordImagePath ?? undefined) }}</span>
+                <button
+                  type="button"
+                  class="cust-doc-preview"
+                  (click)="openPreviewByKey(resolveImageUrl(c.establishmentCommercialRecordImagePath), 'ADMIN.CUSTOMERS.DETAIL_COL_COMMERCIAL_RECORD_FILE')"
+                >
+                  <img [src]="resolveImageUrl(c.establishmentCommercialRecordImagePath)" [alt]="'ADMIN.CUSTOMERS.DETAIL_COL_COMMERCIAL_RECORD_FILE' | translate" class="cust-doc-preview__img" loading="lazy" decoding="async" />
+                </button>
               </div>
               <div class="cust-info-tile cust-info-tile--full cust-info-tile--file">
                 <span class="cust-info-tile__label">{{ 'ADMIN.CUSTOMERS.DETAIL_COL_TAX_CERT_FILE' | translate }}</span>
-                <span class="cust-info-tile__value cust-info-tile__value--path">{{ dash(c.establishmentTaxRegistrationImagePath ?? undefined) }}</span>
+                <button
+                  type="button"
+                  class="cust-doc-preview"
+                  (click)="openPreviewByKey(resolveImageUrl(c.establishmentTaxRegistrationImagePath), 'ADMIN.CUSTOMERS.DETAIL_COL_TAX_CERT_FILE')"
+                >
+                  <img [src]="resolveImageUrl(c.establishmentTaxRegistrationImagePath)" [alt]="'ADMIN.CUSTOMERS.DETAIL_COL_TAX_CERT_FILE' | translate" class="cust-doc-preview__img" loading="lazy" decoding="async" />
+                </button>
               </div>
             </div>
           </div>
@@ -209,11 +221,23 @@
               </div>
               <div class="cust-info-tile cust-info-tile--full cust-info-tile--file">
                 <span class="cust-info-tile__label">{{ 'ADMIN.CUSTOMERS.DETAIL_COL_ID_FRONT_FILE' | translate }}</span>
-                <span class="cust-info-tile__value cust-info-tile__value--path">{{ dash(c.individualFrontIdentityImagePath ?? undefined) }}</span>
+                <button
+                  type="button"
+                  class="cust-doc-preview"
+                  (click)="openPreviewByKey(resolveImageUrl(c.individualFrontIdentityImagePath), 'ADMIN.CUSTOMERS.DETAIL_COL_ID_FRONT_FILE')"
+                >
+                  <img [src]="resolveImageUrl(c.individualFrontIdentityImagePath)" [alt]="'ADMIN.CUSTOMERS.DETAIL_COL_ID_FRONT_FILE' | translate" class="cust-doc-preview__img" loading="lazy" decoding="async" />
+                </button>
               </div>
               <div class="cust-info-tile cust-info-tile--full cust-info-tile--file">
                 <span class="cust-info-tile__label">{{ 'ADMIN.CUSTOMERS.DETAIL_COL_ID_BACK_FILE' | translate }}</span>
-                <span class="cust-info-tile__value cust-info-tile__value--path">{{ dash(c.individualBackIdentityImagePath ?? undefined) }}</span>
+                <button
+                  type="button"
+                  class="cust-doc-preview"
+                  (click)="openPreviewByKey(resolveImageUrl(c.individualBackIdentityImagePath), 'ADMIN.CUSTOMERS.DETAIL_COL_ID_BACK_FILE')"
+                >
+                  <img [src]="resolveImageUrl(c.individualBackIdentityImagePath)" [alt]="'ADMIN.CUSTOMERS.DETAIL_COL_ID_BACK_FILE' | translate" class="cust-doc-preview__img" loading="lazy" decoding="async" />
+                </button>
               </div>
             </div>
           </div>
@@ -240,11 +264,23 @@
               </div>
               <div class="cust-info-tile cust-info-tile--full cust-info-tile--file">
                 <span class="cust-info-tile__label">{{ 'ADMIN.CUSTOMERS.DETAIL_COL_REP_ID_FRONT_FILE' | translate }}</span>
-                <span class="cust-info-tile__value cust-info-tile__value--path">{{ dash(c.establishmentRepresentativeFrontIdentityImagePath ?? undefined) }}</span>
+                <button
+                  type="button"
+                  class="cust-doc-preview"
+                  (click)="openPreviewByKey(resolveImageUrl(c.establishmentRepresentativeFrontIdentityImagePath), 'ADMIN.CUSTOMERS.DETAIL_COL_REP_ID_FRONT_FILE')"
+                >
+                  <img [src]="resolveImageUrl(c.establishmentRepresentativeFrontIdentityImagePath)" [alt]="'ADMIN.CUSTOMERS.DETAIL_COL_REP_ID_FRONT_FILE' | translate" class="cust-doc-preview__img" loading="lazy" decoding="async" />
+                </button>
               </div>
               <div class="cust-info-tile cust-info-tile--full cust-info-tile--file">
                 <span class="cust-info-tile__label">{{ 'ADMIN.CUSTOMERS.DETAIL_COL_REP_ID_BACK_FILE' | translate }}</span>
-                <span class="cust-info-tile__value cust-info-tile__value--path">{{ dash(c.establishmentRepresentativeBackIdentityImagePath ?? undefined) }}</span>
+                <button
+                  type="button"
+                  class="cust-doc-preview"
+                  (click)="openPreviewByKey(resolveImageUrl(c.establishmentRepresentativeBackIdentityImagePath), 'ADMIN.CUSTOMERS.DETAIL_COL_REP_ID_BACK_FILE')"
+                >
+                  <img [src]="resolveImageUrl(c.establishmentRepresentativeBackIdentityImagePath)" [alt]="'ADMIN.CUSTOMERS.DETAIL_COL_REP_ID_BACK_FILE' | translate" class="cust-doc-preview__img" loading="lazy" decoding="async" />
+                </button>
               </div>
             </div>
           </div>
@@ -309,6 +345,16 @@
       </aside>
     </div>
   </ng-container>
+
+  <div *ngIf="previewImage" class="cust-preview-modal" (click)="closePreview()">
+    <div class="cust-preview-modal__content" (click)="$event.stopPropagation()">
+      <div class="cust-preview-modal__header">
+        <h3>{{ previewLabel }}</h3>
+        <button type="button" class="cust-preview-modal__close" (click)="closePreview()">✕</button>
+      </div>
+      <img [src]="previewImage" [alt]="previewLabel" class="cust-preview-modal__image" />
+    </div>
+  </div>
 
   <app-confirmation-modal
     [show]="showConfirmModal"

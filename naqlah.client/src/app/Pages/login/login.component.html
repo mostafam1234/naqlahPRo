@@ -1,152 +1,145 @@
-<!-- Login Page - Naqlah Admin (Project theme: primary teal, neutral) -->
-<div class="login-page min-h-screen flex items-center justify-center p-4 overflow-hidden" dir="rtl">
-  <!-- Background -->
-  <div class="login-bg">
-    <div class="login-bg-gradient"></div>
-    <div class="login-bg-shape login-bg-shape-1"></div>
-    <div class="login-bg-shape login-bg-shape-2"></div>
-    <div class="login-bg-shape login-bg-shape-3"></div>
-    <div class="login-bg-grid"></div>
+<div class="login-page" dir="rtl">
+  <div class="login-scene" aria-hidden="true">
+    <div class="login-scene__gradient"></div>
+    <div class="login-scene__grid"></div>
+    <div class="login-scene__glow login-scene__glow--1"></div>
+    <div class="login-scene__glow login-scene__glow--2"></div>
   </div>
 
-  <div class="login-container w-full max-w-6xl mx-auto relative z-10">
-    <div class="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
-      <!-- Right: Branding / Illustration (RTL) -->
-      <div class="hidden lg:flex flex-col items-center justify-center px-4 py-8">
-        <div class="login-illustration-wrap">
-          <div class="login-illustration-glow"></div>
-          <img src="../../../assets/images/Login.svg" alt="Login" class="login-illustration-img" />
-        </div>
-        <div class="text-center mt-8 max-w-sm">
-          <h2 class="text-2xl lg:text-3xl font-bold text-neutral-800 mb-3">مرحباً بعودتك</h2>
-          <p class="text-neutral-600 text-base lg:text-lg">قم بتسجيل الدخول للوصول إلى لوحة التحكم</p>
-        </div>
-      </div>
-
-      <!-- Left: Form Card -->
-      <div class="w-full max-w-[420px] mx-auto lg:mx-0">
-        <div class="login-card">
-          <div class="login-card-inner">
-            <!-- Header -->
-            <div class="text-center mb-8">
-              <img src="../../../assets/images/car.png" alt="Naqlah" class="login-logo mx-auto mb-4" />
-              <h1 class="text-xl lg:text-2xl font-bold text-neutral-800 mb-2">تسجيل الدخول</h1>
-              <p class="text-neutral-500 text-sm">أدخل بياناتك للوصول إلى حسابك</p>
-            </div>
-
-            <form [formGroup]="loginFormGroup" (ngSubmit)="LogIn(loginFormGroup.value)" class="space-y-5">
-              <!-- Global error -->
-              <div *ngIf="errorMessage" class="login-error-box">
-                <svg class="login-error-icon" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
-                </svg>
-                <span class="text-error-700 text-sm font-medium">{{ errorMessage }}</span>
-              </div>
-
-              <!-- Email -->
-              <div class="login-field">
-                <label for="email" class="login-label">البريد الإلكتروني</label>
-                <div class="login-input-wrap">
-                  <span class="login-input-icon login-input-icon-start">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"/>
-                    </svg>
-                  </span>
-                  <input
-                    formControlName="userName"
-                    id="email"
-                    type="email"
-                    placeholder="admin@example.com"
-                    class="login-input"
-                    [class.login-input-invalid]="hasFieldError('userName')"
-                  />
-                </div>
-                <p *ngIf="hasFieldError('userName')" class="login-field-error">
-                  <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                  </svg>
-                  {{ getFieldError('userName') }}
-                </p>
-              </div>
-
-              <!-- Password -->
-              <div class="login-field">
-                <label for="password" class="login-label">كلمة المرور</label>
-                <div class="login-input-wrap">
-                  <span class="login-input-icon login-input-icon-start">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                    </svg>
-                  </span>
-                  <input
-                    formControlName="password"
-                    id="password"
-                    [type]="showPassword ? 'text' : 'password'"
-                    placeholder="••••••••"
-                    class="login-input login-input-password"
-                    [class.login-input-invalid]="hasFieldError('password')"
-                  />
-                  <button
-                    type="button"
-                    (click)="togglePasswordVisibility()"
-                    class="login-password-toggle"
-                    [attr.aria-label]="showPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'"
-                  >
-                    <svg *ngIf="!showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                    </svg>
-                    <svg *ngIf="showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L12 12m-3-3l6.364 6.364M21 21l-3.6-3.6"/>
-                    </svg>
-                  </button>
-                </div>
-                <p *ngIf="hasFieldError('password')" class="login-field-error">
-                  <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                  </svg>
-                  {{ getFieldError('password') }}
-                </p>
-              </div>
-
-              <!-- Forgot password -->
-              <div class="text-left">
-                <a href="#" class="login-link">نسيت كلمة المرور؟</a>
-              </div>
-
-              <!-- Submit -->
-              <button
-                type="submit"
-                [disabled]="isSubmitting"
-                class="login-submit"
-              >
-                <span *ngIf="!isSubmitting" class="login-submit-content">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"/>
-                  </svg>
-                  <span>تسجيل الدخول</span>
-                </span>
-                <span *ngIf="isSubmitting" class="login-submit-content">
-                  <svg class="login-spinner w-5 h-5" fill="none" viewBox="0 0 24 24" aria-hidden="true">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  <span>جارِ تسجيل الدخول...</span>
-                </span>
-              </button>
-            </form>
-
-            <div class="mt-8 text-center">
-              <p class="text-xs text-neutral-400">
-                بتسجيل الدخول، أنت توافق على
-                <a href="#" class="text-primary-600 hover:text-primary-700 hover:underline">شروط الخدمة</a>
-                و
-                <a href="#" class="text-primary-600 hover:text-primary-700 hover:underline">سياسة الخصوصية</a>
-              </p>
-            </div>
+  <div class="login-shell">
+    <div class="login-panel">
+      <!-- جانب التعريف -->
+      <aside class="login-aside">
+        <div class="login-aside__top">
+          <div class="login-aside__logo">
+            <img src="assets/images/car.png" alt="نقلة" />
           </div>
+          <p class="login-aside__eyebrow">نقلة · Naqlah</p>
+          <h2 class="login-aside__title">مرحباً بك في لوحة الإدارة</h2>
+          <p class="login-aside__desc">
+            سجّل دخولك لمتابعة الطلبات، إدارة المستخدمين، وضبط إعدادات المنصة من مكان واحد.
+          </p>
         </div>
-      </div>
+
+        <ul class="login-aside__list">
+          <li>
+            <span class="login-aside__list-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177V9.75m0 0H8.25m4.5 0v.008H8.25" />
+              </svg>
+            </span>
+            <span>متابعة الطلبات والكباتن</span>
+          </li>
+          <li>
+            <span class="login-aside__list-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" />
+              </svg>
+            </span>
+            <span>إدارة العملاء والمحافظ</span>
+          </li>
+          <li>
+            <span class="login-aside__list-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </span>
+            <span>الإعدادات والصلاحيات</span>
+          </li>
+        </ul>
+
+        <p class="login-aside__foot">© {{ currentYear }} نقلة</p>
+      </aside>
+
+      <!-- جانب الفورم -->
+      <section class="login-form-side">
+        <header class="login-form-side__head">
+          <h1 class="login-form-side__title">تسجيل الدخول</h1>
+          <p class="login-form-side__subtitle">أدخل بيانات حسابك الإداري</p>
+        </header>
+
+        <form [formGroup]="loginFormGroup" (ngSubmit)="LogIn(loginFormGroup.value)" class="login-form" novalidate>
+          <div *ngIf="errorMessage" class="login-alert" role="alert">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+            </svg>
+            <span>{{ errorMessage }}</span>
+          </div>
+
+          <div class="login-input-group" [class.is-invalid]="hasFieldError('userName')">
+            <label for="email" class="login-input-group__label">البريد الإلكتروني</label>
+            <div class="login-input-group__box">
+              <input
+                formControlName="userName"
+                id="email"
+                type="email"
+                inputmode="email"
+                autocomplete="username"
+                placeholder="admin@naqlah.com"
+                class="login-input-group__field"
+              />
+              <span class="login-input-group__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                </svg>
+              </span>
+            </div>
+            <p *ngIf="hasFieldError('userName')" class="login-input-group__error">{{ getFieldError('userName') }}</p>
+          </div>
+
+          <div class="login-input-group" [class.is-invalid]="hasFieldError('password')">
+            <label for="password" class="login-input-group__label">كلمة المرور</label>
+            <div class="login-input-group__box">
+              <input
+                formControlName="password"
+                id="password"
+                [type]="showPassword ? 'text' : 'password'"
+                autocomplete="current-password"
+                placeholder="••••••••"
+                class="login-input-group__field login-input-group__field--password"
+              />
+              <button
+                type="button"
+                class="login-input-group__toggle"
+                (click)="togglePasswordVisibility()"
+                [attr.aria-label]="showPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'"
+              >
+                <svg *ngIf="!showPassword" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                <svg *ngIf="showPassword" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+                </svg>
+              </button>
+              <span class="login-input-group__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                </svg>
+              </span>
+            </div>
+            <p *ngIf="hasFieldError('password')" class="login-input-group__error">{{ getFieldError('password') }}</p>
+          </div>
+
+          <div class="login-form__actions">
+            <a href="#" class="login-form__link" (click)="$event.preventDefault()">نسيت كلمة المرور؟</a>
+          </div>
+
+          <button type="submit" class="login-submit" [disabled]="isSubmitting" [attr.aria-busy]="isSubmitting">
+            <ng-container *ngIf="!isSubmitting">
+              <span>دخول لوحة الإدارة</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m-3-3l3 3m0 0l3-3m-3 3H9" />
+              </svg>
+            </ng-container>
+            <ng-container *ngIf="isSubmitting">
+              <span class="login-submit__spinner" aria-hidden="true"></span>
+              <span>جارٍ الدخول...</span>
+            </ng-container>
+          </button>
+        </form>
+      </section>
     </div>
   </div>
 </div>

@@ -4767,58 +4767,6 @@
         }
       }
     },
-    "/api/DeliveryManAdmin/ExportApprovedDeliveryMen": {
-      "get": {
-        "tags": [
-          "DeliveryManAdmin"
-        ],
-        "operationId": "DeliveryManAdmin_ExportApprovedDeliveryMen",
-        "parameters": [
-          {
-            "name": "deliveryTypeFilter",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 0
-            },
-            "x-position": 1
-          },
-          {
-            "name": "searchTerm",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "default": ""
-            },
-            "x-position": 2
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/octet-stream": {
-                "schema": {
-                  "type": "string",
-                  "format": "binary"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetail"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/DeliveryManAdmin/AddDeliveryMan": {
       "post": {
         "tags": [

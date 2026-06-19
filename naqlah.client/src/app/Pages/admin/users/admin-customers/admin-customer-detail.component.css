@@ -322,6 +322,99 @@
   color: var(--shell-text-muted);
 }
 
+.cust-doc-preview {
+  display: block;
+  width: 100%;
+  margin-top: 0.35rem;
+  padding: 0;
+  border: 1px solid var(--shell-surface-border);
+  border-radius: 0.75rem;
+  background: var(--shell-surface);
+  overflow: hidden;
+  cursor: zoom-in;
+  transition: box-shadow 0.15s ease, transform 0.12s ease;
+}
+
+.cust-doc-preview:hover {
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--shell-text) 10%, transparent);
+  transform: translateY(-1px);
+}
+
+.cust-doc-preview__img {
+  display: block;
+  width: 100%;
+  max-height: 220px;
+  object-fit: contain;
+  background: color-mix(in srgb, var(--shell-muted-surface) 80%, var(--shell-surface));
+}
+
+.cust-doc-preview__empty {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--shell-text-muted);
+}
+
+.cust-preview-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: color-mix(in srgb, #020617 70%, transparent);
+  backdrop-filter: blur(6px);
+}
+
+.cust-preview-modal__content {
+  width: min(92vw, 56rem);
+  max-height: 92vh;
+  overflow: auto;
+  border-radius: 1rem;
+  background: var(--shell-surface);
+  border: 1px solid var(--shell-surface-border);
+  box-shadow: 0 28px 56px color-mix(in srgb, black 35%, transparent);
+}
+
+.cust-preview-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--shell-surface-border);
+}
+
+.cust-preview-modal__header h3 {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 800;
+  color: var(--shell-text);
+}
+
+.cust-preview-modal__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: var(--shell-muted-surface);
+  color: var(--shell-text-muted);
+  cursor: pointer;
+}
+
+.cust-preview-modal__image {
+  display: block;
+  width: 100%;
+  max-height: calc(92vh - 4rem);
+  object-fit: contain;
+  background: color-mix(in srgb, var(--shell-muted-surface) 70%, var(--shell-surface));
+}
+
 /* ---- Badges ---- */
 .cust-badge {
   display: inline-flex;

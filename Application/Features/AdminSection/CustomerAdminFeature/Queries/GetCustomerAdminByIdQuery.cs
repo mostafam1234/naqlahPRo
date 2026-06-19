@@ -5,6 +5,7 @@ using Domain.InterFaces;
 using Domain.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,11 +26,15 @@ namespace Application.Features.AdminSection.CustomerAdminFeature.Queries
             private const string PasswordExplanationEn =
                 "Plain password cannot be shown (hashed storage). Use reset password to set a new one.";
 
-            private readonly INaqlahContext _context;
+            private const string CustomerFolderPrefix = "Customer";
 
-            public GetCustomerAdminByIdQueryHandler(INaqlahContext context)
+            private readonly INaqlahContext _context;
+            private readonly IReadFromAppSetting _config;
+
+            public GetCustomerAdminByIdQueryHandler(INaqlahContext context, IReadFromAppSetting config)
             {
                 _context = context;
+                _config = config;
             }
 
             public async Task<Result<AdminCustomerDetailDto>> Handle(GetCustomerAdminByIdQuery request, CancellationToken cancellationToken)
@@ -41,6 +46,7 @@ namespace Application.Features.AdminSection.CustomerAdminFeature.Queries
 
                 var isArabic = request.LanguageId == (int)Language.Arabic;
                 var pwdNote = isArabic ? PasswordExplanationAr : PasswordExplanationEn;
+                var baseUrl = _config.GetValue<string>("apiBaseUrl")?.TrimEnd('/') ?? string.Empty;
 
                 var dto = await (
                     from c in _context.Customers.AsNoTracking()
@@ -113,7 +119,41 @@ namespace Application.Features.AdminSection.CustomerAdminFeature.Queries
                     return Result.Failure<AdminCustomerDetailDto>("RecordNotCustomerAccount");
                 }
 
+                dto.IndividualFrontIdentityImagePath = BuildImageUrl(dto.IndividualFrontIdentityImagePath, baseUrl);
+                dto.IndividualBackIdentityImagePath = BuildImageUrl(dto.IndividualBackIdentityImagePath, baseUrl);
+                dto.EstablishmentCommercialRecordImagePath = BuildImageUrl(dto.EstablishmentCommercialRecordImagePath, baseUrl);
+                dto.EstablishmentTaxRegistrationImagePath = BuildImageUrl(dto.EstablishmentTaxRegistrationImagePath, baseUrl);
+                dto.EstablishmentRepresentativeFrontIdentityImagePath =
+                    BuildImageUrl(dto.EstablishmentRepresentativeFrontIdentityImagePath, baseUrl);
+                dto.EstablishmentRepresentativeBackIdentityImagePath =
+                    BuildImageUrl(dto.EstablishmentRepresentativeBackIdentityImagePath, baseUrl);
+
                 return Result.Success(dto);
+            }
+
+            private static string? BuildImageUrl(string? path, string baseUrl)
+            {
+                if (string.IsNullOrWhiteSpace(path))
+                {
+                    return null;
+                }
+
+                var trimmed = path.Trim();
+                if (trimmed.StartsWith("http://", StringComparison.OrdinalIgnoreCase)
+                    || trimmed.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+                {
+                    return trimmed;
+                }
+
+                if (trimmed.Contains("/ImageBank/", StringComparison.OrdinalIgnoreCase))
+                {
+                    return trimmed.StartsWith('/')
+                        ? $"{baseUrl}{trimmed}"
+                        : trimmed;
+                }
+
+                var fileName = trimmed.Replace('\\', '/').Split('/').Last();
+                return $"{baseUrl}/ImageBank/{CustomerFolderPrefix}/{fileName}";
             }
         }
     }
