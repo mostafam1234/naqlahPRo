@@ -42,25 +42,25 @@ namespace Application.Features.AdminSection.CustomerAdminFeature.Dtos
 
         public string? IndividualMobileNumber { get; init; }
 
-        public string? IndividualFrontIdentityImagePath { get; init; }
+        public string? IndividualFrontIdentityImagePath { get; set; }
 
-        public string? IndividualBackIdentityImagePath { get; init; }
+        public string? IndividualBackIdentityImagePath { get; set; }
 
         // —— Establishment (business) ——
         public string? EstablishmentTradeName { get; init; }
 
-        public string? EstablishmentCommercialRecordImagePath { get; init; }
+        public string? EstablishmentCommercialRecordImagePath { get; set; }
 
-        public string? EstablishmentTaxRegistrationImagePath { get; init; }
+        public string? EstablishmentTaxRegistrationImagePath { get; set; }
 
         // —— Establishment representative ——
         public string? EstablishmentRepresentativeName { get; init; }
 
         public string? EstablishmentRepresentativePhone { get; init; }
 
-        public string? EstablishmentRepresentativeFrontIdentityImagePath { get; init; }
+        public string? EstablishmentRepresentativeFrontIdentityImagePath { get; set; }
 
-        public string? EstablishmentRepresentativeBackIdentityImagePath { get; init; }
+        public string? EstablishmentRepresentativeBackIdentityImagePath { get; set; }
 
         // —— App devices (domain spelling preserved in storage) ——
         public string AndroidDevice { get; init; } = string.Empty;
