@@ -20,6 +20,19 @@ namespace NAQLAH.Server
     {
         public static async Task Main(string[] args)
         {
+            try
+            {
+                await RunAsync(args);
+            }
+            catch (Exception ex)
+            {
+                LogStartupFailure(ex);
+                throw;
+            }
+        }
+
+        private static async Task RunAsync(string[] args)
+        {
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
@@ -186,6 +199,23 @@ namespace NAQLAH.Server
             app.MapFallbackToFile("/index.html");
 
             app.Run();
+        }
+
+        private static void LogStartupFailure(Exception ex)
+        {
+            var message = $"[{DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC] Application failed to start.{Environment.NewLine}{ex}{Environment.NewLine}";
+            Console.Error.WriteLine(message);
+
+            try
+            {
+                var logsFolder = Path.Combine(AppContext.BaseDirectory, "Logs");
+                Directory.CreateDirectory(logsFolder);
+                File.AppendAllText(Path.Combine(logsFolder, "startup-failures.log"), message);
+            }
+            catch
+            {
+                // Never let logging mask the original startup failure.
+            }
         }
     }
 }
