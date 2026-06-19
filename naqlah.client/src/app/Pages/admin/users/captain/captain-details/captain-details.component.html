@@ -156,10 +156,10 @@
             type="button"
             class="doc-card"
             [class.doc-card--empty]="!doc.url"
-            (click)="openPreview(doc.url, doc.label)"
+            (click)="openPreview(doc.url, doc.labelKey)"
           >
             <div class="doc-card__image">
-              <img *ngIf="doc.url; else noDocImage" [src]="doc.url" [alt]="doc.label" loading="lazy" decoding="async" />
+              <img *ngIf="doc.url; else noDocImage" [src]="doc.url" [alt]="doc.labelKey | translate" loading="lazy" decoding="async" />
               <ng-template #noDocImage>
                 <div class="doc-card__placeholder">
                   <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -170,7 +170,7 @@
               </ng-template>
             </div>
             <div class="doc-card__footer">
-              <span class="doc-card__label">{{ doc.label }}</span>
+              <span class="doc-card__label">{{ doc.labelKey | translate }}</span>
               <span *ngIf="doc.optional" class="doc-card__tag">اختياري</span>
               <span *ngIf="!doc.optional" class="doc-card__tag doc-card__tag--required">مطلوب</span>
             </div>

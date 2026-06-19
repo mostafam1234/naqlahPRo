@@ -54,7 +54,9 @@ namespace Application.Features.AdminSection.MainCategoryFeatures.Queries
                         EnglishName = x.EnglishName,
                         ImagePath = !string.IsNullOrEmpty(x.ImagePath) 
                             ? $"{baseUrl}/ImageBank/{MainCategoryFolderPrefix}/{x.ImagePath}" 
-                            : string.Empty
+                            : string.Empty,
+                        VehicleTypeCount = _context.VehicleTypeCategories
+                            .Count(vtc => vtc.MainCategoryId == x.Id)
                     })
                     .ToListAsync(cancellationToken);
 

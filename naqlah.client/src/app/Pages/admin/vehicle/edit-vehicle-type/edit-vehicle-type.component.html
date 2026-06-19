@@ -7,16 +7,6 @@
     (onBackClick)="onCancel()"
   ></app-page-header>
 
-  <div class="vf-hero edit-type-hero" *ngIf="!isLoading">
-    <div class="vf-hero__content">
-      <span class="vf-hero__eyebrow">تعديل نوع مركبة</span>
-      <h1 class="vf-hero__title">تحديث نوع المركبة</h1>
-      <p class="vf-hero__subtitle">
-        عدّل التصنيف والتسعير والأيقونة وأقسام الشحنات — كل الحقول اختيارية.
-      </p>
-    </div>
-  </div>
-
   <div *ngIf="isLoading" class="vf-card">
     <div class="vf-card__body text-center py-12 text-neutral-500">جاري التحميل...</div>
   </div>

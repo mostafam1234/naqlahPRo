@@ -36,14 +36,14 @@
     <!-- Vehicle Types Statistics -->
     <ng-container *ngIf="activeTab === 'types'">
       <div class="na-stats-toolbar" *ngIf="!isLoadingStatistics">
-        <p class="na-stats-toolbar__hint">إحصائيات أنواع المركبات — اضغط على أي بطاقة لتصفية الجدول</p>
+        <p class="na-stats-toolbar__hint">{{ 'ADMIN.VEHICLESMENUE.STATS_HINT' | translate }}</p>
         <button
           type="button"
           class="na-btn na-btn--export"
           [disabled]="isExportingStatistics"
           (click)="exportVehicleStatistics()"
         >
-          {{ isExportingStatistics ? 'جاري التصدير...' : 'تصدير الإحصائيات Excel' }}
+          {{ (isExportingStatistics ? 'ADMIN.VEHICLESMENUE.STATS_EXPORTING' : 'ADMIN.VEHICLESMENUE.STATS_EXPORT') | translate }}
         </button>
       </div>
 
@@ -60,30 +60,18 @@
             </svg>
           </div>
           <div class="na-stat-card__body">
-            <p class="na-stat-card__label">إجمالي أنواع المركبات</p>
+            <p class="na-stat-card__label">{{ 'ADMIN.VEHICLESMENUE.STAT_TOTAL_TYPES' | translate }}</p>
             <p class="na-stat-card__value">{{ totalVehicleTypesCount | number }}</p>
           </div>
         </button>
 
-        <div class="na-stat-card na-stat-card--active">
-          <div class="na-stat-card__icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-            </svg>
-          </div>
-          <div class="na-stat-card__body">
-            <p class="na-stat-card__label">المركبات المسجلة</p>
-            <p class="na-stat-card__value">{{ totalRegisteredVehiclesCount | number }}</p>
-          </div>
-        </div>
-
         <button
-          *ngFor="let item of loadCategoryStatCards; let i = index"
+          *ngFor="let item of mainCategoryStatCards; let i = index"
           type="button"
           class="na-stat-card"
           [ngClass]="getStatCardClass(i)"
-          [class.na-stat-card--selected]="isStatCardSelected(item.loadCategory!)"
-          (click)="onStatCardClick(item.loadCategory!)"
+          [class.na-stat-card--selected]="isSectionStatSelected(item.mainCategoryId)"
+          (click)="onSectionStatClick(item.mainCategoryId)"
         >
           <div class="na-stat-card__icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
@@ -91,8 +79,8 @@
             </svg>
           </div>
           <div class="na-stat-card__body">
-            <p class="na-stat-card__label">{{ item.loadCategoryName }}</p>
-            <p class="na-stat-card__value">{{ getStatCount(item) | number }}</p>
+            <p class="na-stat-card__label">{{ getSectionStatLabel(item) }}</p>
+            <p class="na-stat-card__value">{{ getSectionStatCount(item) | number }}</p>
           </div>
         </button>
       </div>
@@ -256,7 +244,7 @@
                     class="na-table__muted"
                     style="font-size:0.75rem;margin:0"
                   >
-                    لا توجد أقسام
+                    {{ 'ADMIN.VEHICLESMENUE.NO_SECTIONS' | translate }}
                   </span>
                 </div>
               </td>

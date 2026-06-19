@@ -191,6 +191,13 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'main-categories/:id/vehicles',
+        loadComponent: () =>
+          import('./Pages/admin/main-category/main-category-vehicles/main-category-vehicles.component').then(
+            (m) => m.MainCategoryVehiclesComponent
+          ),
+      },
+      {
         path: 'assistant-works',
         loadComponent: () =>
           import('./Pages/admin/assistant-works/assistant-works.component').then(

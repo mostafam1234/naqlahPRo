@@ -122,10 +122,10 @@
             type="button"
             class="doc"
             [class.doc--missing]="!doc.url"
-            (click)="openPreview(doc.url, doc.label)"
+            (click)="openPreview(doc.url, doc.labelKey)"
           >
             <div class="doc__img">
-              <img *ngIf="doc.url; else noDoc" [src]="doc.url" [alt]="doc.label" loading="lazy" decoding="async" />
+              <img *ngIf="doc.url; else noDoc" [src]="doc.url" [alt]="doc.labelKey | translate" loading="lazy" decoding="async" />
               <ng-template #noDoc>
                 <div class="doc__empty">
                   <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -136,7 +136,7 @@
               </ng-template>
             </div>
             <div class="doc__foot">
-              <span class="doc__label">{{ doc.label }}</span>
+              <span class="doc__label">{{ doc.labelKey | translate }}</span>
               <span class="tag tag--xs" [ngClass]="doc.optional ? 'tag--muted' : 'tag--primary'">{{ doc.optional ? 'اختياري' : 'مطلوب' }}</span>
             </div>
           </button>

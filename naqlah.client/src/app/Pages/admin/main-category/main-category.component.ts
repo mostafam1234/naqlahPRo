@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormControl, FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
 import { MainCategoryAdminClient, MainCategoryAdminDto, AddMainAdminCategory, UpdateMainAdminCategory } from 'src/app/Core/services/NaqlahClient';
@@ -60,7 +61,8 @@ export class MainCategoryComponent implements OnInit, OnDestroy {
     private mainCategoryClient: MainCategoryAdminClient,
     private toasterService: ToasterService,
     private imageService: ImageService,
-    private permissionService: PermissionService
+    private permissionService: PermissionService,
+    private router: Router
   ) {
     this.itemForm = this.fb.group({
       arabicName: ['', [Validators.required, Validators.maxLength(100)]],
@@ -367,6 +369,14 @@ export class MainCategoryComponent implements OnInit, OnDestroy {
 
   goBack(): void {
     window.history.back();
+  }
+
+  openLinkedVehicles(item: MainCategoryAdminDto): void {
+    this.router.navigate(['/admin/main-categories', item.id, 'vehicles']);
+  }
+
+  getVehicleTypeCount(item: MainCategoryAdminDto): number {
+    return item.vehicleTypeCount ?? 0;
   }
 
   // Image Upload Methods

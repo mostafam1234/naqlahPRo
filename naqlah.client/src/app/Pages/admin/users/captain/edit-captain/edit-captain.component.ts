@@ -4,11 +4,17 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { Router, ActivatedRoute } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SubSink } from 'subsink';
-import { DeliveryManAdminClient, GetDeliveryManRequestDetailsDto, VehicleAdminClient, VehicleTypeDto } from 'src/app/Core/services/NaqlahClient';
+import {
+  DeliveryManAdminClient,
+  GetDeliveryManRequestDetailsDto,
+  VehicleAdminClient,
+  VehicleTypeDto
+} from 'src/app/Core/services/NaqlahClient';
 import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
 import { DeliveryLicenseType, DeliveryType, VehicleOwnerType } from 'src/app/Core/enums/delivery.enums';
 import { ImageService } from 'src/app/Core/services/image.service';
 import { ToasterService } from 'src/app/Core/services/toaster.service';
+import { ConfirmationDialogService } from 'src/app/shared/services/confirmation-service';
 import {
   applyOwnerValidators,
   buildCaptainForm,
@@ -18,6 +24,13 @@ import {
   getVisibleCaptainDocuments,
   isCaptainDocumentRequired
 } from '../captain-form.helpers';
+
+interface WizardStep {
+  key: string;
+  titleKey: string;
+  subtitleKey: string;
+  fields: string[];
+}
 
 @Component({
   selector: 'app-edit-captain',
@@ -31,40 +44,63 @@ export class EditCaptainComponent implements OnInit, OnDestroy {
   captainForm: FormGroup;
   isLoading = false;
   isSubmitting = false;
+  currentStep = 0;
   deliveryManId!: number;
-  deliveryManDetails: GetDeliveryManRequestDetailsDto | null = null;
   readonly VehicleOwnerType = VehicleOwnerType;
+  readonly DeliveryType = DeliveryType;
 
   imagesPreviews: Record<string, string | null> = {};
-  formSections = {
-    personalInfo: true,
-    identityInfo: true,
-    drivingLicense: true,
-    vehicleInfo: true,
-    documentsUpload: true
-  };
 
   deliveryTypes = [
-    { value: DeliveryType.Resident, label: 'مقيم' },
-    { value: DeliveryType.Citizen, label: 'مواطن' }
+    {
+      value: DeliveryType.Resident,
+      labelKey: 'ADMIN.PAGES.CAPTAIN_FORM.DELIVERY_RESIDENT_LABEL',
+      descriptionKey: 'ADMIN.PAGES.CAPTAIN_FORM.DELIVERY_RESIDENT_DESC',
+      icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'
+    },
+    {
+      value: DeliveryType.Citizen,
+      labelKey: 'ADMIN.PAGES.CAPTAIN_FORM.DELIVERY_CITIZEN_LABEL',
+      descriptionKey: 'ADMIN.PAGES.CAPTAIN_FORM.DELIVERY_CITIZEN_DESC',
+      icon: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z'
+    }
   ];
 
   deliveryLicenseTypes = [
-    { value: DeliveryLicenseType.Public, label: 'رخصة عامة' },
-    { value: DeliveryLicenseType.Private, label: 'رخصة خاصة' }
+    { value: DeliveryLicenseType.Public, labelKey: 'ADMIN.PAGES.CAPTAIN_FORM.LICENSE_PUBLIC' },
+    { value: DeliveryLicenseType.Private, labelKey: 'ADMIN.PAGES.CAPTAIN_FORM.LICENSE_PRIVATE' }
+  ];
+
+  vehicleOwnerTypes = [
+    { value: VehicleOwnerType.Resident, labelKey: 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.OWNER_RESIDENT' },
+    { value: VehicleOwnerType.Company, labelKey: 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.OWNER_COMPANY' },
+    { value: VehicleOwnerType.Renter, labelKey: 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.OWNER_LEASE' }
+  ];
+
+  wizardSteps: WizardStep[] = [
+    {
+      key: 'account',
+      titleKey: 'ADMIN.PAGES.CAPTAIN_FORM.STEPS.ACCOUNT_TITLE',
+      subtitleKey: 'ADMIN.PAGES.CAPTAIN_FORM.STEPS.ACCOUNT_SUBTITLE',
+      fields: ['email', 'fullName', 'phoneNumber', 'identityNumber', 'birthDate', 'deliveryType', 'deliveryLicenseType']
+    },
+    {
+      key: 'vehicle',
+      titleKey: 'ADMIN.PAGES.CAPTAIN_FORM.STEPS.VEHICLE_TITLE',
+      subtitleKey: 'ADMIN.PAGES.CAPTAIN_FORM.STEPS.VEHICLE_SUBTITLE',
+      fields: ['vehicleTypeId', 'vehicleBrandId', 'vehiclePlateNumber', 'vehicleOwnerTypeId', 'vehicleOwnerName']
+    },
+    {
+      key: 'documents',
+      titleKey: 'ADMIN.PAGES.CAPTAIN_FORM.STEPS.DOCUMENTS_TITLE',
+      subtitleKey: 'ADMIN.PAGES.CAPTAIN_FORM.STEPS.DOCUMENTS_SUBTITLE',
+      fields: []
+    }
   ];
 
   vehicleTypes: VehicleTypeDto[] = [];
   vehicleBrands: VehicleTypeDto[] = [];
   private subs = new SubSink();
-
-  formSteps = [
-    { key: 'personalInfo', title: 'البيانات الشخصية', icon: 'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' },
-    { key: 'identityInfo', title: 'الهوية', icon: 'M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2' },
-    { key: 'drivingLicense', title: 'رخصة القيادة', icon: 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z' },
-    { key: 'vehicleInfo', title: 'المركبة', icon: 'M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z' },
-    { key: 'documentsUpload', title: 'الوثائق', icon: 'M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12' }
-  ];
 
   constructor(
     private fb: FormBuilder,
@@ -75,7 +111,8 @@ export class EditCaptainComponent implements OnInit, OnDestroy {
     private datePipe: DatePipe,
     private vehicleClient: VehicleAdminClient,
     private imageService: ImageService,
-    private toasterService: ToasterService
+    private toasterService: ToasterService,
+    private confirmationDialog: ConfirmationDialogService
   ) {
     this.captainForm = buildCaptainForm(this.fb, true);
     this.subs.sink = this.captainForm.get('vehicleOwnerTypeId')!.valueChanges.subscribe(() =>
@@ -85,7 +122,7 @@ export class EditCaptainComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
+    this.subs.sink = this.route.params.subscribe((params) => {
       this.deliveryManId = +params['id'];
       if (this.deliveryManId) this.loadDeliveryManDetails();
     });
@@ -101,18 +138,54 @@ export class EditCaptainComponent implements OnInit, OnDestroy {
     this.subs.unsubscribe();
   }
 
+  get visibleDocuments(): CaptainDocumentItem[] {
+    const ownerType = Number(this.captainForm.get('vehicleOwnerTypeId')?.value);
+    return getVisibleCaptainDocuments(ownerType);
+  }
+
+  get totalRequiredCount(): number {
+    return this.getRequiredFields().length;
+  }
+
+  get completedRequiredCount(): number {
+    return this.getRequiredFields().filter((field) => this.isRequiredFieldComplete(field)).length;
+  }
+
+  get progressPercent(): number {
+    const total = this.totalRequiredCount;
+    if (total === 0) return 0;
+    return Math.round((this.completedRequiredCount / total) * 100);
+  }
+
+  private getRequiredFields(): string[] {
+    applyOwnerValidators(this.captainForm);
+    return Object.keys(this.captainForm.controls).filter((name) =>
+      this.captainForm.get(name)?.hasValidator(Validators.required)
+    );
+  }
+
+  private isRequiredFieldComplete(fieldName: string): boolean {
+    const control = this.captainForm.get(fieldName);
+    if (!control) return false;
+    const value = control.value;
+    if (value === null || value === undefined || value === '') return false;
+    return control.valid;
+  }
+
   loadDeliveryManDetails(): void {
     this.isLoading = true;
     this.subs.sink = this.deliveryManClient.getDeliveryManDetails(this.deliveryManId).subscribe({
       next: (details) => {
-        this.deliveryManDetails = details;
         this.populateForm(details);
         this.isLoading = false;
       },
       error: (error) => {
         this.isLoading = false;
-        this.toasterService.error('خطأ', error?.errorMessage || 'حدث خطأ أثناء تحميل بيانات الكابتن');
-        setTimeout(() => this.router.navigate(['/admin/users/captain']), 2000);
+        this.toasterService.error(
+          this.translate.instant('ADMIN.PAGES.CAPTAIN_FORM.TOAST.ERROR_TITLE'),
+          error?.errorMessage || this.translate.instant('ADMIN.PAGES.CAPTAIN_FORM.TOAST.LOAD_ERROR_MSG')
+        );
+        setTimeout(() => this.router.navigate(['/admin/users/captains']), 2000);
       }
     });
   }
@@ -194,6 +267,16 @@ export class EditCaptainComponent implements OnInit, OnDestroy {
     applyOwnerValidators(this.captainForm);
   }
 
+  selectDeliveryType(value: DeliveryType): void {
+    this.captainForm.patchValue({ deliveryType: value });
+    this.captainForm.get('deliveryType')?.markAsDirty();
+    this.captainForm.get('deliveryType')?.markAsTouched();
+  }
+
+  isDeliveryTypeSelected(value: DeliveryType): boolean {
+    return Number(this.captainForm.get('deliveryType')?.value) === value;
+  }
+
   isOwnerCompany(): boolean {
     return Number(this.captainForm.get('vehicleOwnerTypeId')?.value) === VehicleOwnerType.Company;
   }
@@ -211,11 +294,6 @@ export class EditCaptainComponent implements OnInit, OnDestroy {
     return !!this.captainForm.get(fieldName)?.hasValidator(Validators.required);
   }
 
-  get visibleDocuments(): CaptainDocumentItem[] {
-    const ownerType = Number(this.captainForm.get('vehicleOwnerTypeId')?.value);
-    return getVisibleCaptainDocuments(ownerType);
-  }
-
   isImageRequired(imageType: string): boolean {
     const ownerType = Number(this.captainForm.get('vehicleOwnerTypeId')?.value);
     return isCaptainDocumentRequired(imageType, ownerType);
@@ -229,48 +307,6 @@ export class EditCaptainComponent implements OnInit, OnDestroy {
     return `edit-upload-${imageType}`;
   }
 
-  toggleSection(section: string): void {
-    const key = section as keyof typeof this.formSections;
-    if (key in this.formSections) this.formSections[key] = !this.formSections[key];
-  }
-
-  isFieldInvalid(fieldName: string): boolean {
-    const field = this.captainForm.get(fieldName);
-    return !!(field && field.invalid && (field.dirty || field.touched));
-  }
-
-  getFieldError(fieldName: string): string {
-    const field = this.captainForm.get(fieldName);
-    if (field?.errors?.['required']) return this.translate.instant('VALIDATION.REQUIRED');
-    if (field?.errors?.['pattern']) return this.translate.instant('VALIDATION.PATTERN');
-    return '';
-  }
-
-  onSubmit(): void {
-    applyOwnerValidators(this.captainForm);
-    this.captainForm.markAllAsTouched();
-
-    if (this.captainForm.invalid) {
-      this.toasterService.error('بيانات ناقصة أو غير صحيحة', 'يرجى تعبئة جميع الحقول المطلوبة');
-      return;
-    }
-
-    this.isSubmitting = true;
-    const body = formValueToApiDto(this.captainForm.getRawValue(), this.datePipe, true);
-
-    this.subs.sink = this.deliveryManClient.updateDeliveryMan(this.deliveryManId, body).subscribe({
-      next: () => {
-        this.isSubmitting = false;
-        this.toasterService.success('تمت العملية بنجاح', 'تم تحديث بيانات الكابتن بنجاح');
-        setTimeout(() => this.router.navigate(['/admin/users/captain']), 1500);
-      },
-      error: (error) => {
-        this.isSubmitting = false;
-        this.toasterService.error('خطأ', error?.errorMessage || 'حدث خطأ أثناء تحديث بيانات الكابتن');
-      }
-    });
-  }
-
   async onImageSelected(event: Event, imageType: string): Promise<void> {
     const result = await this.imageService.handleImageUpload(event, { maxSizeMB: 5, showErrorAlert: true });
     if (!result?.success) return;
@@ -280,6 +316,7 @@ export class EditCaptainComponent implements OnInit, OnDestroy {
 
     this.imagesPreviews[mapping.previewKey] = result.preview || null;
     this.captainForm.patchValue({ [mapping.formField]: result.base64 });
+    this.captainForm.get(mapping.formField)?.markAsTouched();
   }
 
   removeImage(imageType: string): void {
@@ -290,21 +327,120 @@ export class EditCaptainComponent implements OnInit, OnDestroy {
     this.captainForm.patchValue({ [mapping.formField]: '' });
   }
 
-  onCancel(): void {
-    this.router.navigate(['/admin/users/captain']);
+  isFieldInvalid(fieldName: string): boolean {
+    const field = this.captainForm.get(fieldName);
+    return !!(field && field.invalid && (field.dirty || field.touched));
   }
 
-  getStepClass(stepKey: string): string {
-    if (this.formSections[stepKey as keyof typeof this.formSections]) {
-      const activeColors: Record<string, string> = {
-        personalInfo: 'bg-primary-500',
-        identityInfo: 'bg-emerald-500',
-        drivingLicense: 'bg-purple-500',
-        vehicleInfo: 'bg-orange-500',
-        documentsUpload: 'bg-cyan-500'
-      };
-      return `${activeColors[stepKey] ?? 'bg-primary-500'} text-white`;
+  getFieldError(fieldName: string): string {
+    const field = this.captainForm.get(fieldName);
+    if (field?.errors?.['required']) return this.translate.instant('VALIDATION.REQUIRED');
+    if (field?.errors?.['email']) return this.translate.instant('VALIDATION.EMAIL');
+    if (field?.errors?.['minlength']) return this.translate.instant('VALIDATION.MIN_LENGTH');
+    if (field?.errors?.['pattern']) return this.translate.instant('VALIDATION.PATTERN');
+    return '';
+  }
+
+  private getStepFields(stepIndex: number): string[] {
+    const step = this.wizardSteps[stepIndex];
+    if (step.key === 'documents') {
+      applyOwnerValidators(this.captainForm);
+      return this.visibleDocuments
+        .filter((doc) => isCaptainDocumentRequired(doc.type, Number(this.captainForm.get('vehicleOwnerTypeId')?.value)))
+        .map((doc) => CAPTAIN_IMAGE_MAP[doc.type].formField);
     }
-    return 'bg-neutral-300 text-neutral-600';
+    return [...step.fields];
+  }
+
+  private validateStep(stepIndex: number): boolean {
+    const fields = this.getStepFields(stepIndex);
+    let valid = true;
+
+    fields.forEach((field) => {
+      const control = this.captainForm.get(field);
+      control?.markAsTouched();
+      if (control?.invalid) valid = false;
+    });
+
+    return valid;
+  }
+
+  goToStep(index: number): void {
+    if (index >= 0 && index < this.wizardSteps.length) {
+      this.currentStep = index;
+    }
+  }
+
+  nextStep(): void {
+    if (this.currentStep < this.wizardSteps.length - 1) {
+      this.currentStep++;
+    }
+  }
+
+  prevStep(): void {
+    if (this.currentStep > 0) {
+      this.currentStep--;
+    }
+  }
+
+  onSubmit(): void {
+    applyOwnerValidators(this.captainForm);
+    this.captainForm.markAllAsTouched();
+
+    if (this.captainForm.invalid) {
+      for (let i = 0; i < this.wizardSteps.length; i++) {
+        if (!this.validateStep(i)) {
+          this.currentStep = i;
+          break;
+        }
+      }
+      this.toasterService.error(
+        this.translate.instant('ADMIN.PAGES.CAPTAIN_FORM.TOAST.FORM_INVALID_TITLE'),
+        this.translate.instant('ADMIN.PAGES.CAPTAIN_FORM.TOAST.FORM_INVALID_MSG')
+      );
+      return;
+    }
+
+    this.isSubmitting = true;
+    const body = formValueToApiDto(this.captainForm.getRawValue(), this.datePipe, true);
+
+    this.subs.sink = this.deliveryManClient.updateDeliveryMan(this.deliveryManId, body).subscribe({
+      next: () => {
+        this.isSubmitting = false;
+        this.toasterService.success(
+          this.translate.instant('ADMIN.PAGES.CAPTAIN_FORM.TOAST.SUCCESS_TITLE'),
+          this.translate.instant('ADMIN.PAGES.CAPTAIN_FORM.TOAST.EDIT_SUCCESS_MSG')
+        );
+        setTimeout(() => this.router.navigate(['/admin/users/captains']), 1500);
+      },
+      error: (error) => {
+        this.isSubmitting = false;
+        this.toasterService.error(
+          this.translate.instant('ADMIN.PAGES.CAPTAIN_FORM.TOAST.ERROR_TITLE'),
+          error?.errorMessage || this.translate.instant('ADMIN.PAGES.CAPTAIN_FORM.TOAST.EDIT_ERROR_MSG')
+        );
+      }
+    });
+  }
+
+  onCancel(): void {
+    if (!this.captainForm.dirty) {
+      this.router.navigate(['/admin/users/captains']);
+      return;
+    }
+
+    this.subs.sink = this.confirmationDialog.confirm({
+      title: this.translate.instant('ADMIN.PAGES.CAPTAIN_FORM.CANCEL_DIALOG.TITLE'),
+      message: this.translate.instant('ADMIN.PAGES.CAPTAIN_FORM.CANCEL_DIALOG.MESSAGE_EDIT'),
+      confirmText: this.translate.instant('ADMIN.PAGES.CAPTAIN_FORM.CANCEL_DIALOG.CONFIRM'),
+      cancelText: this.translate.instant('ADMIN.PAGES.CAPTAIN_FORM.CANCEL_DIALOG.CANCEL'),
+      confirmColor: 'warn',
+      icon: 'cancel',
+      iconColor: 'text-red-500'
+    }).subscribe((confirmed) => {
+      if (confirmed) {
+        this.router.navigate(['/admin/users/captains']);
+      }
+    });
   }
 }

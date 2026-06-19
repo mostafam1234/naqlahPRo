@@ -133,5 +133,45 @@ namespace Presentaion.Controllers.Admin
 
             return BadRequest(result.Error);
         }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(MainCategoryVehicleTypesResultDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("GetVehicleTypesByMainCategoryId")]
+        public async Task<IActionResult> GetVehicleTypesByMainCategoryId([FromQuery] int mainCategoryId)
+        {
+            var result = await mediator.Send(new GetVehicleTypesByMainCategoryIdQuery
+            {
+                MainCategoryId = mainCategoryId
+            });
+
+            if (result.IsSuccess)
+            {
+                return Ok(result.Value);
+            }
+
+            return BadRequest(result.Error);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(FileResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("ExportMainCategoryVehicleTypes")]
+        public async Task<IActionResult> ExportMainCategoryVehicleTypes([FromQuery] int mainCategoryId)
+        {
+            var result = await mediator.Send(new ExportMainCategoryVehicleTypesToExcelQuery
+            {
+                MainCategoryId = mainCategoryId,
+                LanguageId = userSession.LanguageId
+            });
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+
+            var exportResult = result.Value;
+            return File(exportResult.Stream, exportResult.ContentType, exportResult.FileName);
+        }
     }
 }

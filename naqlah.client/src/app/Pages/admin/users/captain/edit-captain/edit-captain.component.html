@@ -1,766 +1,264 @@
-<div class="min-h-screen theme-page">
-  <div class="container mx-auto">
+<div class="min-h-screen theme-page w-full">
+  <div class="w-full px-4 sm:px-6 lg:px-8 pb-12">
     <app-page-header
       title="ADMIN.PAGES.EDIT_CAPTAIN.HEADER_TITLE"
       subtitle="ADMIN.PAGES.EDIT_CAPTAIN.HEADER_SUBTITLE"
       [showBackButton]="true"
       iconPath="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
       (onBackClick)="onCancel()"
-    >
-    </app-page-header>
+    ></app-page-header>
 
-    <form [formGroup]="captainForm" (ngSubmit)="onSubmit()" class="mt-8">
-      <!-- Progress Steps -->
-      <div class="mb-8">
-        <div class="flex items-center justify-center gap-4 mb-6">
-          <div
-            *ngFor="let step of formSteps; let i = index"
-            class="flex items-center"
-            [class.opacity-50]="!formSections[step.key]"
-          >
-            <div
-              class="flex items-center justify-center w-10 h-10 rounded-full transition-all duration-300"
-              [class]="getStepClass(step.key)"
-            >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="step.icon"></path>
-              </svg>
-            </div>
-            <span class="mr-3 text-neutral-700 font-medium">{{ step.title }}</span>
-            <div *ngIf="i < formSteps.length - 1" class="w-16 h-0.5 bg-neutral-300 mr-4"></div>
-          </div>
+    <div *ngIf="isLoading" class="mt-12 flex flex-col items-center justify-center py-20">
+      <div class="animate-spin rounded-full h-12 w-12 border-[3px] border-primary-100 border-t-primary-600"></div>
+      <p class="mt-4 text-sm font-medium text-neutral-600">{{ 'ADMIN.PAGES.CAPTAIN_DETAILS.LOADING' | translate }}</p>
+    </div>
+
+    <ng-container *ngIf="!isLoading">
+      <div class="mt-8 mb-6 animate-fade-in">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-sm font-medium text-neutral-600">
+            {{ 'ADMIN.PAGES.CAPTAIN_FORM.PROGRESS' | translate:{ completed: completedRequiredCount, total: totalRequiredCount } }}
+          </span>
+          <span class="text-sm font-semibold text-primary-600">{{ progressPercent }}%</span>
+        </div>
+        <div class="h-2 bg-neutral-200 rounded-full overflow-hidden">
+          <div class="h-full bg-gradient-to-l from-primary-400 to-primary-600 rounded-full transition-all duration-500 ease-out" [style.width.%]="progressPercent"></div>
         </div>
       </div>
 
-        <!-- Form Grid Layout -->
-        <div class="grid grid-cols-12 gap-6">
-      <!-- Personal Information - Large Card -->
-      <div class="col-span-12 lg:col-span-6">
-        <div class="bg-white border border-neutral-200 rounded-xl overflow-hidden shadow-sm">
-          <div class="bg-primary-500 p-6">
-                <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-3 space-x-reverse">
-              <div class="w-12 h-12 bg-primary-600 rounded-xl flex items-center justify-center">
-                      <svg
-                        class="w-6 h-6 text-white"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                        ></path>
-                      </svg>
-                    </div>
-                    <div>
-                      <h3 class="text-xl font-bold text-white">
-                        {{
-                          "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.PERSONAL_INFO_TITLE"
-                            | translate
-                        }}
-                      </h3>
-                      <p class="text-blue-100 text-sm">
-                        {{
-                          "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.PERSONAL_INFO_SUBTITLE"
-                            | translate
-                        }}
-                      </p>
-                    </div>
-                  </div>
-            <button
-              type="button"
-              (click)="toggleSection('personalInfo')"
-              class="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center hover:bg-primary-700 transition-colors"
+      <div class="flex flex-wrap items-stretch gap-3 mb-8">
+        <button *ngFor="let step of wizardSteps; let i = index" type="button" (click)="goToStep(i)" class="flex-1 min-w-[200px] group text-right">
+          <div
+            class="flex items-center gap-3 p-3 rounded-xl border transition-all duration-200 h-full cursor-pointer"
+            [class.border-primary-300]="currentStep === i"
+            [class.bg-primary-50]="currentStep === i"
+            [class.shadow-sm]="currentStep === i"
+            [class.border-neutral-200]="currentStep !== i"
+            [class.bg-white]="currentStep !== i"
+            [class.hover:border-primary-200]="currentStep !== i"
+          >
+            <div
+              class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold shrink-0 transition-colors"
+              [class.bg-primary-500]="currentStep === i"
+              [class.text-white]="currentStep === i"
+              [class.bg-neutral-100]="currentStep !== i"
+              [class.text-neutral-500]="currentStep !== i"
             >
-                    <svg
-                      class="w-4 h-4 text-white transform transition-transform duration-200"
-                      [class.rotate-180]="!formSections.personalInfo"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M19 9l-7 7-7-7"
-                      ></path>
-                    </svg>
-                  </button>
-                </div>
-              </div>
+              {{ i + 1 }}
+            </div>
+            <div class="min-w-0">
+              <p class="text-sm font-semibold truncate" [class.text-primary-700]="currentStep === i" [class.text-neutral-800]="currentStep !== i">{{ step.titleKey | translate }}</p>
+              <p class="text-xs text-neutral-500 truncate hidden lg:block">{{ step.subtitleKey | translate }}</p>
+            </div>
+          </div>
+        </button>
+      </div>
 
-          <div *ngIf="formSections.personalInfo" class="p-6 space-y-6">
-            <!-- Email -->
-            <div class="space-y-2">
-              <label class="block text-sm font-semibold text-neutral-700">{{
-                "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.EMAIL" | translate
-              }}<span *ngIf="isFieldRequired('email')" class="text-red-500"> *</span></label>
-              <input
-                type="email"
-                formControlName="email"
-                placeholder="example@email.com"
-                class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 placeholder-neutral-500 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
-                [class.border-red-500]="isFieldInvalid('email')"
-                [class.border-success-500]="captainForm.get('email')?.valid && captainForm.get('email')?.touched"
-                [readonly]="true"
-              />
-                  <p
-                    *ngIf="isFieldInvalid('email')"
-                    class="text-red-500 text-sm mt-1"
-                  >
-                    {{ getFieldError("email") }}
-                  </p>
-                </div>
+      <form [formGroup]="captainForm" (ngSubmit)="onSubmit()">
+        <div class="captain-form-card bg-white rounded-2xl border border-neutral-200 shadow-sm overflow-hidden animate-fade-in">
+          <div class="captain-form-card__head px-6 py-5 border-b border-neutral-100 bg-gradient-to-l from-primary-50 via-white to-white">
+            <h2 class="text-xl font-bold text-neutral-900">{{ wizardSteps[currentStep].titleKey | translate }}</h2>
+            <p class="text-sm text-neutral-500 mt-1">{{ wizardSteps[currentStep].subtitleKey | translate }}</p>
+          </div>
 
-                <!-- Password (Optional for edit) -->
-                <div class="space-y-2">
-                  <label class="block text-sm font-semibold text-gray-700">{{ "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.PASSWORD" | translate }}<span *ngIf="isFieldRequired('password')" class="text-red-500"> *</span></label>
-                  <input
-                    type="password"
-                    formControlName="password"
-                    placeholder="????????"
-                    class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 placeholder-neutral-500 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
-                    [class.border-red-500]="isFieldInvalid('password')"
-                    [class.border-success-500]="
-                      captainForm.get('password')?.valid &&
-                      captainForm.get('password')?.touched &&
-                      captainForm.get('password')?.value
-                    "
-                  />
-                  <p
-                    *ngIf="isFieldInvalid('password')"
-                    class="text-red-500 text-sm mt-1"
-                  >
-                    {{ getFieldError("password") }}
-                  </p>
-                </div>
-
-                <!-- Full Name -->
-                <div class="space-y-2">
-                  <label class="block text-sm font-semibold text-gray-700">{{
-                    "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.FULL_NAME" | translate
-                  }}<span *ngIf="isFieldRequired('fullName')" class="text-red-500"> *</span></label>
-                  <input
-                    type="text"
-                    formControlName="fullName"
-                    placeholder="{{
-                      'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.FULL_NAME_PLACEHOLDER'
-                        | translate
-                    }}"
-                    class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 placeholder-neutral-500 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
-                    [class.border-red-500]="isFieldInvalid('fullName')"
-                    [class.border-success-500]="
-                      captainForm.get('fullName')?.valid &&
-                      captainForm.get('fullName')?.touched
-                    "
-                  />
-                  <p
-                    *ngIf="isFieldInvalid('fullName')"
-                    class="text-red-500 text-sm mt-1"
-                  >
-                    {{ getFieldError("fullName") }}
-                  </p>
-                </div>
-
-                <!-- Phone Number -->
-                <div class="space-y-2">
-                  <label class="block text-sm font-semibold text-gray-700">{{
-                    "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.PHONE_NUMBER" | translate
-                  }}<span *ngIf="isFieldRequired('phoneNumber')" class="text-red-500"> *</span></label>
-                  <input
-                    type="tel"
-                    formControlName="phoneNumber"
-                    placeholder="05xxxxxxxx"
-                    class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 placeholder-neutral-500 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
-                    [class.border-red-500]="isFieldInvalid('phoneNumber')"
-                    [class.border-success-500]="
-                      captainForm.get('phoneNumber')?.valid &&
-                      captainForm.get('phoneNumber')?.touched
-                    "
-                  />
-                  <p
-                    *ngIf="isFieldInvalid('phoneNumber')"
-                    class="text-red-500 text-sm mt-1"
-                  >
-                    {{ getFieldError("phoneNumber") }}
-                  </p>
-                </div>
-
-                <!-- Identity Number -->
-                <div class="space-y-2">
-                  <label class="block text-sm font-semibold text-gray-700">{{
-                    "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.IDENTITY_NUMBER" | translate
-                  }}<span *ngIf="isFieldRequired('identityNumber')" class="text-red-500"> *</span></label>
-                  <input
-                    type="text"
-                    formControlName="identityNumber"
-                    placeholder="1234567890"
-                    class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 placeholder-neutral-500 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
-                    [class.border-red-500]="isFieldInvalid('identityNumber')"
-                    [class.border-success-500]="
-                      captainForm.get('identityNumber')?.valid &&
-                      captainForm.get('identityNumber')?.touched
-                    "
-                  />
-                  <p
-                    *ngIf="isFieldInvalid('identityNumber')"
-                    class="text-red-500 text-sm mt-1"
-                  >
-                    {{ getFieldError("identityNumber") }}
-                  </p>
+          <div class="p-6 md:p-8">
+            <!-- STEP 1: Account -->
+            <div *ngIf="currentStep === 0" class="space-y-8">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-2 md:col-span-2">
+                  <label class="form-label">{{ 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.DELIVERY_TYPE' | translate }} <span class="text-error-500">*</span></label>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <button *ngFor="let type of deliveryTypes" type="button" (click)="selectDeliveryType(type.value)" class="type-card" [class.type-card-active]="isDeliveryTypeSelected(type.value)">
+                      <div class="flex items-start gap-4">
+                        <div class="type-card-icon" [class.type-card-icon-active]="isDeliveryTypeSelected(type.value)">
+                          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" [attr.d]="type.icon"></path>
+                          </svg>
+                        </div>
+                        <div class="text-right flex-1">
+                          <p class="font-semibold text-neutral-900">{{ type.labelKey | translate }}</p>
+                          <p class="text-sm text-neutral-500 mt-0.5">{{ type.descriptionKey | translate }}</p>
+                        </div>
+                      </div>
+                    </button>
+                  </div>
+                  <input type="hidden" formControlName="deliveryType" />
                 </div>
 
                 <div class="space-y-2">
-                  <label class="block text-sm font-semibold text-gray-700">
-                    {{ "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.BIRTH_DATE" | translate }}<span *ngIf="isFieldRequired('birthDate')" class="text-red-500"> *</span>
-                  </label>
-                  <input type="date" formControlName="birthDate" class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg" [class.border-red-500]="isFieldInvalid('birthDate')" />
+                  <label class="form-label">{{ 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.EMAIL' | translate }} <span class="text-error-500">*</span></label>
+                  <input type="email" formControlName="email" placeholder="example@email.com" class="form-input opacity-80 cursor-not-allowed" readonly />
                 </div>
 
                 <div class="space-y-2">
-                  <label class="block text-sm font-semibold text-gray-700">
-                    ??? ???????<span *ngIf="isFieldRequired('deliveryType')" class="text-red-500"> *</span>
-                  </label>
-                  <select
-                    formControlName="deliveryType"
-                    class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-all"
-                    [class.border-red-500]="isFieldInvalid('deliveryType')"
-                  >
-                    <option
-                      *ngFor="let type of deliveryTypes"
-                      [value]="type.value"
-                      class="bg-white text-gray-900"
-                    >
-                      {{ type.label }}
-                    </option>
+                  <label class="form-label">{{ 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.PASSWORD' | translate }}</label>
+                  <input type="password" formControlName="password" placeholder="••••••••" class="form-input" [class.input-invalid]="isFieldInvalid('password')" />
+                  <p class="text-xs text-neutral-500">{{ 'ADMIN.PAGES.EDIT_CAPTAIN.PASSWORD_HINT' | translate }}</p>
+                  <p *ngIf="isFieldInvalid('password')" class="field-error">{{ getFieldError('password') }}</p>
+                </div>
+
+                <div class="space-y-2">
+                  <label class="form-label">{{ 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.FULL_NAME' | translate }} <span class="text-error-500">*</span></label>
+                  <input type="text" formControlName="fullName" class="form-input" [class.input-invalid]="isFieldInvalid('fullName')" />
+                  <p *ngIf="isFieldInvalid('fullName')" class="field-error">{{ getFieldError('fullName') }}</p>
+                </div>
+
+                <div class="space-y-2">
+                  <label class="form-label">{{ 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.PHONE_NUMBER' | translate }} <span class="text-error-500">*</span></label>
+                  <input type="tel" formControlName="phoneNumber" placeholder="05xxxxxxxx" class="form-input" [class.input-invalid]="isFieldInvalid('phoneNumber')" />
+                  <p *ngIf="isFieldInvalid('phoneNumber')" class="field-error">{{ getFieldError('phoneNumber') }}</p>
+                </div>
+
+                <div class="space-y-2">
+                  <label class="form-label">{{ 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.IDENTITY_NUMBER' | translate }} <span class="text-error-500">*</span></label>
+                  <input type="text" formControlName="identityNumber" placeholder="1234567890" maxlength="10" class="form-input" [class.input-invalid]="isFieldInvalid('identityNumber')" />
+                  <p *ngIf="isFieldInvalid('identityNumber')" class="field-error">{{ getFieldError('identityNumber') }}</p>
+                </div>
+
+                <div class="space-y-2">
+                  <label class="form-label">{{ 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.BIRTH_DATE' | translate }} <span class="text-error-500">*</span></label>
+                  <input type="date" formControlName="birthDate" class="form-input" [class.input-invalid]="isFieldInvalid('birthDate')" />
+                </div>
+
+                <div class="space-y-2">
+                  <label class="form-label">{{ 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.DRIVING_LICENSE_TYPE' | translate }} <span class="text-error-500">*</span></label>
+                  <select formControlName="deliveryLicenseType" class="form-input">
+                    <option *ngFor="let licenseType of deliveryLicenseTypes" [value]="licenseType.value">{{ licenseType.labelKey | translate }}</option>
                   </select>
                 </div>
 
-                <!-- Address -->
                 <div class="space-y-2">
-                  <label class="block text-sm font-semibold text-gray-700">{{
-                    "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.ADDRESS" | translate
-                  }}</label>
-                  <textarea
-                    formControlName="address"
-                    rows="3"
-                    placeholder="{{
-                      'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.ADDRESS_PLACEHOLDER'
-                        | translate
-                    }}"
-                    class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all resize-none"
-                    [class.border-red-500]="isFieldInvalid('address')"
-                    [class.border-success-500]="
-                      captainForm.get('address')?.valid &&
-                      captainForm.get('address')?.touched
-                    "
-                  ></textarea>
-                  <p
-                    *ngIf="isFieldInvalid('address')"
-                    class="text-red-500 text-sm mt-1"
-                  >
-                    {{ getFieldError("address") }}
-                  </p>
+                  <label class="form-label">{{ 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.IDENTITY_EXPIRY' | translate }}</label>
+                  <input type="date" formControlName="identityExpirationDate" class="form-input" />
+                </div>
+
+                <div class="space-y-2">
+                  <label class="form-label">{{ 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.DRIVING_LICENSE_EXPIRY' | translate }}</label>
+                  <input type="date" formControlName="drivingLicenseExpirationDate" class="form-input" />
+                </div>
+
+                <div class="space-y-2 md:col-span-2">
+                  <label class="form-label">{{ 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.ADDRESS' | translate }}</label>
+                  <textarea formControlName="address" rows="2" class="form-input resize-none"></textarea>
                 </div>
               </div>
             </div>
-          </div>
 
-          <!-- Identity & License Information -->
-          <div class="col-span-12 lg:col-span-6">
-            <div class="space-y-6">
-              <!-- Identity Info -->
-              <div
-                class="bg-white border border-neutral-200 rounded-xl overflow-hidden shadow-sm"
-              >
-                <div class="bg-primary-600 p-6">
-                  <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-3 space-x-reverse">
-                      <div
-                        class="w-12 h-12 bg-primary-700 rounded-xl flex items-center justify-center"
-                      >
-                        <svg
-                          class="w-6 h-6 text-white"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"
-                          ></path>
+            <!-- STEP 2: Vehicle -->
+            <div *ngIf="currentStep === 1" class="space-y-8">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                  <label class="form-label">{{ 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_TYPE' | translate }} <span class="text-error-500">*</span></label>
+                  <select formControlName="vehicleTypeId" class="form-input" [class.input-invalid]="isFieldInvalid('vehicleTypeId')">
+                    <option value="">{{ 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.SELECT_VEHICLE_TYPE' | translate }}</option>
+                    <option *ngFor="let type of vehicleTypes" [value]="type.id">{{ type.name }}</option>
+                  </select>
+                </div>
+                <div class="space-y-2">
+                  <label class="form-label">{{ 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_BRAND' | translate }} <span class="text-error-500">*</span></label>
+                  <select formControlName="vehicleBrandId" class="form-input" [class.input-invalid]="isFieldInvalid('vehicleBrandId')">
+                    <option value="">{{ 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.SELECT_VEHICLE_BRAND' | translate }}</option>
+                    <option *ngFor="let brand of vehicleBrands" [value]="brand.id">{{ brand.name }}</option>
+                  </select>
+                </div>
+                <div class="space-y-2">
+                  <label class="form-label">{{ 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_PLATE_NUMBER' | translate }} <span class="text-error-500">*</span></label>
+                  <input type="text" formControlName="vehiclePlateNumber" class="form-input" [class.input-invalid]="isFieldInvalid('vehiclePlateNumber')" />
+                </div>
+                <div class="space-y-2">
+                  <label class="form-label">{{ 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_OWNER_TYPE' | translate }} <span class="text-error-500">*</span></label>
+                  <select formControlName="vehicleOwnerTypeId" class="form-input" [class.input-invalid]="isFieldInvalid('vehicleOwnerTypeId')">
+                    <option *ngFor="let owner of vehicleOwnerTypes" [value]="owner.value">{{ owner.labelKey | translate }}</option>
+                  </select>
+                </div>
+                <div class="space-y-2">
+                  <label class="form-label">{{ 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_OWNER_NAME' | translate }} <span class="text-error-500">*</span></label>
+                  <input type="text" formControlName="vehicleOwnerName" class="form-input" [class.input-invalid]="isFieldInvalid('vehicleOwnerName')" />
+                </div>
+                <div class="space-y-2" *ngIf="isOwnerIndividual()">
+                  <label class="form-label">{{ 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.OWNER_IDENTITY_NUMBER' | translate }}</label>
+                  <input type="text" formControlName="vehicleOwnerIdentityNumber" class="form-input" />
+                </div>
+                <div class="space-y-2" *ngIf="isOwnerCompany()">
+                  <label class="form-label">{{ 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.COMMERCIAL_RECORD_NUMBER' | translate }}</label>
+                  <input type="text" formControlName="commercialRecordNumber" class="form-input" />
+                </div>
+                <div class="space-y-2">
+                  <label class="form-label">{{ 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_LICENSE_EXPIRATION_DATE' | translate }}</label>
+                  <input type="date" formControlName="vehicleLicenseExpirationDate" class="form-input" />
+                </div>
+                <div class="space-y-2">
+                  <label class="form-label">{{ 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_INSURANCE_EXPIRY' | translate }}</label>
+                  <input type="date" formControlName="vehicleInsuranceExpirationDate" class="form-input" />
+                </div>
+              </div>
+            </div>
+
+            <!-- STEP 3: Documents -->
+            <div *ngIf="currentStep === 2" class="space-y-6">
+              <p class="text-sm text-neutral-500">
+                {{ 'ADMIN.PAGES.EDIT_CAPTAIN.DOCUMENTS_HINT' | translate }}
+                <span class="text-error-500">*</span> {{ 'ADMIN.PAGES.EDIT_CAPTAIN.DOCUMENTS_REQUIRED' | translate }}
+              </p>
+
+              <div class="captain-docs-grid">
+                <div *ngFor="let doc of visibleDocuments" class="upload-item">
+                  <label class="upload-label">
+                    {{ doc.labelKey | translate }}
+                    <span *ngIf="isImageRequired(doc.type)" class="text-error-500">*</span>
+                    <span *ngIf="doc.optional" class="text-neutral-400 text-xs mr-1">{{ 'ADMIN.PAGES.CAPTAIN_FORM.OPTIONAL_PAREN' | translate }}</span>
+                  </label>
+                  <div class="upload-zone">
+                    <img
+                      *ngIf="imagesPreviews[getPreviewKey(doc.type)]; else emptyDoc"
+                      [src]="imagesPreviews[getPreviewKey(doc.type)]"
+                      [alt]="doc.labelKey | translate"
+                      class="upload-preview"
+                    />
+                    <ng-template #emptyDoc>
+                      <div class="upload-placeholder">
+                        <svg class="w-8 h-8 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                         </svg>
+                        <span>{{ 'ADMIN.PAGES.EDIT_CAPTAIN.CHOOSE_IMAGE' | translate }}</span>
                       </div>
-                      <div>
-                        <h3 class="text-xl font-bold text-white">
-                          {{
-                            "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.IDENTITY_INFO_TITLE"
-                              | translate
-                          }}
-                        </h3>
-                        <p class="text-primary-100 text-sm">
-                          {{
-                            "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.IDENTITY_INFO_SUBTITLE"
-                              | translate
-                          }}
-                        </p>
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      (click)="toggleSection('identityInfo')"
-                      class="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center hover:bg-emerald-700 transition-colors"
-                    >
-                      <svg
-                        class="w-4 h-4 text-white transform transition-transform duration-200"
-                        [class.rotate-180]="!formSections.identityInfo"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M19 9l-7 7-7-7"
-                        ></path>
-                      </svg>
-                    </button>
+                    </ng-template>
                   </div>
-                </div>
-
-                <div *ngIf="formSections.identityInfo" class="p-6">
-                  <div class="space-y-2">
-                    <label class="block text-sm font-semibold text-gray-700">{{
-                      "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.IDENTITY_EXPIRATION_DATE" | translate
-                    }}</label>
-                    <input
-                      type="date"
-                      formControlName="identityExpirationDate"
-                      class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all"
-                    />
+                  <input type="file" [id]="getUploadInputId(doc.type)" accept="image/*" (change)="onImageSelected($event, doc.type)" class="hidden" />
+                  <div class="upload-actions">
+                    <label [for]="getUploadInputId(doc.type)" class="btn-upload">{{ 'ADMIN.PAGES.EDIT_CAPTAIN.UPLOAD' | translate }}</label>
+                    <button *ngIf="imagesPreviews[getPreviewKey(doc.type)]" type="button" (click)="removeImage(doc.type)" class="btn-remove">{{ 'ADMIN.PAGES.EDIT_CAPTAIN.REMOVE' | translate }}</button>
                   </div>
                 </div>
               </div>
 
-              <!-- Driving License -->
-              <div
-                class="bg-white border border-neutral-200 rounded-xl overflow-hidden shadow-sm"
-              >
-                <div class="bg-purple-500 p-6">
-                  <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-3 space-x-reverse">
-                      <div
-                        class="w-12 h-12 bg-purple-600 rounded-xl flex items-center justify-center"
-                      >
-                        <svg
-                          class="w-6 h-6 text-white"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                          ></path>
-                        </svg>
-                      </div>
-                      <div>
-                        <h3 class="text-xl font-bold text-white">
-                          {{
-                            "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.DRIVING_LICENSE_TITLE"
-                              | translate
-                          }}
-                        </h3>
-                        <p class="text-purple-100 text-sm">
-                          {{
-                            "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.DRIVING_LICENSE_SUBTITLE"
-                              | translate
-                          }}
-                        </p>
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      (click)="toggleSection('drivingLicense')"
-                      class="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center hover:bg-purple-700 transition-colors"
-                    >
-                      <svg
-                        class="w-4 h-4 text-white transform transition-transform duration-200"
-                        [class.rotate-180]="!formSections.drivingLicense"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M19 9l-7 7-7-7"
-                        ></path>
-                      </svg>
-                    </button>
-                  </div>
+              <div class="captain-ready-banner rounded-xl bg-primary-50 border border-primary-100 p-5 flex items-start gap-4">
+                <div class="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center shrink-0">
+                  <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                  </svg>
                 </div>
-
-                <div *ngIf="formSections.drivingLicense" class="p-6 space-y-6">
-                  <div class="space-y-2">
-                    <label class="block text-sm font-semibold text-gray-700">{{
-                      "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.DRIVING_LICENSE_TYPE"
-                        | translate
-                    }}<span *ngIf="isFieldRequired('deliveryLicenseType')" class="text-red-500"> *</span></label>
-                    <select
-                      formControlName="deliveryLicenseType"
-                      class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
-                    >
-                      <option
-                        *ngFor="let licenseType of deliveryLicenseTypes"
-                        [value]="licenseType.value"
-                        class="bg-white text-gray-900"
-                      >
-                        {{ licenseType.label }}
-                      </option>
-                    </select>
-                  </div>
-
-                  <div class="space-y-2">
-                    <label class="block text-sm font-semibold text-gray-700">{{
-                      "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.DRIVING_LICENSE_EXPIRY"
-                        | translate
-                    }}</label>
-                    <input
-                      type="date"
-                      formControlName="drivingLicenseExpirationDate"
-                      class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all"
-                    />
-                  </div>
+                <div>
+                  <p class="font-semibold text-primary-800">{{ 'ADMIN.PAGES.EDIT_CAPTAIN.READY_TITLE' | translate }}</p>
+                  <p class="text-sm text-primary-700 mt-1">{{ 'ADMIN.PAGES.EDIT_CAPTAIN.READY_DESC' | translate }}</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Vehicle Information - Full Width -->
-          <div class="col-span-12">
-            <div
-              class="bg-white border border-neutral-200 rounded-xl overflow-hidden shadow-sm"
-            >
-              <div class="bg-orange-500 p-6">
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center space-x-3 space-x-reverse">
-                    <div
-                      class="w-12 h-12 bg-orange-600 rounded-xl flex items-center justify-center"
-                    >
-                      <svg
-                        class="w-6 h-6 text-white"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"
-                        ></path>
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M13 16v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6M8 9l3-3 3 3"
-                        ></path>
-                      </svg>
-                    </div>
-                    <div>
-                      <h3 class="text-xl font-bold text-white">
-                        {{
-                          "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_INFO_TITLE"
-                            | translate
-                        }}
-                      </h3>
-                      <p class="text-orange-100 text-sm">
-                        {{
-                          "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_INFO_SUBTITLE"
-                            | translate
-                        }}
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    (click)="toggleSection('vehicleInfo')"
-                    class="w-8 h-8 bg-orange-600 rounded-lg flex items-center justify-center hover:bg-orange-700 transition-colors"
-                  >
-                    <svg
-                      class="w-4 h-4 text-white transform transition-transform duration-200"
-                      [class.rotate-180]="!formSections.vehicleInfo"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M19 9l-7 7-7-7"
-                      ></path>
-                    </svg>
-                  </button>
-                </div>
-              </div>
-
-              <div *ngIf="formSections.vehicleInfo" class="p-6">
-                <div
-                  class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-                >
-                  <div class="space-y-2">
-                    <label class="block text-sm font-semibold text-gray-700">{{
-                      "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_TYPE" | translate
-                    }}<span *ngIf="isFieldRequired('vehicleTypeId')" class="text-red-500"> *</span></label>
-                    <select
-                      formControlName="vehicleTypeId"
-                      class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
-                    >
-                      <option *ngFor="let t of vehicleTypes" [value]="t.id">
-                        {{ t.name }}
-                      </option>
-                    </select>
-                  </div>
-
-                  <div class="space-y-2">
-                    <label class="block text-sm font-semibold text-gray-700">{{
-                      "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_BRAND" | translate
-                    }}<span *ngIf="isFieldRequired('vehicleBrandId')" class="text-red-500"> *</span></label>
-                    <select
-                      formControlName="vehicleBrandId"
-                      class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
-                    >
-                      <option *ngFor="let b of vehicleBrands" [value]="b.id">
-                        {{ b.name }}
-                      </option>
-                    </select>
-                  </div>
-
-                  <div class="space-y-2">
-                    <label class="block text-sm font-semibold text-gray-700">{{
-                      "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_OWNER_TYPE" | translate
-                    }}<span *ngIf="isFieldRequired('vehicleOwnerTypeId')" class="text-red-500"> *</span></label>
-                    <select
-                      formControlName="vehicleOwnerTypeId"
-                      class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
-                    >
-                      <option [value]="1">
-                        {{
-                          "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.OWNER_RESIDENT"
-                            | translate
-                        }}
-                      </option>
-                      <option [value]="2">
-                        {{
-                          "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.OWNER_COMPANY"
-                            | translate
-                        }}
-                      </option>
-                      <option [value]="3">
-                        {{
-                          "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.OWNER_LEASE"
-                            | translate
-                        }}
-                      </option>
-                    </select>
-                  </div>
-
-                  <div class="space-y-2">
-                    <label class="block text-sm font-semibold text-gray-700">{{
-                      "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_OWNER_NAME" | translate
-                    }}<span *ngIf="isFieldRequired('vehicleOwnerName')" class="text-red-500"> *</span></label>
-                    <input
-                      type="text"
-                      formControlName="vehicleOwnerName"
-                      class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
-                      [class.border-red-500]="isFieldInvalid('vehicleOwnerName')"
-                    />
-                    <p *ngIf="isFieldInvalid('vehicleOwnerName')" class="text-red-500 text-sm mt-1">
-                      {{ getFieldError('vehicleOwnerName') }}
-                    </p>
-                  </div>
-
-                  <div class="space-y-2">
-                    <label class="block text-sm font-semibold text-gray-700">{{
-                      "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_PLATE_NUMBER" | translate
-                    }}<span *ngIf="isFieldRequired('vehiclePlateNumber')" class="text-red-500"> *</span></label>
-                    <input
-                      type="text"
-                      formControlName="vehiclePlateNumber"
-                      placeholder="{{
-                        'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_PLATE_NUMBER_PLACEHOLDER'
-                          | translate
-                      }}"
-                      class="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
-                    />
-                  </div>
-
-                  <div class="space-y-2">
-                    <label class="block text-sm font-semibold text-gray-700">{{
-                      "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_LICENSE_EXPIRATION_DATE" | translate
-                    }}</label>
-                    <input
-                      type="date"
-                      formControlName="vehicleLicenseExpirationDate"
-                      class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
-                    />
-                  </div>
-
-                  <div class="space-y-2">
-                    <label class="block text-sm font-semibold text-gray-700">{{
-                      "ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_INSURANCE_EXPIRY"
-                        | translate
-                    }}</label>
-                    <input
-                      type="date"
-                      formControlName="vehicleInsuranceExpirationDate"
-                      class="w-full px-4 py-3 bg-neutral-50 border border-neutral-300 rounded-lg text-neutral-900 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Documents Upload - Full Width (all images in one tab) -->
-          <div class="col-span-12">
-            <div class="bg-white border border-neutral-200 rounded-xl overflow-hidden shadow-sm">
-              <div class="bg-cyan-500 p-6">
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center space-x-3 space-x-reverse">
-                    <div class="w-12 h-12 bg-cyan-600 rounded-xl flex items-center justify-center">
-                      <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                      </svg>
-                    </div>
-                    <div>
-                      <h3 class="text-xl font-bold text-white">????????? ?????????</h3>
-                      <p class="text-cyan-100 text-sm">???? ??? ?????? ???????? ??????? ?? ???? ????</p>
-                    </div>
-                  </div>
-                  <button type="button" (click)="toggleSection('documentsUpload')" class="w-8 h-8 bg-cyan-600 rounded-lg flex items-center justify-center hover:bg-cyan-700 transition-colors">
-                    <svg class="w-4 h-4 text-white transform transition-transform duration-200" [class.rotate-180]="!formSections.documentsUpload" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                  </button>
-                </div>
-              </div>
-
-              <div *ngIf="formSections.documentsUpload" class="p-6">
-                <p class="text-sm text-neutral-500 mb-5">
-                  ???? ?? ????????? ???. <span class="text-red-500">*</span> ????? ? <span class="text-neutral-400">(???????)</span> ???????
-                </p>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-                  <div *ngFor="let doc of visibleDocuments" class="upload-item">
-                    <label class="upload-label block text-sm font-medium text-neutral-700 mb-2">
-                      {{ doc.label }}
-                      <span *ngIf="isImageRequired(doc.type)" class="text-red-500">*</span>
-                      <span *ngIf="doc.optional" class="text-neutral-400 text-xs mr-1">(???????)</span>
-                    </label>
-                    <div class="aspect-[4/3] border-2 border-dashed border-neutral-300 rounded-xl bg-neutral-50 flex items-center justify-center overflow-hidden hover:border-cyan-400 transition-colors">
-                      <img *ngIf="imagesPreviews[getPreviewKey(doc.type)]; else emptyEditDoc" [src]="imagesPreviews[getPreviewKey(doc.type)]" [alt]="doc.label" class="w-full h-full object-cover" />
-                      <ng-template #emptyEditDoc>
-                        <div class="text-center text-neutral-400 text-xs p-4">
-                          <svg class="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                          </svg>
-                          ???? ????
-                        </div>
-                      </ng-template>
-                    </div>
-                    <input type="file" [id]="getUploadInputId(doc.type)" accept="image/*" (change)="onImageSelected($event, doc.type)" class="hidden" />
-                    <div class="flex gap-2 mt-2">
-                      <label [for]="getUploadInputId(doc.type)" class="flex-1 text-center text-xs font-medium py-2 rounded-lg bg-cyan-500 hover:bg-cyan-600 text-white cursor-pointer">???</label>
-                      <button *ngIf="imagesPreviews[getPreviewKey(doc.type)]" type="button" (click)="removeImage(doc.type)" class="px-3 py-2 text-xs rounded-lg bg-red-50 text-red-600 hover:bg-red-100">???</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Action Buttons - Full Width -->
-          <div class="col-span-12">
-            <div
-              class="bg-white border border-neutral-200 rounded-xl p-6 shadow-sm"
-            >
-              <div class="flex items-center justify-between">
-                <div class="text-neutral-600 text-sm">
-                  {{
-                    "ADMIN.PAGES.EDIT_CAPTAIN.REQUIRED_FIELDS_NOTE"
-                      | translate
-                  }}
-                </div>
-                <div class="flex space-x-4 space-x-reverse">
-                  <button
-                    type="button"
-                    (click)="onCancel()"
-                    [disabled]="isSubmitting"
-                    class="px-8 py-3 bg-neutral-100 border border-neutral-300 rounded-lg text-neutral-700 font-medium hover:bg-neutral-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {{ "ADMIN.PAGES.EDIT_CAPTAIN.CANCEL" | translate }}
-                  </button>
-                  <button
-                    type="submit"
-                    [disabled]="isSubmitting"
-                    class="relative px-8 py-3 bg-primary-500 hover:bg-primary-600 text-white font-medium rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-105 shadow-md"
-                  >
-                    <span *ngIf="!isSubmitting" class="flex items-center">
-                      <svg
-                        class="w-5 h-5 mr-2"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M5 13l4 4L19 7"
-                        ></path>
-                      </svg>
-                      {{ "ADMIN.PAGES.EDIT_CAPTAIN.SUBMIT" | translate }}
-                    </span>
-                    <span *ngIf="isSubmitting" class="flex items-center">
-                      <svg
-                        class="animate-spin w-5 h-5 mr-2"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          class="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          stroke-width="4"
-                        ></circle>
-                        <path
-                          class="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        ></path>
-                      </svg>
-                      {{ "ADMIN.PAGES.EDIT_CAPTAIN.SUBMITTING" | translate }}
-                    </span>
-                  </button>
-                </div>
-              </div>
+          <div class="captain-form-footer px-6 md:px-8 py-5 bg-neutral-50 border-t border-neutral-100 flex flex-col-reverse sm:flex-row items-center justify-between gap-3">
+            <button type="button" (click)="onCancel()" class="btn-secondary w-full sm:w-auto">{{ 'ADMIN.PAGES.EDIT_CAPTAIN.CANCEL' | translate }}</button>
+            <div class="flex items-center gap-3 w-full sm:w-auto">
+              <button *ngIf="currentStep > 0" type="button" (click)="prevStep()" class="btn-secondary flex-1 sm:flex-none">{{ 'ADMIN.PAGES.EDIT_CAPTAIN.PREV' | translate }}</button>
+              <button *ngIf="currentStep < wizardSteps.length - 1" type="button" (click)="nextStep()" class="btn-primary flex-1 sm:flex-none">{{ 'ADMIN.PAGES.EDIT_CAPTAIN.NEXT' | translate }}</button>
+              <button *ngIf="currentStep === wizardSteps.length - 1" type="submit" [disabled]="isSubmitting" class="btn-primary flex-1 sm:flex-none disabled:opacity-60">
+                <span *ngIf="!isSubmitting">{{ 'ADMIN.PAGES.EDIT_CAPTAIN.SUBMIT' | translate }}</span>
+                <span *ngIf="isSubmitting">{{ 'ADMIN.PAGES.EDIT_CAPTAIN.SUBMITTING' | translate }}</span>
+              </button>
             </div>
           </div>
         </div>
       </form>
-    </div>
+    </ng-container>
   </div>
+</div>

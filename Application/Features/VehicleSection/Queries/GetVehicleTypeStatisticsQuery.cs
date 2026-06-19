@@ -42,37 +42,56 @@ namespace Application.Features.VehicleSection.Queries
 
                 var typeCountLookup = typeCounts.ToDictionary(x => x.LoadCategory, x => x.Count);
 
-                var registeredQuery = from dv in _context.DeliveryVehicles.AsNoTracking()
-                                      join dm in _context.DeliveryMen.AsNoTracking() on dv.DeliveryManId equals dm.Id
-                                      join vt in _context.VehicleTypes.AsNoTracking() on dv.VehicleTypeId equals vt.Id
-                                      select new { vt.LoadCategory, dm.RegisteredAt };
+                var registeredVehiclesQuery = _context.DeliveryVehicles.AsNoTracking();
 
-                if (request.FromDate.HasValue)
+                if (request.FromDate.HasValue || request.ToDate.HasValue)
                 {
-                    var fromDate = request.FromDate.Value.Date.ToUniversalTime();
-                    registeredQuery = registeredQuery.Where(x => x.RegisteredAt >= fromDate);
+                    var fromDate = request.FromDate?.Date.ToUniversalTime();
+                    var toDate = request.ToDate?.Date.AddDays(1).AddTicks(-1).ToUniversalTime();
+
+                    registeredVehiclesQuery = registeredVehiclesQuery.Where(dv =>
+                        _context.DeliveryMen.Any(dm =>
+                            dm.Id == dv.DeliveryManId &&
+                            (!fromDate.HasValue || dm.RegisteredAt >= fromDate.Value) &&
+                            (!toDate.HasValue || dm.RegisteredAt <= toDate.Value)));
                 }
 
-                if (request.ToDate.HasValue)
-                {
-                    var toDate = request.ToDate.Value.Date.AddDays(1).AddTicks(-1).ToUniversalTime();
-                    registeredQuery = registeredQuery.Where(x => x.RegisteredAt <= toDate);
-                }
-
-                var registeredCounts = await registeredQuery
-                    .GroupBy(x => x.LoadCategory)
-                    .Select(g => new { LoadCategory = g.Key, Count = g.Count() })
+                var registeredVehicleRows = await registeredVehiclesQuery
+                    .Select(dv => new { dv.Id, dv.VehicleTypeId })
                     .ToListAsync(cancellationToken);
 
-                var registeredLookup = registeredCounts.ToDictionary(x => x.LoadCategory, x => x.Count);
-                var totalRegistered = registeredCounts.Sum(x => x.Count);
+                var totalRegistered = registeredVehicleRows.Count;
+
+                var registeredCountsByType = registeredVehicleRows
+                    .GroupBy(x => x.VehicleTypeId)
+                    .ToDictionary(g => g.Key, g => g.Count());
+
+                var registeredByLoadCategory = new Dictionary<VehicleLoadCategory?, int>();
+
+                if (registeredCountsByType.Count > 0)
+                {
+                    var typeLoadCategories = await _context.VehicleTypes
+                        .AsNoTracking()
+                        .Where(vt => registeredCountsByType.Keys.Contains(vt.Id))
+                        .Select(vt => new { vt.Id, vt.LoadCategory })
+                        .ToListAsync(cancellationToken);
+
+                    foreach (var row in typeLoadCategories)
+                    {
+                        if (!registeredCountsByType.TryGetValue(row.Id, out var count))
+                            continue;
+
+                        registeredByLoadCategory.TryGetValue(row.LoadCategory, out var existing);
+                        registeredByLoadCategory[row.LoadCategory] = existing + count;
+                    }
+                }
 
                 var loadCategoryCounts = new List<VehicleLoadCategoryCountDto>();
 
                 foreach (var category in VehicleDisplayLabels.AllLoadCategories)
                 {
                     typeCountLookup.TryGetValue(category, out var typeCount);
-                    registeredLookup.TryGetValue(category, out var registeredCount);
+                    registeredByLoadCategory.TryGetValue(category, out var registeredCount);
 
                     loadCategoryCounts.Add(new VehicleLoadCategoryCountDto
                     {
@@ -84,7 +103,7 @@ namespace Application.Features.VehicleSection.Queries
                 }
 
                 typeCountLookup.TryGetValue(null, out var uncategorizedTypes);
-                registeredLookup.TryGetValue(null, out var uncategorizedRegistered);
+                registeredByLoadCategory.TryGetValue(null, out var uncategorizedRegistered);
 
                 if (uncategorizedTypes > 0 || uncategorizedRegistered > 0)
                 {
@@ -97,11 +116,74 @@ namespace Application.Features.VehicleSection.Queries
                     });
                 }
 
+                var mainCategories = await _context.MainCategories
+                    .AsNoTracking()
+                    .OrderBy(mc => mc.ArabicName)
+                    .Select(mc => new
+                    {
+                        mc.Id,
+                        mc.ArabicName,
+                        mc.EnglishName
+                    })
+                    .ToListAsync(cancellationToken);
+
+                var typeCategoryLinks = await _context.VehicleTypeCategories
+                    .AsNoTracking()
+                    .Select(vtc => new
+                    {
+                        vtc.VehicleTypeId,
+                        vtc.MainCategoryId
+                    })
+                    .ToListAsync(cancellationToken);
+
+                var vehicleTypeCountByCategory = typeCategoryLinks
+                    .GroupBy(x => x.MainCategoryId)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Select(x => x.VehicleTypeId).Distinct().Count());
+
+                var registeredCountByCategory = new Dictionary<int, int>();
+
+                if (registeredVehicleRows.Count > 0 && typeCategoryLinks.Count > 0)
+                {
+                    var categoriesByTypeId = typeCategoryLinks
+                        .GroupBy(x => x.VehicleTypeId)
+                        .ToDictionary(
+                            g => g.Key,
+                            g => g.Select(x => x.MainCategoryId).Distinct().ToList());
+
+                    foreach (var vehicle in registeredVehicleRows)
+                    {
+                        if (!categoriesByTypeId.TryGetValue(vehicle.VehicleTypeId, out var categoryIds))
+                            continue;
+
+                        foreach (var categoryId in categoryIds)
+                        {
+                            registeredCountByCategory.TryGetValue(categoryId, out var current);
+                            registeredCountByCategory[categoryId] = current + 1;
+                        }
+                    }
+                }
+
+                var isArabic = request.LanguageId == (int)Language.Arabic;
+                var mainCategoryCounts = mainCategories
+                    .Select(mc => new MainCategoryVehicleCountDto
+                    {
+                        MainCategoryId = mc.Id,
+                        ArabicName = mc.ArabicName,
+                        EnglishName = mc.EnglishName,
+                        Name = isArabic ? mc.ArabicName : mc.EnglishName,
+                        VehicleTypeCount = vehicleTypeCountByCategory.GetValueOrDefault(mc.Id),
+                        RegisteredVehicleCount = registeredCountByCategory.GetValueOrDefault(mc.Id)
+                    })
+                    .ToList();
+
                 return Result.Success(new VehicleTypeStatisticsDto
                 {
                     TotalVehicleTypes = totalVehicleTypes,
                     TotalRegisteredVehicles = totalRegistered,
-                    LoadCategoryCounts = loadCategoryCounts
+                    LoadCategoryCounts = loadCategoryCounts,
+                    MainCategoryCounts = mainCategoryCounts
                 });
             }
         }

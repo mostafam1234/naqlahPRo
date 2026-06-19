@@ -12,5 +12,6 @@ namespace Application.Features.AdminSection.MainCategoryFeatures.Dtos
         public string ArabicName { get; set; } = string.Empty;
         public string EnglishName { get; set; } = string.Empty;
         public string ImagePath { get; set; } = string.Empty;
+        public int VehicleTypeCount { get; set; }
     }
 }

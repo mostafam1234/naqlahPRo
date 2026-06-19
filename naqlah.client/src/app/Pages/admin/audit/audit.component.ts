@@ -11,6 +11,7 @@ import { AuditLogNotificationService } from '../../../shared/services/audit-log-
 import { AuditFiltersComponent, AuditFiltersModel } from './components/audit-filters/audit-filters.component';
 import { AuditLogEntryComponent } from './components/audit-log-entry/audit-log-entry.component';
 import { AuditPaginationComponent } from './components/audit-pagination/audit-pagination.component';
+import { getDefaultSearchDateRange } from '../../../shared/utils/date-filter.helpers';
 
 export interface UserAuditGroup {
   userKey: string;
@@ -45,8 +46,8 @@ export class AuditComponent implements OnInit {
   private auditLogNotificationService = inject(AuditLogNotificationService);
 
   filterModel: AuditFiltersModel = {
-    fromDate: null,
-    toDate: null,
+    fromDate: getDefaultSearchDateRange().fromDate,
+    toDate: getDefaultSearchDateRange().toDate,
     entityType: '',
   };
 
@@ -108,9 +109,10 @@ export class AuditComponent implements OnInit {
   }
 
   clearFilters(): void {
+    const defaultDates = getDefaultSearchDateRange();
     this.filterModel = {
-      fromDate: null,
-      toDate: null,
+      fromDate: defaultDates.fromDate,
+      toDate: defaultDates.toDate,
       entityType: '',
     };
     this.currentPage = 0;

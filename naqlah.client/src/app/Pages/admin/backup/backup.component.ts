@@ -5,6 +5,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { BackupService } from '../../../Core/services/backup.service';
 import { ToasterService } from '../../../Core/services/toaster.service';
+import { getDefaultSearchDateRange } from '../../../shared/utils/date-filter.helpers';
 
 export interface BackupModuleOption {
   key: string;
@@ -40,8 +41,8 @@ export class BackupComponent {
   modules = BACKUP_MODULES;
   groupedModules: { groupKey: string; items: BackupModuleOption[] }[];
   selectedModules = new Set<string>();
-  fromDate: string | null = null;
-  toDate: string | null = null;
+  fromDate: string | null = getDefaultSearchDateRange().fromDate;
+  toDate: string | null = getDefaultSearchDateRange().toDate;
   exporting = false;
   progressMessage = '';
   errorMessage = '';

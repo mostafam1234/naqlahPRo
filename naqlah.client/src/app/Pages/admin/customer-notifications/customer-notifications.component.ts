@@ -5,6 +5,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { SubSink } from 'subsink';
 import { AppConfigService } from 'src/app/shared/services/AppConfigService';
 import { ToasterService } from 'src/app/Core/services/toaster.service';
+import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
 
 interface BroadcastNotificationDto {
   id: number;
@@ -31,7 +32,7 @@ interface PagedResult<T> {
 @Component({
   selector: 'app-customer-notifications',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, PageHeaderComponent],
   templateUrl: './customer-notifications.component.html',
   styleUrls: ['./customer-notifications.component.css']
 })
@@ -255,5 +256,9 @@ export class CustomerNotificationsComponent implements OnInit, OnDestroy {
   hasError(field: string): boolean {
     const ctrl = this.form.get(field);
     return !!(ctrl && ctrl.invalid && ctrl.touched);
+  }
+
+  goBack(): void {
+    window.history.back();
   }
 }

@@ -7,16 +7,6 @@
     (onBackClick)="onCancel()"
   ></app-page-header>
 
-  <div class="vf-hero add-type-hero">
-    <div class="vf-hero__content">
-      <span class="vf-hero__eyebrow">نوع مركبة جديد</span>
-      <h1 class="vf-hero__title">إضافة نوع مركبة</h1>
-      <p class="vf-hero__subtitle">
-        كل الحقول اختيارية — صنّف الحمولة بشكل مستقل عن أقسام الشحنات، وحدّد رسوم الخدمة لكل نوع.
-      </p>
-    </div>
-  </div>
-
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <div class="vf-preview-strip">
       <div class="vf-preview-item">

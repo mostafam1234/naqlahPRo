@@ -1,9 +1,9 @@
 import { NgClass, NgFor, NgIf } from '@angular/common';
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { LanguageService } from 'src/app/Core/services/language.service';
-import { DeliveryManAdminClient, GetAllApprovedDeliveryMenDto, GetAllDeliveryMenRequestsDto } from 'src/app/Core/services/NaqlahClient';
+import { DeliveryManAdminClient, GetAllApprovedDeliveryMenDto } from 'src/app/Core/services/NaqlahClient';
 import { SubSink } from 'subsink/dist/subsink';
 import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
 import { DeliveryType } from 'src/app/Core/enums/delivery.enums';
@@ -17,7 +17,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
   templateUrl: './captain.component.html',
   styleUrl: './captain.component.css'
 })
-export class CaptainComponent {
+export class CaptainComponent implements OnInit, OnDestroy {
     lang: string = 'ar';
     viewMode: 'cards' | 'table' = 'table';
     allDeliveryMenRequests: GetAllApprovedDeliveryMenDto[] = [];
@@ -37,7 +37,6 @@ export class CaptainComponent {
 
     constructor(
       private languageService: LanguageService,
-      private translateService: TranslateService,
       private router: Router,
       private deliveryManClient: DeliveryManAdminClient
     ) {}
@@ -66,13 +65,7 @@ export class CaptainComponent {
       const skip = this.currentPage * this.itemsPerPage;
       const searchTerm = this.searchControl.value || '';
 
-      // Get delivery type filter based on active tab
-      let deliveryTypeFilter: number | undefined = undefined;
-      if (this.activeTab === 'Citizen') {
-        deliveryTypeFilter = this.deliveryTypes.Citizen;
-      } else if (this.activeTab === 'Resident') {
-        deliveryTypeFilter = this.deliveryTypes.Resident;
-      }
+      const deliveryTypeFilter = this.getDeliveryTypeFilter();
 
       this.sub.sink = this.deliveryManClient
         .getAllApprovedDeliveryMen(skip, this.itemsPerPage, deliveryTypeFilter, searchTerm)
@@ -202,6 +195,16 @@ export class CaptainComponent {
 
     goBack(): void {
       window.history.back();
+    }
+
+    private getDeliveryTypeFilter(): number {
+      if (this.activeTab === 'Citizen') {
+        return this.deliveryTypes.Citizen;
+      }
+      if (this.activeTab === 'Resident') {
+        return this.deliveryTypes.Resident;
+      }
+      return this.deliveryTypes.All;
     }
 
     ngOnDestroy() {

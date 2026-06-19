@@ -5,6 +5,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { TranslateModule } from '@ngx-translate/core';
 import { SubSink } from 'subsink';
 import { AppConfigService } from 'src/app/shared/services/AppConfigService';
+import { getDefaultSearchDateRange } from 'src/app/shared/utils/date-filter.helpers';
 
 interface OrderRatingAdminDto {
   id: number;
@@ -39,8 +40,8 @@ export class OrderRatingsComponent implements OnInit, OnDestroy {
   currentPage = 0;
   itemsPerPage = 10;
 
-  fromDate = '';
-  toDate = '';
+  fromDate = getDefaultSearchDateRange().fromDate;
+  toDate = getDefaultSearchDateRange().toDate;
   selectedRating: number | null = null;
 
   private sub = new SubSink();
@@ -105,8 +106,9 @@ export class OrderRatingsComponent implements OnInit, OnDestroy {
   }
 
   clearFilters(): void {
-    this.fromDate = '';
-    this.toDate = '';
+    const defaultDates = getDefaultSearchDateRange();
+    this.fromDate = defaultDates.fromDate;
+    this.toDate = defaultDates.toDate;
     this.selectedRating = null;
     this.currentPage = 0;
     this.loadItems();

@@ -38,6 +38,31 @@
       }
     },
     "VEHICLES": "Vehicles",
+    "SHIPMENT_CATEGORIES": {
+      "TITLE": "Shipment Categories",
+      "SUBTITLE": "Manage shipment categories",
+      "SEARCH": "Search shipment categories...",
+      "ADD": "Add category",
+      "LIST_TITLE": "Shipment Categories",
+      "EMPTY": "No shipment categories found",
+      "ADD_MODAL_TITLE": "Add shipment category",
+      "EDIT_MODAL_TITLE": "Edit shipment category",
+      "VIEW_VEHICLES": "Linked vehicles",
+      "VEHICLE_COUNT": "vehicles",
+      "VEHICLES_PAGE_TITLE": "Linked vehicles",
+      "VEHICLES_PAGE_SUBTITLE": "Vehicle types linked to this shipment category",
+      "LOAD_CATEGORY": "Load category",
+      "COST": "Cost",
+      "NO_VEHICLES": "No vehicles linked to this category",
+      "EXPORT": "Export Excel",
+      "EXPORTING": "Exporting...",
+      "EXPORT_SUCCESS": "Linked vehicles exported successfully",
+      "EXPORT_ERROR": "Failed to export linked vehicles",
+      "ARABIC_NAME": "Arabic name",
+      "ENGLISH_NAME": "English name",
+      "IMAGE": "Image",
+      "ACTIONS": "Actions"
+    },
     "VEHICLESMENUE": {
       "BRANDS": "Brands",
       "TYPES": "Vehicle Types",
@@ -52,7 +77,12 @@
       "ENGLISH_NAME": "English Name",
       "ACTIONS": "Actions",
       "NO_DATA": "No vehicle types added yet",
-      "NO_DATA_BRAND": "No vehicle brands added yet"
+      "NO_DATA_BRAND": "No vehicle brands added yet",
+      "STATS_HINT": "Vehicle type statistics — click a card to filter the table",
+      "STATS_EXPORT": "Export statistics (Excel)",
+      "STATS_EXPORTING": "Exporting...",
+      "STAT_TOTAL_TYPES": "Total vehicle types",
+      "NO_SECTIONS": "No sections"
     },
     "HEADER": {
       "SELECT_LANGUAGE": "Select Language",
@@ -261,7 +291,7 @@
         "VEHICLES": "Vehicles",
         "SYSTEM_USERS": "System Users",
         "DELIVERY_MEN": "Delivery Men",
-        "MAIN_CATEGORIES": "Main Categories",
+        "MAIN_CATEGORIES": "Shipment Categories",
         "WALLET_TRANSACTIONS": "Wallet Transactions",
         "COMPLAINS": "Complains",
         "SUGGESTIONS": "Suggestions",
@@ -552,12 +582,36 @@
           "INACTIVE": "Inactive"
         }
       },
+      "CAPTAINS": {
+        "TITLE": "Captains",
+        "TABS": {
+          "ALL": "All",
+          "CITIZEN": "Citizens",
+          "RESIDENT": "Residents"
+        },
+        "SEARCH_PLACEHOLDER": "Search by name or phone...",
+        "LOADING": "Loading...",
+        "NO_CAPTAINS": "No captains found",
+        "NO_CAPTAINS_DESC": "No registered captains were found in the system",
+        "TABLE": {
+          "TITLE": "Captains Table",
+          "CAPTAIN": "captain",
+          "NUMBER": "#",
+          "IMAGE": "Image",
+          "CAPTAIN_NAME": "Captain Name",
+          "ADDRESS": "Address",
+          "PHONE": "Phone Number",
+          "IDENTITY_NUMBER": "Identity Number",
+          "ACTIONS": "Actions"
+        }
+      },
       "CAPTAIN_DETAILS": {
         "HEADER": {
           "TITLE": "Captain Management",
           "SUBTITLE": "Manage current captains and add new ones"
         },
         "TITLE": "Captain Details",
+        "SUBTITLE": "View full captain profile and documents",
         "BACK": "Back",
         "LOADING": "Loading...",
         "ERROR": "Error loading data",
@@ -619,6 +673,57 @@
           "DELIVERY_COMPLETED_DESC": "Order has been delivered successfully"
         }
       },
+      "CAPTAIN_FORM": {
+        "PROGRESS": "Data completeness: {{completed}} / {{total}} required fields",
+        "STEPS": {
+          "ACCOUNT_TITLE": "Account & basic information",
+          "ACCOUNT_SUBTITLE": "Login and personal identification details",
+          "VEHICLE_TITLE": "Vehicle & owner details",
+          "VEHICLE_SUBTITLE": "Vehicle information and owner type",
+          "DOCUMENTS_TITLE": "Documents & attachments",
+          "DOCUMENTS_SUBTITLE": "All captain, vehicle, and owner images in one place"
+        },
+        "DELIVERY_RESIDENT_LABEL": "Resident",
+        "DELIVERY_RESIDENT_DESC": "Captain residing in the Kingdom",
+        "DELIVERY_CITIZEN_LABEL": "Citizen",
+        "DELIVERY_CITIZEN_DESC": "Saudi national captain",
+        "LICENSE_PUBLIC": "Public license",
+        "LICENSE_PRIVATE": "Private license",
+        "OWNER_UNKNOWN": "Not specified",
+        "OPTIONAL_PAREN": "(optional)",
+        "DOCUMENTS": {
+          "FRONT_IDENTITY": "Driver identity photo",
+          "FRONT_DRIVING_LICENSE": "Driver driving license photo",
+          "OWNER_FRONT_IDENTITY": "Vehicle owner identity photo",
+          "COMMERCIAL_RECORD": "Commercial register photo",
+          "VEHICLE_FRONT": "Front vehicle photo",
+          "VEHICLE_SIDE": "Side vehicle photo",
+          "VEHICLE_FRONT_LICENSE": "Vehicle registration (form) photo",
+          "PERSONAL": "Driver personal photo",
+          "VEHICLE_FRONT_INSURANCE": "Vehicle insurance photo",
+          "RENT_CONTRACT": "Vehicle lease document photo"
+        },
+        "TOAST": {
+          "ERROR_TITLE": "Error",
+          "SUCCESS_TITLE": "Success",
+          "STEP_INCOMPLETE_TITLE": "Incomplete data",
+          "STEP_INCOMPLETE_MSG": "Please fill in the required fields in this step",
+          "FORM_INVALID_TITLE": "Incomplete or invalid data",
+          "FORM_INVALID_MSG": "Please fill in all required fields",
+          "ADD_SUCCESS_MSG": "Captain added successfully",
+          "ADD_ERROR_MSG": "An error occurred while adding the captain",
+          "EDIT_SUCCESS_MSG": "Captain updated successfully",
+          "EDIT_ERROR_MSG": "An error occurred while updating the captain",
+          "LOAD_ERROR_MSG": "An error occurred while loading captain data"
+        },
+        "CANCEL_DIALOG": {
+          "TITLE": "Are you sure?",
+          "MESSAGE_ADD": "All entered data will be lost",
+          "MESSAGE_EDIT": "Unsaved changes will be lost",
+          "CONFIRM": "Yes, cancel",
+          "CANCEL": "Back to form"
+        }
+      },
       "ADD_CAPTAIN": {
         "TITLE": "Add Captain",
         "SUBTITLE": "Fill the captain information and vehicle details",
@@ -626,10 +731,42 @@
         "HEADER_SUBTITLE": "Enter all required information",
         "BACK": "Back",
         "CANCEL": "Cancel",
-        "SUBMIT": "Submit",
-        "SUBMITTING": "Submitting...",
+        "PREV": "Previous",
+        "NEXT": "Next",
+        "SUBMIT": "Add Captain",
+        "SUBMITTING": "Adding...",
         "REQUIRED_FIELDS_NOTE": "Fields marked with * are required",
-        "HEADER_ADD_BUTTON": "Add Captain"
+        "HEADER_ADD_BUTTON": "Add Captain",
+        "DOCUMENTS_HINT": "Upload all documents here — driver, vehicle, and owner images in one place.",
+        "DOCUMENTS_REQUIRED": "required",
+        "OPTIONAL": "optional",
+        "CHOOSE_IMAGE": "Choose image",
+        "UPLOAD": "Upload",
+        "REMOVE": "Remove",
+        "READY_TITLE": "Ready to submit",
+        "READY_DESC": "Review all data and images, then click Add Captain."
+      },
+      "EDIT_CAPTAIN": {
+        "TITLE": "Edit Captain",
+        "HEADER_TITLE": "Edit Captain",
+        "HEADER_SUBTITLE": "Update captain, vehicle, and document data",
+        "BACK": "Back",
+        "CANCEL": "Cancel",
+        "PREV": "Previous",
+        "NEXT": "Next",
+        "SUBMIT": "Save changes",
+        "SUBMITTING": "Saving...",
+        "REQUIRED_FIELDS_NOTE": "Fields marked with * are required",
+        "PASSWORD_HINT": "Leave blank to keep the current password",
+        "DOCUMENTS_HINT": "Upload or update documents here — driver, vehicle, and owner images in one place.",
+        "DOCUMENTS_REQUIRED": "required",
+        "OPTIONAL": "optional",
+        "CHOOSE_IMAGE": "Choose image",
+        "UPLOAD": "Upload",
+        "REMOVE": "Remove",
+        "READY_TITLE": "Ready to save",
+        "READY_DESC": "Review all data and images, then click Save changes.",
+        "HEADER_ADD_BUTTON": "Edit Captain"
       },
       "ADD_CAPTAIN_FIELDS": {
         "PERSONAL_INFO_TITLE": "Personal Information",
@@ -647,7 +784,10 @@
         "FULL_NAME_PLACEHOLDER": "Enter driver name (captain)",
         "PHONE_NUMBER": "Phone Number",
         "IDENTITY_NUMBER": "Identity Number",
-        "DELIVERY_TYPE": "Delivery Type",
+        "DELIVERY_TYPE": "Captain type",
+        "SELECT_VEHICLE_TYPE": "Select vehicle type",
+        "SELECT_VEHICLE_BRAND": "Select brand",
+        "OWNER_IDENTITY_NUMBER": "Owner identity number",
         "ADDRESS": "Address",
         "ADDRESS_PLACEHOLDER": "Enter full address",
         "VEHICLE_INFO_TITLE": "Vehicle Information",

@@ -1,56 +1,36 @@
-<div class="theme-surface shadow-sm border-b mb-4">
-  <div class="w-[100%] p-4 md:p-6">
-    <div class="flex items-center justify-between gap-4">
-      <div class="flex items-center gap-[20px] space-x-reverse flex-1 min-w-0">
-        <div
-          class="hidden md:flex w-12 h-12 bg-primary-500 rounded-xl items-center justify-center flex-shrink-0"
-        >
-          <svg
-            class="w-6 h-6 text-white"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              [attr.d]="iconPath"
-            ></path>
-          </svg>
-        </div>
-        <div class="min-w-0 flex-1">
-          <h1 class="text-lg md:text-3xl font-bold truncate" style="color: var(--shell-text)">
-            {{ title | translate }}
-          </h1>
-          <p class="text-sm md:text-base mt-1 md:mt-2 hidden md:block" style="color: var(--shell-text-muted)" *ngIf="subtitle">
-            {{ subtitle | translate }}
-          </p>
-        </div>
+<header class="ph" role="banner">
+  <div class="ph__body">
+    <div class="ph__main">
+      <div class="ph__icon" aria-hidden="true">
+        <svg class="ph__icon-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            [attr.d]="iconPath"
+          ></path>
+        </svg>
       </div>
-      <div class="flex items-center flex-shrink-0">
-        <button
-          (click)="goBack()"
-          class="flex items-center px-3 md:px-4 py-2 border rounded-xl transition-all duration-300 group text-sm md:text-base"
-          style="background: var(--shell-muted-surface); border-color: var(--shell-surface-border); color: var(--shell-text)"
-        >
-          <span class="hidden md:inline">{{ "COMMON.BACK" | translate }}</span>
-          <span class="md:hidden">{{ "COMMON.BACK" | translate }}</span>
-          <svg
-            class="w-4 h-4 md:w-5 md:h-5 ml-1 md:ml-2 mr-0 md:mr-2 group-hover:-translate-x-1 transition-transform"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M15 19l-7-7 7-7"
-            ></path>
-          </svg>
-        </button>
+
+      <div class="ph__text">
+        <h1 class="ph__title">{{ title | translate }}</h1>
+        <p class="ph__subtitle" *ngIf="subtitle">{{ subtitle | translate }}</p>
       </div>
     </div>
+
+    <div class="ph__actions">
+      <ng-content></ng-content>
+      <button
+        *ngIf="showBackButton"
+        type="button"
+        class="ph__back"
+        (click)="onBack()"
+      >
+        <svg class="ph__back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+        <span>{{ 'COMMON.BACK' | translate }}</span>
+      </button>
+    </div>
   </div>
-</div>
+</header>
