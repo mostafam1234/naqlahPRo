@@ -7,9 +7,15 @@ using Application.Features.DeliveryManSection.LogIn;
 using Application.Features.DeliveryManSection.LogIn.Commands;
 using Application.Features.DeliveryManSection.LogIn.Dtos;
 using Application.Features.DeliveryManSection.LogIn.Queries;
+using Application.Features.DeliveryManSection.Notifications.Commands;
+using Application.Features.DeliveryManSection.Notifications.Dtos;
+using Application.Features.DeliveryManSection.Notifications.Queries;
 using Application.Features.DeliveryManSection.Regestration.Commands;
 using Application.Features.DeliveryManSection.Regestration.Dtos;
 using Application.Features.DeliveryManSection.Regestration.Qureies;
+using Application.Features.DeliveryManSection.Wallet.Commands;
+using Application.Features.DeliveryManSection.Wallet.Dtos;
+using Application.Features.DeliveryManSection.Wallet.Queries;
 using Domain.Shared;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -240,8 +246,9 @@ namespace Presentaion.Controllers
             var result = await mediator.Send(new SaveDeliveryManInfoCommand
             {
                 FullName = request.FullName,
-                Address = request.FullName,
+                Address = request.Address,
                 IdentityNumber = request.IdentityNumber,
+                BirthDate = request.DateOfBirth,
                 FrontIdenitytImage = request.FrontIdenitytImage,
                 BackIdenitytImage = request.BackIdenitytImage,
                 FrontDrivingLicenseImage = request.FrontDrivingLicenseImage,
@@ -250,7 +257,7 @@ namespace Presentaion.Controllers
                 DeliveryLicenseTypeId = request.DeliveryLicenseTypeId,
                 PersonalImage = request.PersonalImage,
                 DrivingLicenseExpirationDate = request.DrivingLicenseExpirationDate,
-                IdentityExpirationDate = request.DrivingLicenseExpirationDate
+                IdentityExpirationDate = request.IdentityExpirationDate
             });
 
             if (result.IsFailure)
@@ -358,6 +365,7 @@ namespace Presentaion.Controllers
                 LicensePlateNumber = request.LicensePlateNumber,
                 SideImagePath = request.SideImagePath,
                 VehicleBrandId = request.VehicleBrandId,
+                VehicleOwnerName = request.VehicleOwnerName,
                 VehicleOwnerTypeId = request.VehicleOwnerTypeId,
                 VehicleTypeId = request.VehicleTypeId,
             });
@@ -387,6 +395,101 @@ namespace Presentaion.Controllers
         {
             var result = await mediator.Send(new GetVehiceTypesQuery());
             return Ok(result.Value);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(DeliveryManWalletBalanceDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("Wallet/Balance")]
+        [Authorize]
+        public async Task<IActionResult> WalletBalance()
+        {
+            var result = await mediator.Send(new GetDeliveryManWalletBalanceQuery());
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+            return Ok(result.Value);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(List<DeliveryManWalletTransactionDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("Wallet/Transactions")]
+        [Authorize]
+        public async Task<IActionResult> WalletTransactions(int pageNumber = 1, int pageSize = 50)
+        {
+            var result = await mediator.Send(new GetDeliveryManWalletTransactionsQuery
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            });
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+            return Ok(result.Value);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(DeliveryManWithdrawResponseDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("Wallet/Withdraw")]
+        [Authorize]
+        public async Task<IActionResult> WalletWithdraw([FromBody] DeliveryManWithdrawRequestDto request)
+        {
+            var result = await mediator.Send(new RequestDeliveryManWithdrawalCommand
+            {
+                Amount = request.Amount,
+                BankAccountId = request.BankAccountId
+            });
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+            return Ok(result.Value);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(DeliveryManNotificationsPageDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("Notifications")]
+        [Authorize]
+        public async Task<IActionResult> Notifications(int pageNumber = 1, int pageSize = 50)
+        {
+            var result = await mediator.Send(new GetDeliveryManNotificationsQuery
+            {
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            });
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+            return Ok(result.Value);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("Notifications/{notificationId:int}/Read")]
+        [Authorize]
+        public async Task<IActionResult> MarkNotificationRead(int notificationId)
+        {
+            var result = await mediator.Send(new MarkDeliveryManNotificationReadCommand
+            {
+                NotificationId = notificationId
+            });
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+            return Ok();
         }
     }
 }

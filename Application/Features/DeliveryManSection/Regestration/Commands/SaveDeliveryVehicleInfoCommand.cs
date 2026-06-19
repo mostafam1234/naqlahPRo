@@ -11,6 +11,7 @@ namespace Application.Features.DeliveryManSection.Regestration.Commands
     {
         public int VehicleTypeId { get;  set; }
         public int VehicleBrandId { get;  set; }
+        public string? VehicleOwnerName { get; set; }
         public string LicensePlateNumber { get; set; } = string.Empty;
         public string FrontImagePath { get; set; } = string.Empty;
         public string SideImagePath { get; set; } = string.Empty;
@@ -92,7 +93,8 @@ namespace Application.Features.DeliveryManSection.Regestration.Commands
                                                           frontInsurance,
                                                           backInsurance,
                                                           inSuranceExpirationDate,
-                                                          request.VehicleOwnerTypeId);
+                                                          request.VehicleOwnerTypeId,
+                                                          request.VehicleOwnerName);
 
                 if (vehicleResult.IsFailure)
                     return vehicleResult;

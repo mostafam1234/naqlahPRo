@@ -195,6 +195,11 @@ namespace NAQLAH.Server
                 job => job.ExecuteAsync(),
                 Cron.Daily);
 
+            RecurringJob.AddOrUpdate<Infrastructure.Jobs.ScheduledPickupReminderJob>(
+                "scheduled-pickup-reminder",
+                job => job.ExecuteAsync(),
+                "*/15 * * * *");
+
             app.MapControllers();
 
             // Map SignalR Hub

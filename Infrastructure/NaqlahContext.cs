@@ -82,6 +82,7 @@ namespace Infrastructure
         public DbSet<OrderRating> OrderRatings { get; set; }
         public DbSet<CustomerNotification> CustomerNotifications { get; set; }
         public DbSet<AdditionalService> AdditionalServices { get; set; }
+        public DbSet<DeliveryManWalletTransaction> DeliveryManWalletTransactions { get; set; }
 
 
         public async Task<Result> SaveChangesAsyncWithResult()

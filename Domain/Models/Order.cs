@@ -41,6 +41,9 @@ namespace Domain.Models
         public decimal ServiceFee { get; private set; }
         public decimal TaxAmount { get; private set; }
         public bool IsPaid { get; private set; }
+        public bool DriverConfirmedGoingToPickup { get; private set; }
+        public bool ClientApprovedPickup { get; private set; }
+        public DateTime? PickupReminderSentAt { get; private set; }
         public RefundStatus RefundStatus { get; private set; }
         public string? RefundIban { get; private set; }
         public decimal RefundedAmount { get; private set; }
@@ -417,6 +420,61 @@ namespace Domain.Models
             this._OrderStatusHistories.Add(statusHistory);
 
             return Result.Success();
+        }
+
+        public Result ConfirmGoingToPickup(DateTime nowDate)
+        {
+            if (this.DeliveryManId is null || this.OrderStatus != OrderStatus.Assigned)
+            {
+                return Result.Failure("OrderMustBeAssignedToConfirmGoingToPickup");
+            }
+
+            this.DriverConfirmedGoingToPickup = true;
+            this.OrderStatus = OrderStatus.ConfirmedGoingToPickup;
+            this._OrderStatusHistories.Add(OrderStatusHistory.Create(OrderStatus.ConfirmedGoingToPickup, nowDate));
+            return Result.Success();
+        }
+
+        public Result ConfirmPickupByDriver(DateTime nowDate)
+        {
+            if (this.OrderStatus != OrderStatus.Assigned && this.OrderStatus != OrderStatus.ConfirmedGoingToPickup)
+            {
+                return Result.Failure("OrderMustBeAssignedOrConfirmedToPickup");
+            }
+
+            this.OrderStatus = OrderStatus.PickedUpFromDeliveryMan;
+            this._OrderStatusHistories.Add(OrderStatusHistory.Create(OrderStatus.PickedUpFromDeliveryMan, nowDate));
+            return Result.Success();
+        }
+
+        public Result CancelOrderByDriver(DateTime nowDate)
+        {
+            if (this.OrderStatus == OrderStatus.Cancelled)
+            {
+                return Result.Failure("OrderAlreadyCancelled");
+            }
+
+            if (this.OrderStatus == OrderStatus.Completed)
+            {
+                return Result.Failure("CannotCancelCompletedOrder");
+            }
+
+            // Driver cancel = reassign: return to pending for manual/admin reassignment (not a client cancellation).
+            this.DeliveryManId = null;
+            this.DriverConfirmedGoingToPickup = false;
+            this.OrderStatus = OrderStatus.Pending;
+            this._OrderStatusHistories.Add(OrderStatusHistory.Create(OrderStatus.Pending, nowDate));
+            return Result.Success();
+        }
+
+        public void ApproveClientPickup()
+        {
+            this.ClientApprovedPickup = true;
+        }
+
+        public void MarkPickupReminderSent(DateTime nowDate)
+        {
+            this.PickupReminderSentAt = nowDate;
         }
 
         public Result MarkAsPaid()

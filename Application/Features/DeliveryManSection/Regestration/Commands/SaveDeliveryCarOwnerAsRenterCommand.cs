@@ -16,8 +16,8 @@ namespace Application.Features.DeliveryManSection.Regestration.Commands
         public string CitizenName { get; set; }=string.Empty;
         public string IdentityNumber { get; set; } = string.Empty;
         public string FrontIdentityImage { get; set; } = string.Empty;
-        public string BackIdentityImage { get; set; } = string.Empty;
-        public string RentContractImage { get; set; } = string.Empty;
+        public string? BackIdentityImage { get; set; }
+        public string? RentContractImage { get; set; }
         public string BankAccountNumber { get; set; } = string.Empty;
 
 
@@ -54,11 +54,13 @@ namespace Application.Features.DeliveryManSection.Regestration.Commands
                 var frontImagePath = await mediaUploader.UploadFromBase64(request.FrontIdentityImage,
                                                                            deliveryFolder);
 
-                var backImagePath = await mediaUploader.UploadFromBase64(request.BackIdentityImage,
-                                                                           deliveryFolder);
+                string? backImagePath = null;
+                if (!string.IsNullOrWhiteSpace(request.BackIdentityImage))
+                    backImagePath = await mediaUploader.UploadFromBase64(request.BackIdentityImage, deliveryFolder);
 
-                var rentContractImagePath = await mediaUploader.UploadFromBase64(request.RentContractImage,
-                                                                                 deliveryFolder);
+                string? rentContractImagePath = null;
+                if (!string.IsNullOrWhiteSpace(request.RentContractImage))
+                    rentContractImagePath = await mediaUploader.UploadFromBase64(request.RentContractImage, deliveryFolder);
 
                var result= deliveryMan.SetDeliveryVehicleOwnerAsRenter(request.CitizenName,
                                                                        request.IdentityNumber,

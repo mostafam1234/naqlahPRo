@@ -25,6 +25,7 @@ namespace Domain.Models
         public int VehicleTypeId { get; private set; }
         public int VehicleBrandId { get; private set; }
         public string LicensePlateNumber { get; private set; }
+        public string? VehicleOwnerName { get; private set; }
         public string FrontImagePath { get; private set; }
         public string SideImagePath { get; private set; }
         public string FrontLicenseImagePath { get; private set; }
@@ -53,7 +54,8 @@ namespace Domain.Models
                                                       string? frontInsuranceImagePath,
                                                       string? backInsuranceImagePath,
                                                       DateTime? inSuranceExpirationDate,
-                                                      int vehicleOwnerTypeId
+                                                      int vehicleOwnerTypeId,
+                                                      string? vehicleOwnerName = null
                                                       )
         {
             var vehicle = new DeliveryVehicle
@@ -61,6 +63,7 @@ namespace Domain.Models
                 VehicleBrandId = vehicleBrandId,
                 VehicleTypeId = vehicleTypeId,
                 LicensePlateNumber = licensePlateNumber,
+                VehicleOwnerName = vehicleOwnerName,
                 LicenseExpirationDate = licenseExpirationDate,
                 FrontImagePath = frontImagePath ?? string.Empty,
                 SideImagePath = sideImagePath ?? string.Empty,

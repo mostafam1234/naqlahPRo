@@ -17,7 +17,7 @@ namespace Application.Features.DeliveryManSection.Regestration.Commands
         public string CommercialRecordNumber { get; set; }= string.Empty;
         public string RecordImagePath { get; set; } = string.Empty;
         public string TaxNumber { get; set; } = string.Empty;
-        public string TaxCertificateImage { get; set; } = string.Empty;
+        public string? TaxCertificateImage { get; set; }
         public string BankAccountNumber { get; set; } = string.Empty;
 
         private class SaveDeliveryCarOwnerAsCompanyCommandHandler :
@@ -53,8 +53,9 @@ namespace Application.Features.DeliveryManSection.Regestration.Commands
                 var recordImagePath = await mediaUploader.UploadFromBase64(request.RecordImagePath,
                                                                            deliveryFolder);
 
-                var taxCertificateImage = await mediaUploader.UploadFromBase64(request.TaxCertificateImage,
-                                                                               deliveryFolder);
+                var taxCertificateImage = string.Empty;
+                if (!string.IsNullOrWhiteSpace(request.TaxCertificateImage))
+                    taxCertificateImage = await mediaUploader.UploadFromBase64(request.TaxCertificateImage, deliveryFolder);
 
 
                 var result = deliveryMan.SetDeliveryVehicleOwnerAsCompany(request.CompanyName,

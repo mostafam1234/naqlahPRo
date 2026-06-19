@@ -61,6 +61,7 @@ namespace Infrastructure.Jobs
                         Body = bodyAr,
                         MissingFieldsJson = deliveryMan.MissingProfileFieldsJson,
                         LegalDisclaimer = DeliveryManProfileCompleteness.LegalDisclaimerAr,
+                        Type = "incompleteRegistration",
                         IsPushSent = false,
                         CreatedAt = DateTime.UtcNow
                     };

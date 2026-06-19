@@ -44,6 +44,7 @@ namespace Domain.InterFaces
         DbSet<OrderRating> OrderRatings { get; set; }
         DbSet<CustomerNotification> CustomerNotifications { get; set; }
         DbSet<AdditionalService> AdditionalServices { get; set; }
+        DbSet<DeliveryManWalletTransaction> DeliveryManWalletTransactions { get; set; }
 
         Task<Result> SaveChangesAsyncWithResult();
     }

@@ -210,13 +210,15 @@ namespace Domain.Models
                                         string? backDrivingLicenseImage
                                         )
         {
-            if (!deliveryTypeId.HasValue || !Enum.IsDefined(typeof(DeliveryType), deliveryTypeId.Value))
-                return Result.Failure("DeliveryTypeRequired");
+            // deliveryTypeId is deprecated (resident/citizen toggle removed). Only apply it when supplied & valid.
+            if (deliveryTypeId.HasValue && Enum.IsDefined(typeof(DeliveryType), deliveryTypeId.Value))
+            {
+                this.DeliveryType = (DeliveryType)deliveryTypeId.Value;
+            }
 
             if (!Enum.IsDefined(typeof(DeliveryLicenseType), deliveryLicenseTypeId))
                 return Result.Failure("DeliveryLicenseTypeRequired");
 
-            var deliveryType = (DeliveryType)deliveryTypeId.Value;
             var licenseType = (DeliveryLicenseType)deliveryLicenseTypeId;
 
             this.FullName = fullName;
@@ -230,7 +232,6 @@ namespace Domain.Models
             this.BirthDate = birthDate;
             this.FrontDrivingLicenseImagePath = frontDrivingLicenseImage;
             this.BackDrivingLicenseImagePath = backDrivingLicenseImage;
-            this.DeliveryType = deliveryType;
             this.DeliveryLicenseType = licenseType;
             return Result.Success();
         }
@@ -246,7 +247,8 @@ namespace Domain.Models
                                  string? frontInsuranceImagePath,
                                  string? backInsuranceImagePath,
                                  DateTime? inSuranceExpirationDate,
-                                 int vehicleOwnerTypeId)
+                                 int vehicleOwnerTypeId,
+                                 string? vehicleOwnerName = null)
         {
             var vehicle = DeliveryVehicle.Instance(vehicleTypeId,
                                                  vehicleBrandId,
@@ -259,7 +261,8 @@ namespace Domain.Models
                                                  frontInsuranceImagePath,
                                                  backInsuranceImagePath,
                                                  inSuranceExpirationDate,
-                                                 vehicleOwnerTypeId);
+                                                 vehicleOwnerTypeId,
+                                                 vehicleOwnerName);
 
             this.Vehicle = vehicle.Value;
             return Result.Success();

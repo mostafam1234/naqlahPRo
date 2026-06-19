@@ -14,6 +14,7 @@ namespace Infrastructure.MappingConfigurations
             builder.Property(x => x.Body).HasMaxLength(4000).IsRequired();
             builder.Property(x => x.MissingFieldsJson).HasMaxLength(4000).IsRequired();
             builder.Property(x => x.LegalDisclaimer).HasMaxLength(2000).IsRequired();
+            builder.Property(x => x.Type).HasMaxLength(100).IsRequired();
             builder.HasOne(x => x.DeliveryMan)
                 .WithMany()
                 .HasForeignKey(x => x.DeliveryManId)

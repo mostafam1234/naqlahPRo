@@ -16,7 +16,7 @@ namespace Application.Features.DeliveryManSection.Regestration.Commands
         public string CitizenName { get; set; } = string.Empty;
         public string IdentityNumber { get; set; } = string.Empty;
         public string FrontIdentityImage { get; set; } = string.Empty;
-        public string BackIdentityImage { get; set; } = string.Empty;
+        public string? BackIdentityImage { get; set; }
         public string BankAccountNumber { get; set; } = string.Empty;
 
         private class SaveDeliveryCarOwnerAsResidentCommandHandler :
@@ -53,8 +53,9 @@ namespace Application.Features.DeliveryManSection.Regestration.Commands
                 var frontImage = await mediaUploader.UploadFromBase64(request.FrontIdentityImage,
                                                                       deliveryFolder);
 
-                var backImage = await mediaUploader.UploadFromBase64(request.BackIdentityImage,
-                                                                      deliveryFolder);
+                string? backImage = null;
+                if (!string.IsNullOrWhiteSpace(request.BackIdentityImage))
+                    backImage = await mediaUploader.UploadFromBase64(request.BackIdentityImage, deliveryFolder);
 
                 var carOwnerResult = deliveryMan.SetDeliveryVehicleOwnerAsResident(request.CitizenName,
                                                                                  request.IdentityNumber,

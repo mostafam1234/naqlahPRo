@@ -18,7 +18,7 @@ namespace Application.Features.DeliveryManSection.Regestration.Commands
         public string? PersonalImage { get; set; }
         public string? IdentityExpirationDate { get; set; }
         public string? DrivingLicenseExpirationDate { get; set; }
-        public int DeliveryTypeId { get; set; }
+        public int? DeliveryTypeId { get; set; }
         public int DeliveryLicenseTypeId { get; set; }
         public string FrontDrivingLicenseImage { get; set; } = string.Empty;
         public string? BackDrivingLicenseImage { get; set; }

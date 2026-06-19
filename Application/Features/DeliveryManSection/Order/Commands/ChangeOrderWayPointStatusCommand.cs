@@ -55,16 +55,28 @@ namespace Application.Features.DeliveryManSection.Order.Commands
                 return Result.Failure("Delivery man not found");
             }
 
-            // Get the order with waypoints and status history
+            // Get the order with waypoints, payment methods and status history
             var order = await context.Orders
                 .Include(o => o.OrderWayPoints)
                 .Include(o => o.OrderStatusHistories)
+                .Include(o => o.PaymentMethods)
                 .AsTracking()
                 .FirstOrDefaultAsync(o => o.Id == request.OrderId && o.DeliveryManId == deliveryMan.Id, cancellationToken);
 
             if (order is null)
             {
                 return Result.Failure("Order not found or not assigned to you");
+            }
+
+            // Payment gate (canProceed): prepaid methods (Mada/Wallet) must be settled before the driver
+            // can progress the waypoint. COD settles after the photo upload, so it is not blocked here.
+            var hasPrepaidMethod = order.PaymentMethods.Any(pm =>
+                pm.PaymentMethodId == (int)PaymentMethodEnum.Online ||
+                pm.PaymentMethodId == (int)PaymentMethodEnum.Wallet);
+
+            if (hasPrepaidMethod && !order.IsPaid)
+            {
+                return Result.Failure("Cannot proceed until transport fee is settled");
             }
 
             // Find the specific waypoint

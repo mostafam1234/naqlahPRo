@@ -37,6 +37,24 @@ namespace Application.Features.DeliveryManSection.Order.Dtos
         public decimal Total { get; set; }
 
 
+        public decimal DriverNetAmount { get; set; }
+
+
+        public decimal TaxAmount { get; set; }
+
+
+        public decimal ServiceFeeAmount { get; set; }
+
+
+        public bool CanProceed { get; set; } = true;
+
+
+        public bool DriverConfirmedGoingToPickup { get; set; }
+
+
+        public bool ClientApprovedPickup { get; set; }
+
+
         public int CustomerId { get; set; }
 
 

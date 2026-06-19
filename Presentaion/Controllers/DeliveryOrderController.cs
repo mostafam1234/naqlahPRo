@@ -130,5 +130,53 @@ namespace Presentaion.Controllers
 
             return Ok();
         }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("CancelOrderByDriver/{orderId:int}")]
+        public async Task<IActionResult> CancelOrderByDriver(int orderId)
+        {
+            var result = await mediator.Send(new CancelOrderByDriverCommand { OrderId = orderId });
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+
+            return Ok(true);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("ConfirmGoingToPickup/{orderId:int}")]
+        public async Task<IActionResult> ConfirmGoingToPickup(int orderId)
+        {
+            var result = await mediator.Send(new ConfirmGoingToPickupCommand { OrderId = orderId });
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+
+            return Ok(true);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(bool), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("ConfirmPickupByDriver/{orderId:int}")]
+        public async Task<IActionResult> ConfirmPickupByDriver(int orderId)
+        {
+            var result = await mediator.Send(new ConfirmPickupByDriverCommand { OrderId = orderId });
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+
+            return Ok(true);
+        }
     }
 }

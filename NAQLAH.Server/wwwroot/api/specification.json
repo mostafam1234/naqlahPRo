@@ -2011,6 +2011,220 @@
         }
       }
     },
+    "/api/DeliveryMan/Wallet/Balance": {
+      "get": {
+        "tags": [
+          "DeliveryMan"
+        ],
+        "operationId": "DeliveryMan_WalletBalance",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryManWalletBalanceDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/DeliveryMan/Wallet/Transactions": {
+      "get": {
+        "tags": [
+          "DeliveryMan"
+        ],
+        "operationId": "DeliveryMan_WalletTransactions",
+        "parameters": [
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            },
+            "x-position": 1
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DeliveryManWalletTransactionDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/DeliveryMan/Wallet/Withdraw": {
+      "post": {
+        "tags": [
+          "DeliveryMan"
+        ],
+        "operationId": "DeliveryMan_WalletWithdraw",
+        "requestBody": {
+          "x-name": "request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeliveryManWithdrawRequestDto"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryManWithdrawResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/DeliveryMan/Notifications": {
+      "get": {
+        "tags": [
+          "DeliveryMan"
+        ],
+        "operationId": "DeliveryMan_Notifications",
+        "parameters": [
+          {
+            "name": "pageNumber",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 1
+            },
+            "x-position": 1
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 50
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryManNotificationsPageDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/DeliveryMan/Notifications/{notificationId}/Read": {
+      "post": {
+        "tags": [
+          "DeliveryMan"
+        ],
+        "operationId": "DeliveryMan_MarkNotificationRead",
+        "parameters": [
+          {
+            "name": "notificationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/DeliveryOrder/GetPendingOrdersWithinRadius": {
       "get": {
         "tags": [
@@ -2235,6 +2449,132 @@
         "responses": {
           "200": {
             "description": ""
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/DeliveryOrder/CancelOrderByDriver/{orderId}": {
+      "post": {
+        "tags": [
+          "DeliveryOrder"
+        ],
+        "operationId": "DeliveryOrder_CancelOrderByDriver",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/DeliveryOrder/ConfirmGoingToPickup/{orderId}": {
+      "post": {
+        "tags": [
+          "DeliveryOrder"
+        ],
+        "operationId": "DeliveryOrder_ConfirmGoingToPickup",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/DeliveryOrder/ConfirmPickupByDriver/{orderId}": {
+      "post": {
+        "tags": [
+          "DeliveryOrder"
+        ],
+        "operationId": "DeliveryOrder_ConfirmPickupByDriver",
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
           },
           "400": {
             "description": "",
@@ -9996,29 +10336,39 @@
             "type": "string"
           },
           "address": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "identityNumber": {
             "type": "string"
+          },
+          "dateOfBirth": {
+            "type": "string",
+            "nullable": true
           },
           "frontIdenitytImage": {
             "type": "string"
           },
           "backIdenitytImage": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "personalImage": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "identityExpirationDate": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "drivingLicenseExpirationDate": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "deliveryTypeId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "deliveryLicenseTypeId": {
             "type": "integer",
@@ -10028,7 +10378,8 @@
             "type": "string"
           },
           "backDrivingLicenseImage": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           }
         }
       },
@@ -10046,7 +10397,8 @@
             "type": "string"
           },
           "backIdentityImage": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "bankAccountNumber": {
             "type": "string"
@@ -10070,7 +10422,8 @@
             "type": "string"
           },
           "taxCertificateImage": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "bankAccountNumber": {
             "type": "string"
@@ -10091,10 +10444,12 @@
             "type": "string"
           },
           "backIdentityImage": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "rentContractImage": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "bankAccountNumber": {
             "type": "string"
@@ -10113,6 +10468,10 @@
             "type": "integer",
             "format": "int32"
           },
+          "vehicleOwnerName": {
+            "type": "string",
+            "nullable": true
+          },
           "licensePlateNumber": {
             "type": "string"
           },
@@ -10126,19 +10485,24 @@
             "type": "string"
           },
           "backLicenseImagePath": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "licenseExpirationDate": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "frontInsuranceImagePath": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "backInsuranceImagePath": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "inSuranceExpirationDate": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "vehicleOwnerTypeId": {
             "type": "integer",
@@ -10172,6 +10536,152 @@
           }
         }
       },
+      "DeliveryManWalletBalanceDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "balance": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "availableBalance": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "pendingBalance": {
+            "type": "number",
+            "format": "decimal"
+          }
+        }
+      },
+      "DeliveryManWalletTransactionDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "amount": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "type": {
+            "type": "string"
+          },
+          "transactionType": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "descriptionAr": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "orderId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "DeliveryManWithdrawResponseDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "balance": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "pendingBalance": {
+            "type": "number",
+            "format": "decimal"
+          }
+        }
+      },
+      "DeliveryManWithdrawRequestDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "amount": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "bankAccountId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "DeliveryManNotificationsPageDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DeliveryManNotificationDto"
+            }
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "DeliveryManNotificationDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "type": "string"
+          },
+          "titleAr": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          },
+          "bodyAr": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "notificationType": {
+            "type": "string"
+          },
+          "isRead": {
+            "type": "boolean"
+          },
+          "orderId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
       "PendingOrderDto": {
         "type": "object",
         "additionalProperties": false,
@@ -10186,6 +10696,21 @@
           "total": {
             "type": "number",
             "format": "decimal"
+          },
+          "driverNetAmount": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "taxAmount": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "serviceFeeAmount": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "canProceed": {
+            "type": "boolean"
           },
           "distance": {
             "type": "number",
@@ -10263,6 +10788,27 @@
           "total": {
             "type": "number",
             "format": "decimal"
+          },
+          "driverNetAmount": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "taxAmount": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "serviceFeeAmount": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "canProceed": {
+            "type": "boolean"
+          },
+          "driverConfirmedGoingToPickup": {
+            "type": "boolean"
+          },
+          "clientApprovedPickup": {
+            "type": "boolean"
           },
           "customerId": {
             "type": "integer",
@@ -10464,6 +11010,27 @@
           "total": {
             "type": "number",
             "format": "decimal"
+          },
+          "driverNetAmount": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "taxAmount": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "serviceFeeAmount": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "canProceed": {
+            "type": "boolean"
+          },
+          "driverConfirmedGoingToPickup": {
+            "type": "boolean"
+          },
+          "clientApprovedPickup": {
+            "type": "boolean"
           },
           "customerId": {
             "type": "integer",

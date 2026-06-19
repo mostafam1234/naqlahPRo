@@ -84,6 +84,12 @@ namespace Application.Features.DeliveryManSection.Order.Queries
                     OrderStatus = (int)order.OrderStatus,
                     OrderType = (int)order.OrderType,
                     Total = order.Total,
+                    DriverNetAmount = order.Total - order.TaxAmount - order.ServiceFee,
+                    TaxAmount = order.TaxAmount,
+                    ServiceFeeAmount = order.ServiceFee,
+                    CanProceed = order.IsPaid,
+                    DriverConfirmedGoingToPickup = order.DriverConfirmedGoingToPickup,
+                    ClientApprovedPickup = order.ClientApprovedPickup,
                     CustomerId = order.CustomerId,
                     WayPoints = order.OrderWayPoints.Select(wp => new WayPoint
                     {

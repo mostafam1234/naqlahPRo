@@ -3199,6 +3199,307 @@ export class DeliveryManClient {
         }
         return _observableOf(null as any);
     }
+
+    walletBalance(): Observable<DeliveryManWalletBalanceDto> {
+        let url_ = this.baseUrl + "/api/DeliveryMan/Wallet/Balance";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processWalletBalance(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processWalletBalance(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<DeliveryManWalletBalanceDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<DeliveryManWalletBalanceDto>;
+        }));
+    }
+
+    protected processWalletBalance(response: HttpResponseBase): Observable<DeliveryManWalletBalanceDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = DeliveryManWalletBalanceDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    walletTransactions(pageNumber?: number | undefined, pageSize?: number | undefined): Observable<DeliveryManWalletTransactionDto[]> {
+        let url_ = this.baseUrl + "/api/DeliveryMan/Wallet/Transactions?";
+        if (pageNumber === null)
+            throw new Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "pageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "pageSize=" + encodeURIComponent("" + pageSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processWalletTransactions(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processWalletTransactions(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<DeliveryManWalletTransactionDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<DeliveryManWalletTransactionDto[]>;
+        }));
+    }
+
+    protected processWalletTransactions(response: HttpResponseBase): Observable<DeliveryManWalletTransactionDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(DeliveryManWalletTransactionDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    walletWithdraw(request: DeliveryManWithdrawRequestDto): Observable<DeliveryManWithdrawResponseDto> {
+        let url_ = this.baseUrl + "/api/DeliveryMan/Wallet/Withdraw";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(request);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processWalletWithdraw(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processWalletWithdraw(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<DeliveryManWithdrawResponseDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<DeliveryManWithdrawResponseDto>;
+        }));
+    }
+
+    protected processWalletWithdraw(response: HttpResponseBase): Observable<DeliveryManWithdrawResponseDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = DeliveryManWithdrawResponseDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    notifications(pageNumber?: number | undefined, pageSize?: number | undefined): Observable<DeliveryManNotificationsPageDto> {
+        let url_ = this.baseUrl + "/api/DeliveryMan/Notifications?";
+        if (pageNumber === null)
+            throw new Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "pageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "pageSize=" + encodeURIComponent("" + pageSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processNotifications(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processNotifications(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<DeliveryManNotificationsPageDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<DeliveryManNotificationsPageDto>;
+        }));
+    }
+
+    protected processNotifications(response: HttpResponseBase): Observable<DeliveryManNotificationsPageDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = DeliveryManNotificationsPageDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    markNotificationRead(notificationId: number): Observable<void> {
+        let url_ = this.baseUrl + "/api/DeliveryMan/Notifications/{notificationId}/Read";
+        if (notificationId === undefined || notificationId === null)
+            throw new Error("The parameter 'notificationId' must be defined.");
+        url_ = url_.replace("{notificationId}", encodeURIComponent("" + notificationId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processMarkNotificationRead(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processMarkNotificationRead(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processMarkNotificationRead(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 @Injectable({
@@ -3565,6 +3866,183 @@ export class DeliveryOrderClient {
         if (status === 200) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             return _observableOf(null as any);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    cancelOrderByDriver(orderId: number): Observable<boolean> {
+        let url_ = this.baseUrl + "/api/DeliveryOrder/CancelOrderByDriver/{orderId}";
+        if (orderId === undefined || orderId === null)
+            throw new Error("The parameter 'orderId' must be defined.");
+        url_ = url_.replace("{orderId}", encodeURIComponent("" + orderId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCancelOrderByDriver(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCancelOrderByDriver(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<boolean>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<boolean>;
+        }));
+    }
+
+    protected processCancelOrderByDriver(response: HttpResponseBase): Observable<boolean> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    confirmGoingToPickup(orderId: number): Observable<boolean> {
+        let url_ = this.baseUrl + "/api/DeliveryOrder/ConfirmGoingToPickup/{orderId}";
+        if (orderId === undefined || orderId === null)
+            throw new Error("The parameter 'orderId' must be defined.");
+        url_ = url_.replace("{orderId}", encodeURIComponent("" + orderId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processConfirmGoingToPickup(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processConfirmGoingToPickup(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<boolean>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<boolean>;
+        }));
+    }
+
+    protected processConfirmGoingToPickup(response: HttpResponseBase): Observable<boolean> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    confirmPickupByDriver(orderId: number): Observable<boolean> {
+        let url_ = this.baseUrl + "/api/DeliveryOrder/ConfirmPickupByDriver/{orderId}";
+        if (orderId === undefined || orderId === null)
+            throw new Error("The parameter 'orderId' must be defined.");
+        url_ = url_.replace("{orderId}", encodeURIComponent("" + orderId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processConfirmPickupByDriver(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processConfirmPickupByDriver(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<boolean>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<boolean>;
+        }));
+    }
+
+    protected processConfirmPickupByDriver(response: HttpResponseBase): Observable<boolean> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
             }));
         } else if (status === 400) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
@@ -14044,23 +14522,25 @@ export class MaidTypeDto {
 
 export class DeliveryPersonalInfoRequest {
     fullName!: string;
-    address!: string;
+    address!: string | null;
     identityNumber!: string;
+    dateOfBirth!: string | null;
     frontIdenitytImage!: string;
-    backIdenitytImage!: string;
-    personalImage!: string;
-    identityExpirationDate!: string;
-    drivingLicenseExpirationDate!: string;
-    deliveryTypeId!: number;
+    backIdenitytImage!: string | null;
+    personalImage!: string | null;
+    identityExpirationDate!: string | null;
+    drivingLicenseExpirationDate!: string | null;
+    deliveryTypeId!: number | null;
     deliveryLicenseTypeId!: number;
     frontDrivingLicenseImage!: string;
-    backDrivingLicenseImage!: string;
+    backDrivingLicenseImage!: string | null;
 
     init(_data?: any) {
         if (_data) {
             this.fullName = _data["fullName"] !== undefined ? _data["fullName"] : <any>null;
             this.address = _data["address"] !== undefined ? _data["address"] : <any>null;
             this.identityNumber = _data["identityNumber"] !== undefined ? _data["identityNumber"] : <any>null;
+            this.dateOfBirth = _data["dateOfBirth"] !== undefined ? _data["dateOfBirth"] : <any>null;
             this.frontIdenitytImage = _data["frontIdenitytImage"] !== undefined ? _data["frontIdenitytImage"] : <any>null;
             this.backIdenitytImage = _data["backIdenitytImage"] !== undefined ? _data["backIdenitytImage"] : <any>null;
             this.personalImage = _data["personalImage"] !== undefined ? _data["personalImage"] : <any>null;
@@ -14085,6 +14565,7 @@ export class DeliveryPersonalInfoRequest {
         data["fullName"] = this.fullName !== undefined ? this.fullName : <any>null;
         data["address"] = this.address !== undefined ? this.address : <any>null;
         data["identityNumber"] = this.identityNumber !== undefined ? this.identityNumber : <any>null;
+        data["dateOfBirth"] = this.dateOfBirth !== undefined ? this.dateOfBirth : <any>null;
         data["frontIdenitytImage"] = this.frontIdenitytImage !== undefined ? this.frontIdenitytImage : <any>null;
         data["backIdenitytImage"] = this.backIdenitytImage !== undefined ? this.backIdenitytImage : <any>null;
         data["personalImage"] = this.personalImage !== undefined ? this.personalImage : <any>null;
@@ -14102,7 +14583,7 @@ export class ResidentRequest {
     citizenName!: string;
     identityNumber!: string;
     frontIdentityImage!: string;
-    backIdentityImage!: string;
+    backIdentityImage!: string | null;
     bankAccountNumber!: string;
 
     init(_data?: any) {
@@ -14138,7 +14619,7 @@ export class CompanyRequest {
     commercialRecordNumber!: string;
     recordImagePath!: string;
     taxNumber!: string;
-    taxCertificateImage!: string;
+    taxCertificateImage!: string | null;
     bankAccountNumber!: string;
 
     init(_data?: any) {
@@ -14175,8 +14656,8 @@ export class RenterRequest {
     citizenName!: string;
     identityNumber!: string;
     frontIdentityImage!: string;
-    backIdentityImage!: string;
-    rentContractImage!: string;
+    backIdentityImage!: string | null;
+    rentContractImage!: string | null;
     bankAccountNumber!: string;
 
     init(_data?: any) {
@@ -14212,21 +14693,23 @@ export class RenterRequest {
 export class AddDeliveryVehicleRequest {
     vehicleTypeId!: number;
     vehicleBrandId!: number;
+    vehicleOwnerName!: string | null;
     licensePlateNumber!: string;
     frontImagePath!: string;
     sideImagePath!: string;
     frontLicenseImagePath!: string;
-    backLicenseImagePath!: string;
-    licenseExpirationDate!: string;
-    frontInsuranceImagePath!: string;
-    backInsuranceImagePath!: string;
-    inSuranceExpirationDate!: string;
+    backLicenseImagePath!: string | null;
+    licenseExpirationDate!: string | null;
+    frontInsuranceImagePath!: string | null;
+    backInsuranceImagePath!: string | null;
+    inSuranceExpirationDate!: string | null;
     vehicleOwnerTypeId!: number;
 
     init(_data?: any) {
         if (_data) {
             this.vehicleTypeId = _data["vehicleTypeId"] !== undefined ? _data["vehicleTypeId"] : <any>null;
             this.vehicleBrandId = _data["vehicleBrandId"] !== undefined ? _data["vehicleBrandId"] : <any>null;
+            this.vehicleOwnerName = _data["vehicleOwnerName"] !== undefined ? _data["vehicleOwnerName"] : <any>null;
             this.licensePlateNumber = _data["licensePlateNumber"] !== undefined ? _data["licensePlateNumber"] : <any>null;
             this.frontImagePath = _data["frontImagePath"] !== undefined ? _data["frontImagePath"] : <any>null;
             this.sideImagePath = _data["sideImagePath"] !== undefined ? _data["sideImagePath"] : <any>null;
@@ -14251,6 +14734,7 @@ export class AddDeliveryVehicleRequest {
         data = typeof data === 'object' ? data : {};
         data["vehicleTypeId"] = this.vehicleTypeId !== undefined ? this.vehicleTypeId : <any>null;
         data["vehicleBrandId"] = this.vehicleBrandId !== undefined ? this.vehicleBrandId : <any>null;
+        data["vehicleOwnerName"] = this.vehicleOwnerName !== undefined ? this.vehicleOwnerName : <any>null;
         data["licensePlateNumber"] = this.licensePlateNumber !== undefined ? this.licensePlateNumber : <any>null;
         data["frontImagePath"] = this.frontImagePath !== undefined ? this.frontImagePath : <any>null;
         data["sideImagePath"] = this.sideImagePath !== undefined ? this.sideImagePath : <any>null;
@@ -14317,10 +14801,235 @@ export class VehicleTypeDto {
     }
 }
 
+export class DeliveryManWalletBalanceDto {
+    balance!: number;
+    availableBalance!: number;
+    pendingBalance!: number;
+
+    init(_data?: any) {
+        if (_data) {
+            this.balance = _data["balance"] !== undefined ? _data["balance"] : <any>null;
+            this.availableBalance = _data["availableBalance"] !== undefined ? _data["availableBalance"] : <any>null;
+            this.pendingBalance = _data["pendingBalance"] !== undefined ? _data["pendingBalance"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): DeliveryManWalletBalanceDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeliveryManWalletBalanceDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["balance"] = this.balance !== undefined ? this.balance : <any>null;
+        data["availableBalance"] = this.availableBalance !== undefined ? this.availableBalance : <any>null;
+        data["pendingBalance"] = this.pendingBalance !== undefined ? this.pendingBalance : <any>null;
+        return data;
+    }
+}
+
+export class DeliveryManWalletTransactionDto {
+    id!: number;
+    amount!: number;
+    type!: string;
+    transactionType!: string;
+    description!: string;
+    descriptionAr!: string;
+    status!: string;
+    orderId!: number | null;
+    createdAt!: Date;
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.amount = _data["amount"] !== undefined ? _data["amount"] : <any>null;
+            this.type = _data["type"] !== undefined ? _data["type"] : <any>null;
+            this.transactionType = _data["transactionType"] !== undefined ? _data["transactionType"] : <any>null;
+            this.description = _data["description"] !== undefined ? _data["description"] : <any>null;
+            this.descriptionAr = _data["descriptionAr"] !== undefined ? _data["descriptionAr"] : <any>null;
+            this.status = _data["status"] !== undefined ? _data["status"] : <any>null;
+            this.orderId = _data["orderId"] !== undefined ? _data["orderId"] : <any>null;
+            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>null;
+        }
+    }
+
+    static fromJS(data: any): DeliveryManWalletTransactionDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeliveryManWalletTransactionDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["amount"] = this.amount !== undefined ? this.amount : <any>null;
+        data["type"] = this.type !== undefined ? this.type : <any>null;
+        data["transactionType"] = this.transactionType !== undefined ? this.transactionType : <any>null;
+        data["description"] = this.description !== undefined ? this.description : <any>null;
+        data["descriptionAr"] = this.descriptionAr !== undefined ? this.descriptionAr : <any>null;
+        data["status"] = this.status !== undefined ? this.status : <any>null;
+        data["orderId"] = this.orderId !== undefined ? this.orderId : <any>null;
+        data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>null;
+        return data;
+    }
+}
+
+export class DeliveryManWithdrawResponseDto {
+    success!: boolean;
+    message!: string;
+    balance!: number;
+    pendingBalance!: number;
+
+    init(_data?: any) {
+        if (_data) {
+            this.success = _data["success"] !== undefined ? _data["success"] : <any>null;
+            this.message = _data["message"] !== undefined ? _data["message"] : <any>null;
+            this.balance = _data["balance"] !== undefined ? _data["balance"] : <any>null;
+            this.pendingBalance = _data["pendingBalance"] !== undefined ? _data["pendingBalance"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): DeliveryManWithdrawResponseDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeliveryManWithdrawResponseDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["success"] = this.success !== undefined ? this.success : <any>null;
+        data["message"] = this.message !== undefined ? this.message : <any>null;
+        data["balance"] = this.balance !== undefined ? this.balance : <any>null;
+        data["pendingBalance"] = this.pendingBalance !== undefined ? this.pendingBalance : <any>null;
+        return data;
+    }
+}
+
+export class DeliveryManWithdrawRequestDto {
+    amount!: number;
+    bankAccountId!: number;
+
+    init(_data?: any) {
+        if (_data) {
+            this.amount = _data["amount"] !== undefined ? _data["amount"] : <any>null;
+            this.bankAccountId = _data["bankAccountId"] !== undefined ? _data["bankAccountId"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): DeliveryManWithdrawRequestDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeliveryManWithdrawRequestDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["amount"] = this.amount !== undefined ? this.amount : <any>null;
+        data["bankAccountId"] = this.bankAccountId !== undefined ? this.bankAccountId : <any>null;
+        return data;
+    }
+}
+
+export class DeliveryManNotificationsPageDto {
+    items!: DeliveryManNotificationDto[];
+    totalCount!: number;
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(DeliveryManNotificationDto.fromJS(item));
+            }
+            else {
+                this.items = <any>null;
+            }
+            this.totalCount = _data["totalCount"] !== undefined ? _data["totalCount"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): DeliveryManNotificationsPageDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeliveryManNotificationsPageDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["totalCount"] = this.totalCount !== undefined ? this.totalCount : <any>null;
+        return data;
+    }
+}
+
+export class DeliveryManNotificationDto {
+    id!: number;
+    title!: string;
+    titleAr!: string;
+    body!: string;
+    bodyAr!: string;
+    type!: string;
+    notificationType!: string;
+    isRead!: boolean;
+    orderId!: number | null;
+    createdAt!: Date;
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.title = _data["title"] !== undefined ? _data["title"] : <any>null;
+            this.titleAr = _data["titleAr"] !== undefined ? _data["titleAr"] : <any>null;
+            this.body = _data["body"] !== undefined ? _data["body"] : <any>null;
+            this.bodyAr = _data["bodyAr"] !== undefined ? _data["bodyAr"] : <any>null;
+            this.type = _data["type"] !== undefined ? _data["type"] : <any>null;
+            this.notificationType = _data["notificationType"] !== undefined ? _data["notificationType"] : <any>null;
+            this.isRead = _data["isRead"] !== undefined ? _data["isRead"] : <any>null;
+            this.orderId = _data["orderId"] !== undefined ? _data["orderId"] : <any>null;
+            this.createdAt = _data["createdAt"] ? new Date(_data["createdAt"].toString()) : <any>null;
+        }
+    }
+
+    static fromJS(data: any): DeliveryManNotificationDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeliveryManNotificationDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["title"] = this.title !== undefined ? this.title : <any>null;
+        data["titleAr"] = this.titleAr !== undefined ? this.titleAr : <any>null;
+        data["body"] = this.body !== undefined ? this.body : <any>null;
+        data["bodyAr"] = this.bodyAr !== undefined ? this.bodyAr : <any>null;
+        data["type"] = this.type !== undefined ? this.type : <any>null;
+        data["notificationType"] = this.notificationType !== undefined ? this.notificationType : <any>null;
+        data["isRead"] = this.isRead !== undefined ? this.isRead : <any>null;
+        data["orderId"] = this.orderId !== undefined ? this.orderId : <any>null;
+        data["createdAt"] = this.createdAt ? this.createdAt.toISOString() : <any>null;
+        return data;
+    }
+}
+
 export class PendingOrderDto {
     id!: number;
     orderNumber!: string;
     total!: number;
+    driverNetAmount!: number;
+    taxAmount!: number;
+    serviceFeeAmount!: number;
+    canProceed!: boolean;
     distance!: number;
     pickupLatitude!: number;
     pickupLongitude!: number;
@@ -14338,6 +15047,10 @@ export class PendingOrderDto {
             this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
             this.orderNumber = _data["orderNumber"] !== undefined ? _data["orderNumber"] : <any>null;
             this.total = _data["total"] !== undefined ? _data["total"] : <any>null;
+            this.driverNetAmount = _data["driverNetAmount"] !== undefined ? _data["driverNetAmount"] : <any>null;
+            this.taxAmount = _data["taxAmount"] !== undefined ? _data["taxAmount"] : <any>null;
+            this.serviceFeeAmount = _data["serviceFeeAmount"] !== undefined ? _data["serviceFeeAmount"] : <any>null;
+            this.canProceed = _data["canProceed"] !== undefined ? _data["canProceed"] : <any>null;
             this.distance = _data["distance"] !== undefined ? _data["distance"] : <any>null;
             this.pickupLatitude = _data["pickupLatitude"] !== undefined ? _data["pickupLatitude"] : <any>null;
             this.pickupLongitude = _data["pickupLongitude"] !== undefined ? _data["pickupLongitude"] : <any>null;
@@ -14371,6 +15084,10 @@ export class PendingOrderDto {
         data["id"] = this.id !== undefined ? this.id : <any>null;
         data["orderNumber"] = this.orderNumber !== undefined ? this.orderNumber : <any>null;
         data["total"] = this.total !== undefined ? this.total : <any>null;
+        data["driverNetAmount"] = this.driverNetAmount !== undefined ? this.driverNetAmount : <any>null;
+        data["taxAmount"] = this.taxAmount !== undefined ? this.taxAmount : <any>null;
+        data["serviceFeeAmount"] = this.serviceFeeAmount !== undefined ? this.serviceFeeAmount : <any>null;
+        data["canProceed"] = this.canProceed !== undefined ? this.canProceed : <any>null;
         data["distance"] = this.distance !== undefined ? this.distance : <any>null;
         data["pickupLatitude"] = this.pickupLatitude !== undefined ? this.pickupLatitude : <any>null;
         data["pickupLongitude"] = this.pickupLongitude !== undefined ? this.pickupLongitude : <any>null;
@@ -14419,6 +15136,12 @@ export class OrderDetailsResponse {
     orderStatus!: OrderStatus;
     orderType!: OrderType;
     total!: number;
+    driverNetAmount!: number;
+    taxAmount!: number;
+    serviceFeeAmount!: number;
+    canProceed!: boolean;
+    driverConfirmedGoingToPickup!: boolean;
+    clientApprovedPickup!: boolean;
     customerId!: number;
     wayPoints!: OrderWayPointResponse[];
     orderDetails!: OrderDetailItemResponse[];
@@ -14436,6 +15159,12 @@ export class OrderDetailsResponse {
             this.orderStatus = _data["orderStatus"] !== undefined ? _data["orderStatus"] : <any>null;
             this.orderType = _data["orderType"] !== undefined ? _data["orderType"] : <any>null;
             this.total = _data["total"] !== undefined ? _data["total"] : <any>null;
+            this.driverNetAmount = _data["driverNetAmount"] !== undefined ? _data["driverNetAmount"] : <any>null;
+            this.taxAmount = _data["taxAmount"] !== undefined ? _data["taxAmount"] : <any>null;
+            this.serviceFeeAmount = _data["serviceFeeAmount"] !== undefined ? _data["serviceFeeAmount"] : <any>null;
+            this.canProceed = _data["canProceed"] !== undefined ? _data["canProceed"] : <any>null;
+            this.driverConfirmedGoingToPickup = _data["driverConfirmedGoingToPickup"] !== undefined ? _data["driverConfirmedGoingToPickup"] : <any>null;
+            this.clientApprovedPickup = _data["clientApprovedPickup"] !== undefined ? _data["clientApprovedPickup"] : <any>null;
             this.customerId = _data["customerId"] !== undefined ? _data["customerId"] : <any>null;
             if (Array.isArray(_data["wayPoints"])) {
                 this.wayPoints = [] as any;
@@ -14490,6 +15219,12 @@ export class OrderDetailsResponse {
         data["orderStatus"] = this.orderStatus !== undefined ? this.orderStatus : <any>null;
         data["orderType"] = this.orderType !== undefined ? this.orderType : <any>null;
         data["total"] = this.total !== undefined ? this.total : <any>null;
+        data["driverNetAmount"] = this.driverNetAmount !== undefined ? this.driverNetAmount : <any>null;
+        data["taxAmount"] = this.taxAmount !== undefined ? this.taxAmount : <any>null;
+        data["serviceFeeAmount"] = this.serviceFeeAmount !== undefined ? this.serviceFeeAmount : <any>null;
+        data["canProceed"] = this.canProceed !== undefined ? this.canProceed : <any>null;
+        data["driverConfirmedGoingToPickup"] = this.driverConfirmedGoingToPickup !== undefined ? this.driverConfirmedGoingToPickup : <any>null;
+        data["clientApprovedPickup"] = this.clientApprovedPickup !== undefined ? this.clientApprovedPickup : <any>null;
         data["customerId"] = this.customerId !== undefined ? this.customerId : <any>null;
         if (Array.isArray(this.wayPoints)) {
             data["wayPoints"] = [];
@@ -14691,6 +15426,12 @@ export class AcceptedOrder {
     orderStatus!: number;
     orderType!: number;
     total!: number;
+    driverNetAmount!: number;
+    taxAmount!: number;
+    serviceFeeAmount!: number;
+    canProceed!: boolean;
+    driverConfirmedGoingToPickup!: boolean;
+    clientApprovedPickup!: boolean;
     customerId!: number;
     wayPoints!: WayPoint[];
     orderDetails!: OrderDetail[];
@@ -14711,6 +15452,12 @@ export class AcceptedOrder {
             this.orderStatus = _data["orderStatus"] !== undefined ? _data["orderStatus"] : <any>null;
             this.orderType = _data["orderType"] !== undefined ? _data["orderType"] : <any>null;
             this.total = _data["total"] !== undefined ? _data["total"] : <any>null;
+            this.driverNetAmount = _data["driverNetAmount"] !== undefined ? _data["driverNetAmount"] : <any>null;
+            this.taxAmount = _data["taxAmount"] !== undefined ? _data["taxAmount"] : <any>null;
+            this.serviceFeeAmount = _data["serviceFeeAmount"] !== undefined ? _data["serviceFeeAmount"] : <any>null;
+            this.canProceed = _data["canProceed"] !== undefined ? _data["canProceed"] : <any>null;
+            this.driverConfirmedGoingToPickup = _data["driverConfirmedGoingToPickup"] !== undefined ? _data["driverConfirmedGoingToPickup"] : <any>null;
+            this.clientApprovedPickup = _data["clientApprovedPickup"] !== undefined ? _data["clientApprovedPickup"] : <any>null;
             this.customerId = _data["customerId"] !== undefined ? _data["customerId"] : <any>null;
             if (Array.isArray(_data["wayPoints"])) {
                 this.wayPoints = [] as any;
@@ -14768,6 +15515,12 @@ export class AcceptedOrder {
         data["orderStatus"] = this.orderStatus !== undefined ? this.orderStatus : <any>null;
         data["orderType"] = this.orderType !== undefined ? this.orderType : <any>null;
         data["total"] = this.total !== undefined ? this.total : <any>null;
+        data["driverNetAmount"] = this.driverNetAmount !== undefined ? this.driverNetAmount : <any>null;
+        data["taxAmount"] = this.taxAmount !== undefined ? this.taxAmount : <any>null;
+        data["serviceFeeAmount"] = this.serviceFeeAmount !== undefined ? this.serviceFeeAmount : <any>null;
+        data["canProceed"] = this.canProceed !== undefined ? this.canProceed : <any>null;
+        data["driverConfirmedGoingToPickup"] = this.driverConfirmedGoingToPickup !== undefined ? this.driverConfirmedGoingToPickup : <any>null;
+        data["clientApprovedPickup"] = this.clientApprovedPickup !== undefined ? this.clientApprovedPickup : <any>null;
         data["customerId"] = this.customerId !== undefined ? this.customerId : <any>null;
         if (Array.isArray(this.wayPoints)) {
             data["wayPoints"] = [];

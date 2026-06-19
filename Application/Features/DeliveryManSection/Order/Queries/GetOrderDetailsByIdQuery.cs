@@ -20,6 +20,12 @@ namespace Application.Features.DeliveryManSection.Order.Queries
         public OrderStatus OrderStatus { get; set; }
         public OrderType OrderType { get; set; }
         public decimal Total { get; set; }
+        public decimal DriverNetAmount { get; set; }
+        public decimal TaxAmount { get; set; }
+        public decimal ServiceFeeAmount { get; set; }
+        public bool CanProceed { get; set; } = true;
+        public bool DriverConfirmedGoingToPickup { get; set; }
+        public bool ClientApprovedPickup { get; set; }
         public int CustomerId { get; set; }
         public List<OrderWayPointResponse> WayPoints { get; set; } = new();
         public List<OrderDetailItemResponse> OrderDetails { get; set; } = new();
@@ -132,6 +138,12 @@ namespace Application.Features.DeliveryManSection.Order.Queries
                 OrderStatus = order.OrderStatus,
                 OrderType = order.OrderType,
                 Total = order.Total,
+                DriverNetAmount = order.Total - order.TaxAmount - order.ServiceFee,
+                TaxAmount = order.TaxAmount,
+                ServiceFeeAmount = order.ServiceFee,
+                CanProceed = order.IsPaid,
+                DriverConfirmedGoingToPickup = order.DriverConfirmedGoingToPickup,
+                ClientApprovedPickup = order.ClientApprovedPickup,
                 CustomerId = order.CustomerId,
                 OrderPackageArabicDescription = order.OrderPackage?.ArabicDescripton ?? string.Empty,
                 OrderPackageEnglishDescription = order.OrderPackage?.EnglishDescription ?? string.Empty,

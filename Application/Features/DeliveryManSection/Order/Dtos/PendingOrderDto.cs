@@ -18,6 +18,10 @@ namespace Application.Features.DeliveryManSection.Order.Dtos
         public int Id { get; set; }
         public string OrderNumber { get; set; }
         public decimal Total { get; set; }
+        public decimal DriverNetAmount { get; set; }
+        public decimal TaxAmount { get; set; }
+        public decimal ServiceFeeAmount { get; set; }
+        public bool CanProceed { get; set; } = true;
         public double Distance { get; set; } // Distance in kilometers from delivery man
         public double PickupLatitude { get; set; }
         public double PickupLongitude { get; set; }
