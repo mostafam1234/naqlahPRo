@@ -34,6 +34,8 @@ namespace Domain.InterFaces
         DbSet<Neighborhood> Neighborhoods { get; set; }
         DbSet<WalletTransctions> WalletTransctions { get; set; }
         DbSet<Notification> Notifications { get; set; }
+        DbSet<CaptainNotification> CaptainNotifications { get; set; }
+        DbSet<DeliveryManActiveHistory> DeliveryManActiveHistories { get; set; }
         DbSet<Complain> Complains { get; set; }
         DbSet<Suggestion> Suggestions { get; set; }
         DbSet<AuditLog> AuditLogs { get; set; }

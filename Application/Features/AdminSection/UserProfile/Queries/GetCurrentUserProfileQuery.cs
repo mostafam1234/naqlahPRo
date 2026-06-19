@@ -29,7 +29,7 @@ namespace Application.Features.AdminSection.UserProfile.Queries
             {
                 if (_userSession.UserId == 0)
                 {
-                    return Result.Failure<UserProfileDto>("User not authenticated");
+                    return Result.Failure<UserProfileDto>("UserNotAuthenticated");
                 }
 
                 var user = await _context.Users
@@ -37,7 +37,7 @@ namespace Application.Features.AdminSection.UserProfile.Queries
 
                 if (user == null)
                 {
-                    return Result.Failure<UserProfileDto>("User not found");
+                    return Result.Failure<UserProfileDto>("UserNotFound");
                 }
 
                 // Get user role from UserRoles table

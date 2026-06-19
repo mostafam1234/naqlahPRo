@@ -33,7 +33,7 @@ namespace Application.Features.AdminSection.MainCategoryFeatures.Commands
                 var category = await _context.MainCategories.AsTracking().FirstOrDefaultAsync(x => x.Id == command.Id, cancellationToken);
                 if (category == null)
                 {
-                    return Result.Failure<int>("Category Not Found");
+                    return Result.Failure<int>("CategoryNotFound");
                 }
 
                 string imagePath = category.ImagePath;
@@ -46,12 +46,12 @@ namespace Application.Features.AdminSection.MainCategoryFeatures.Commands
                         imagePath = await _mediaUploader.UploadFromBase64(command.ImageBase64, "main-categories");
                         if (string.IsNullOrWhiteSpace(imagePath))
                         {
-                            return Result.Failure<int>("Failed to upload image");
+                            return Result.Failure<int>("FailedToUploadImage");
                         }
                     }
                     catch (Exception ex)
                     {
-                        return Result.Failure<int>($"Failed to upload image: {ex.Message}");
+                        return Result.Failure<int>("FailedToUploadImage");
                     }
                 }
 

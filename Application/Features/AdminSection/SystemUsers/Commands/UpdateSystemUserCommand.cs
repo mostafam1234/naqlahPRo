@@ -42,7 +42,7 @@ namespace Application.Features.AdminSection.SystemUsers.Commands
 
                 if (user == null)
                 {
-                    return Result.Failure<int>("المستخدم غير موجود");
+                    return Result.Failure<int>("UserNotFound");
                 }
 
                 // Check if email is being changed and if new email already exists
@@ -53,7 +53,7 @@ namespace Application.Features.AdminSection.SystemUsers.Commands
 
                     if (isEmailExists)
                     {
-                        return Result.Failure<int>("البريد الإلكتروني مستخدم بالفعل");
+                        return Result.Failure<int>("EmailAlreadyExists");
                     }
                     user.Email = command.Email;
                 }
@@ -66,7 +66,7 @@ namespace Application.Features.AdminSection.SystemUsers.Commands
 
                     if (isPhoneExists)
                     {
-                        return Result.Failure<int>("رقم الهاتف مستخدم بالفعل");
+                        return Result.Failure<int>("PhoneNumberAlreadyExists");
                     }
                     user.PhoneNumber = command.PhoneNumber;
                 }
@@ -82,7 +82,7 @@ namespace Application.Features.AdminSection.SystemUsers.Commands
                     {
                         var errors = passwordResult.Errors.ToList();
                         var errorMessage = string.Join(", ", errors.Select(e => e.Description));
-                        return Result.Failure<int>($"فشل في تحديث كلمة المرور: {errorMessage}");
+                        return Result.Failure<int>("FailedToUpdatePassword");
                     }
                 }
 
@@ -90,7 +90,7 @@ namespace Application.Features.AdminSection.SystemUsers.Commands
                 var newRole = await _context.Roles.FirstOrDefaultAsync(x => x.Id == command.RoleId, cancellationToken);
                 if (newRole == null)
                 {
-                    return Result.Failure<int>("الدور المحدد غير موجود");
+                    return Result.Failure<int>("RoleNotFound");
                 }
 
                 var existingUserRoles = await _context.UserRoles

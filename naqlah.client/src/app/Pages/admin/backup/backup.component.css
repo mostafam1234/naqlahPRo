@@ -1,4 +1,4 @@
-/* Backup page – full width, project theme (primary teal, neutral) */
+/* Backup page — colors from theme (src/theme/colors.json) */
 .backup-page {
   font-family: 'Cairo', 'Poppins', sans-serif;
   width: 100%;
@@ -11,7 +11,7 @@
 
 /* Card */
 .backup-card {
-  background: #fff;
+  background: var(--shell-surface);
   border-radius: 1rem;
   border: 1px solid #e5e5e5;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
@@ -20,8 +20,8 @@
 }
 
 .backup-card:hover {
-  border-color: rgba(20, 184, 166, 0.2);
-  box-shadow: 0 4px 12px rgba(15, 118, 110, 0.08);
+  border-color: color-mix(in srgb, var(--color-primary-500) 20%, transparent);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--color-primary-700) 8%, transparent);
 }
 
 .backup-card-header {
@@ -29,8 +29,8 @@
   align-items: flex-start;
   gap: 0.75rem;
   padding: 1.25rem 1.5rem;
-  background: linear-gradient(to left, #f0fdfa, #fff);
-  border-bottom: 1px solid #f0fdfa;
+  background: var(--shell-muted-surface);
+  border-bottom: 1px solid var(--shell-surface-border);
 }
 
 .backup-card-header-modules {
@@ -46,20 +46,20 @@
   align-items: center;
   justify-content: center;
   border-radius: 0.75rem;
-  background: rgba(20, 184, 166, 0.12);
-  color: #0d9488;
+  background: color-mix(in srgb, var(--color-primary-500) 12%, transparent);
+  color: var(--color-primary-600);
 }
 
 .backup-card-title {
   font-size: 1rem;
   font-weight: 700;
-  color: #262626;
+  color: var(--shell-text);
   margin: 0 0 0.125rem 0;
 }
 
 .backup-card-hint {
   font-size: 0.8125rem;
-  color: #737373;
+  color: var(--shell-text-muted);
   margin: 0;
   line-height: 1.4;
 }
@@ -77,7 +77,7 @@
   display: block;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #404040;
+  color: var(--shell-text-muted);
   margin-bottom: 0.375rem;
 }
 
@@ -85,30 +85,30 @@
   width: 100%;
   padding: 0.625rem 0.875rem;
   font-size: 0.9375rem;
-  color: #262626;
-  background: #fafafa;
-  border: 1px solid #e5e5e5;
+  color: var(--shell-text);
+  background: var(--shell-input-bg);
+  border: 1px solid var(--shell-surface-border);
   border-radius: 0.75rem;
   outline: none;
   transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
 
 .backup-input:hover {
-  background: #fff;
+  background: var(--shell-surface);
   border-color: #d4d4d4;
 }
 
 .backup-input:focus {
-  border-color: #14b8a6;
-  background: #fff;
-  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.15);
+  border-color: var(--color-primary-500);
+  background: var(--shell-surface);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary-500) 15%, transparent);
 }
 
 /* Link-style buttons */
 .backup-link-btn {
   font-size: 0.8125rem;
   font-weight: 600;
-  color: #0d9488;
+  color: var(--color-primary-600);
   background: none;
   border: none;
   cursor: pointer;
@@ -117,7 +117,7 @@
 }
 
 .backup-link-btn:hover {
-  color: #0f766e;
+  color: var(--color-primary-700);
 }
 
 .backup-link-btn-muted {
@@ -139,17 +139,17 @@
   font-size: 1rem;
   font-weight: 600;
   color: #fff;
-  background: linear-gradient(180deg, #14b8a6 0%, #0d9488 100%);
+  background: linear-gradient(180deg, var(--color-primary-500) 0%, var(--color-primary-600) 100%);
   border: none;
   border-radius: 0.75rem;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(20, 184, 166, 0.35);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-primary-500) 35%, transparent);
   transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .backup-export-btn:hover:not(:disabled) {
-  background: linear-gradient(180deg, #0d9488 0%, #0f766e 100%);
-  box-shadow: 0 4px 14px rgba(20, 184, 166, 0.4);
+  background: linear-gradient(180deg, var(--color-primary-600) 0%, var(--color-primary-700) 100%);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--color-primary-500) 40%, transparent);
   transform: translateY(-1px);
 }
 
@@ -171,16 +171,16 @@
   gap: 0.5rem;
   padding: 0.75rem 1rem;
   font-size: 0.875rem;
-  color: #0f766e;
-  background: #f0fdfa;
-  border: 1px solid #99f6e4;
+  color: var(--color-primary-700);
+  background: var(--color-primary-50);
+  border: 1px solid var(--color-primary-200);
   border-radius: 0.75rem;
 }
 
 .backup-spinner {
   width: 1.25rem;
   height: 1.25rem;
-  color: #14b8a6;
+  color: var(--color-primary-500);
   flex-shrink: 0;
 }
 
@@ -213,7 +213,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #737373;
+  color: var(--shell-text-muted);
   margin: 0 0 0.75rem 0;
 }
 
@@ -241,21 +241,21 @@
   gap: 0.5rem;
   padding: 0.625rem 0.875rem;
   border-radius: 0.75rem;
-  border: 1.5px solid #e5e5e5;
-  background: #fafafa;
+  border: 1.5px solid var(--shell-surface-border);
+  background: var(--shell-muted-surface);
   cursor: pointer;
   transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
 }
 
 .backup-module-chip:hover {
-  border-color: #99f6e4;
-  background: #f0fdfa;
+  border-color: color-mix(in srgb, var(--color-primary-400) 45%, var(--shell-surface-border));
+  background: color-mix(in srgb, var(--color-primary-600) 8%, var(--shell-muted-surface));
 }
 
 .backup-module-chip-selected {
-  border-color: #14b8a6;
-  background: #f0fdfa;
-  color: #0f766e;
+  border-color: var(--color-primary-500);
+  background: color-mix(in srgb, var(--color-primary-600) 14%, var(--shell-surface));
+  color: var(--color-primary-700);
 }
 
 .backup-module-checkbox {
@@ -263,21 +263,21 @@
   height: 1rem;
   border-radius: 0.25rem;
   border: 2px solid #d4d4d4;
-  accent-color: #14b8a6;
+  accent-color: var(--color-primary-500);
   cursor: pointer;
   flex-shrink: 0;
 }
 
 .backup-module-chip-selected .backup-module-checkbox {
-  border-color: #14b8a6;
+  border-color: var(--color-primary-500);
 }
 
 .backup-module-label {
   font-size: 0.875rem;
   font-weight: 500;
-  color: #404040;
+  color: var(--shell-text);
 }
 
 .backup-module-chip-selected .backup-module-label {
-  color: #0f766e;
+  color: var(--color-primary-700);
 }

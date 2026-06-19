@@ -1,467 +1,375 @@
-<div class="min-h-screen bg-neutral-50">
-  <div class="relative">
-    <!-- Page Header Component -->
-    <app-page-header
-      title="طلبات مندوب التوصيل"
-      subtitle="عرض جميع الطلبات المخصصة لمندوب التوصيل"
-      [showBackButton]="true"
-      iconPath="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-    >
-    </app-page-header>
+<div class="min-h-screen theme-page na-shell" *ngIf="deliveryManId">
 
-    <!-- Main Content Container -->
-    <div class="container mx-auto" *ngIf="deliveryManId">
-      <!-- Filters Section -->
-      <div class="bg-white rounded-xl shadow-sm border border-neutral-200 mb-6">
-        <div class="p-6">
-          <!-- Search Bar -->
-          <div class="mb-6">
-            <div class="relative max-w-2xl">
-              <div
-                class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
-              >
-                <svg
-                  class="h-5 w-5 text-neutral-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-              </div>
-              <input
-                type="text"
-                [formControl]="searchControl"
-                placeholder="البحث برقم الطلب أو اسم العميل..."
-                class="block w-full pr-10 pl-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 text-sm"
-              />
-              <button
-                *ngIf="searchControl.value"
-                (click)="clearSearch()"
-                class="absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400 hover:text-neutral-600 transition-colors"
-              >
-                <svg
-                  class="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
+  <app-page-header
 
-          <!-- Status Filter -->
-          <div>
-            <label class="block text-sm font-semibold text-neutral-700 mb-3"
-              >حالة الطلب</label
-            >
-            <div class="flex gap-2 flex-wrap">
-              <button
-                (click)="setActiveProgressTab('all')"
-                [ngClass]="{
-                  'bg-primary-600 text-white shadow-md':
-                    activeProgressTab === 'all',
-                  'bg-neutral-100 text-neutral-700 hover:bg-neutral-200':
-                    activeProgressTab !== 'all',
-                }"
-                class="px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200"
-              >
-                الكل
-              </button>
-              <button
-                (click)="setActiveProgressTab('pending')"
-                [ngClass]="{
-                  'bg-blue-700 text-white shadow-md':
-                    activeProgressTab === 'pending',
-                  'bg-neutral-100 text-neutral-700 hover:bg-neutral-200':
-                    activeProgressTab !== 'pending',
-                }"
-                class="px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200"
-              >
-                معلقة
-              </button>
-              <button
-                (click)="setActiveProgressTab('assigned')"
-                [ngClass]="{
-                  'bg-purple-700 text-white shadow-md':
-                    activeProgressTab === 'assigned',
-                  'bg-neutral-100 text-neutral-700 hover:bg-neutral-200':
-                    activeProgressTab !== 'assigned',
-                }"
-                class="px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200"
-              >
-                مخصصة
-              </button>
-              <button
-                (click)="setActiveProgressTab('completed')"
-                [ngClass]="{
-                  'bg-green-600 text-white shadow-md':
-                    activeProgressTab === 'completed',
-                  'bg-neutral-100 text-neutral-700 hover:bg-neutral-200':
-                    activeProgressTab !== 'completed',
-                }"
-                class="px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200"
-              >
-                مكتملة
-              </button>
-              <button
-                (click)="setActiveProgressTab('cancelled')"
-                [ngClass]="{
-                  'bg-red-600 text-white shadow-md':
-                    activeProgressTab === 'cancelled',
-                  'bg-neutral-100 text-neutral-700 hover:bg-neutral-200':
-                    activeProgressTab !== 'cancelled',
-                }"
-                class="px-4 py-2 rounded-lg font-medium text-sm transition-all duration-200"
-              >
-                ملغية
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+    title="تتبع طلبات المندوب"
 
-      <!-- Orders Table -->
-      <div
-        class="bg-white rounded-xl shadow-sm border border-neutral-200 overflow-hidden"
-      >
-        <!-- Loading State -->
-        <div *ngIf="isLoading" class="p-12 text-center">
-          <div
-            class="inline-flex items-center px-4 py-2 font-semibold leading-6 text-sm shadow rounded-md text-primary-600 bg-primary-50"
-          >
-            <svg
-              class="animate-spin -ml-1 mr-3 h-5 w-5 text-primary-600"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                class="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                stroke-width="4"
-              ></circle>
-              <path
-                class="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
-            </svg>
-            جاري تحميل البيانات...
-          </div>
-        </div>
+    subtitle="إحصائيات الشحنات والبحث المتقدم — اضغط على بطاقة الحالة لتصفية الجدول"
 
-        <!-- Empty State -->
-        <div *ngIf="!isLoading && orders.length === 0" class="p-12 text-center">
-          <div class="max-w-md mx-auto">
-            <div
-              class="w-16 h-16 mx-auto mb-4 bg-neutral-100 rounded-full flex items-center justify-center"
-            >
-              <svg
-                class="w-8 h-8 text-neutral-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 009.586 13H7"
-                />
-              </svg>
-            </div>
-            <h3 class="text-lg font-semibold text-neutral-900 mb-2">
-              لا توجد طلبات
-            </h3>
-            <p class="text-sm text-neutral-500">
-              لم يتم العثور على أي طلبات تطابق المعايير المحددة
-            </p>
-          </div>
-        </div>
+    [showBackButton]="true"
 
-        <!-- Table -->
-        <div *ngIf="!isLoading && orders.length > 0" class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-neutral-200">
-            <thead class="bg-neutral-50">
-              <tr>
-                <th
-                  scope="col"
-                  class="px-6 py-4 text-right text-xs font-semibold text-neutral-700 uppercase tracking-wider"
-                >
-                  رقم الطلب
-                </th>
-                <th
-                  scope="col"
-                  class="px-6 py-4 text-right text-xs font-semibold text-neutral-700 uppercase tracking-wider"
-                >
-                  العميل
-                </th>
-                <th
-                  scope="col"
-                  class="px-6 py-4 text-right text-xs font-semibold text-neutral-700 uppercase tracking-wider"
-                >
-                  نقطة البداية
-                </th>
-                <th
-                  scope="col"
-                  class="px-6 py-4 text-right text-xs font-semibold text-neutral-700 uppercase tracking-wider"
-                >
-                  نقطة النهاية
-                </th>
-                <th
-                  scope="col"
-                  class="px-6 py-4 text-right text-xs font-semibold text-neutral-700 uppercase tracking-wider"
-                >
-                  المبلغ
-                </th>
-                <th
-                  scope="col"
-                  class="px-6 py-4 text-right text-xs font-semibold text-neutral-700 uppercase tracking-wider"
-                >
-                  الحالة
-                </th>
-                <th
-                  scope="col"
-                  class="px-6 py-4 text-center text-xs font-semibold text-neutral-700 uppercase tracking-wider"
-                >
-                  الإجراءات
-                </th>
-              </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-neutral-200">
-              <tr
-                *ngFor="let order of orders"
-                class="hover:bg-neutral-50 transition-colors duration-150"
-              >
-                <!-- Order Number -->
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm font-semibold text-neutral-900">
-                    {{ order.orderNumber || "غير محدد" }}
-                  </div>
-                </td>
+    iconPath="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
 
-                <!-- Customer -->
-                <td class="px-6 py-4">
-                  <div class="text-sm font-medium text-neutral-900">
-                    {{ order.customerName || "غير محدد" }}
-                  </div>
-                  <div class="text-xs text-neutral-500">
-                    {{ order.customerType === 1 ? "عميل فردي" : "مؤسسة" }}
-                  </div>
-                </td>
+  ></app-page-header>
 
-                <!-- Origin Waypoint -->
-                <td class="px-6 py-4">
-                  <div
-                    *ngIf="getOriginWayPoint(order.wayPoints)"
-                    class="flex items-center gap-2"
-                  >
-                    <div class="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <div>
-                      <div class="text-sm font-medium text-neutral-900">
-                        {{
-                          getOriginWayPoint(order.wayPoints)?.address ||
-                            "غير محدد"
-                        }}
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    *ngIf="!getOriginWayPoint(order.wayPoints)"
-                    class="text-sm text-neutral-400"
-                  >
-                    غير محدد
-                  </div>
-                </td>
 
-                <!-- Destination Waypoint -->
-                <td class="px-6 py-4">
-                  <div
-                    *ngIf="getDestinationWayPoint(order.wayPoints)"
-                    class="flex items-center gap-2"
-                  >
-                    <div class="w-2 h-2 bg-red-500 rounded-full"></div>
-                    <div>
-                      <div class="text-sm font-medium text-neutral-900">
-                        {{
-                          getDestinationWayPoint(order.wayPoints)?.address ||
-                            "غير محدد"
-                        }}
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    *ngIf="!getDestinationWayPoint(order.wayPoints)"
-                    class="text-sm text-neutral-400"
-                  >
-                    غير محدد
-                  </div>
-                </td>
 
-                <!-- Amount -->
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm font-semibold text-green-600">
-                    {{ order.total || 0 }} ر.س
-                  </div>
-                </td>
+  <section class="na-hero" *ngIf="!isLoadingSummary && deliveryManSummary">
 
-                <!-- Status -->
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <span
-                    [ngClass]="getStatusClass(order.status)"
-                    class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold"
-                  >
-                    {{ getStatusText(order.status) }}
-                  </span>
-                </td>
+    <div>
 
-                <!-- Actions -->
-                <td class="px-6 py-4 whitespace-nowrap text-center">
-                  <button
-                    *ngIf="hasPermission('CanViewOrderDetails')"
-                    (click)="viewOrderDetails(order.id)"
-                    class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-primary-600 bg-primary-50 hover:bg-primary-100 rounded-lg transition-colors duration-200"
-                  >
-                    <svg
-                      class="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                      />
-                    </svg>
-                    <span>عرض</span>
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <h1 class="na-hero__name">{{ deliveryManSummary.fullName }}</h1>
 
-        <!-- Pagination -->
-        <div
-          *ngIf="!isLoading && totalPages > 1"
-          class="bg-neutral-50 border-t border-neutral-200 px-6 py-4"
+      <p class="na-hero__meta">
+
+        {{ deliveryManSummary.phoneNumber }} · {{ deliveryManSummary.vehicleTypeName || '—' }} · {{ deliveryManSummary.vehiclePlate || '—' }}
+
+      </p>
+
+      <div class="na-hero__tags">
+
+        <span class="na-status" [ngClass]="deliveryManSummary.active ? 'na-status--ok' : 'na-status--off'">
+
+          {{ deliveryManSummary.active ? 'نشط' : 'غير نشط' }}
+
+        </span>
+
+        <span
+
+          class="na-status"
+
+          [ngClass]="deliveryManSummary.hasIncompleteRegistration ? 'na-status--warn' : 'na-status--ok'"
+
         >
-          <div
-            class="flex flex-col sm:flex-row items-center justify-between gap-4"
-          >
-            <!-- Results Info -->
-            <div class="text-sm text-neutral-600">
-              عرض
-              <span class="font-semibold text-neutral-900">{{
-                displayStartCount
-              }}</span>
-              -
-              <span class="font-semibold text-neutral-900">{{
-                displayEndCount
-              }}</span>
-              من
-              <span class="font-semibold text-neutral-900">{{
-                totalCount
-              }}</span>
-              طلب
-            </div>
 
-            <!-- Pagination Controls -->
-            <div class="flex items-center gap-2">
-              <!-- Previous Button -->
-              <button
-                (click)="changePage(currentPage - 1)"
-                [disabled]="currentPage === 1"
-                class="px-3 py-2 text-sm font-medium text-neutral-700 bg-white border border-neutral-300 rounded-lg hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-              >
-                <svg
-                  class="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M15 19l-7-7 7-7"
-                  />
-                </svg>
-              </button>
+          {{ deliveryManSummary.profileCompletenessLabel || (deliveryManSummary.hasIncompleteRegistration ? 'بيانات غير مكتملة' : 'بيانات مكتملة') }}
 
-              <!-- Page Numbers -->
-              <div class="flex items-center gap-1">
-                <ng-container *ngFor="let page of visiblePages">
-                  <button
-                    *ngIf="isPageNumber(page)"
-                    (click)="changePage(+page)"
-                    [ngClass]="{
-                      'bg-primary-600 text-white shadow-md':
-                        currentPage === page,
-                      'text-neutral-700 hover:bg-neutral-100':
-                        currentPage !== page,
-                    }"
-                    class="min-w-[40px] h-10 px-3 text-sm font-medium rounded-lg transition-all duration-200"
-                  >
-                    {{ page }}
-                  </button>
-                  <span
-                    *ngIf="isPageEllipsis(page)"
-                    class="px-2 text-neutral-500"
-                  >
-                    ...
-                  </span>
-                </ng-container>
-              </div>
+        </span>
 
-              <!-- Next Button -->
-              <button
-                (click)="changePage(currentPage + 1)"
-                [disabled]="currentPage >= totalPages"
-                class="px-3 py-2 text-sm font-medium text-neutral-700 bg-white border border-neutral-300 rounded-lg hover:bg-neutral-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-              >
-                <svg
-                  class="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
+        <span class="na-status na-status--neutral">#{{ deliveryManSummary.id }}</span>
+
       </div>
+
     </div>
+
+  </section>
+
+  <div *ngIf="isLoadingSummary" class="na-hero"><div class="h-10 w-64 bg-neutral-200 rounded animate-pulse"></div></div>
+
+  <div class="na-stats-toolbar" *ngIf="!isLoadingSummary && deliveryManSummary">
+    <p class="na-stats-toolbar__hint">إحصائيات الشحنات — اضغط على أي بطاقة لتصفية الجدول</p>
+    <button
+      type="button"
+      class="na-btn na-btn--export"
+      [disabled]="isExportingSummary"
+      (click)="exportSummaryStats()"
+    >
+      {{ isExportingSummary ? 'جاري التصدير...' : 'تصدير الإحصائيات Excel' }}
+    </button>
   </div>
+
+  <div class="na-stat-row na-stat-row--orders" *ngIf="!isLoadingSummary && deliveryManSummary">
+
+    <button
+
+      type="button"
+
+      class="na-stat-card na-stat-card--total"
+
+      [class.na-stat-card--selected]="isStatCardSelected('all')"
+
+      (click)="onStatCardClick('all')"
+
+    >
+
+      <div class="na-stat-card__icon" aria-hidden="true">
+
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+
+          <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+
+        </svg>
+
+      </div>
+
+      <div class="na-stat-card__body">
+
+        <p class="na-stat-card__label">إجمالي الشحنات</p>
+
+        <p class="na-stat-card__value">{{ getStatCount('all') | number }}</p>
+
+      </div>
+
+    </button>
+
+
+
+    <button
+
+      type="button"
+
+      class="na-stat-card na-stat-card--active"
+
+      [class.na-stat-card--selected]="isStatCardSelected('active')"
+
+      (click)="onStatCardClick('active')"
+
+    >
+
+      <div class="na-stat-card__icon" aria-hidden="true">
+
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+
+        </svg>
+
+      </div>
+
+      <div class="na-stat-card__body">
+
+        <p class="na-stat-card__label">الشحنات النشطة</p>
+
+        <p class="na-stat-card__value">{{ getStatCount('active') | number }}</p>
+
+      </div>
+
+    </button>
+
+
+
+    <button
+
+      *ngFor="let item of statusStatCards"
+
+      type="button"
+
+      class="na-stat-card"
+
+      [ngClass]="getStatCardClass(getStatusStatKey(item))"
+
+      [class.na-stat-card--selected]="isStatCardSelected(getStatusStatKey(item))"
+
+      (click)="onStatCardClick(getStatusStatKey(item))"
+
+    >
+
+      <div class="na-stat-card__icon" aria-hidden="true">
+
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+
+        </svg>
+
+      </div>
+
+      <div class="na-stat-card__body">
+
+        <p class="na-stat-card__label">{{ getStatCardLabel(item) }}</p>
+
+        <p class="na-stat-card__value">{{ item.count | number }}</p>
+
+      </div>
+
+    </button>
+
+  </div>
+
+
+
+  <div *ngIf="isLoadingSummary" class="na-stat-row na-stat-row--orders">
+
+    <div class="na-stat-card na-stat-card--total" *ngFor="let _ of [1,2,3,4,5,6]">
+
+      <div class="na-stat-card__skeleton" style="width:100%;height:3.5rem"></div>
+
+    </div>
+
+  </div>
+
+
+
+  <section class="na-card">
+
+    <div class="na-card__header">
+
+      <div>
+
+        <h2 class="na-card__title">قائمة الشحنات</h2>
+
+        <p class="na-card__desc">اضغط على بطاقة الحالة أعلاه أو حدّد معايير إضافية ثم «بحث» — التصدير يشمل كل النتائج المفلترة</p>
+
+      </div>
+
+      <button type="button" class="na-btn na-btn--export" [disabled]="isExporting" (click)="exportOrders()">
+
+        {{ isExporting ? 'جاري التصدير...' : 'تصدير Excel' }}
+
+      </button>
+
+    </div>
+
+
+
+    <div class="na-filter">
+
+      <div class="na-filter__grid na-filter__grid--tracking">
+
+        <div class="na-field">
+
+          <label>بحث</label>
+
+          <input type="text" [(ngModel)]="filterDraft.searchTerm" placeholder="رقم الطلب، العميل..." (keyup.enter)="search()" />
+
+        </div>
+
+        <app-formal-select
+
+          label="نوع العميل"
+
+          placeholder="الكل"
+
+          [options]="customerTypeOptions"
+
+          [(value)]="filterDraft.customerTypeKey"
+
+        ></app-formal-select>
+
+        <div class="na-field">
+
+          <label>من تاريخ</label>
+
+          <input type="date" [(ngModel)]="filterDraft.fromDate" />
+
+        </div>
+
+        <div class="na-field">
+
+          <label>إلى تاريخ</label>
+
+          <input type="date" [(ngModel)]="filterDraft.toDate" />
+
+        </div>
+
+      </div>
+
+      <div class="na-filter__actions">
+
+        <button type="button" class="na-btn na-btn--primary" (click)="search()">بحث</button>
+
+        <button type="button" class="na-btn na-btn--secondary" (click)="resetFilters()">مسح المعايير</button>
+
+      </div>
+
+    </div>
+
+
+
+    <div *ngIf="isLoading" class="na-loading">جاري تحميل النتائج...</div>
+
+    <div *ngIf="!isLoading && !hasSearched" class="na-empty">جاري تحميل الشحنات...</div>
+
+    <div *ngIf="!isLoading && hasSearched && orders.length === 0" class="na-empty">لا توجد نتائج مطابقة</div>
+
+
+
+    <div *ngIf="!isLoading && orders.length > 0" class="na-table-wrap">
+
+      <table class="na-table">
+
+        <thead>
+
+          <tr>
+
+            <th>رقم الطلب</th>
+
+            <th>التاريخ</th>
+
+            <th>العميل</th>
+
+            <th>نوع العميل</th>
+
+            <th>من</th>
+
+            <th>إلى</th>
+
+            <th>المبلغ</th>
+
+            <th>الحالة</th>
+
+            <th></th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          <tr *ngFor="let order of orders">
+
+            <td><span class="na-table__primary">{{ order.orderNumber }}</span></td>
+
+            <td>{{ order.createdDate | date:'dd/MM/yyyy HH:mm' }}</td>
+
+            <td>
+
+              <div class="na-table__primary">{{ order.customerName }}</div>
+
+              <div class="na-table__muted" dir="ltr">{{ order.customerPhone }}</div>
+
+            </td>
+
+            <td>{{ order.customerTypeName }}</td>
+
+            <td>{{ getOriginAddress(order) }}</td>
+
+            <td>{{ getDestinationAddress(order) }}</td>
+
+            <td>{{ order.total | number }} ر.س</td>
+
+            <td><span [ngClass]="getStatusClass(order.status)">{{ getOrderStatusLabel(order) }}</span></td>
+
+            <td>
+
+              <button *ngIf="hasPermission('CanViewOrderDetails')" type="button" class="na-btn na-btn--link" (click)="viewOrderDetails(order.id)">عرض</button>
+
+            </td>
+
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+
+
+    <div *ngIf="!isLoading && totalPages > 1" class="na-footer">
+
+      <span>عرض {{ displayStartCount }}–{{ displayEndCount }} من {{ totalCount }}</span>
+
+      <div class="na-page-nav">
+
+        <button type="button" class="na-page-btn" [disabled]="currentPage === 1" (click)="changePage(currentPage - 1)">‹</button>
+
+        <ng-container *ngFor="let page of visiblePages">
+
+          <button *ngIf="isPageNumber(page)" type="button" class="na-page-btn" [class.na-page-btn--active]="currentPage === page" (click)="changePage(+page)">{{ page }}</button>
+
+          <span *ngIf="isPageEllipsis(page)">…</span>
+
+        </ng-container>
+
+        <button type="button" class="na-page-btn" [disabled]="currentPage >= totalPages" (click)="changePage(currentPage + 1)">›</button>
+
+      </div>
+
+    </div>
+
+  </section>
+
 </div>
+
+

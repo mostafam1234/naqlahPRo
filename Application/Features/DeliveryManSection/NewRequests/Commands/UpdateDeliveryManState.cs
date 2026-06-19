@@ -1,4 +1,5 @@
-﻿using CSharpFunctionalExtensions;
+﻿using Application.Shared.Services;
+using CSharpFunctionalExtensions;
 using Domain.Enums;
 using Domain.InterFaces;
 using MediatR;
@@ -15,6 +16,8 @@ namespace Application.Features.DeliveryManSection.NewRequests.Commands
     {
         public int DeliveryId { get; set; }
         public int State { get; set; }
+        public int? ChangedByUserId { get; set; }
+
         private class UpdateDeliveryManStateHandler : IRequestHandler<UpdateDeliveryManState, Result<string>>
         {
             private readonly INaqlahContext _context;
@@ -27,15 +30,18 @@ namespace Application.Features.DeliveryManSection.NewRequests.Commands
                 var deliveryMan = await _context.DeliveryMen.AsTracking().Where(x => x.Id == request.DeliveryId).FirstOrDefaultAsync(cancellationToken);
                 if(deliveryMan == null)
                 {
-                    return Result.Failure<string>("Delivery Man Not Exists");
+                    return Result.Failure<string>("DeliveryManNotExists");
                 }
                 
                 deliveryMan.UpdateDeliveryManRequestState(request.State);
                 
-                // When approving (state = 2), automatically set Active = true
                 if (request.State == (int)DeliveryRequesState.Approved)
                 {
-                    deliveryMan.ChangeActivation(true);
+                    DeliveryManActiveHistoryAppender.ApplyIfChanged(
+                        _context,
+                        deliveryMan,
+                        true,
+                        request.ChangedByUserId);
                 }
                 
                 var saveResult = await _context.SaveChangesAsyncWithResult();

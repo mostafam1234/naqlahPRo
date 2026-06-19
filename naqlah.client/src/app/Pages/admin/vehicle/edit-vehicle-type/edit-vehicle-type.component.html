@@ -1,0 +1,168 @@
+<div class="min-h-screen theme-page na-shell vf-animate">
+  <app-page-header
+    title="تعديل نوع مركبة"
+    subtitle="تحديث بيانات نوع المركبة وتصنيف الحمولة ورسوم الخدمة"
+    [showBackButton]="true"
+    iconPath="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+    (onBackClick)="onCancel()"
+  ></app-page-header>
+
+  <div class="vf-hero edit-type-hero" *ngIf="!isLoading">
+    <div class="vf-hero__content">
+      <span class="vf-hero__eyebrow">تعديل نوع مركبة</span>
+      <h1 class="vf-hero__title">تحديث نوع المركبة</h1>
+      <p class="vf-hero__subtitle">
+        عدّل التصنيف والتسعير والأيقونة وأقسام الشحنات — كل الحقول اختيارية.
+      </p>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="vf-card">
+    <div class="vf-card__body text-center py-12 text-neutral-500">جاري التحميل...</div>
+  </div>
+
+  <form *ngIf="!isLoading" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="vf-preview-strip">
+      <div class="vf-preview-item">
+        <span class="vf-preview-item__label">الاسم العربي</span>
+        <span class="vf-preview-item__value">{{ form.get('arabicName')?.value || '—' }}</span>
+      </div>
+      <div class="vf-preview-item">
+        <span class="vf-preview-item__label">تصنيف الحمولة</span>
+        <span class="vf-preview-item__value">{{ selectedLoadCategoryName }}</span>
+      </div>
+      <div class="vf-preview-item">
+        <span class="vf-preview-item__label">التكلفة</span>
+        <span class="vf-preview-item__value">{{ form.get('cost')?.value | number:'1.2-2' }}</span>
+      </div>
+      <div class="vf-preview-item">
+        <span class="vf-preview-item__label">رسوم الخدمة</span>
+        <span class="vf-preview-item__value">{{ form.get('serviceFee')?.value | number:'1.2-2' }}</span>
+      </div>
+      <div class="vf-preview-item">
+        <span class="vf-preview-item__label">أقسام الشحنات</span>
+        <span class="vf-preview-item__value">{{ selectedCategories.length }}</span>
+      </div>
+    </div>
+
+    <div class="vf-grid vf-grid--type">
+      <div class="vf-card">
+        <div class="vf-card__head">
+          <h2 class="vf-card__title">البيانات الأساسية</h2>
+        </div>
+        <div class="vf-card__body vf-fields-2">
+          <div class="vf-field">
+            <label class="vf-label">الاسم بالعربية</label>
+            <input class="vf-input" formControlName="arabicName" type="text" />
+          </div>
+          <div class="vf-field">
+            <label class="vf-label">الاسم بالإنجليزية</label>
+            <input class="vf-input" formControlName="englishName" type="text" />
+          </div>
+        </div>
+      </div>
+
+      <div class="vf-card">
+        <div class="vf-card__head">
+          <h2 class="vf-card__title">تصنيف الحمولة</h2>
+        </div>
+        <div class="vf-card__body">
+          <div class="vf-load-cards">
+            <button
+              type="button"
+              class="vf-load-card"
+              [class.vf-load-card--selected]="form.get('loadCategory')?.value == null"
+              (click)="selectLoadCategory(null)"
+            >
+              <div class="vf-load-card__title">بدون تصنيف</div>
+            </button>
+            <button
+              *ngFor="let category of loadCategories"
+              type="button"
+              class="vf-load-card"
+              [class.vf-load-card--selected]="isLoadCategorySelected(category.id)"
+              (click)="selectLoadCategory(category.id)"
+            >
+              <div class="vf-load-card__title">{{ category.name }}</div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="vf-card">
+        <div class="vf-card__head">
+          <h2 class="vf-card__title">التسعير</h2>
+        </div>
+        <div class="vf-card__body vf-fields-2">
+          <div class="vf-field">
+            <label class="vf-label">التكلفة</label>
+            <input class="vf-input" formControlName="cost" type="number" step="0.01" min="0" />
+          </div>
+          <div class="vf-field">
+            <label class="vf-label">رسوم الخدمة</label>
+            <input class="vf-input" formControlName="serviceFee" type="number" step="0.01" min="0" />
+          </div>
+        </div>
+      </div>
+
+      <div class="vf-card">
+        <div class="vf-card__head">
+          <h2 class="vf-card__title">أيقونة النوع</h2>
+        </div>
+        <div class="vf-card__body">
+          <div
+            class="vf-upload"
+            [class.vf-upload--active]="isDragOver"
+            (dragover)="onDragOver($event)"
+            (dragleave)="onDragLeave($event)"
+            (drop)="onDrop($event)"
+          >
+            <div class="vf-upload__preview" *ngIf="iconPreview">
+              <img [src]="iconPreview" alt="preview" />
+            </div>
+            <input #iconInput type="file" accept="image/*" class="hidden" (change)="onIconSelect($event)" />
+            <div class="flex gap-2 justify-center mt-3">
+              <button type="button" class="vf-btn vf-btn--ghost" (click)="iconInput.click()">اختيار صورة</button>
+              <button type="button" class="vf-btn vf-btn--ghost" *ngIf="iconPreview" (click)="removeIcon()">حذف</button>
+            </div>
+          </div>
+          <p class="vf-error mt-2" *ngIf="iconError">{{ iconError }}</p>
+        </div>
+      </div>
+
+      <div class="vf-card">
+        <div class="vf-card__head">
+          <h2 class="vf-card__title">أقسام الشحنات</h2>
+        </div>
+        <div class="vf-card__body">
+          <input
+            class="vf-input vf-search"
+            type="text"
+            [(ngModel)]="categorySearchTerm"
+            [ngModelOptions]="{ standalone: true }"
+            placeholder="ابحث في الأقسام..."
+          />
+          <div class="vf-chip-grid">
+            <button
+              type="button"
+              *ngFor="let category of filteredCategories"
+              class="vf-chip"
+              [class.vf-chip--selected]="isCategorySelected(category)"
+              (click)="toggleCategory(category)"
+            >
+              <span class="vf-chip__check">{{ isCategorySelected(category) ? '✓' : '' }}</span>
+              {{ category.name }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="vf-actions">
+        <button type="button" class="vf-btn vf-btn--ghost" (click)="onCancel()">إلغاء</button>
+        <button type="submit" class="vf-btn vf-btn--primary" [disabled]="isSubmitting">
+          {{ isSubmitting ? 'جاري الحفظ...' : 'حفظ التعديلات' }}
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

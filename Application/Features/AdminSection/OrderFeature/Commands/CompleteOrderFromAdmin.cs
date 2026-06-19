@@ -31,29 +31,14 @@ namespace Application.Features.AdminSection.OrderFeature.Commands
                     .FirstOrDefaultAsync(o => o.Id == request.OrderId, cancellationToken);
 
                 if (order == null)
-                {
-                    var errMessage = request.LanguageId == 1 ? "الطلب غير موجود." : "Order not found.";
-                    return Result.Failure<int>(errMessage);
-                }
+                    return Result.Failure<int>("OrderNotFound");
 
-                // Only assigned orders can be completed
                 if (order.OrderStatus != OrderStatus.Assigned)
-                {
-                    var errMessage = request.LanguageId == 1 
-                        ? "يمكن إكمال الطلبات المعينة فقط." 
-                        : "Only assigned orders can be completed.";
-                    return Result.Failure<int>(errMessage);
-                }
+                    return Result.Failure<int>("OnlyAssignedOrdersCanBeCompleted");
 
-                // Update order status to Completed
                 var updateResult = order.UpdateStatus(OrderStatus.Completed, DateTime.UtcNow);
                 if (updateResult.IsFailure)
-                {
-                    var errMessage = request.LanguageId == 1 
-                        ? updateResult.Error 
-                        : updateResult.Error;
-                    return Result.Failure<int>(errMessage);
-                }
+                    return Result.Failure<int>(updateResult.Error);
 
                 await _context.SaveChangesAsyncWithResult();
 

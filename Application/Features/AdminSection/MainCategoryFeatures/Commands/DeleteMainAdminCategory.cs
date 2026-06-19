@@ -26,7 +26,7 @@ namespace Application.Features.AdminSection.MainCategoryFeatures.Commands
                 var category = await _context.MainCategories.AsTracking().FirstOrDefaultAsync(x => x.Id == command.Id);
                 if (category == null)
                 {
-                    return Result.Failure<int>("Category Not Found");
+                    return Result.Failure<int>("CategoryNotFound");
                 }
                 await _context.MainCategories.Where(x => x.Id == command.Id).ExecuteDeleteAsync();
                 var result = await _context.SaveChangesAsyncWithResult();

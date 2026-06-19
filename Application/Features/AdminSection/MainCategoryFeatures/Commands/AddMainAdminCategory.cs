@@ -32,7 +32,7 @@ namespace Application.Features.AdminSection.MainCategoryFeatures.Commands
                 // Validate image
                 if (string.IsNullOrWhiteSpace(command.ImageBase64))
                 {
-                    return Result.Failure<int>("Image is required");
+                    return Result.Failure<int>("ImageRequired");
                 }
 
                 // Upload image
@@ -42,12 +42,12 @@ namespace Application.Features.AdminSection.MainCategoryFeatures.Commands
                     imagePath = await _mediaUploader.UploadFromBase64(command.ImageBase64, "main-categories");
                     if (string.IsNullOrWhiteSpace(imagePath))
                     {
-                        return Result.Failure<int>("Failed to upload image");
+                        return Result.Failure<int>("FailedToUploadImage");
                     }
                 }
                 catch (Exception ex)
                 {
-                    return Result.Failure<int>($"Failed to upload image: {ex.Message}");
+                    return Result.Failure<int>("FailedToUploadImage");
                 }
 
                 var category = MainCategory.Instance(command.ArabicName, command.EnglishName, imagePath);

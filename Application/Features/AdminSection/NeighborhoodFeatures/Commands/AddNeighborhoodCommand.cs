@@ -29,7 +29,7 @@ namespace Application.Features.AdminSection.NeighborhoodFeatures.Commands
                 var cityExists = await _context.Cities.AnyAsync(x => x.Id == command.CityId, cancellationToken);
                 if (!cityExists)
                 {
-                    return Result.Failure<int>("City Not Found");
+                    return Result.Failure<int>("CityNotFound");
                 }
 
                 var neighborhood = Neighborhood.Instance(command.ArabicName, command.EnglishName, command.CityId);

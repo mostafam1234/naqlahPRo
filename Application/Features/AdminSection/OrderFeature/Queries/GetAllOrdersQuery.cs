@@ -1,5 +1,6 @@
 using Application.Features.AdminSection.OrderFeature.Dtos;
 using Application.Shared.Dtos;
+using Application.Shared.Services;
 using CSharpFunctionalExtensions;
 using Domain.Enums;
 using Domain.InterFaces;
@@ -8,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Application.Features.AdminSection.OrderFeature.Queries
@@ -18,56 +20,93 @@ namespace Application.Features.AdminSection.OrderFeature.Queries
         public int Take { get; init; } = 10;
         public string? SearchTerm { get; init; }
         public OrderStatus? StatusFilter { get; init; }
+        public bool? ActiveOrdersOnly { get; init; }
         public CustomerType? CustomerTypeFilter { get; init; }
         public DateTime? FromDate { get; init; }
         public DateTime? ToDate { get; init; }
+        public IReadOnlyList<int>? DeliveryManIds { get; init; }
         public int LanguageId { get; init; } = 1;
 
         private class GetAllOrdersQueryHandler : IRequestHandler<GetAllOrdersQuery, Result<PagedResult<GetAllOrdersDto>>>
         {
-            private readonly INaqlahContext context;
+            private readonly INaqlahContext _context;
 
             public GetAllOrdersQueryHandler(INaqlahContext context)
             {
-                this.context = context;
+                _context = context;
             }
 
             public async Task<Result<PagedResult<GetAllOrdersDto>>> Handle(GetAllOrdersQuery request, CancellationToken cancellationToken)
             {
                 try
                 {
-                    // Build simple query - no includes, simple joins
-                    var query = from order in context.Orders
-                                join customer in context.Customers on order.CustomerId equals customer.Id
-                                join customerUser in context.Users on customer.UserId equals customerUser.Id
+                    var deliveryManIds = request.DeliveryManIds?
+                        .Where(id => id > 0)
+                        .Distinct()
+                        .ToList();
+
+                    if (deliveryManIds is { Count: > 0 })
+                    {
+                        var validCount = await _context.DeliveryMen
+                            .CountAsync(
+                                dm => deliveryManIds.Contains(dm.Id),
+                                cancellationToken);
+
+                        if (validCount != deliveryManIds.Count)
+                            return Result.Failure<PagedResult<GetAllOrdersDto>>("DeliveryManNotFound");
+                    }
+
+                    var searchTerm = string.IsNullOrWhiteSpace(request.SearchTerm) ? null : request.SearchTerm.Trim();
+
+                    var query = from order in _context.Orders
+                                join customer in _context.Customers on order.CustomerId equals customer.Id
+                                join customerUser in _context.Users on customer.UserId equals customerUser.Id
+                                join deliveryMan in _context.DeliveryMen on order.DeliveryManId equals deliveryMan.Id into deliveryManGroup
+                                from deliveryMan in deliveryManGroup.DefaultIfEmpty()
+                                join deliveryManUser in _context.Users on deliveryMan.UserId equals deliveryManUser.Id into deliveryManUserGroup
+                                from deliveryManUser in deliveryManUserGroup.DefaultIfEmpty()
                                 select new
                                 {
                                     Order = order,
                                     CustomerName = customerUser.UserName ?? "غير محدد",
                                     CustomerPhone = customerUser.PhoneNumber ?? "غير محدد",
-                                    CustomerType = customer.CustomerType
+                                    CustomerType = customer.CustomerType,
+                                    DeliveryManId = order.DeliveryManId,
+                                    DeliveryManName = deliveryManUser != null ? deliveryManUser.UserName ?? "غير محدد" : "غير محدد",
+                                    DeliveryManPhone = deliveryManUser != null ? deliveryManUser.PhoneNumber ?? "غير محدد" : "غير محدد"
                                 };
 
-                    // Apply filters
-                    if (!string.IsNullOrWhiteSpace(request.SearchTerm))
+                    if (!string.IsNullOrWhiteSpace(searchTerm))
                     {
-                        var searchLower = request.SearchTerm.ToLower();
+                        var searchLower = searchTerm.ToLower();
                         query = query.Where(x =>
                             x.Order.OrderNumber.ToLower().Contains(searchLower) ||
                             x.CustomerName.ToLower().Contains(searchLower) ||
-                            x.CustomerPhone.Contains(searchLower)
-                        );
+                            x.CustomerPhone.Contains(searchTerm) ||
+                            x.DeliveryManName.ToLower().Contains(searchLower) ||
+                            x.DeliveryManPhone.Contains(searchTerm));
                     }
 
-                    if (request.StatusFilter.HasValue)
+                    if (request.ActiveOrdersOnly == true)
+                    {
+                        var activeStatuses = new[]
+                        {
+                            OrderStatus.Assigned,
+                            OrderStatus.ConfirmedGoingToPickup,
+                            OrderStatus.PickedUpFromDeliveryMan
+                        };
+                        query = query.Where(x => activeStatuses.Contains(x.Order.OrderStatus));
+                    }
+                    else if (request.StatusFilter.HasValue)
                     {
                         query = query.Where(x => x.Order.OrderStatus == request.StatusFilter.Value);
                     }
 
                     if (request.CustomerTypeFilter.HasValue)
-                    {
                         query = query.Where(x => x.CustomerType == request.CustomerTypeFilter.Value);
-                    }
+
+                    if (deliveryManIds is { Count: > 0 })
+                        query = query.Where(x => x.DeliveryManId.HasValue && deliveryManIds.Contains(x.DeliveryManId.Value));
 
                     if (request.FromDate.HasValue)
                     {
@@ -81,126 +120,88 @@ namespace Application.Features.AdminSection.OrderFeature.Queries
                         query = query.Where(x => x.Order.CreationDate <= toDate);
                     }
 
-                    // Get total count
                     var totalCount = await query.CountAsync(cancellationToken);
 
-                    // Apply pagination and get order data with waypoints
-                    var orderIds = await query
+                    var pageRows = await query
                         .OrderByDescending(x => x.Order.CreationDate)
                         .Skip(request.Skip)
                         .Take(request.Take)
-                        .Select(x => x.Order.Id)
                         .ToListAsync(cancellationToken);
 
-                    // Get orders with their waypoints
-                    var ordersWithWaypoints = await (from order in context.Orders
-                                                     join customer in context.Customers on order.CustomerId equals customer.Id
-                                                     join customerUser in context.Users on customer.UserId equals customerUser.Id
-                                                     where orderIds.Contains(order.Id)
-                                                     select new
-                                                     {
-                                                         Order = order,
-                                                         CustomerName = customerUser.UserName,
-                                                         CustomerPhone = customerUser.PhoneNumber,
-                                                         CustomerType = customer.CustomerType,
-                                                         WayPoints = order.OrderWayPoints
-                                                             .Select(wp => new OrderWayPointAdminDto
-                                                             {
-                                                                 Id = wp.Id,
-                                                                 Latitude = wp.Latitude,
-                                                                 Longitude = wp.longitude,
-                                                                 IsOrigin = wp.IsOrgin,
-                                                                 IsDestination = wp.IsDestination,
-                                                                 Status = wp.OrderWayPointsStatus,
-                                                                 StatusName = GetWayPointStatusName(wp.OrderWayPointsStatus, request.LanguageId),
-                                                                 PickedUpDate = wp.PickedUpDate,
-                                                                 CityName = request.LanguageId == 1 ? wp.City.ArabicName ?? string.Empty : wp.City.EnglishName ?? string.Empty,
-                                                                 RegionName = request.LanguageId == 1 ? wp.Region.ArabicName ?? string.Empty : wp.Region.EnglishName ?? string.Empty,
-                                                                 NeighborhoodName = request.LanguageId == 1 ? wp.Neighborhood.ArabicName ?? string.Empty : wp.Neighborhood.EnglishName ?? string.Empty,
-                                                                 Address = request.LanguageId == 1 ?
-                                                                           (wp.City.ArabicName ?? string.Empty) + " - " + (wp.Neighborhood.ArabicName ?? string.Empty) : 
-                                                                           (wp.City.EnglishName ?? string.Empty) + " - " + (wp.Neighborhood.EnglishName ?? string.Empty),
-                                                             }).ToList()
-                                                     })
-                                                   .ToListAsync(cancellationToken);
+                    var orderIds = pageRows.Select(x => x.Order.Id).ToList();
 
-                    var items = ordersWithWaypoints.Select(x => new GetAllOrdersDto
-                    {
-                        Id = x.Order.Id,
-                        OrderNumber = x.Order.OrderNumber,
-                        CreatedDate = x.Order.CreationDate,
-                        Status = x.Order.OrderStatus,
-                        StatusName = GetOrderStatusName(x.Order.OrderStatus, request.LanguageId),
-                        OrderType = x.Order.OrderType,
-                        OrderTypeName = GetOrderTypeName(x.Order.OrderType, request.LanguageId),
-                        Total = x.Order.Total,
-                        CustomerId = x.Order.CustomerId,
-                        CustomerName = x.CustomerName,
-                        CustomerPhone = x.CustomerPhone,
-                        CustomerType = x.CustomerType,
-                        CustomerTypeName = GetCustomerTypeName(x.CustomerType, request.LanguageId),
-                        WayPoints = x.WayPoints
-                    }).ToList();
+                    var ordersWithWaypoints = await _context.Orders
+                        .Include(o => o.OrderWayPoints)
+                            .ThenInclude(wp => wp.City)
+                        .Include(o => o.OrderWayPoints)
+                            .ThenInclude(wp => wp.Neighborhood)
+                        .Include(o => o.OrderWayPoints)
+                            .ThenInclude(wp => wp.Region)
+                        .Where(o => orderIds.Contains(o.Id))
+                        .ToListAsync(cancellationToken);
 
-                    var totalPages = (int)Math.Ceiling((double)totalCount / request.Take);
+                    var ordersDict = ordersWithWaypoints.ToDictionary(o => o.Id);
+                    var rowDict = pageRows.ToDictionary(x => x.Order.Id);
+                    var isArabic = request.LanguageId == (int)Language.Arabic;
 
-                    var pagedResult = new PagedResult<GetAllOrdersDto>
+                    var items = orderIds
+                        .Where(id => ordersDict.ContainsKey(id) && rowDict.ContainsKey(id))
+                        .Select(id =>
+                        {
+                            var order = ordersDict[id];
+                            var row = rowDict[id];
+
+                            return new GetAllOrdersDto
+                            {
+                                Id = order.Id,
+                                OrderNumber = order.OrderNumber,
+                                CreatedDate = order.CreationDate,
+                                Status = order.OrderStatus,
+                                StatusName = OrderDisplayLabels.GetOrderStatusName(order.OrderStatus, request.LanguageId),
+                                OrderType = order.OrderType,
+                                OrderTypeName = OrderDisplayLabels.GetOrderTypeName(order.OrderType, request.LanguageId),
+                                Total = order.Total,
+                                CustomerId = order.CustomerId,
+                                CustomerName = row.CustomerName,
+                                CustomerPhone = row.CustomerPhone,
+                                CustomerType = row.CustomerType,
+                                CustomerTypeName = OrderDisplayLabels.GetCustomerTypeName(row.CustomerType, request.LanguageId),
+                                DeliveryManId = row.DeliveryManId,
+                                DeliveryManName = row.DeliveryManName,
+                                DeliveryManPhone = row.DeliveryManPhone,
+                                WayPoints = order.OrderWayPoints.Select(wp => new OrderWayPointAdminDto
+                                {
+                                    Id = wp.Id,
+                                    Latitude = wp.Latitude,
+                                    Longitude = wp.longitude,
+                                    IsOrigin = wp.IsOrgin,
+                                    IsDestination = wp.IsDestination,
+                                    Address = (isArabic ? wp.City.ArabicName : wp.City.EnglishName) +
+                                              (wp.Neighborhood != null ? " - " + (isArabic ? wp.Neighborhood.ArabicName : wp.Neighborhood.EnglishName) : string.Empty),
+                                    CityName = isArabic ? wp.City.ArabicName : wp.City.EnglishName,
+                                    NeighborhoodName = wp.Neighborhood != null ? (isArabic ? wp.Neighborhood.ArabicName : wp.Neighborhood.EnglishName) : string.Empty,
+                                    RegionName = wp.Region != null ? (isArabic ? wp.Region.ArabicName : wp.Region.EnglishName) : string.Empty,
+                                    Status = wp.OrderWayPointsStatus,
+                                    StatusName = OrderDisplayLabels.GetWayPointStatusName(wp.OrderWayPointsStatus, request.LanguageId),
+                                    PickedUpDate = wp.PickedUpDate
+                                }).ToList()
+                            };
+                        })
+                        .ToList();
+
+                    var totalPages = request.Take > 0 ? (int)Math.Ceiling((double)totalCount / request.Take) : 0;
+
+                    return Result.Success(new PagedResult<GetAllOrdersDto>
                     {
                         Data = items,
                         TotalCount = totalCount,
                         TotalPages = totalPages
-                    };
-
-                    return Result.Success(pagedResult);
+                    });
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    return Result.Failure<PagedResult<GetAllOrdersDto>>($"Failed to get orders: {ex.Message}");
+                    return Result.Failure<PagedResult<GetAllOrdersDto>>("FailedToGetOrders");
                 }
-            }
-
-            private static string GetOrderStatusName(OrderStatus status, int languageId)
-            {
-                return status switch
-                {
-                    OrderStatus.Pending => languageId == 1 ? "في الانتظار" : "Pending",
-                    OrderStatus.Assigned => languageId == 1 ? "تم تعيين كابتن" : "Assigned",
-                    OrderStatus.Completed => languageId == 1 ? "مكتمل" : "Completed",
-                    OrderStatus.Cancelled => languageId == 1 ? "ملغي" : "Cancelled",
-                    _ => languageId == 1 ? "غير محدد" : "Not Specified"
-                };
-            }
-
-            private static string GetOrderTypeName(OrderType orderType, int languageId)
-            {
-                return orderType switch
-                {
-                    OrderType.SingleWayPoints => languageId == 1 ? "نقطة واحدة" : "Single Way Point",
-                    OrderType.MultiWayPoints => languageId == 1 ? "عدة نقاط" : "Multiple Way Points",
-                    OrderType.BackAndForth => languageId == 1 ? "ذهاب وعودة" : "Back and Forth",
-                    _ => languageId == 1 ? "غير محدد" : "Not Specified"
-                };
-            }
-
-            private static string GetCustomerTypeName(CustomerType customerType, int languageId)
-            {
-                return customerType switch
-                {
-                    CustomerType.Individual => languageId == 1 ? "فرد" : "Individual",
-                    CustomerType.Establishment => languageId == 1 ? "مؤسسة" : "Establishment",
-                    _ => languageId == 1 ? "غير محدد" : "Not Specified"
-                };
-            }
-
-            private static string GetWayPointStatusName(OrderWayPointsStatus status, int languageId)
-            {
-                return status switch
-                {
-                    OrderWayPointsStatus.Pending => languageId == 1 ? "في الانتظار" : "Pending  ",
-                    OrderWayPointsStatus.PickedUp => languageId == 1 ? "تم الوصول الى نقطة الإستلام" : "Picked Up",
-                    OrderWayPointsStatus.Completed => languageId == 1 ? "مكتمل" : "Completed",
-                    _ => languageId == 1 ? "غير محدد" : "Not Specified"
-                };
             }
         }
     }

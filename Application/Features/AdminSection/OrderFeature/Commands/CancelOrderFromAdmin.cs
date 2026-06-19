@@ -34,23 +34,13 @@ namespace Application.Features.AdminSection.OrderFeature.Commands
                     .FirstOrDefaultAsync(o => o.Id == request.OrderId, cancellationToken);
 
                 if (order == null)
-                {
-                    var errMessage = request.LanguageId == 1 ? "الطلب غير موجود." : "Order not found.";
-                    return Result.Failure<int>(errMessage);
-                }
+                    return Result.Failure<int>("OrderNotFound");
 
                 if (order.OrderStatus == OrderStatus.Cancelled)
-                {
-                    var errMessage = request.LanguageId == 1 ? "الطلب ملغي بالفعل." : "Order is already canceled.";
-                    return Result.Failure<int>(errMessage);
-                }
+                    return Result.Failure<int>("OrderAlreadyCancelled");
 
-                // Only pending orders can be canceled
                 if (order.OrderStatus != OrderStatus.Pending)
-                {
-                    var errMessage = request.LanguageId == 1 ? "يمكن إلغاء الطلبات المعلقة فقط." : "Only Pending orders can be canceled.";
-                    return Result.Failure<int>(errMessage);
-                }
+                    return Result.Failure<int>("OnlyPendingOrdersCanBeCanceled");
 
                 order.CancelOrder(DateTime.UtcNow);
 

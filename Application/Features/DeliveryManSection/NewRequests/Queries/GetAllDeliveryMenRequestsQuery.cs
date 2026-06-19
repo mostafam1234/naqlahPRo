@@ -1,5 +1,6 @@
 ﻿using Application.Features.DeliveryManSection.NewRequests.Dtos;
 using CSharpFunctionalExtensions;
+using Domain.Enums;
 using Domain.InterFaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -28,7 +29,9 @@ namespace Application.Features.DeliveryManSection.NewRequests.Queries
 
             public async Task<Result<PagedGetAllDeliveryMenRequestsPaged>> Handle(GetAllDeliveryMenRequestsQuery request, CancellationToken cancellationToken)
             {
-                var query = _context.DeliveryMen.AsQueryable();
+                var query = _context.DeliveryMen
+                    .Where(x => x.DeliveryState != DeliveryRequesState.Approved)
+                    .AsQueryable();
 
                 if (request.DeliveryTypeFilter > 0)
                 {
@@ -46,6 +49,8 @@ namespace Application.Features.DeliveryManSection.NewRequests.Queries
                 var baseUrl = _config.GetValue<string>("apiBaseUrl");
 
                 var deliveryMenRequests = await query
+                    .OrderByDescending(x => x.DeliveryState == DeliveryRequesState.New)
+                    .ThenByDescending(x => x.RegisteredAt)
                     .Select(x => new GetAllDeliveryMenRequestsDto
                     {
                         DeliveryManId = x.Id,

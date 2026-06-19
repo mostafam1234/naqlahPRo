@@ -35,7 +35,7 @@ namespace Application.Features.AdminSection.SystemConfiguration.Command
                 var config = await naqlahContext.SystemConfigurations.AsTracking().FirstOrDefaultAsync(x=>x.Id==request.Id);
                 if (config == null)
                 {
-                    return Result.Failure("Configuration not found");
+                    return Result.Failure("ConfigurationNotFound");
                 }
                 config.Update(request.BaseKm,
                               request.BaseKmRate,

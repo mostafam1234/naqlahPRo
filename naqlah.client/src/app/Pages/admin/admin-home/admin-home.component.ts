@@ -14,6 +14,7 @@ import { DashboardAdminClient, DashboardStatisticsDto, CategoryOrderCountDto, Mo
 import { catchError, finalize } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { SubSink } from 'subsink';
+import { CHART_COLORS } from 'src/app/shared/theme/naqlah-theme';
 import { TranslateModule } from '@ngx-translate/core';
 
 Chart.register(
@@ -57,17 +58,8 @@ export class AdminHomeComponent implements AfterViewInit, OnInit, OnDestroy {
   todayOrders: TodayOrderDto[] = [];
   isLoadingTodayOrders = false;
 
-  // Category colors - consistent palette
-  private categoryColors: string[] = [
-    '#06B6D4', // cyan-500
-    '#10B981', // emerald-500
-    '#F59E0B', // amber-500
-    '#EF4444', // red-500
-    '#8B5CF6', // violet-500
-    '#EC4899', // pink-500
-    '#14B8A6', // teal-500
-    '#F97316'  // orange-500
-  ];
+  // Category colors — from src/theme/colors.json
+  private categoryColors: string[] = CHART_COLORS;
 
   private subs = new SubSink();
 

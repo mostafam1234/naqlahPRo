@@ -28,13 +28,13 @@ namespace Application.Features.AdminSection.CityFeatures.Commands
                 var city = await _context.Cities.AsTracking().FirstOrDefaultAsync(x => x.Id == command.Id);
                 if (city == null)
                 {
-                    return Result.Failure<int>("City Not Found");
+                    return Result.Failure<int>("CityNotFound");
                 }
 
                 var regionExists = await _context.Regions.AnyAsync(x => x.Id == command.RegionId, cancellationToken);
                 if (!regionExists)
                 {
-                    return Result.Failure<int>("Region Not Found");
+                    return Result.Failure<int>("RegionNotFound");
                 }
 
                 city.Update(command.ArabicName, command.EnglishName, command.RegionId);

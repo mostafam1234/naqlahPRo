@@ -3169,6 +3169,296 @@
         }
       }
     },
+    "/api/CustomerAdmin/GetAllCustomers": {
+      "get": {
+        "tags": [
+          "CustomerAdmin"
+        ],
+        "operationId": "CustomerAdmin_GetAllCustomers",
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            },
+            "x-position": 1
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            },
+            "x-position": 2
+          },
+          {
+            "name": "searchTerm",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 3
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfAdminCustomerListItemDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/CustomerAdmin/GetCustomerDetail": {
+      "get": {
+        "tags": [
+          "CustomerAdmin"
+        ],
+        "operationId": "CustomerAdmin_GetCustomerDetail",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminCustomerDetailDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/CustomerAdmin/SetCustomerUserActive": {
+      "post": {
+        "tags": [
+          "CustomerAdmin"
+        ],
+        "operationId": "CustomerAdmin_SetCustomerUserActive",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "isActive",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/CustomerAdmin/DeleteCustomerUser": {
+      "post": {
+        "tags": [
+          "CustomerAdmin"
+        ],
+        "operationId": "CustomerAdmin_DeleteCustomerUser",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/CustomerAdmin/RestoreCustomerUser": {
+      "post": {
+        "tags": [
+          "CustomerAdmin"
+        ],
+        "operationId": "CustomerAdmin_RestoreCustomerUser",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/CustomerAdmin/ResetCustomerPassword": {
+      "post": {
+        "tags": [
+          "CustomerAdmin"
+        ],
+        "operationId": "CustomerAdmin_ResetCustomerPassword",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "body",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminResetCustomerPasswordRequest"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/DashboardAdmin/GetDashboardStatistics": {
       "get": {
         "tags": [
@@ -3669,6 +3959,21 @@
         "operationId": "DeliveryManAdmin_GetAllDeliveryMen",
         "parameters": [
           {
+            "name": "deliveryManIds",
+            "in": "query",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "integer",
+                "format": "int32"
+              }
+            },
+            "x-position": 1
+          },
+          {
             "name": "skip",
             "in": "query",
             "schema": {
@@ -3676,7 +3981,7 @@
               "format": "int32",
               "default": 0
             },
-            "x-position": 1
+            "x-position": 2
           },
           {
             "name": "take",
@@ -3686,7 +3991,7 @@
               "format": "int32",
               "default": 10
             },
-            "x-position": 2
+            "x-position": 3
           },
           {
             "name": "searchTerm",
@@ -3695,7 +4000,36 @@
               "type": "string",
               "nullable": true
             },
-            "x-position": 3
+            "x-position": 4
+          },
+          {
+            "name": "activeFilter",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            },
+            "x-position": 5
+          },
+          {
+            "name": "fromDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-position": 6
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-position": 7
           }
         ],
         "responses": {
@@ -3705,6 +4039,92 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PagedResultOfGetAllDeliveryMenDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/DeliveryManAdmin/ExportAllDeliveryMen": {
+      "get": {
+        "tags": [
+          "DeliveryManAdmin"
+        ],
+        "operationId": "DeliveryManAdmin_ExportAllDeliveryMen",
+        "parameters": [
+          {
+            "name": "deliveryManIds",
+            "in": "query",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "integer",
+                "format": "int32"
+              }
+            },
+            "x-position": 1
+          },
+          {
+            "name": "searchTerm",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
+            "name": "activeFilter",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            },
+            "x-position": 3
+          },
+          {
+            "name": "fromDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-position": 4
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-position": 5
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
                 }
               }
             }
@@ -3735,6 +4155,189 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/DeliveryManStatisticsDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/DeliveryManAdmin/GetAvailableDeliveryMenLookup": {
+      "get": {
+        "tags": [
+          "DeliveryManAdmin"
+        ],
+        "operationId": "DeliveryManAdmin_GetAvailableDeliveryMenLookup",
+        "parameters": [
+          {
+            "name": "searchTerm",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "activeFilter",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DeliveryManLookupDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/DeliveryManAdmin/GetCaptainControlOrders": {
+      "get": {
+        "tags": [
+          "DeliveryManAdmin"
+        ],
+        "operationId": "DeliveryManAdmin_GetCaptainControlOrders",
+        "parameters": [
+          {
+            "name": "deliveryManIds",
+            "in": "query",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "integer",
+                "format": "int32"
+              }
+            },
+            "x-position": 1
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            },
+            "x-position": 2
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            },
+            "x-position": 3
+          },
+          {
+            "name": "searchTerm",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 4
+          },
+          {
+            "name": "statusFilter",
+            "in": "query",
+            "schema": {
+              "oneOf": [
+                {
+                  "nullable": true,
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/OrderStatus"
+                    }
+                  ]
+                }
+              ]
+            },
+            "x-position": 5
+          },
+          {
+            "name": "customerTypeFilter",
+            "in": "query",
+            "schema": {
+              "oneOf": [
+                {
+                  "nullable": true,
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/CustomerType"
+                    }
+                  ]
+                }
+              ]
+            },
+            "x-position": 6
+          },
+          {
+            "name": "fromDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-position": 7
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-position": 8
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultOfGetAllOrdersDto"
                 }
               }
             }
@@ -3813,6 +4416,52 @@
               ]
             },
             "x-position": 5
+          },
+          {
+            "name": "activeOrdersOnly",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            },
+            "x-position": 6
+          },
+          {
+            "name": "customerTypeFilter",
+            "in": "query",
+            "schema": {
+              "oneOf": [
+                {
+                  "nullable": true,
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/CustomerType"
+                    }
+                  ]
+                }
+              ]
+            },
+            "x-position": 7
+          },
+          {
+            "name": "fromDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-position": 8
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-position": 9
           }
         ],
         "responses": {
@@ -3822,6 +4471,450 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PagedResultOfGetAllOrdersDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/DeliveryManAdmin/ExportOrdersByDeliveryManId": {
+      "get": {
+        "tags": [
+          "DeliveryManAdmin"
+        ],
+        "operationId": "DeliveryManAdmin_ExportOrdersByDeliveryManId",
+        "parameters": [
+          {
+            "name": "deliveryManId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "searchTerm",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
+            "name": "statusFilter",
+            "in": "query",
+            "schema": {
+              "oneOf": [
+                {
+                  "nullable": true,
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/OrderStatus"
+                    }
+                  ]
+                }
+              ]
+            },
+            "x-position": 3
+          },
+          {
+            "name": "activeOrdersOnly",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            },
+            "x-position": 4
+          },
+          {
+            "name": "customerTypeFilter",
+            "in": "query",
+            "schema": {
+              "oneOf": [
+                {
+                  "nullable": true,
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/CustomerType"
+                    }
+                  ]
+                }
+              ]
+            },
+            "x-position": 5
+          },
+          {
+            "name": "fromDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-position": 6
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-position": 7
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/DeliveryManAdmin/GetDeliveryManSummary/{deliveryManId}": {
+      "get": {
+        "tags": [
+          "DeliveryManAdmin"
+        ],
+        "operationId": "DeliveryManAdmin_GetDeliveryManSummary",
+        "parameters": [
+          {
+            "name": "deliveryManId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryManSummaryDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/DeliveryManAdmin/ExportDeliveryManSummary/{deliveryManId}": {
+      "get": {
+        "tags": [
+          "DeliveryManAdmin"
+        ],
+        "operationId": "DeliveryManAdmin_ExportDeliveryManSummary",
+        "parameters": [
+          {
+            "name": "deliveryManId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/DeliveryManAdmin/ExportCaptainControlOrders": {
+      "get": {
+        "tags": [
+          "DeliveryManAdmin"
+        ],
+        "operationId": "DeliveryManAdmin_ExportCaptainControlOrders",
+        "parameters": [
+          {
+            "name": "deliveryManIds",
+            "in": "query",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "integer",
+                "format": "int32"
+              }
+            },
+            "x-position": 1
+          },
+          {
+            "name": "searchTerm",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          },
+          {
+            "name": "statusFilter",
+            "in": "query",
+            "schema": {
+              "oneOf": [
+                {
+                  "nullable": true,
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/OrderStatus"
+                    }
+                  ]
+                }
+              ]
+            },
+            "x-position": 3
+          },
+          {
+            "name": "customerTypeFilter",
+            "in": "query",
+            "schema": {
+              "oneOf": [
+                {
+                  "nullable": true,
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/CustomerType"
+                    }
+                  ]
+                }
+              ]
+            },
+            "x-position": 4
+          },
+          {
+            "name": "fromDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-position": 5
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-position": 6
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/DeliveryManAdmin/SetDeliveryManActiveStatus": {
+      "post": {
+        "tags": [
+          "DeliveryManAdmin"
+        ],
+        "operationId": "DeliveryManAdmin_SetDeliveryManActiveStatus",
+        "parameters": [
+          {
+            "name": "deliveryManId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "active",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SetDeliveryManActiveStatusResultDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/DeliveryManAdmin/GetDeliveryManActiveHistory/{deliveryManId}": {
+      "get": {
+        "tags": [
+          "DeliveryManAdmin"
+        ],
+        "operationId": "DeliveryManAdmin_GetDeliveryManActiveHistory",
+        "parameters": [
+          {
+            "name": "deliveryManId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeliveryManActiveHistoryResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/DeliveryManAdmin/ExportDeliveryManActiveHistory/{deliveryManId}": {
+      "get": {
+        "tags": [
+          "DeliveryManAdmin"
+        ],
+        "operationId": "DeliveryManAdmin_ExportDeliveryManActiveHistory",
+        "parameters": [
+          {
+            "name": "deliveryManId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
                 }
               }
             }
@@ -4227,6 +5320,57 @@
         }
       }
     },
+    "/api/OrderAdmin/GetOrderStatistics": {
+      "get": {
+        "tags": [
+          "OrderAdmin"
+        ],
+        "operationId": "OrderAdmin_GetOrderStatistics",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderStatisticsDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/OrderAdmin/ExportOrderStatistics": {
+      "get": {
+        "tags": [
+          "OrderAdmin"
+        ],
+        "operationId": "OrderAdmin_ExportOrderStatistics",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/OrderAdmin/GetAllOrders": {
       "get": {
         "tags": [
@@ -4281,6 +5425,15 @@
             "x-position": 4
           },
           {
+            "name": "activeOrdersOnly",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            },
+            "x-position": 5
+          },
+          {
             "name": "customerTypeFilter",
             "in": "query",
             "schema": {
@@ -4295,7 +5448,7 @@
                 }
               ]
             },
-            "x-position": 5
+            "x-position": 6
           },
           {
             "name": "fromDate",
@@ -4305,7 +5458,7 @@
               "format": "date-time",
               "nullable": true
             },
-            "x-position": 6
+            "x-position": 7
           },
           {
             "name": "toDate",
@@ -4315,7 +5468,22 @@
               "format": "date-time",
               "nullable": true
             },
-            "x-position": 7
+            "x-position": 8
+          },
+          {
+            "name": "deliveryManIds",
+            "in": "query",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "integer",
+                "format": "int32"
+              }
+            },
+            "x-position": 9
           }
         ],
         "responses": {
@@ -4325,6 +5493,126 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PagedResultOfGetAllOrdersDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/OrderAdmin/ExportAllOrders": {
+      "get": {
+        "tags": [
+          "OrderAdmin"
+        ],
+        "operationId": "OrderAdmin_ExportAllOrders",
+        "parameters": [
+          {
+            "name": "searchTerm",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "statusFilter",
+            "in": "query",
+            "schema": {
+              "oneOf": [
+                {
+                  "nullable": true,
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/OrderStatus"
+                    }
+                  ]
+                }
+              ]
+            },
+            "x-position": 2
+          },
+          {
+            "name": "activeOrdersOnly",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "nullable": true
+            },
+            "x-position": 3
+          },
+          {
+            "name": "customerTypeFilter",
+            "in": "query",
+            "schema": {
+              "oneOf": [
+                {
+                  "nullable": true,
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/CustomerType"
+                    }
+                  ]
+                }
+              ]
+            },
+            "x-position": 4
+          },
+          {
+            "name": "fromDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-position": 5
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-position": 6
+          },
+          {
+            "name": "deliveryManIds",
+            "in": "query",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "nullable": true,
+              "items": {
+                "type": "integer",
+                "format": "int32"
+              }
+            },
+            "x-position": 7
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
                 }
               }
             }
@@ -5372,18 +6660,8 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/VehicleTypeDto"
+                    "$ref": "#/components/schemas/VehicleBrandDto"
                   }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetail"
                 }
               }
             }
@@ -5410,16 +6688,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetail"
-                }
-              }
-            }
           }
         }
       }
@@ -5443,13 +6711,111 @@
                 }
               }
             }
-          },
-          "400": {
+          }
+        }
+      }
+    },
+    "/api/VehicleAdmin/GetVehicleLoadCategoriesLookup": {
+      "get": {
+        "tags": [
+          "VehicleAdmin"
+        ],
+        "operationId": "VehicleAdmin_GetVehicleLoadCategoriesLookup",
+        "responses": {
+          "200": {
             "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetail"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/VehicleLoadCategoryLookupDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/VehicleAdmin/GetVehicleTypeStatistics": {
+      "get": {
+        "tags": [
+          "VehicleAdmin"
+        ],
+        "operationId": "VehicleAdmin_GetVehicleTypeStatistics",
+        "parameters": [
+          {
+            "name": "fromDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VehicleTypeStatisticsDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/VehicleAdmin/ExportVehicleTypeStatistics": {
+      "get": {
+        "tags": [
+          "VehicleAdmin"
+        ],
+        "operationId": "VehicleAdmin_ExportVehicleTypeStatistics",
+        "parameters": [
+          {
+            "name": "fromDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
                 }
               }
             }
@@ -5504,16 +6870,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetail"
-                }
-              }
-            }
           }
         }
       }
@@ -5565,16 +6921,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetail"
-                }
-              }
-            }
           }
         }
       }
@@ -5605,16 +6951,6 @@
                 "schema": {
                   "type": "integer",
                   "format": "int32"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetail"
                 }
               }
             }
@@ -5651,16 +6987,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetail"
-                }
-              }
-            }
           }
         }
       }
@@ -5691,16 +7017,6 @@
                 "schema": {
                   "type": "integer",
                   "format": "int32"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetail"
                 }
               }
             }
@@ -5737,16 +7053,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetail"
-                }
-              }
-            }
           }
         }
       }
@@ -5779,16 +7085,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetail"
-                }
-              }
-            }
           }
         }
       }
@@ -5818,16 +7114,6 @@
                 "schema": {
                   "type": "integer",
                   "format": "int32"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetail"
                 }
               }
             }
@@ -6853,13 +8139,17 @@
           "Pending",
           "Assigned",
           "Cancelled",
-          "Completed"
+          "Completed",
+          "ConfirmedGoingToPickup",
+          "PickedUpFromDeliveryMan"
         ],
         "enum": [
           1,
           2,
           3,
-          4
+          4,
+          5,
+          6
         ]
       },
       "CustomerOrderWayPointDto": {
@@ -8557,6 +9847,191 @@
           }
         }
       },
+      "PagedResultOfAdminCustomerListItemDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AdminCustomerListItemDto"
+            }
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "AdminCustomerListItemDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "customerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "customerType": {
+            "$ref": "#/components/schemas/CustomerType"
+          },
+          "customerTypeName": {
+            "type": "string"
+          },
+          "customerDisplayName": {
+            "type": "string"
+          },
+          "userName": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "plainPasswordExplanation": {
+            "type": "string",
+            "nullable": true
+          },
+          "hasPasswordConfigured": {
+            "type": "boolean"
+          },
+          "nationalAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "taxRegistrationNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "isDeleted": {
+            "type": "boolean"
+          }
+        }
+      },
+      "AdminCustomerDetailDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "customerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "customerType": {
+            "$ref": "#/components/schemas/CustomerType"
+          },
+          "customerTypeName": {
+            "type": "string"
+          },
+          "customerDisplayName": {
+            "type": "string"
+          },
+          "userName": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "plainPasswordExplanation": {
+            "type": "string",
+            "nullable": true
+          },
+          "hasPasswordConfigured": {
+            "type": "boolean"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "isDeleted": {
+            "type": "boolean"
+          },
+          "nationalAddress": {
+            "type": "string",
+            "nullable": true
+          },
+          "taxRegistrationNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "individualIdentityNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "individualMobileNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "individualFrontIdentityImagePath": {
+            "type": "string",
+            "nullable": true
+          },
+          "individualBackIdentityImagePath": {
+            "type": "string",
+            "nullable": true
+          },
+          "establishmentTradeName": {
+            "type": "string",
+            "nullable": true
+          },
+          "establishmentCommercialRecordImagePath": {
+            "type": "string",
+            "nullable": true
+          },
+          "establishmentTaxRegistrationImagePath": {
+            "type": "string",
+            "nullable": true
+          },
+          "establishmentRepresentativeName": {
+            "type": "string",
+            "nullable": true
+          },
+          "establishmentRepresentativePhone": {
+            "type": "string",
+            "nullable": true
+          },
+          "establishmentRepresentativeFrontIdentityImagePath": {
+            "type": "string",
+            "nullable": true
+          },
+          "establishmentRepresentativeBackIdentityImagePath": {
+            "type": "string",
+            "nullable": true
+          },
+          "androidDevice": {
+            "type": "string"
+          },
+          "iosDevice": {
+            "type": "string"
+          }
+        }
+      },
+      "AdminResetCustomerPasswordRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "newPassword": {
+            "type": "string"
+          }
+        }
+      },
       "DashboardStatisticsDto": {
         "type": "object",
         "additionalProperties": false,
@@ -8740,7 +10215,8 @@
             "type": "string"
           },
           "address": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "phoneNumber": {
             "type": "string"
@@ -8748,13 +10224,20 @@
           "identityNumber": {
             "type": "string"
           },
+          "birthDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
           "identityExpirationDate": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "nullable": true
           },
           "drivingLicenseExpirationDate": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "nullable": true
           },
           "deliveryType": {
             "type": "string"
@@ -8769,19 +10252,24 @@
             "type": "string"
           },
           "frontIdentityImagePath": {
-            "type": "string"
-          },
-          "backIdentityImagePath": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "frontDrivingLicenseImagePath": {
-            "type": "string"
-          },
-          "backDrivingLicenseImagePath": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "personalImagePath": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
+          },
+          "backIdentityImagePath": {
+            "type": "string",
+            "nullable": true
+          },
+          "backDrivingLicenseImagePath": {
+            "type": "string",
+            "nullable": true
           },
           "active": {
             "type": "boolean"
@@ -8805,10 +10293,12 @@
             "nullable": true
           },
           "vehiclePlateNumber": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "vehicleType": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "vehicleTypeId": {
             "type": "integer",
@@ -8816,33 +10306,99 @@
             "nullable": true
           },
           "vehicleColor": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "vehicleModel": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "vehicleBrandId": {
             "type": "integer",
             "format": "int32",
             "nullable": true
           },
+          "vehicleOwnerTypeId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "vehicleOwnerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "vehicleOwnerIdentityNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "commercialRecordNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "vehicleLicenseExpirationDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "vehicleInsuranceExpirationDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
           "vehicleFrontImagePath": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "vehicleSideImagePath": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "vehicleFrontLicenseImagePath": {
-            "type": "string"
-          },
-          "vehicleBackLicenseImagePath": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "vehicleFrontInsuranceImagePath": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
+          },
+          "vehicleBackLicenseImagePath": {
+            "type": "string",
+            "nullable": true
           },
           "vehicleBackInsuranceImagePath": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
+          },
+          "ownerFrontIdentityImagePath": {
+            "type": "string",
+            "nullable": true
+          },
+          "commercialRecordImagePath": {
+            "type": "string",
+            "nullable": true
+          },
+          "rentContractImagePath": {
+            "type": "string",
+            "nullable": true
+          },
+          "ownerBackIdentityImagePath": {
+            "type": "string",
+            "nullable": true
+          },
+          "taxNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "taxCertificateImagePath": {
+            "type": "string",
+            "nullable": true
+          },
+          "ownerBankAccountNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "hasIncompleteRegistration": {
+            "type": "boolean"
           }
         }
       },
@@ -8927,7 +10483,8 @@
             "type": "string"
           },
           "address": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "phoneNumber": {
             "type": "string"
@@ -8935,19 +10492,26 @@
           "identityNumber": {
             "type": "string"
           },
+          "birthDate": {
+            "type": "string",
+            "nullable": true
+          },
           "deliveryType": {
             "type": "integer",
-            "format": "int32"
+            "format": "int32",
+            "nullable": true
           },
           "identityExpirationDate": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "deliveryLicenseType": {
             "type": "integer",
             "format": "int32"
           },
           "drivingLicenseExpirationDate": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "vehiclePlateNumber": {
             "type": "string",
@@ -8968,6 +10532,26 @@
             "format": "int32",
             "nullable": true
           },
+          "vehicleOwnerName": {
+            "type": "string",
+            "nullable": true
+          },
+          "vehicleOwnerIdentityNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "ownerBankAccountNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "commercialRecordNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "taxNumber": {
+            "type": "string",
+            "nullable": true
+          },
           "vehicleLicenseExpirationDate": {
             "type": "string",
             "nullable": true
@@ -8976,7 +10560,19 @@
             "type": "string",
             "nullable": true
           },
-          "inSuranceExpirationDate": {
+          "frontIdentityImagePath": {
+            "type": "string",
+            "nullable": true
+          },
+          "frontDrivingLicenseImagePath": {
+            "type": "string",
+            "nullable": true
+          },
+          "ownerFrontIdentityImagePath": {
+            "type": "string",
+            "nullable": true
+          },
+          "commercialRecordImagePath": {
             "type": "string",
             "nullable": true
           },
@@ -8992,7 +10588,7 @@
             "type": "string",
             "nullable": true
           },
-          "vehicleBackLicenseImagePath": {
+          "personalImagePath": {
             "type": "string",
             "nullable": true
           },
@@ -9000,15 +10596,7 @@
             "type": "string",
             "nullable": true
           },
-          "vehicleBackInsuranceImagePath": {
-            "type": "string",
-            "nullable": true
-          },
-          "personalImagePath": {
-            "type": "string",
-            "nullable": true
-          },
-          "frontIdentityImagePath": {
+          "rentContractImagePath": {
             "type": "string",
             "nullable": true
           },
@@ -9016,11 +10604,19 @@
             "type": "string",
             "nullable": true
           },
-          "frontDrivingLicenseImagePath": {
+          "backDrivingLicenseImagePath": {
             "type": "string",
             "nullable": true
           },
-          "backDrivingLicenseImagePath": {
+          "vehicleBackLicenseImagePath": {
+            "type": "string",
+            "nullable": true
+          },
+          "vehicleBackInsuranceImagePath": {
+            "type": "string",
+            "nullable": true
+          },
+          "ownerBackIdentityImagePath": {
             "type": "string",
             "nullable": true
           },
@@ -9088,8 +10684,39 @@
           },
           "active": {
             "type": "boolean"
+          },
+          "activeStatusName": {
+            "type": "string"
+          },
+          "deliveryState": {
+            "$ref": "#/components/schemas/DeliveryRequesState"
+          },
+          "deliveryStateName": {
+            "type": "string"
+          },
+          "registeredAt": {
+            "type": "string",
+            "format": "date-time"
           }
         }
+      },
+      "DeliveryRequesState": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "New",
+          "Approved",
+          "Rejected",
+          "Blocked",
+          "Suspended"
+        ],
+        "enum": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
       },
       "DeliveryManStatisticsDto": {
         "type": "object",
@@ -9106,6 +10733,34 @@
           "inactiveDeliveryMen": {
             "type": "integer",
             "format": "int32"
+          }
+        }
+      },
+      "DeliveryManLookupDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "activeStatusName": {
+            "type": "string"
+          },
+          "deliveryState": {
+            "$ref": "#/components/schemas/DeliveryRequesState"
+          },
+          "deliveryStateName": {
+            "type": "string"
           }
         }
       },
@@ -9249,6 +10904,167 @@
           },
           "neighborhoodName": {
             "type": "string"
+          }
+        }
+      },
+      "DeliveryManSummaryDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "phoneNumber": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "vehicleTypeName": {
+            "type": "string"
+          },
+          "vehiclePlate": {
+            "type": "string"
+          },
+          "hasIncompleteRegistration": {
+            "type": "boolean"
+          },
+          "profileCompletenessLabel": {
+            "type": "string"
+          },
+          "totalOrders": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pendingOrders": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "assignedOrders": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "confirmedGoingToPickupOrders": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pickedUpOrders": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "completedOrders": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "cancelledOrders": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "activeOrders": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ordersByStatus": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DeliveryManOrderStatusCountDto"
+            }
+          }
+        }
+      },
+      "DeliveryManOrderStatusCountDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/OrderStatus"
+          },
+          "statusName": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "SetDeliveryManActiveStatusResultDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "deliveryManId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "activeStatusName": {
+            "type": "string"
+          },
+          "statusChanged": {
+            "type": "boolean"
+          }
+        }
+      },
+      "DeliveryManActiveHistoryResponseDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "deliveryManId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "currentActive": {
+            "type": "boolean"
+          },
+          "currentActiveStatusName": {
+            "type": "string"
+          },
+          "history": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DeliveryManActiveHistoryDto"
+            }
+          }
+        }
+      },
+      "DeliveryManActiveHistoryDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "activeStatusName": {
+            "type": "string"
+          },
+          "changedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "changedByUserId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "changedByUserName": {
+            "type": "string",
+            "nullable": true
           }
         }
       },
@@ -9409,6 +11225,58 @@
           5,
           6
         ]
+      },
+      "OrderStatisticsDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "totalOrders": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "activeOrders": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "confirmedGoingToPickupOrders": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pickedUpOrders": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "completedOrders": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "cancelledOrders": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ordersByStatus": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderStatusCountDto"
+            }
+          }
+        }
+      },
+      "OrderStatusCountDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/OrderStatus"
+          },
+          "statusName": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
       },
       "GetOrderDetailsForAdminDto": {
         "type": "object",
@@ -10133,6 +12001,82 @@
           }
         }
       },
+      "VehicleLoadCategoryLookupDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "$ref": "#/components/schemas/VehicleLoadCategory"
+          },
+          "arabicName": {
+            "type": "string"
+          },
+          "englishName": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "VehicleLoadCategory": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "Dina5Ton",
+          "HalfTransport3_5Ton",
+          "Truck5TonInsulated",
+          "HalfTransport3_5TonInsulatedAc"
+        ],
+        "enum": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      "VehicleTypeStatisticsDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "totalVehicleTypes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalRegisteredVehicles": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "loadCategoryCounts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VehicleLoadCategoryCountDto"
+            }
+          }
+        }
+      },
+      "VehicleLoadCategoryCountDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "loadCategory": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "loadCategoryName": {
+            "type": "string"
+          },
+          "vehicleTypeCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "registeredVehicleCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
       "PagedResultOfDeliveryManVehicleDto": {
         "type": "object",
         "additionalProperties": false,
@@ -10173,6 +12117,26 @@
           "cost": {
             "type": "number",
             "format": "decimal"
+          },
+          "serviceFee": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "loadCategory": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/VehicleLoadCategory"
+              }
+            ]
+          },
+          "loadCategoryName": {
+            "type": "string",
+            "nullable": true
+          },
+          "creationDate": {
+            "type": "string",
+            "format": "date-time"
           },
           "mainCategories": {
             "type": "array",
@@ -10224,7 +12188,8 @@
             "type": "string"
           },
           "iconBase64": {
-            "type": "string"
+            "type": "string",
+            "nullable": true
           },
           "mainCategoryIds": {
             "type": "array",
@@ -10236,6 +12201,18 @@
           "cost": {
             "type": "number",
             "format": "decimal"
+          },
+          "serviceFee": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "loadCategory": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/VehicleLoadCategory"
+              }
+            ]
           }
         }
       },
@@ -10267,6 +12244,18 @@
           "cost": {
             "type": "number",
             "format": "decimal"
+          },
+          "serviceFee": {
+            "type": "number",
+            "format": "decimal"
+          },
+          "loadCategory": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/VehicleLoadCategory"
+              }
+            ]
           }
         }
       },

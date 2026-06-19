@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import Swal from 'sweetalert2';
+import { PRIMARY_COLOR_DARK } from '../theme/naqlah-theme';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,7 @@ export class ConfirmationDialogService {
         text: `هل أنت متأكد من موافقة طلب الكابتن "${captainName}"؟`,
         icon: 'question',
         showCancelButton: true,
-        confirmButtonColor: '#10b981',
+        confirmButtonColor: PRIMARY_COLOR_DARK,
         cancelButtonColor: '#6b7280',
         confirmButtonText: 'موافقة',
         cancelButtonText: 'إلغاء',
@@ -102,7 +103,7 @@ export class ConfirmationDialogService {
       title: 'نجح العملية!',
       text: message,
       icon: 'success',
-      confirmButtonColor: '#10b981',
+      confirmButtonColor: PRIMARY_COLOR_DARK,
       confirmButtonText: 'حسناً',
       customClass: {
         popup: 'swal-rtl'

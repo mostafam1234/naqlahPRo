@@ -24,16 +24,16 @@ namespace Domain.Models
         public string CitizenName { get;private set; }
         public string IdentityNumber { get;private set; }
         public string FrontIdentityImagePath { get;private set; }
-        public string BackIdentityImagePath { get; private set; }
-        public string RentContractImagePath { get;private set; }
-        public string BankAccountNumber { get;private set; }
+        public string? BackIdentityImagePath { get; private set; }
+        public string? RentContractImagePath { get;private set; }
+        public string? BankAccountNumber { get;private set; }
 
         public static Result<Renter>Instance(string citizenName,
                                              string identityNumber,
                                              string frontIdentityImagePath,
-                                             string backIdentityImagePath,
-                                             string rentContractImagePath,
-                                             string bankAccountNumber)
+                                             string? backIdentityImagePath,
+                                             string? rentContractImagePath,
+                                             string? bankAccountNumber)
         {
             var renter = new Renter
             {

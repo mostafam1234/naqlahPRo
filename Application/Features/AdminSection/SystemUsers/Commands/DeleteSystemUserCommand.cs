@@ -35,7 +35,7 @@ namespace Application.Features.AdminSection.SystemUsers.Commands
 
                 if (user == null)
                 {
-                    return Result.Failure<int>("المستخدم غير موجود");
+                    return Result.Failure<int>("UserNotFound");
                 }
 
                 // Soft delete

@@ -31,20 +31,20 @@ namespace Application.Features.AdminSection.OrderFeature.Commands
 
                 if (orderPackage == null)
                 {
-                    return Result.Failure<int>("Order Package Not Found");
+                    return Result.Failure<int>("OrderPackageNotFound");
                 }
 
                 // Validate before updating
                 if (string.IsNullOrWhiteSpace(command.ArabicDescription))
-                    return Result.Failure<int>("Arabic description is required.");
+                    return Result.Failure<int>("ArabicDescriptionRequired");
                 if (string.IsNullOrWhiteSpace(command.EnglishDescription))
-                    return Result.Failure<int>("English description is required.");
+                    return Result.Failure<int>("EnglishDescriptionRequired");
                 if (command.MinWeightInKiloGram < 0)
-                    return Result.Failure<int>("Minimum weight cannot be negative.");
+                    return Result.Failure<int>("MinimumWeightCannotBeNegative");
                 if (command.MaxWeightInKiloGram < 0)
-                    return Result.Failure<int>("Maximum weight cannot be negative.");
+                    return Result.Failure<int>("MaximumWeightCannotBeNegative");
                 if (command.MinWeightInKiloGram > command.MaxWeightInKiloGram)
-                    return Result.Failure<int>("Minimum weight cannot be greater than maximum weight.");
+                    return Result.Failure<int>("MinimumWeightGreaterThanMaximum");
 
                 orderPackage.Update(
                     command.ArabicDescription,

@@ -47,13 +47,13 @@ namespace Application.Features.AdminSection.SystemUsers.Commands
 
                 if (isEmailExists)
                 {
-                    return Result.Failure<int>("البريد الإلكتروني مستخدم بالفعل");
+                    return Result.Failure<int>("EmailAlreadyExists");
                 }
 
                 // Validate phone number format (KSA: starts with 05, exactly 10 digits)
                 if (string.IsNullOrWhiteSpace(command.PhoneNumber))
                 {
-                    return Result.Failure<int>("رقم الهاتف مطلوب");
+                    return Result.Failure<int>("PhoneNumberRequired");
                 }
 
                 // Remove any spaces or special characters for validation
@@ -62,7 +62,7 @@ namespace Application.Features.AdminSection.SystemUsers.Commands
                 // Validate KSA phone number format: must start with 05 and be exactly 10 digits
                 if (!Regex.IsMatch(cleanPhoneNumber, @"^05\d{8}$"))
                 {
-                    return Result.Failure<int>("رقم الهاتف غير صحيح. يجب أن يبدأ بـ 05 ويتكون من 10 أرقام (مثال: 0512345678)");
+                    return Result.Failure<int>("PhoneNumberInvalid");
                 }
 
                 // Check if phone number already exists
@@ -71,7 +71,7 @@ namespace Application.Features.AdminSection.SystemUsers.Commands
 
                 if (isPhoneExists)
                 {
-                    return Result.Failure<int>("رقم الهاتف مستخدم بالفعل");
+                    return Result.Failure<int>("PhoneNumberAlreadyExists");
                 }
 
                 // Use cleaned phone number
@@ -83,7 +83,7 @@ namespace Application.Features.AdminSection.SystemUsers.Commands
 
                 if (isUserNameExists)
                 {
-                    return Result.Failure<int>("اسم المستخدم مستخدم بالفعل");
+                    return Result.Failure<int>("UsernameAlreadyExists");
                 }
 
                 // Create new user
@@ -110,7 +110,7 @@ namespace Application.Features.AdminSection.SystemUsers.Commands
                 if (role == null)
                 {
                     await _userManager.DeleteAsync(user);
-                    return Result.Failure<int>("الدور المحدد غير موجود");
+                    return Result.Failure<int>("RoleNotFound");
                 }
 
                 // Assign role using Identity first (this will create the UserRole record in NA_UserRoles)
@@ -121,7 +121,7 @@ namespace Application.Features.AdminSection.SystemUsers.Commands
                     await _userManager.DeleteAsync(user);
                     var errors = roleResult.Errors.ToList();
                     var errorMessage = string.Join(", ", errors.Select(e => e.Description));
-                    return Result.Failure<int>($"فشل في تعيين الدور: {errorMessage}");
+                    return Result.Failure<int>("FailedToAssignRole");
                 }
 
                 // Verify the role assignment by checking directly in the database
@@ -138,7 +138,7 @@ namespace Application.Features.AdminSection.SystemUsers.Commands
                     if (saveResult.IsFailure)
                     {
                         await _userManager.DeleteAsync(user);
-                        return Result.Failure<int>($"فشل في حفظ سجل الدور: {saveResult.Error}");
+                        return Result.Failure<int>("FailedToSaveRoleRecord");
                     }
                 }
 

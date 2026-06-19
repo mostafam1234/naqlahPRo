@@ -1,5 +1,4 @@
-<div class="min-h-screen">
-  <div class="container mx-auto max-w-7xl">
+﻿<div class="min-h-screen theme-page na-shell">
     <!-- Page Header -->
     <app-page-header
       [title]="currentTabTitle | translate"
@@ -11,40 +10,103 @@
     </app-page-header>
 
     <!-- Navigation Tabs -->
-    <div class="mb-6">
-      <div class="border-b border-neutral-200 bg-white rounded-t-xl shadow-sm">
-        <nav class="-mb-px flex space-x-8 px-6">
-          <button
-            (click)="setActiveTab('brands')"
-            [class]="
-              activeTab === 'brands'
-                ? 'border-primary-500 text-primary-600 bg-primary-50/50'
-                : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300'
-            "
-            class="whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm transition-all duration-200 rounded-t-lg"
-          >
-            <i class="bi bi-award me-2"></i>
-            {{ "ADMIN.VEHICLESMENUE.BRANDS" | translate }}
-          </button>
-          <button
-            (click)="setActiveTab('types')"
-            [class]="
-              activeTab === 'types'
-                ? 'border-primary-500 text-primary-600 bg-primary-50/50'
-                : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300'
-            "
-            class="whitespace-nowrap py-4 px-6 border-b-2 font-medium text-sm transition-all duration-200 rounded-t-lg"
-          >
-            <i class="bi bi-collection me-2"></i>
-            {{ "ADMIN.VEHICLESMENUE.TYPES" | translate }}
-          </button>
-        </nav>
-      </div>
+    <div class="veh-tabs-wrap mb-6">
+      <nav class="veh-tabs">
+        <button
+          type="button"
+          (click)="setActiveTab('brands')"
+          class="veh-tab"
+          [class.veh-tab--active]="activeTab === 'brands'"
+        >
+          <i class="bi bi-award me-2"></i>
+          {{ "ADMIN.VEHICLESMENUE.BRANDS" | translate }}
+        </button>
+        <button
+          type="button"
+          (click)="setActiveTab('types')"
+          class="veh-tab"
+          [class.veh-tab--active]="activeTab === 'types'"
+        >
+          <i class="bi bi-collection me-2"></i>
+          {{ "ADMIN.VEHICLESMENUE.TYPES" | translate }}
+        </button>
+      </nav>
     </div>
 
+    <!-- Vehicle Types Statistics -->
+    <ng-container *ngIf="activeTab === 'types'">
+      <div class="na-stats-toolbar" *ngIf="!isLoadingStatistics">
+        <p class="na-stats-toolbar__hint">إحصائيات أنواع المركبات — اضغط على أي بطاقة لتصفية الجدول</p>
+        <button
+          type="button"
+          class="na-btn na-btn--export"
+          [disabled]="isExportingStatistics"
+          (click)="exportVehicleStatistics()"
+        >
+          {{ isExportingStatistics ? 'جاري التصدير...' : 'تصدير الإحصائيات Excel' }}
+        </button>
+      </div>
+
+      <div class="na-stat-row na-stat-row--vehicles" *ngIf="!isLoadingStatistics">
+        <button
+          type="button"
+          class="na-stat-card na-stat-card--total"
+          [class.na-stat-card--selected]="isStatCardSelected('all')"
+          (click)="onStatCardClick('all')"
+        >
+          <div class="na-stat-card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+          </div>
+          <div class="na-stat-card__body">
+            <p class="na-stat-card__label">إجمالي أنواع المركبات</p>
+            <p class="na-stat-card__value">{{ totalVehicleTypesCount | number }}</p>
+          </div>
+        </button>
+
+        <div class="na-stat-card na-stat-card--active">
+          <div class="na-stat-card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+            </svg>
+          </div>
+          <div class="na-stat-card__body">
+            <p class="na-stat-card__label">المركبات المسجلة</p>
+            <p class="na-stat-card__value">{{ totalRegisteredVehiclesCount | number }}</p>
+          </div>
+        </div>
+
+        <button
+          *ngFor="let item of loadCategoryStatCards; let i = index"
+          type="button"
+          class="na-stat-card"
+          [ngClass]="getStatCardClass(i)"
+          [class.na-stat-card--selected]="isStatCardSelected(item.loadCategory!)"
+          (click)="onStatCardClick(item.loadCategory!)"
+        >
+          <div class="na-stat-card__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4M16 17H4m0 0l4 4m-4-4l4-4" />
+            </svg>
+          </div>
+          <div class="na-stat-card__body">
+            <p class="na-stat-card__label">{{ item.loadCategoryName }}</p>
+            <p class="na-stat-card__value">{{ getStatCount(item) | number }}</p>
+          </div>
+        </button>
+      </div>
+
+      <div class="na-stat-row na-stat-row--vehicles" *ngIf="isLoadingStatistics">
+        <div class="na-stat-card na-stat-card--total" *ngFor="let _ of [1,2,3,4,5,6]">
+          <div class="na-stat-card__skeleton" style="width:100%;height:3.5rem"></div>
+        </div>
+      </div>
+    </ng-container>
+
     <!-- Search and Actions Bar -->
-    <div class="bg-white rounded-xl shadow-sm border border-neutral-200 mb-6">
-      <div class="p-6">
+    <div class="na-card veh-toolbar mb-6">
+      <div class="veh-toolbar__body">
         <div
           class="flex flex-col lg:flex-row lg:items-center justify-between gap-4"
         >
@@ -59,7 +121,7 @@
               type="text"
               [formControl]="searchControl"
               [placeholder]="'COMMON.SEARCH_PLACEHOLDER' | translate"
-              class="block w-full pl-10 pr-3 py-2.5 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 text-sm"
+              class="veh-search-input block w-full pl-10 pr-3 py-2.5 border rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 text-sm"
             />
           </div>
 
@@ -77,151 +139,146 @@
     </div>
 
     <!-- Content Card -->
-    <div
-      class="bg-white rounded-xl shadow-sm border border-neutral-200 overflow-hidden"
-    >
+    <div class="na-card veh-table-card overflow-hidden">
       <!-- Header -->
-      <div class="px-6 py-4 border-b border-neutral-200 bg-neutral-50/50">
-        <div class="flex items-center justify-between">
-          <h3 class="font-semibold text-neutral-900 text-lg">
+      <div class="na-card__header">
+        <div class="flex items-center justify-between w-full">
+          <h3 class="na-card__title text-lg">
             {{ tableTitle | translate }}
           </h3>
-          <span
-            class="text-sm text-neutral-500 bg-neutral-100 px-3 py-1 rounded-full"
-          >
+          <span class="veh-count-badge">
             {{ totalCount }} {{ "COMMON.ITEMS" | translate }}
           </span>
         </div>
       </div>
 
       <!-- Loading State -->
-      <div *ngIf="isLoading" class="p-12 text-center">
-        <div
-          class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"
-        ></div>
-        <p class="mt-2 text-sm text-neutral-500">
+      <div *ngIf="isLoading" class="na-loading">
+        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+        <p class="mt-2 text-sm">
           {{ "COMMON.LOADING" | translate }}...
         </p>
       </div>
 
       <!-- Table -->
-      <div *ngIf="!isLoading" class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-neutral-200">
-          <thead class="bg-neutral-50">
+      <div *ngIf="!isLoading" class="na-table-wrap">
+        <table class="na-table veh-table">
+          <thead>
             <tr>
-              <th
-                class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider"
-              >
-                #
+              <th class="text-right">#
               </th>
               <th
                 *ngIf="activeTab === 'types'"
-                class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider"
+                class="text-right"
               >
                 الأيقونة
               </th>
-              <th
-                class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider"
-              >
+              <th class="text-right">
                 {{ "ADMIN.VEHICLESMENUE.ARABIC_NAME" | translate }}
               </th>
-              <th
-                class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider"
-              >
+              <th class="text-right">
                 {{ "ADMIN.VEHICLESMENUE.ENGLISH_NAME" | translate }}
               </th>
               <th
                 *ngIf="activeTab === 'types'"
-                class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider"
+                class="text-right"
               >
-                الفئات الرئيسية
+                تصنيف الحمولة
               </th>
               <th
                 *ngIf="activeTab === 'types'"
-                class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider"
+                class="text-right"
+              >
+                أقسام الشحنات
+              </th>
+              <th
+                *ngIf="activeTab === 'types'"
+                class="text-right"
               >
                 التكلفة
               </th>
               <th
-                class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider"
+                *ngIf="activeTab === 'types'"
+                class="text-right"
               >
+                رسوم الخدمة
+              </th>
+              <th class="text-right">
                 {{ "ADMIN.VEHICLESMENUE.ACTIONS" | translate }}
               </th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-neutral-200">
-            <tr
-              *ngFor="let item of items; let i = index"
-              class="hover:bg-neutral-50 transition-colors duration-150"
-            >
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-900">
+          <tbody>
+            <tr *ngFor="let item of items; let i = index">
+              <td class="whitespace-nowrap">
                 {{ currentPage * itemsPerPage + i + 1 }}
               </td>
               <!-- Icon Column (types only) -->
-              <td
-                *ngIf="activeTab === 'types'"
-                class="px-6 py-4 whitespace-nowrap"
-              >
-                <div
-                  class="w-10 h-10 rounded-lg overflow-hidden border border-neutral-200 bg-neutral-50 flex items-center justify-center"
-                >
+              <td *ngIf="activeTab === 'types'" class="whitespace-nowrap">
+                <div class="veh-icon-box">
                   <img
                     *ngIf="item.iconImagePath"
                     [src]="item.iconImagePath"
                     [alt]="item.arabicName"
                     class="w-full h-full object-cover"
                   />
-                  <i
-                    *ngIf="!item.iconImagePath"
-                    class="bi bi-image text-neutral-400"
-                  ></i>
+                  <i *ngIf="!item.iconImagePath" class="bi bi-image" style="color:var(--shell-text-muted)"></i>
                 </div>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm font-medium text-neutral-900">
+              <td class="whitespace-nowrap">
+                <div class="na-table__primary">
                   {{ item.arabicName }}
                 </div>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-neutral-700">
+              <td class="whitespace-nowrap">
+                <div class="na-table__muted" style="font-size:0.8125rem;margin:0">
                   {{ item.englishName }}
                 </div>
               </td>
-              <!-- Categories Column (types only) -->
-              <td *ngIf="activeTab === 'types'" class="px-6 py-4">
+              <!-- Load Category Column (types only) -->
+              <td *ngIf="activeTab === 'types'" class="whitespace-nowrap">
+                <span *ngIf="item.loadCategoryName" class="veh-badge veh-badge--sky">
+                  {{ item.loadCategoryName }}
+                </span>
+                <span *ngIf="!item.loadCategoryName" class="na-table__muted" style="font-size:0.75rem;margin:0">—</span>
+              </td>
+              <!-- Shipment Categories Column (types only) -->
+              <td *ngIf="activeTab === 'types'">
                 <div class="flex flex-wrap gap-1">
                   <span
                     *ngFor="let category of item.mainCategories"
-                    class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary-100 text-primary-800"
+                    class="veh-badge veh-badge--primary"
                   >
                     {{ category.arabicName }}
                   </span>
                   <span
-                    *ngIf="
-                      !item.mainCategories || item.mainCategories.length === 0
-                    "
-                    class="text-xs text-neutral-500"
+                    *ngIf="!item.mainCategories || item.mainCategories.length === 0"
+                    class="na-table__muted"
+                    style="font-size:0.75rem;margin:0"
                   >
-                    لا توجد فئات
+                    لا توجد أقسام
                   </span>
                 </div>
               </td>
               <!-- Cost Column (types only) -->
-              <td
-                *ngIf="activeTab === 'types'"
-                class="px-6 py-4 whitespace-nowrap"
-              >
-                <div class="text-sm font-medium text-neutral-900">
+              <td *ngIf="activeTab === 'types'" class="whitespace-nowrap">
+                <div class="na-table__primary" style="font-size:0.8125rem">
                   {{ item.cost | number : "1.2-2" }}
                   {{ "ADMIN.PAGES.ASSISTANT_WORKS.CURRENCY" | translate }}
                 </div>
               </td>
-              <td class="px-6 py-4 whitespace-nowrap text-right">
+              <td *ngIf="activeTab === 'types'" class="whitespace-nowrap">
+                <div class="na-table__primary" style="font-size:0.8125rem">
+                  {{ item.serviceFee | number : "1.2-2" }}
+                  {{ "ADMIN.PAGES.ASSISTANT_WORKS.CURRENCY" | translate }}
+                </div>
+              </td>
+              <td class="whitespace-nowrap text-right">
                 <div class="inline-flex items-center gap-2">
                   <button
                     *ngIf="hasPermission('VehicleActions')"
                     (click)="openEdit(item)"
-                    class="flex items-center justify-center w-8 h-8 bg-yellow-100 text-yellow-600 rounded-lg hover:bg-yellow-200 transition-colors"
+                    class="veh-action-btn veh-action-btn--edit"
                   >
                     <svg
                       class="w-4 h-4"
@@ -239,7 +296,7 @@
                   </button>
                   <button
                     *ngIf="hasPermission('VehicleActions')"
-                    class="flex items-center justify-center w-8 h-8 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
+                    class="veh-action-btn veh-action-btn--delete"
                     (click)="confirmDelete(item.id)"
                   >
                     <svg
@@ -262,16 +319,11 @@
 
             <!-- Empty State -->
             <tr *ngIf="items.length === 0">
-              <td
-                [attr.colspan]="activeTab === 'types' ? 7 : 4"
-                class="px-6 py-12 text-center"
-              >
-                <div class="text-neutral-400 mb-2">
+              <td [attr.colspan]="activeTab === 'types' ? 9 : 4" class="na-empty">
+                <div class="mb-2" style="color:var(--shell-text-muted)">
                   <i class="bi bi-inbox text-4xl"></i>
                 </div>
-                <p class="text-sm text-neutral-500">
-                  {{ noDataText | translate }}
-                </p>
+                <p class="text-sm">{{ noDataText | translate }}</p>
               </td>
             </tr>
           </tbody>
@@ -279,13 +331,9 @@
       </div>
 
       <!-- Pagination -->
-      <div
-        *ngIf="!isLoading && totalPages > 1"
-        class="px-6 py-4 border-t border-neutral-200 bg-neutral-50/30"
-      >
-        <div class="flex items-center justify-between">
+      <div *ngIf="!isLoading && totalPages > 1" class="na-footer">
           <!-- Results Info -->
-          <div class="text-sm text-neutral-700">
+          <div class="text-sm">
             {{ "COMMON.SHOWING" | translate }}
             <span class="font-medium">{{ displayStartCount }}</span>
             {{ "COMMON.TO" | translate }}
@@ -296,745 +344,39 @@
           </div>
 
           <!-- Pagination Controls -->
-          <nav class="flex items-center gap-1">
-            <!-- Previous Button -->
+          <nav class="na-page-nav">
             <button
               [disabled]="displayCurrentPage === 1"
               (click)="changePage(displayCurrentPage - 1)"
-              [class]="
-                displayCurrentPage === 1
-                  ? 'opacity-50 cursor-not-allowed'
-                  : 'hover:bg-neutral-100'
-              "
-              class="px-3 py-2 text-sm font-medium text-neutral-700 bg-white border border-neutral-300 rounded-lg transition-colors duration-150"
+              class="na-page-btn"
+              [class.opacity-50]="displayCurrentPage === 1"
             >
               <i class="bi bi-chevron-left"></i>
             </button>
 
-            <!-- Page Numbers -->
             <ng-container *ngFor="let page of visiblePages">
               <button
                 *ngIf="page !== -1"
                 (click)="changePage(page)"
-                [class]="
-                  page === displayCurrentPage
-                    ? 'bg-primary-600 text-white border-primary-600'
-                    : 'bg-white text-neutral-700 border-neutral-300 hover:bg-neutral-100'
-                "
-                class="px-3 py-2 text-sm font-medium border rounded-lg transition-colors duration-150"
+                class="na-page-btn"
+                [class.na-page-btn--active]="page === displayCurrentPage"
               >
                 {{ page }}
               </button>
-              <span *ngIf="page === -1" class="px-2 py-2 text-neutral-500"
-                >...</span
-              >
+              <span *ngIf="page === -1" class="px-2 py-2">...</span>
             </ng-container>
 
-            <!-- Next Button -->
             <button
               [disabled]="displayCurrentPage === totalPages"
               (click)="changePage(displayCurrentPage + 1)"
-              [class]="
-                displayCurrentPage === totalPages
-                  ? 'opacity-50 cursor-not-allowed'
-                  : 'hover:bg-neutral-100'
-              "
-              class="px-3 py-2 text-sm font-medium text-neutral-700 bg-white border border-neutral-300 rounded-lg transition-colors duration-150"
+              class="na-page-btn"
+              [class.opacity-50]="displayCurrentPage === totalPages"
             >
               <i class="bi bi-chevron-right"></i>
             </button>
           </nav>
-        </div>
       </div>
     </div>
-  </div>
-
-  <!-- Add Modal -->
-  <div
-    *ngIf="showModal"
-    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
-  >
-    <div class="bg-white rounded-xl shadow-xl w-full max-w-lg">
-      <!-- Modal Header -->
-      <div class="px-6 py-4 border-b border-neutral-200">
-        <div class="flex items-center justify-between">
-          <h3 class="text-lg font-semibold text-neutral-900">
-            {{
-              editingItem
-                ? (modalTitleEdit | translate)
-                : (modalTitleAdd | translate)
-            }}
-          </h3>
-          <button
-            (click)="closeModal()"
-            class="text-neutral-400 hover:text-neutral-600 transition-colors duration-150"
-          >
-            <i class="bi bi-x-lg"></i>
-          </button>
-        </div>
-      </div>
-
-      <!-- Modal Body -->
-      <form [formGroup]="itemForm" (ngSubmit)="submit()" class="p-2 space-y-4">
-        <!-- Arabic Name -->
-        <div>
-          <label class="block text-sm font-medium text-neutral-700 mb-2">
-            {{ "ADMIN.PAGES.VEHICLES.ARABIC_NAME" | translate }}
-          </label>
-          <input
-            formControlName="arabicName"
-            type="text"
-            class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
-            [class.border-danger-500]="
-              itemForm.get('arabicName')?.touched &&
-              itemForm.get('arabicName')?.invalid
-            "
-          />
-          <div
-            *ngIf="
-              itemForm.get('arabicName')?.touched &&
-              itemForm.get('arabicName')?.invalid
-            "
-            class="mt-1 text-xs text-danger-600"
-          >
-            {{ "VALIDATION.REQUIRED" | translate }}
-          </div>
-        </div>
-
-        <!-- English Name -->
-        <div>
-          <label class="block text-sm font-medium text-neutral-700 mb-2">
-            {{ "ADMIN.PAGES.VEHICLES.ENGLISH_NAME" | translate }}
-          </label>
-          <input
-            formControlName="englishName"
-            type="text"
-            class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
-            [class.border-danger-500]="
-              itemForm.get('englishName')?.touched &&
-              itemForm.get('englishName')?.invalid
-            "
-          />
-          <div
-            *ngIf="
-              itemForm.get('englishName')?.touched &&
-              itemForm.get('englishName')?.invalid
-            "
-            class="mt-1 text-xs text-danger-600"
-          >
-            {{ "VALIDATION.REQUIRED" | translate }}
-          </div>
-        </div>
-
-        <!-- Cost (only for types) -->
-        <div *ngIf="activeTab === 'types'">
-          <label class="block text-sm font-medium text-neutral-700 mb-2">
-            التكلفة <span class="text-red-500">*</span>
-          </label>
-          <input
-            formControlName="cost"
-            type="number"
-            step="0.01"
-            min="0"
-            class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
-            [class.border-danger-500]="
-              itemForm.get('cost')?.touched && itemForm.get('cost')?.invalid
-            "
-          />
-          <div
-            *ngIf="
-              itemForm.get('cost')?.touched && itemForm.get('cost')?.invalid
-            "
-            class="mt-1 text-xs text-danger-600"
-          >
-            <span *ngIf="itemForm.get('cost')?.errors?.['required']">
-              {{ "VALIDATION.REQUIRED" | translate }}
-            </span>
-            <span *ngIf="itemForm.get('cost')?.errors?.['min']">
-              التكلفة يجب أن تكون أكبر من أو تساوي صفر
-            </span>
-          </div>
-        </div>
-
-        <!-- Icon Upload (only for types) -->
-        <div *ngIf="activeTab === 'types'">
-          <label class="block text-sm font-medium text-neutral-700 mb-2">
-            أيقونة نوع المركبة <span class="text-red-500">*</span>
-          </label>
-
-          <!-- Upload Area -->
-          <div
-            class="border-2 border-dashed border-neutral-300 rounded-lg p-4 hover:border-primary-400 transition-colors duration-200"
-            [class.border-primary-500]="isDragOver"
-            [class.bg-primary-50]="isDragOver"
-            (dragover)="onDragOver($event)"
-            (dragleave)="onDragLeave($event)"
-            (drop)="onDrop($event)"
-          >
-            <!-- Upload Button -->
-            <div class="text-center" *ngIf="!iconPreview">
-              <div
-                class="w-12 h-12 mx-auto mb-3 bg-neutral-100 rounded-lg flex items-center justify-center"
-              >
-                <i class="bi bi-cloud-upload text-neutral-400 text-xl"></i>
-              </div>
-              <p class="text-sm text-neutral-600 mb-2">
-                <span class="font-medium text-primary-600"
-                  >انقر لاختيار ملف</span
-                >
-                أو اسحب وأفلت الملف هنا
-              </p>
-              <p class="text-xs text-neutral-500">PNG، JPG، JPEG حتى 2MB</p>
-              <input
-                type="file"
-                accept="image/*"
-                (change)="onIconSelect($event)"
-                class="hidden"
-                #iconFileInput
-              />
-              <button
-                type="button"
-                (click)="iconFileInput.click()"
-                class="mt-3 inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-primary-700 bg-primary-50 border border-primary-200 rounded-lg hover:bg-primary-100 transition-colors duration-200"
-              >
-                <i class="bi bi-upload"></i>
-                اختيار صورة
-              </button>
-            </div>
-
-            <!-- Image Preview -->
-            <div *ngIf="iconPreview" class="relative">
-              <div class="flex items-center gap-4">
-                <!-- Image Preview -->
-                <div
-                  class="w-20 h-20 border border-neutral-200 rounded-lg overflow-hidden bg-neutral-50 flex items-center justify-center"
-                >
-                  <img
-                    [src]="iconPreview"
-                    alt="Preview"
-                    class="w-full h-full object-cover"
-                  />
-                </div>
-
-                <!-- File Info -->
-                <div class="flex-1">
-                  <p class="text-sm font-medium text-neutral-900 truncate">
-                    {{ selectedIconName }}
-                  </p>
-                  <p class="text-xs text-neutral-500 mt-1">
-                    {{ formatFileSize(selectedIconSize) }}
-                  </p>
-                  <div class="flex items-center gap-2 mt-2">
-                    <button
-                      type="button"
-                      (click)="iconFileInput.click()"
-                      class="text-xs text-primary-600 hover:text-primary-700 font-medium"
-                    >
-                      تغيير
-                    </button>
-                    <span class="text-neutral-300">|</span>
-                    <button
-                      type="button"
-                      (click)="removeIcon()"
-                      class="text-xs text-red-600 hover:text-red-700 font-medium"
-                    >
-                      حذف
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Hidden file input -->
-              <input
-                type="file"
-                accept="image/*"
-                (change)="onIconSelect($event)"
-                class="hidden"
-                #iconFileInput
-              />
-            </div>
-          </div>
-
-          <div *ngIf="iconError" class="mt-1 text-xs text-red-600">
-            {{ iconError }}
-          </div>
-        </div>
-
-        <!-- Main Categories Multi-Select (only for types) -->
-        <div *ngIf="activeTab === 'types'">
-          <label class="block text-sm font-medium text-neutral-700 mb-2">
-            الفئات الرئيسية <span class="text-red-500">*</span>
-          </label>
-          <div class="relative multi-select-container">
-            <!-- Selected Items Display -->
-            <div
-              class="w-full px-3 py-2 border border-neutral-300 rounded-lg cursor-pointer min-h-[42px] flex items-center justify-between bg-white hover:border-primary-400 transition-colors duration-200"
-              (click)="toggleMultiSelect()"
-            >
-              <div class="flex-1">
-                <div
-                  *ngIf="selectedCategories.length === 0"
-                  class="text-neutral-400 text-sm"
-                >
-                  اختر الفئات الرئيسية...
-                </div>
-                <div
-                  *ngIf="selectedCategories.length > 0"
-                  class="flex flex-wrap gap-1"
-                >
-                  <span
-                    *ngFor="let category of selectedCategories"
-                    class="inline-flex items-center gap-1 bg-primary-100 text-primary-800 text-xs px-2 py-1 rounded-full"
-                  >
-                    {{ category.name }}
-                    <button
-                      type="button"
-                      (click)="removeCategory(category, $event)"
-                      class="hover:bg-primary-200 rounded-full p-0.5 transition-colors duration-150"
-                    >
-                      <i class="bi bi-x text-xs"></i>
-                    </button>
-                  </span>
-                </div>
-              </div>
-              <i
-                class="bi transition-transform duration-200"
-                [class.bi-chevron-up]="isCategoryMultiSelectOpen"
-                [class.bi-chevron-down]="!isCategoryMultiSelectOpen"
-              ></i>
-            </div>
-
-            <!-- Dropdown Menu -->
-            <div
-              *ngIf="isCategoryMultiSelectOpen"
-              class="absolute z-10 w-full mt-1 bg-white border border-neutral-300 rounded-lg shadow-lg max-h-60 overflow-hidden"
-            >
-              <!-- Search Box -->
-              <div class="p-3 border-b border-neutral-200">
-                <div class="relative">
-                  <i
-                    class="bi bi-search absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400 text-sm"
-                  ></i>
-                  <input
-                    type="text"
-                    [(ngModel)]="categorySearchTerm"
-                    placeholder="البحث في الفئات..."
-                    class="w-full pl-9 pr-3 py-2 border border-neutral-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
-                  />
-                </div>
-              </div>
-
-              <!-- Options List -->
-              <div class="max-h-40 overflow-y-auto">
-                <div
-                  *ngFor="let category of filteredCategories"
-                  class="flex items-center px-3 py-2 hover:bg-neutral-50 cursor-pointer transition-colors duration-150"
-                  (click)="toggleCategory(category)"
-                >
-                  <div
-                    class="w-4 h-4 border-2 rounded flex items-center justify-center mr-3 transition-all duration-200"
-                    [class.border-primary-500]="isCategorySelected(category)"
-                    [class.bg-primary-500]="isCategorySelected(category)"
-                    [class.border-neutral-300]="!isCategorySelected(category)"
-                  >
-                    <i
-                      *ngIf="isCategorySelected(category)"
-                      class="bi bi-check text-white text-xs"
-                    ></i>
-                  </div>
-                  <span class="flex-1 text-sm text-neutral-700">{{
-                    category.name
-                  }}</span>
-                </div>
-
-                <div
-                  *ngIf="filteredCategories.length === 0"
-                  class="px-3 py-4 text-center text-sm text-neutral-500"
-                >
-                  لا توجد فئات مطابقة
-                </div>
-              </div>
-            </div>
-          </div>
-          <div
-            *ngIf="
-              itemForm.get('mainCategoryIds')?.touched &&
-              itemForm.get('mainCategoryIds')?.invalid
-            "
-            class="mt-1 text-xs text-red-600"
-          >
-            يرجى اختيار فئة واحدة على الأقل
-          </div>
-        </div>
-
-        <!-- Modal Actions -->
-        <div class="flex justify-end gap-3 pt-4">
-          <button
-            type="button"
-            (click)="closeModal()"
-            class="px-4 py-2 text-sm font-medium text-neutral-700 bg-neutral-100 hover:bg-neutral-200 rounded-lg transition-colors duration-200"
-          >
-            {{ "COMMON.CANCEL" | translate }}
-          </button>
-          <button
-            type="submit"
-            [disabled]="itemForm.invalid"
-            [class.opacity-50]="itemForm.invalid"
-            [class.cursor-not-allowed]="itemForm.invalid"
-            class="px-4 py-2 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors duration-200 disabled:hover:bg-primary-600"
-          >
-            {{
-              editingItem
-                ? ("COMMON.SAVE" | translate)
-                : ("COMMON.ADD" | translate)
-            }}
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- Edit Modal-->
-  <div
-    *ngIf="showUpdateModal"
-    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
-  >
-    <div class="bg-white rounded-xl shadow-xl w-full max-w-lg">
-      <!-- Modal Header -->
-      <div class="px-6 py-4 border-b border-neutral-200">
-        <div class="flex items-center justify-between">
-          <h3 class="text-lg font-semibold text-neutral-900">
-            {{
-              editingItem
-                ? (modalTitleEdit | translate)
-                : (modalTitleAdd | translate)
-            }}
-          </h3>
-          <button
-            (click)="closeModal()"
-            class="text-neutral-400 hover:text-neutral-600 transition-colors duration-150"
-          >
-            <i class="bi bi-x-lg"></i>
-          </button>
-        </div>
-      </div>
-
-      <!-- Modal Body -->
-      <form [formGroup]="itemForm" (ngSubmit)="update()" class="p-6 space-y-4">
-        <!-- Arabic Name -->
-        <div>
-          <label class="block text-sm font-medium text-neutral-700 mb-2">
-            {{ "ADMIN.PAGES.VEHICLES.ARABIC_NAME" | translate }}
-          </label>
-          <input
-            formControlName="arabicName"
-            type="text"
-            class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
-            [class.border-danger-500]="
-              itemForm.get('arabicName')?.touched &&
-              itemForm.get('arabicName')?.invalid
-            "
-          />
-          <div
-            *ngIf="
-              itemForm.get('arabicName')?.touched &&
-              itemForm.get('arabicName')?.invalid
-            "
-            class="mt-1 text-xs text-danger-600"
-          >
-            {{ "VALIDATION.REQUIRED" | translate }}
-          </div>
-        </div>
-
-        <!-- English Name -->
-        <div>
-          <label class="block text-sm font-medium text-neutral-700 mb-2">
-            {{ "ADMIN.PAGES.VEHICLES.ENGLISH_NAME" | translate }}
-          </label>
-          <input
-            formControlName="englishName"
-            type="text"
-            class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
-            [class.border-danger-500]="
-              itemForm.get('englishName')?.touched &&
-              itemForm.get('englishName')?.invalid
-            "
-          />
-          <div
-            *ngIf="
-              itemForm.get('englishName')?.touched &&
-              itemForm.get('englishName')?.invalid
-            "
-            class="mt-1 text-xs text-danger-600"
-          >
-            {{ "VALIDATION.REQUIRED" | translate }}
-          </div>
-        </div>
-
-        <!-- Cost (only for types) -->
-        <div *ngIf="activeTab === 'types'">
-          <label class="block text-sm font-medium text-neutral-700 mb-2">
-            التكلفة <span class="text-red-500">*</span>
-          </label>
-          <input
-            formControlName="cost"
-            type="number"
-            step="0.01"
-            min="0"
-            class="w-full px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
-            [class.border-danger-500]="
-              itemForm.get('cost')?.touched && itemForm.get('cost')?.invalid
-            "
-          />
-          <div
-            *ngIf="
-              itemForm.get('cost')?.touched && itemForm.get('cost')?.invalid
-            "
-            class="mt-1 text-xs text-danger-600"
-          >
-            <span *ngIf="itemForm.get('cost')?.errors?.['min']">
-              التكلفة يجب أن تكون أكبر من أو تساوي صفر
-            </span>
-          </div>
-        </div>
-
-        <!-- Icon Upload (only for types) -->
-        <div *ngIf="activeTab === 'types'">
-          <label class="block text-sm font-medium text-neutral-700 mb-2">
-            أيقونة نوع المركبة <span class="text-red-500">*</span>
-          </label>
-
-          <!-- Upload Area -->
-          <div
-            class="border-2 border-dashed border-neutral-300 rounded-lg p-4 hover:border-primary-400 transition-colors duration-200"
-            [class.border-primary-500]="isDragOver"
-            [class.bg-primary-50]="isDragOver"
-            (dragover)="onDragOver($event)"
-            (dragleave)="onDragLeave($event)"
-            (drop)="onDrop($event)"
-          >
-            <!-- Upload Button -->
-            <div class="text-center" *ngIf="!iconPreview">
-              <div
-                class="w-12 h-12 mx-auto mb-3 bg-neutral-100 rounded-lg flex items-center justify-center"
-              >
-                <i class="bi bi-cloud-upload text-neutral-400 text-xl"></i>
-              </div>
-              <p class="text-sm text-neutral-600 mb-2">
-                <span class="font-medium text-primary-600"
-                  >انقر لاختيار ملف</span
-                >
-                أو اسحب وأفلت الملف هنا
-              </p>
-              <p class="text-xs text-neutral-500">PNG، JPG، JPEG حتى 2MB</p>
-              <input
-                type="file"
-                accept="image/*"
-                (change)="onIconSelect($event)"
-                class="hidden"
-                #iconFileInputEdit
-              />
-              <button
-                type="button"
-                (click)="iconFileInputEdit.click()"
-                class="mt-3 inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-primary-700 bg-primary-50 border border-primary-200 rounded-lg hover:bg-primary-100 transition-colors duration-200"
-              >
-                <i class="bi bi-upload"></i>
-                اختيار صورة
-              </button>
-            </div>
-
-            <!-- Image Preview -->
-            <div *ngIf="iconPreview" class="relative">
-              <div class="flex items-center gap-4">
-                <!-- Image Preview -->
-                <div
-                  class="w-20 h-20 border border-neutral-200 rounded-lg overflow-hidden bg-neutral-50 flex items-center justify-center"
-                >
-                  <img
-                    [src]="iconPreview"
-                    alt="Preview"
-                    class="w-full h-full object-cover"
-                  />
-                </div>
-
-                <!-- File Info -->
-                <div class="flex-1">
-                  <p class="text-sm font-medium text-neutral-900 truncate">
-                    {{ selectedIconName }}
-                  </p>
-                  <p class="text-xs text-neutral-500 mt-1">
-                    {{ formatFileSize(selectedIconSize) }}
-                  </p>
-                  <div class="flex items-center gap-2 mt-2">
-                    <button
-                      type="button"
-                      (click)="iconFileInputEdit.click()"
-                      class="text-xs text-primary-600 hover:text-primary-700 font-medium"
-                    >
-                      تغيير
-                    </button>
-                    <span class="text-neutral-300">|</span>
-                    <button
-                      type="button"
-                      (click)="removeIcon()"
-                      class="text-xs text-red-600 hover:text-red-700 font-medium"
-                    >
-                      حذف
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Hidden file input -->
-              <input
-                type="file"
-                accept="image/*"
-                (change)="onIconSelect($event)"
-                class="hidden"
-                #iconFileInputEdit
-              />
-            </div>
-          </div>
-
-          <div *ngIf="iconError" class="mt-1 text-xs text-red-600">
-            {{ iconError }}
-          </div>
-        </div>
-
-        <!-- Main Categories Multi-Select (only for types) -->
-        <div *ngIf="activeTab === 'types'">
-          <label class="block text-sm font-medium text-neutral-700 mb-2">
-            الفئات الرئيسية <span class="text-red-500">*</span>
-          </label>
-          <div class="relative multi-select-container">
-            <!-- Selected Items Display -->
-            <div
-              class="w-full px-3 py-2 border border-neutral-300 rounded-lg cursor-pointer min-h-[42px] flex items-center justify-between bg-white hover:border-primary-400 transition-colors duration-200"
-              (click)="toggleMultiSelect()"
-            >
-              <div class="flex-1">
-                <div
-                  *ngIf="selectedCategories.length === 0"
-                  class="text-neutral-400 text-sm"
-                >
-                  اختر الفئات الرئيسية...
-                </div>
-                <div
-                  *ngIf="selectedCategories.length > 0"
-                  class="flex flex-wrap gap-1"
-                >
-                  <span
-                    *ngFor="let category of selectedCategories"
-                    class="inline-flex items-center gap-1 bg-primary-100 text-primary-800 text-xs px-2 py-1 rounded-full"
-                  >
-                    {{ category.name }}
-                    <button
-                      type="button"
-                      (click)="removeCategory(category, $event)"
-                      class="hover:bg-primary-200 rounded-full p-0.5 transition-colors duration-150"
-                    >
-                      <i class="bi bi-x text-xs"></i>
-                    </button>
-                  </span>
-                </div>
-              </div>
-              <i
-                class="bi transition-transform duration-200"
-                [class.bi-chevron-up]="isCategoryMultiSelectOpen"
-                [class.bi-chevron-down]="!isCategoryMultiSelectOpen"
-              ></i>
-            </div>
-
-            <!-- Dropdown Menu -->
-            <div
-              *ngIf="isCategoryMultiSelectOpen"
-              class="absolute z-10 w-full mt-1 bg-white border border-neutral-300 rounded-lg shadow-lg max-h-60 overflow-hidden"
-            >
-              <!-- Search Box -->
-              <div class="p-3 border-b border-neutral-200">
-                <div class="relative">
-                  <i
-                    class="bi bi-search absolute left-3 top-1/2 transform -translate-y-1/2 text-neutral-400 text-sm"
-                  ></i>
-                  <input
-                    type="text"
-                    [(ngModel)]="categorySearchTerm"
-                    placeholder="البحث في الفئات..."
-                    class="w-full pl-9 pr-3 py-2 border border-neutral-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
-                  />
-                </div>
-              </div>
-
-              <!-- Options List -->
-              <div class="max-h-40 overflow-y-auto">
-                <div
-                  *ngFor="let category of filteredCategories"
-                  class="flex items-center px-3 py-2 hover:bg-neutral-50 cursor-pointer transition-colors duration-150"
-                  (click)="toggleCategory(category)"
-                >
-                  <div
-                    class="w-4 h-4 border-2 rounded flex items-center justify-center mr-3 transition-all duration-200"
-                    [class.border-primary-500]="isCategorySelected(category)"
-                    [class.bg-primary-500]="isCategorySelected(category)"
-                    [class.border-neutral-300]="!isCategorySelected(category)"
-                  >
-                    <i
-                      *ngIf="isCategorySelected(category)"
-                      class="bi bi-check text-white text-xs"
-                    ></i>
-                  </div>
-                  <span class="flex-1 text-sm text-neutral-700">{{
-                    category.name
-                  }}</span>
-                </div>
-
-                <div
-                  *ngIf="filteredCategories.length === 0"
-                  class="px-3 py-4 text-center text-sm text-neutral-500"
-                >
-                  لا توجد فئات مطابقة
-                </div>
-              </div>
-            </div>
-          </div>
-          <div
-            *ngIf="
-              itemForm.get('mainCategoryIds')?.touched &&
-              itemForm.get('mainCategoryIds')?.invalid
-            "
-            class="mt-1 text-xs text-red-600"
-          >
-            يرجى اختيار فئة واحدة على الأقل
-          </div>
-        </div>
-
-        <!-- Modal Actions -->
-        <div class="flex justify-end gap-3 pt-4">
-          <button
-            type="button"
-            (click)="closeModal()"
-            class="px-4 py-2 text-sm font-medium text-neutral-700 bg-neutral-100 hover:bg-neutral-200 rounded-lg transition-colors duration-200"
-          >
-            {{ "COMMON.CANCEL" | translate }}
-          </button>
-          <button
-            type="submit"
-            [disabled]="itemForm.invalid"
-            [class.opacity-50]="itemForm.invalid"
-            [class.cursor-not-allowed]="itemForm.invalid"
-            class="px-4 py-2 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors duration-200 disabled:hover:bg-primary-600"
-          >
-            {{
-              editingItem
-                ? ("COMMON.SAVE" | translate)
-                : ("COMMON.ADD" | translate)
-            }}
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
 
   <!-- Confirmation Modal -->
   <app-confirmation-modal

@@ -1,15 +1,11 @@
 ﻿using Application.Features.VehicleSection.Dtos;
-using Application.Features.VehicleSection.Queries;
 using Application.Shared.Dtos;
+using Application.Shared.Services;
 using CSharpFunctionalExtensions;
 using Domain.InterFaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.VehicleSection.Queries
 {
@@ -43,7 +39,6 @@ namespace Application.Features.VehicleSection.Queries
                         .ThenInclude(vtc => vtc.MainCategory)
                     .AsQueryable();
 
-                // Apply search filter if provided
                 if (!string.IsNullOrWhiteSpace(request.SearchTerm))
                 {
                     query = query.Where(x => x.ArabicName.Contains(request.SearchTerm) ||
@@ -53,6 +48,7 @@ namespace Application.Features.VehicleSection.Queries
                 var totalCount = await query.CountAsync(cancellationToken);
 
                 var types = await query
+                    .OrderByDescending(x => x.CreationDate)
                     .Skip(request.Skip)
                     .Take(request.Take)
                     .Select(x => new DeliveryManVehicleDto
@@ -60,8 +56,13 @@ namespace Application.Features.VehicleSection.Queries
                         Id = x.Id,
                         ArabicName = x.ArabicName,
                         EnglishName = x.EnglishName,
-                        IconImagePath = $"{baseUrl}/ImageBank/{VehicleFolderPrefix}/{x.IconImagePath}",
+                        IconImagePath = string.IsNullOrEmpty(x.IconImagePath)
+                            ? string.Empty
+                            : $"{baseUrl}/ImageBank/{VehicleFolderPrefix}/{x.IconImagePath}",
                         Cost = x.Cost,
+                        ServiceFee = x.ServiceFee,
+                        LoadCategory = x.LoadCategory,
+                        CreationDate = x.CreationDate,
                         MainCategories = x.VehicleTypeCategoies.Select(vtc => new MainCategoryInfo
                         {
                             Id = vtc.MainCategory.Id,
@@ -72,16 +73,24 @@ namespace Application.Features.VehicleSection.Queries
                     })
                     .ToListAsync(cancellationToken);
 
-                var totalPages = (int)Math.Ceiling((double)totalCount / request.Take);
+                foreach (var type in types)
+                {
+                    if (type.LoadCategory.HasValue)
+                    {
+                        type.LoadCategoryName = VehicleDisplayLabels.GetLoadCategoryName(
+                            type.LoadCategory.Value,
+                            userSession.LanguageId);
+                    }
+                }
 
-                var pagedResult = new PagedResult<DeliveryManVehicleDto>
+                var totalPages = request.Take > 0 ? (int)Math.Ceiling((double)totalCount / request.Take) : 0;
+
+                return Result.Success(new PagedResult<DeliveryManVehicleDto>
                 {
                     Data = types,
                     TotalCount = totalCount,
                     TotalPages = totalPages
-                };
-
-                return Result.Success(pagedResult);
+                });
             }
         }
     }

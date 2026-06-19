@@ -3,9 +3,11 @@
 
     public enum OrderStatus
     {
-       Pending=1,
-       Assigned=2,
-       Cancelled=3,
-       Completed= 4
+       Pending = 1,
+       Assigned = 2,
+       Cancelled = 3,
+       Completed = 4,
+       ConfirmedGoingToPickup = 5,
+       PickedUpFromDeliveryMan = 6
     }
 }

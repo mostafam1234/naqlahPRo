@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import Swal from 'sweetalert2';
+import { ToasterService } from './toaster.service';
 
 export interface ImageUploadResult {
   success: boolean;
@@ -25,6 +25,8 @@ export class ImageService {
     showErrorAlert: true
   };
 
+  constructor(private toasterService: ToasterService) {}
+
   /**
    * تحويل الملف المختار إلى Base64 مع validation
    * @param file الملف المختار
@@ -38,7 +40,7 @@ export class ImageService {
     if (!this.isValidImageFile(file, config.allowedTypes!)) {
       const error = 'يرجى اختيار ملف صورة صالح (PNG, JPG, JPEG)';
       if (config.showErrorAlert) {
-        this.showErrorAlert('خطأ في نوع الملف', error);
+        this.showErrorToast('خطأ في نوع الملف', error);
       }
       return { success: false, error };
     }
@@ -47,7 +49,7 @@ export class ImageService {
     if (file.size > config.maxSizeMB! * 1024 * 1024) {
       const error = `حجم الملف كبير جداً. يرجى اختيار ملف أصغر من ${config.maxSizeMB} ميجابايت`;
       if (config.showErrorAlert) {
-        this.showErrorAlert('خطأ في حجم الملف', error);
+        this.showErrorToast('خطأ في حجم الملف', error);
       }
       return { success: false, error };
     }
@@ -62,7 +64,7 @@ export class ImageService {
     } catch (error) {
       const errorMsg = 'حدث خطأ أثناء تحويل الصورة';
       if (config.showErrorAlert) {
-        this.showErrorAlert('خطأ', errorMsg);
+        this.showErrorToast('خطأ', errorMsg);
       }
       return { success: false, error: errorMsg };
     }
@@ -125,14 +127,8 @@ export class ImageService {
    * @param title عنوان الخطأ
    * @param text نص الخطأ
    */
-  private showErrorAlert(title: string, text: string): void {
-    Swal.fire({
-      title,
-      text,
-      icon: 'error',
-      confirmButtonText: 'موافق',
-      confirmButtonColor: '#ef4444'
-    });
+  private showErrorToast(title: string, message: string): void {
+    this.toasterService.error(title, message);
   }
 
   /**

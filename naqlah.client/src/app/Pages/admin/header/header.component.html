@@ -1,307 +1,178 @@
 <!-- header.component.html -->
-<header class="sticky top-0 z-50 bg-white/95 backdrop-blur-lg border-b border-neutral-200 shadow-sm animate-fade-in">
-  <div class="px-4 sm:px-6 lg:px-8">
-    <div class="flex items-center justify-between h-20">
+<header class="naqlah-header sticky top-0 z-50">
+  <div class="naqlah-header__inner">
+    <!-- Left: menu + brand -->
+    <div class="naqlah-header__left">
+      <button
+        (click)="AppearSideBar()"
+        class="naqlah-header__menu-btn"
+        aria-label="Toggle sidebar"
+      >
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
 
-      <!-- Left Section: Hamburger Menu -->
-      <div class="flex items-center gap-4">
-        <!-- Hamburger Icon -->
-        <button
-          (click)="AppearSideBar()"
-          class="group relative flex items-center justify-center w-11 h-11 rounded-xl bg-surface-50 hover:bg-primary-50 border border-neutral-200 hover:border-primary-300 transition-all duration-300 hover:shadow-md hover:scale-105 active:scale-95"
-          aria-label="Toggle sidebar"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            class="transition-all duration-300 group-hover:scale-110"
-          >
-            <rect
-              x="4"
-              y="6"
-              width="16"
-              height="2"
-              rx="1"
-              class="fill-primary-600 group-hover:fill-primary-700 transition-colors duration-300"
-            />
-            <rect
-              x="4"
-              y="11"
-              width="16"
-              height="2"
-              rx="1"
-              class="fill-primary-600 group-hover:fill-primary-700 transition-colors duration-300"
-            />
-            <rect
-              x="4"
-              y="16"
-              width="16"
-              height="2"
-              rx="1"
-              class="fill-primary-600 group-hover:fill-primary-700 transition-colors duration-300"
-            />
+      <div class="naqlah-header__brand hidden sm:flex">
+        <div class="naqlah-header__brand-icon">
+          <svg viewBox="0 0 24 24" fill="none" class="w-5 h-5">
+            <path d="M3 12h13l-3-3m3 3l-3 3M16 6h2a2 2 0 012 2v8a2 2 0 01-2 2h-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M7 18H5a2 2 0 01-2-2V8a2 2 0 012-2h2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
           </svg>
-          <!-- Ripple Effect -->
-          <span class="absolute inset-0 rounded-xl bg-primary-500 opacity-0 group-active:opacity-20 group-active:animate-ping"></span>
+        </div>
+        <div>
+          <span class="naqlah-header__brand-name">نقلة</span>
+          <span class="naqlah-header__brand-sub">نقل ذكي · سريع · موثوق</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: actions -->
+    <div class="naqlah-header__right animate-slide-in-right">
+
+      <!-- Settings -->
+      <div class="relative settings-dropdown-container">
+        <button
+          (click)="toggleSettingsDropdown()"
+          class="naqlah-header__icon-btn"
+          [class.naqlah-header__icon-btn--active]="settingsDropdownOpen"
+          aria-label="Settings"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" [@settingsRotation]="settingsIconState">
+            <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
         </button>
+
+        <div
+          *ngIf="settingsDropdownOpen"
+          class="naqlah-dropdown naqlah-dropdown--settings"
+          [@dropdownAnimation]
+          (click)="onDropdownClick($event)"
+        >
+          <div class="naqlah-dropdown__header">
+            <h3>{{ 'ADMIN.HEADER.SETTINGS' | translate }}</h3>
+          </div>
+          <div class="naqlah-dropdown__body">
+            <button
+              *ngIf="hasPermission('CanViewProfile')"
+              (click)="handleMenuClick('profile')"
+              class="naqlah-dropdown__item"
+            >
+              <span class="naqlah-dropdown__item-icon naqlah-dropdown__item-icon--primary">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                </svg>
+              </span>
+              <span>{{ 'ADMIN.HEADER.PROFILE' | translate }}</span>
+            </button>
+            <button
+              (click)="handleMenuClick('logout')"
+              class="naqlah-dropdown__item naqlah-dropdown__item--danger"
+            >
+              <span class="naqlah-dropdown__item-icon naqlah-dropdown__item-icon--danger">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd"/>
+                </svg>
+              </span>
+              <span>{{ 'ADMIN.HEADER.LOGOUT' | translate }}</span>
+            </button>
+          </div>
+        </div>
       </div>
 
-      <!-- Right Section: User Actions -->
-      <div class="flex items-center gap-3 animate-slide-in-right">
+      <app-notifications></app-notifications>
 
-        <!-- Settings Dropdown -->
-        <div class="relative inline-block text-left settings-dropdown-container">
-          <!-- Settings Button -->
-          <button
-            (click)="toggleSettingsDropdown()"
-            class="relative flex items-center justify-center w-11 h-11 rounded-xl bg-surface-50 hover:bg-primary-50 border border-neutral-200 hover:border-primary-300 shadow-sm hover:shadow-md transition-all duration-300 group hover:scale-105 active:scale-95"
-            [class.bg-primary-50]="settingsDropdownOpen"
-            [class.border-primary-400]="settingsDropdownOpen"
-            [class.shadow-md]="settingsDropdownOpen"
-            aria-label="Settings"
-          >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              class="transition-all duration-300 group-hover:scale-110"
-              [@settingsRotation]="settingsIconState"
-            >
-              <path
-                d="M14.7354 1.9209C15.1084 1.2565 15.8636 1.07755 16.415 1.4248V1.42578L16.4268 1.43262L18.502 2.69043V2.69141C19.2313 3.13324 19.5148 4.15949 19.0703 4.98535C18.4573 6.11888 18.3215 7.30683 18.8428 8.26172C19.3723 9.23164 20.4436 9.71578 21.709 9.71582C22.5102 9.71582 23.2411 10.4291 23.25 11.3877V13.6191C23.2498 14.5788 22.5157 15.2842 21.7207 15.2842C20.4559 15.2843 19.3835 15.7681 18.8555 16.7393C18.3679 17.636 18.4612 18.7369 18.9854 19.8047L19.0957 20.0176C19.537 20.8283 19.2563 21.8662 18.5264 22.3086L18.5254 22.3096L16.4502 23.5674L16.4395 23.5742C15.8879 23.922 15.1319 23.7439 14.7588 23.0791L14.6309 22.8447C14.0156 21.7196 13.093 20.958 11.9951 20.958C10.8971 20.9582 9.97845 21.7198 9.36914 22.8447L9.24121 23.0791C8.86809 23.7439 8.11209 23.922 7.56055 23.5742L7.5498 23.5674L5.47461 22.3096L5.47363 22.3086C4.74536 21.8672 4.46202 20.8428 4.9043 20.0176C5.52385 18.8845 5.66454 17.6957 5.14453 16.7393C4.61651 15.7681 3.54405 15.2843 2.2793 15.2842C1.47728 15.2842 0.750186 14.5713 0.75 13.6191V11.3809C0.750187 10.4212 1.4843 9.71582 2.2793 9.71582C3.54392 9.71571 4.61638 9.23181 5.14453 8.2627C5.63234 7.36727 5.5385 6.26897 5.01367 5.20605L4.90332 4.99316C4.46169 4.16663 4.74739 3.13161 5.47363 2.69141L5.47461 2.69043L7.5498 1.43262L7.56055 1.42578C8.11635 1.07528 8.86233 1.2623 9.20996 1.90918L9.21289 1.91309L9.34473 2.15527C9.96003 3.2805 10.8826 4.04197 11.9805 4.04199C13.0788 4.04199 13.9971 3.27963 14.6064 2.1543L14.6074 2.15527L14.7354 1.9209ZM11.9941 7.61816C9.39244 7.61816 7.3457 9.85185 7.3457 12.5C7.3457 15.1481 9.39244 17.3818 11.9941 17.3818C14.5958 17.3818 16.6416 15.1481 16.6416 12.5C16.6416 9.8519 14.5958 7.61824 11.9941 7.61816Z"
-                stroke="currentColor"
-                stroke-width="1.5"
-                class="text-neutral-600 group-hover:text-primary-600 transition-colors duration-300"
-              />
-            </svg>
-            <!-- Active Indicator -->
-            <span
-              *ngIf="settingsDropdownOpen"
-              class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-primary-500 rounded-full border-2 border-white animate-pulse"
-            ></span>
-          </button>
+      <!-- Theme toggle -->
+      <button
+        (click)="toggleTheme()"
+        class="naqlah-header__theme-btn"
+        [class.naqlah-header__theme-btn--active]="isDarkMode"
+        [attr.aria-label]="isDarkMode ? 'وضع فاتح' : 'وضع داكن'"
+        [title]="isDarkMode ? 'وضع فاتح' : 'وضع داكن'"
+      >
+        <!-- Moon: switch to dark -->
+        <svg *ngIf="!isDarkMode" width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <!-- Sun: switch to light -->
+        <svg *ngIf="isDarkMode" width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </button>
 
-          <!-- Settings Dropdown Menu -->
-          <div
-            *ngIf="settingsDropdownOpen"
-            class="absolute right-0 mt-3 w-80 bg-white rounded-2xl shadow-2xl border border-neutral-200 z-50 overflow-hidden backdrop-blur-xl"
-            [@dropdownAnimation]
-            (click)="onDropdownClick($event)"
-          >
-            <!-- Header -->
-            <div class="px-6 py-4 bg-gradient-to-r from-primary-50 to-primary-100/50 border-b border-neutral-200">
-              <h3 class="text-lg font-bold text-neutral-900 flex items-center gap-3">
-                <div class="p-2 rounded-lg bg-primary-500 text-white">
-                  <svg width="18" height="18" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/>
-                  </svg>
-                </div>
-                {{ 'ADMIN.HEADER.SETTINGS' | translate }}
-              </h3>
-            </div>
+      <!-- Language -->
+      <div class="relative language-dropdown-container">
+        <button
+          (click)="toggleLanguageDropdown()"
+          class="naqlah-header__lang-btn"
+          [class.naqlah-header__lang-btn--active]="languageDropdownOpen"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M3 12H21M12 3c2.5 3 2.5 15 0 18C9.5 18 9.5 6 12 3Z" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+          <span>{{ getCurrentLanguageDisplayName() }}</span>
+          <svg class="w-3.5 h-3.5 transition-transform" [class.rotate-180]="languageDropdownOpen" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </button>
 
-            <!-- Menu Items -->
-            <div class="dropdown-content py-2">
-              <div class="dropdown-section px-6 py-3 border-b border-gray-100">
-                <h4 class="section-title text-sm font-medium text-gray-500 mb-3">{{ 'ADMIN.HEADER.PROFILE_SECTION' | translate }}</h4>
-                <div class="space-y-1">
-                  <!-- Profile Button -->
-                  <button
-                    *ngIf="hasPermission('CanViewProfile')"
-                    (click)="handleMenuClick('profile')"
-                    class="w-full flex items-center gap-3 px-4 py-3 text-sm text-neutral-700 hover:bg-primary-50 hover:text-primary-700 rounded-xl transition-all duration-200 group hover:translate-x-1"
-                  >
-                    <div class="p-2 rounded-lg bg-primary-100 group-hover:bg-primary-200 transition-colors duration-200">
-                      <svg class="w-5 h-5 text-primary-600 transition-transform duration-200 group-hover:scale-110" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
-                      </svg>
-                    </div>
-                    <span class="flex-1 font-medium">{{ 'ADMIN.HEADER.PROFILE' | translate }}</span>
-                    <svg class="w-4 h-4 text-neutral-400 group-hover:text-primary-500 transition-all duration-200 opacity-0 group-hover:opacity-100 transform translate-x-[-4px] group-hover:translate-x-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                    </svg>
-                  </button>
-                </div>
-              </div>
-
-              <!-- System Section -->
-              <div class="dropdown-section px-6 py-3">
-                <h4 class="section-title text-sm font-medium text-gray-500 mb-3">{{ 'ADMIN.HEADER.SYSTEM_SECTION' | translate }}</h4>
-                <div class="space-y-1">
-
-                  <!-- Logout Button -->
-                  <button
-                    (click)="handleMenuClick('logout')"
-                    class="w-full flex items-center gap-3 px-4 py-3 text-sm text-error-600 hover:bg-error-50 hover:text-error-700 rounded-xl transition-all duration-200 group hover:translate-x-1 font-medium"
-                  >
-                    <div class="p-2 rounded-lg bg-error-100 group-hover:bg-error-200 transition-colors duration-200">
-                      <svg class="w-5 h-5 text-error-600 transition-transform duration-200 group-hover:scale-110" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd"></path>
-                      </svg>
-                    </div>
-                    <span class="flex-1">{{ 'ADMIN.HEADER.LOGOUT' | translate }}</span>
-                  </button>
-                </div>
-              </div>
-            </div>
+        <div
+          *ngIf="languageDropdownOpen"
+          class="naqlah-dropdown naqlah-dropdown--lang"
+          [@dropdownAnimation]
+          (click)="onDropdownClick($event)"
+        >
+          <div class="naqlah-dropdown__header">
+            <h3>{{ 'ADMIN.HEADER.SELECT_LANGUAGE' | translate }}</h3>
           </div>
-        </div>
-
-        <!-- Notifications Component -->
-        <app-notifications></app-notifications>
-
-        <!-- Language Dropdown -->
-        <div class="relative language-dropdown-container">
-          <!-- Language Button -->
           <button
-            (click)="toggleLanguageDropdown()"
-            class="dropdown-button relative flex items-center gap-2 p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-            [class.text-blue-600]="languageDropdownOpen"
-            [class.bg-blue-50]="languageDropdownOpen"
-            [class.active]="languageDropdownOpen"
+            class="naqlah-dropdown__lang-option"
+            [class.naqlah-dropdown__lang-option--active]="isActiveLanguage('ar')"
+            (click)="ChangeLanguage('rtl')"
+            [disabled]="isActiveLanguage('ar')"
           >
-            <!-- Globe Icon -->
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/>
-              <path d="M3 12H21" stroke="currentColor" stroke-width="1.5"/>
-              <path d="M12 3C14.5 6 14.5 18 12 21C9.5 18 9.5 6 12 3Z" stroke="currentColor" stroke-width="1.5"/>
-            </svg>
-
-            <!-- Current Language Text -->
-            <span class="text-sm font-medium">
-              {{ getCurrentLanguageDisplayName() }}
-            </span>
-
-            <!-- Dropdown Arrow -->
-            <svg
-              class="w-4 h-4 transition-transform duration-300"
-              [class.rotate-180]="languageDropdownOpen"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            <img src="https://flagsapi.com/EG/flat/64.png" alt="Arabic" class="w-6 h-6 rounded-full object-cover"/>
+            <div class="flex-1 text-right">
+              <div class="text-sm font-semibold" style="color: var(--shell-text)">العربية</div>
+              <div class="text-xs" style="color: var(--shell-text-muted)">{{ 'ADMIN.HEADER.ARABIC' | translate }}</div>
+            </div>
+            <svg *ngIf="isActiveLanguage('ar')" class="w-5 h-5 text-primary-500" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
             </svg>
           </button>
-
-          <!-- Language Dropdown Menu -->
-          <div
-            *ngIf="languageDropdownOpen"
-            class="dropdown-menu absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-2xl border border-gray-100 z-50 overflow-hidden"
-            [@dropdownAnimation]
-            (click)="onDropdownClick($event)"
+          <button
+            class="naqlah-dropdown__lang-option"
+            [class.naqlah-dropdown__lang-option--active]="isActiveLanguage('en')"
+            (click)="ChangeLanguage('ltr')"
+            [disabled]="isActiveLanguage('en')"
           >
-            <!-- Header -->
-            <div class="dropdown-header px-4 py-3 border-b border-gray-100 bg-gray-50 rounded-t-lg">
-              <h3 class="text-sm font-semibold text-gray-800">
-                {{ 'ADMIN.HEADER.SELECT_LANGUAGE' | translate }}
-              </h3>
+            <img src="https://flagsapi.com/GB/flat/64.png" alt="English" class="w-6 h-6 rounded-full object-cover"/>
+            <div class="flex-1 text-left">
+              <div class="text-sm font-semibold" style="color: var(--shell-text)">English</div>
+              <div class="text-xs" style="color: var(--shell-text-muted)">{{ 'ADMIN.HEADER.ENGLISH' | translate }}</div>
             </div>
-
-            <!-- Languages List -->
-            <div class="dropdown-content py-2">
-              <!-- Arabic Option -->
-              <button
-                class="dropdown-item language-option w-full flex items-center gap-3 px-4 py-3 text-right hover:bg-gray-50 transition-colors duration-150 focus:outline-none focus:bg-gray-50"
-                [class.bg-blue-50]="isActiveLanguage('ar')"
-                [class.border-r-2]="isActiveLanguage('ar')"
-                [class.border-blue-500]="isActiveLanguage('ar')"
-                [class.active]="isActiveLanguage('ar')"
-                (click)="ChangeLanguage('rtl')"
-                [disabled]="isActiveLanguage('ar')"
-              >
-                <!-- Arabic Flag -->
-                <div class="flag-container w-6 h-6 rounded-full flex items-center justify-center text-lg">
-                  <img src="https://flagsapi.com/EG/flat/64.png" alt="Arabic" class="w-full h-full rounded-full object-cover">
-                </div>
-
-                <div class="flex-1 text-right">
-                  <div class="text-sm font-medium text-gray-900 font-arabic">العربية</div>
-                  <div class="text-xs text-gray-500">{{ 'ADMIN.HEADER.ARABIC' | translate }}</div>
-                </div>
-
-                <!-- Active Indicator -->
-                <div class="active-indicator flex items-center">
-                  <svg
-                    *ngIf="isActiveLanguage('ar')"
-                    class="w-5 h-5 text-primary-600 animate-scale-in"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                  </svg>
-                </div>
-              </button>
-
-              <!-- English Option -->
-              <button
-                class="dropdown-item language-option w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-gray-50 transition-colors duration-150 focus:outline-none focus:bg-gray-50"
-                [class.bg-blue-50]="isActiveLanguage('en')"
-                [class.border-r-2]="isActiveLanguage('en')"
-                [class.border-blue-500]="isActiveLanguage('en')"
-                [class.active]="isActiveLanguage('en')"
-                (click)="ChangeLanguage('ltr')"
-                [disabled]="isActiveLanguage('en')"
-              >
-                <!-- English Flag -->
-                <div class="flag-container w-6 h-6 rounded-full flex items-center justify-center text-lg">
-                  <img src="https://flagsapi.com/GB/flat/64.png" alt="English" class="w-full h-full rounded-full object-cover">
-                </div>
-
-                <div class="flex-1 text-left">
-                  <div class="text-sm font-medium text-gray-900 font-english">English</div>
-                  <div class="text-xs text-gray-500">{{ 'ADMIN.HEADER.ENGLISH' | translate }}</div>
-                </div>
-
-                <!-- Active Indicator -->
-                <div class="active-indicator flex items-center">
-                  <svg
-                    *ngIf="isActiveLanguage('en')"
-                    class="w-4 h-5 text-primary-600 animate-scale-in"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                  </svg>
-                </div>
-              </button>
-            </div>
-
-            <!-- Footer -->
-            <div class="dropdown-footer px-4 py-2 bg-gray-50 border-t border-gray-100 rounded-b-lg">
-              <p class="text-xs text-gray-500 text-center">
-                {{ 'ADMIN.HEADER.PAGE_WILL_RELOAD' | translate }}
-              </p>
-            </div>
+            <svg *ngIf="isActiveLanguage('en')" class="w-5 h-5 text-primary-500" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            </svg>
+          </button>
+          <div class="naqlah-dropdown__footer">
+            <p>{{ 'ADMIN.HEADER.PAGE_WILL_RELOAD' | translate }}</p>
           </div>
         </div>
+      </div>
 
-        <!-- User Profile Section -->
-        <div class="hidden md:flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-surface-50 transition-all duration-200 group cursor-pointer">
-          <div class="flex flex-col items-end mr-2">
-            <span class="text-sm font-semibold text-neutral-900 group-hover:text-primary-700 transition-colors duration-200">
-              {{ userEmail || 'User' }}
-            </span>
-            <span class="text-xs text-neutral-500 group-hover:text-primary-600 transition-colors duration-200">
-              {{ userRole || 'Role' }}
-            </span>
-          </div>
-          <div class="relative">
-            <div class="absolute inset-0 rounded-full bg-primary-500 opacity-0 group-hover:opacity-20 blur-xl transition-opacity duration-300"></div>
-            <!-- User Avatar with Initial -->
-            <div
-              [class]="'relative w-12 h-12 rounded-full border-2 border-neutral-200 group-hover:border-primary-400 transition-all duration-300 shadow-md group-hover:shadow-lg group-hover:scale-105 flex items-center justify-center text-white font-bold text-lg bg-primary-500'"
-            >
-              {{ getUserInitial() }}
-            </div>
-            <!-- Online Status Indicator -->
-            <span class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-success-500 border-2 border-white rounded-full shadow-sm"></span>
-          </div>
+      <!-- User -->
+      <div class="naqlah-header__user hidden md:flex">
+        <div class="naqlah-header__user-info">
+          <span class="naqlah-header__user-email">{{ userEmail || 'User' }}</span>
+          <span class="naqlah-header__user-role">{{ userRole || 'Admin' }}</span>
+        </div>
+        <div class="naqlah-header__avatar">
+          {{ getUserInitial() }}
+          <span class="naqlah-header__avatar-status"></span>
         </div>
       </div>
     </div>

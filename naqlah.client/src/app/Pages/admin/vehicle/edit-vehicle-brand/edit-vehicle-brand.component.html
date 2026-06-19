@@ -1,0 +1,64 @@
+<div class="min-h-screen theme-page na-shell vf-animate">
+  <app-page-header
+    title="تعديل ماركة مركبة"
+    subtitle="تحديث بيانات الماركة التجارية"
+    [showBackButton]="true"
+    iconPath="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+    (onBackClick)="onCancel()"
+  ></app-page-header>
+
+  <div class="vf-hero" *ngIf="!isLoading">
+    <div class="vf-hero__content">
+      <span class="vf-hero__eyebrow">تعديل ماركة</span>
+      <h1 class="vf-hero__title">تحديث العلامة التجارية</h1>
+      <p class="vf-hero__subtitle">عدّل اسم الماركة بالعربية والإنجليزية ثم احفظ التغييرات.</p>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="vf-card">
+    <div class="vf-card__body text-center py-12 text-neutral-500">جاري التحميل...</div>
+  </div>
+
+  <form *ngIf="!isLoading" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="vf-card">
+      <div class="vf-card__head">
+        <h2 class="vf-card__title">بيانات الماركة</h2>
+      </div>
+      <div class="vf-card__body">
+        <div class="vf-fields-2">
+          <div class="vf-field">
+            <label class="vf-label">الاسم بالعربية</label>
+            <input
+              class="vf-input"
+              [class.vf-input--invalid]="form.get('arabicName')?.touched && form.get('arabicName')?.invalid"
+              formControlName="arabicName"
+              type="text"
+            />
+            <span class="vf-error" *ngIf="form.get('arabicName')?.touched && form.get('arabicName')?.invalid">
+              هذا الحقل مطلوب
+            </span>
+          </div>
+          <div class="vf-field">
+            <label class="vf-label">الاسم بالإنجليزية</label>
+            <input
+              class="vf-input"
+              [class.vf-input--invalid]="form.get('englishName')?.touched && form.get('englishName')?.invalid"
+              formControlName="englishName"
+              type="text"
+            />
+            <span class="vf-error" *ngIf="form.get('englishName')?.touched && form.get('englishName')?.invalid">
+              هذا الحقل مطلوب
+            </span>
+          </div>
+        </div>
+
+        <div class="vf-actions">
+          <button type="button" class="vf-btn vf-btn--ghost" (click)="onCancel()">إلغاء</button>
+          <button type="submit" class="vf-btn vf-btn--primary" [disabled]="isSubmitting">
+            {{ isSubmitting ? 'جاري الحفظ...' : 'حفظ التعديلات' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

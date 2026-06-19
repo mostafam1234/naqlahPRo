@@ -165,12 +165,12 @@ export class CaptainComponent {
 
     previewCaptain(captain: any) {
       console.log('معاينة الكابتن:', captain);
-      this.router.navigate(['/admin/newCaptain/action', captain.deliveryManId]);
+      this.router.navigate(['/admin/users/captains/details', captain.deliveryManId]);
       this.openDropdownId = null;
     }
 
     viewCaptainDetails(deliveryManId: number) {
-      this.router.navigate(['/admin/newCaptain/action', deliveryManId]);
+      this.router.navigate(['/admin/users/captains/details', deliveryManId]);
     }
 
     @HostListener('document:click', ['$event'])

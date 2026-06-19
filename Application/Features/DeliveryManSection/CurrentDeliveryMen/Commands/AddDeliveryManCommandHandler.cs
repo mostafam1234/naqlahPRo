@@ -1,12 +1,11 @@
 using Application.Features.DeliveryManSection.CurrentDeliveryMen.Commands;
+using Application.Shared.Services;
 using CSharpFunctionalExtensions;
 using Domain.Enums;
 using Domain.InterFaces;
 using Domain.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,7 +19,10 @@ namespace Application.Features.DeliveryManSection.CurrentDeliveryMen.Commands
         private readonly IUserService userService;
         private const string DeliveryFolderPrefix = "DeliveryMan";
 
-        public AddDeliveryManCommandHandler(INaqlahContext context, IMediaUploader mediaUploader, IUserService userService)
+        public AddDeliveryManCommandHandler(
+            INaqlahContext context,
+            IMediaUploader mediaUploader,
+            IUserService userService)
         {
             _context = context;
             this.mediaUploader = mediaUploader;
@@ -29,18 +31,25 @@ namespace Application.Features.DeliveryManSection.CurrentDeliveryMen.Commands
 
         public async Task<Result<int>> Handle(AddDeliveryManCommand request, CancellationToken cancellationToken)
         {
-            // Validate required user fields
-            if (string.IsNullOrWhiteSpace(request.DeliveryMan.Email))
-            {
-                return Result.Failure<int>("Email is required");
-            }
+            var requiredValidation = DeliveryManRequiredFieldsValidator.ValidateForAdminCreate(request.DeliveryMan);
+            if (requiredValidation.IsFailure)
+                return Result.Failure<int>(requiredValidation.Error);
 
-            if (string.IsNullOrWhiteSpace(request.DeliveryMan.Password))
-            {
-                return Result.Failure<int>("Password is required");
-            }
+            if (!DeliveryManCommandHelper.TryParseOptionalDate(request.DeliveryMan.BirthDate, out var birthDate) || !birthDate.HasValue)
+                return Result.Failure<int>("InvalidBirthDateFormat");
 
-            // Step 1: Create user account first (this also creates a basic DeliveryMan)
+            if (!DeliveryManCommandHelper.TryParseOptionalDate(request.DeliveryMan.IdentityExpirationDate, out var identityExpirationDate))
+                return Result.Failure<int>("InvalidIdentityExpirationDateFormat");
+
+            if (!DeliveryManCommandHelper.TryParseOptionalDate(request.DeliveryMan.DrivingLicenseExpirationDate, out var licenceExpirationDate))
+                return Result.Failure<int>("InvalidDrivingLicenseExpirationDateFormat");
+
+            if (!DeliveryManCommandHelper.TryParseOptionalDate(request.DeliveryMan.VehicleLicenseExpirationDate, out var vehicleLicenseExpirationDate))
+                return Result.Failure<int>("InvalidVehicleLicenseExpirationDateFormat");
+
+            if (!DeliveryManCommandHelper.TryParseOptionalDate(request.DeliveryMan.VehicleInsuranceExpirationDate, out var vehicleInsuranceExpirationDate))
+                return Result.Failure<int>("InvalidVehicleInsuranceExpirationDateFormat");
+
             var createUserResult = await userService.CreateDeliveryUser(
                 request.DeliveryMan.PhoneNumber,
                 request.DeliveryMan.Email,
@@ -49,24 +58,18 @@ namespace Application.Features.DeliveryManSection.CurrentDeliveryMen.Commands
             );
 
             if (createUserResult.IsFailure)
-            {
                 return Result.Failure<int>(createUserResult.Error);
-            }
 
             var userId = createUserResult.Value;
 
-            // Step 2: Load the user with delivery man from context
             var user = await _context.Users
                 .Include(u => u.DeliveryMan)
                 .Include(u => u.AspNetUserRoles)
                 .FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
 
             if (user == null || user.DeliveryMan == null)
-            {
-                return Result.Failure<int>("Failed to load created user or delivery man");
-            }
+                return Result.Failure<int>("FailedToLoadCreatedUser");
 
-            // Ensure UserRole record exists for DeliveryMan role
             var deliveryManRoleId = Domain.Models.Role.DeliveryMan.Id;
             var hasUserRole = user.AspNetUserRoles.Any(ur => ur.RoleId == deliveryManRoleId);
             if (!hasUserRole)
@@ -74,120 +77,47 @@ namespace Application.Features.DeliveryManSection.CurrentDeliveryMen.Commands
                 var userRole = Domain.Models.UserRole.Instance(deliveryManRoleId);
                 userRole.UserId = user.Id;
                 user.AspNetUserRoles.Add(userRole);
-                // Save the UserRole immediately
                 var userRoleSaveResult = await _context.SaveChangesAsyncWithResult();
                 if (userRoleSaveResult.IsFailure)
-                {
-                    return Result.Failure<int>($"Failed to save UserRole: {userRoleSaveResult.Error}");
-                }
+                    return Result.Failure<int>("FailedToSaveUserRole");
             }
 
             var deliveryMan = user.DeliveryMan;
-            // Note: deliveryMan is already tracked by EF Core since it was loaded with Include
-
-            // Step 3: Parse dates
-            DateTime identityExpirationDate;
-            DateTime licenceExpirationDate;
-            DateTime vehicleLicenseExpirationDate = DateTime.MinValue;
-            DateTime vehicleInsuranceExpirationDate = DateTime.MinValue;
-            
-            if (!DateTime.TryParseExact(request.DeliveryMan.IdentityExpirationDate, "yyyy-MM-dd", new CultureInfo("en-US"), DateTimeStyles.None, out identityExpirationDate))
-            {
-                return Result.Failure<int>("Invalid Identity Expiration Date format");
-            }
-
-            if (!DateTime.TryParseExact(request.DeliveryMan.DrivingLicenseExpirationDate, "yyyy-MM-dd", new CultureInfo("en-US"), DateTimeStyles.None, out licenceExpirationDate))
-            {
-                return Result.Failure<int>("Invalid Driving License Expiration Date format");
-            }
-
-            if (!string.IsNullOrWhiteSpace(request.DeliveryMan.VehicleLicenseExpirationDate))
-            {
-                if (!DateTime.TryParseExact(request.DeliveryMan.VehicleLicenseExpirationDate, "yyyy-MM-dd", new CultureInfo("en-US"), DateTimeStyles.None, out vehicleLicenseExpirationDate))
-                {
-                    return Result.Failure<int>("Invalid Vehicle License Expiration Date format");
-                }
-            }
-
-            if (!string.IsNullOrWhiteSpace(request.DeliveryMan.VehicleInsuranceExpirationDate))
-            {
-                if (!DateTime.TryParseExact(request.DeliveryMan.VehicleInsuranceExpirationDate, "yyyy-MM-dd", new CultureInfo("en-US"), DateTimeStyles.None, out vehicleInsuranceExpirationDate))
-                {
-                    return Result.Failure<int>("Invalid Vehicle Insurance Expiration Date format");
-                }
-            }
-
-            // Step 4: Create delivery folder using delivery man ID (use userId as temporary if Id is 0)
             var deliveryFolder = deliveryMan.Id > 0 
-                ? string.Format("{0}_{1}", DeliveryFolderPrefix, deliveryMan.Id)
-                : string.Format("{0}_{1}", DeliveryFolderPrefix, userId);
+                ? $"{DeliveryFolderPrefix}_{deliveryMan.Id}"
+                : $"{DeliveryFolderPrefix}_{userId}";
 
-            var frontIdenitytImagePath = "";  var backIdenitytImagePath = ""; var personalImagePath = "";
-            var frontLicenseImagePath = ""; var backLicenseImagePath = "";
-            
-            // Vehicle image paths
-            var vehicleFrontImagePath = ""; var vehicleSideImagePath = "";
-            var vehicleFrontLicenseImagePath = ""; var vehicleBackLicenseImagePath = "";
-            var vehicleFrontInsuranceImagePath = ""; var vehicleBackInsuranceImagePath = "";
-            
-            // Upload delivery man images
-            if (!string.IsNullOrEmpty(request.DeliveryMan.FrontIdentityImagePath))
-            {
-                frontIdenitytImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.FrontIdentityImagePath, deliveryFolder);
-            }
-            if(!string.IsNullOrEmpty(request.DeliveryMan.BackIdentityImagePath))
-            {
+            var frontIdenitytImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.FrontIdentityImagePath!, deliveryFolder);
+            var frontLicenseImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.FrontDrivingLicenseImagePath!, deliveryFolder);
+
+            string? backIdenitytImagePath = null;
+            if (!string.IsNullOrEmpty(request.DeliveryMan.BackIdentityImagePath))
                 backIdenitytImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.BackIdentityImagePath, deliveryFolder);
-            }
 
-            if(!string.IsNullOrEmpty(request.DeliveryMan.PersonalImagePath))
-            {
+            string? personalImagePath = null;
+            if (!string.IsNullOrEmpty(request.DeliveryMan.PersonalImagePath))
                 personalImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.PersonalImagePath, deliveryFolder);
-            }
 
-            if(!string.IsNullOrEmpty(request.DeliveryMan.FrontDrivingLicenseImagePath))
-            {
-                frontLicenseImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.FrontDrivingLicenseImagePath, deliveryFolder);
-            }
-
+            string? backLicenseImagePath = null;
             if (!string.IsNullOrEmpty(request.DeliveryMan.BackDrivingLicenseImagePath))
-            {
                 backLicenseImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.BackDrivingLicenseImagePath, deliveryFolder);
-            }
-            
-            // Upload vehicle images
-            if (!string.IsNullOrEmpty(request.DeliveryMan.VehicleFrontImagePath))
-            {
-                vehicleFrontImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.VehicleFrontImagePath, deliveryFolder);
-            }
-            
-            if (!string.IsNullOrEmpty(request.DeliveryMan.VehicleSideImagePath))
-            {
-                vehicleSideImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.VehicleSideImagePath, deliveryFolder);
-            }
-            
-            if (!string.IsNullOrEmpty(request.DeliveryMan.VehicleFrontLicenseImagePath))
-            {
-                vehicleFrontLicenseImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.VehicleFrontLicenseImagePath, deliveryFolder);
-            }
-            
+
+            var vehicleFrontImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.VehicleFrontImagePath!, deliveryFolder);
+            var vehicleSideImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.VehicleSideImagePath!, deliveryFolder);
+            var vehicleFrontLicenseImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.VehicleFrontLicenseImagePath!, deliveryFolder);
+
+            string? vehicleBackLicenseImagePath = null;
             if (!string.IsNullOrEmpty(request.DeliveryMan.VehicleBackLicenseImagePath))
-            {
                 vehicleBackLicenseImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.VehicleBackLicenseImagePath, deliveryFolder);
-            }
-            
+
+            string? vehicleFrontInsuranceImagePath = null;
             if (!string.IsNullOrEmpty(request.DeliveryMan.VehicleFrontInsuranceImagePath))
-            {
                 vehicleFrontInsuranceImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.VehicleFrontInsuranceImagePath, deliveryFolder);
-            }
-            
+
+            string? vehicleBackInsuranceImagePath = null;
             if (!string.IsNullOrEmpty(request.DeliveryMan.VehicleBackInsuranceImagePath))
-            {
                 vehicleBackInsuranceImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.VehicleBackInsuranceImagePath, deliveryFolder);
-            }
 
-
-            // Step 5: Update delivery man personal information using domain method
             var updateResult = deliveryMan.UpdatePersnalInfo(
                 request.DeliveryMan.FullName,
                 request.DeliveryMan.Address,
@@ -197,6 +127,7 @@ namespace Application.Features.DeliveryManSection.CurrentDeliveryMen.Commands
                 personalImagePath,
                 identityExpirationDate,
                 licenceExpirationDate,
+                birthDate,
                 request.DeliveryMan.DeliveryType,
                 request.DeliveryMan.DeliveryLicenseType,
                 frontLicenseImagePath,
@@ -206,59 +137,34 @@ namespace Application.Features.DeliveryManSection.CurrentDeliveryMen.Commands
             if (updateResult.IsFailure)
                 return Result.Failure<int>(updateResult.Error);
 
-            // Step 6: Set activation status
             deliveryMan.ChangeActivation(request.DeliveryMan.Active);
-
-            // Step 7: Set delivery state (default to New for new delivery men)
             deliveryMan.UpdateDeliveryManRequestState((int)DeliveryRequesState.New);
 
-            // Step 8: Add vehicle using domain method (this sets the relationship properly)
-            if (request.DeliveryMan.VehicleTypeId.HasValue && 
-                request.DeliveryMan.VehicleBrandId.HasValue && 
-                !string.IsNullOrWhiteSpace(request.DeliveryMan.VehiclePlateNumber))
-            {
-                var ownerTypeId = request.DeliveryMan.VehicleOwnerTypeId ?? 0;
+            var addVehicleResult = deliveryMan.AddVehicle(
+                request.DeliveryMan.VehicleTypeId!.Value,
+                request.DeliveryMan.VehicleBrandId!.Value,
+                request.DeliveryMan.VehiclePlateNumber!,
+                vehicleFrontImagePath,
+                vehicleSideImagePath,
+                vehicleFrontLicenseImagePath,
+                vehicleBackLicenseImagePath,
+                vehicleLicenseExpirationDate,
+                vehicleFrontInsuranceImagePath,
+                vehicleBackInsuranceImagePath,
+                vehicleInsuranceExpirationDate,
+                request.DeliveryMan.VehicleOwnerTypeId!.Value
+            );
 
-                // Use default dates if not provided
-                if (vehicleLicenseExpirationDate == DateTime.MinValue)
-                {
-                    vehicleLicenseExpirationDate = DateTime.Now.AddYears(1);
-                }
+            if (addVehicleResult.IsFailure)
+                return Result.Failure<int>(addVehicleResult.Error);
 
-                if (vehicleInsuranceExpirationDate == DateTime.MinValue)
-                {
-                    vehicleInsuranceExpirationDate = DateTime.Now.AddYears(1);
-                }
+            await DeliveryManCommandHelper.ApplyVehicleOwnerAsync(deliveryMan, request.DeliveryMan, mediaUploader, deliveryFolder);
 
-                var addVehicleResult = deliveryMan.AddVehicle(
-                    request.DeliveryMan.VehicleTypeId.Value,
-                    request.DeliveryMan.VehicleBrandId.Value,
-                    request.DeliveryMan.VehiclePlateNumber,
-                    vehicleFrontImagePath,
-                    vehicleSideImagePath,
-                    vehicleFrontLicenseImagePath,
-                    vehicleBackLicenseImagePath,
-                    vehicleLicenseExpirationDate,
-                    vehicleFrontInsuranceImagePath,
-                    vehicleBackInsuranceImagePath,
-                    vehicleInsuranceExpirationDate,
-                    ownerTypeId
-                );
+            DeliveryManCommandHelper.RefreshCompleteness(deliveryMan);
 
-                if (addVehicleResult.IsFailure)
-                {
-                    return Result.Failure<int>(addVehicleResult.Error);
-                }
-            }
-
-            // Step 9: Save all changes in a single transaction
-            // EF Core will automatically handle all relationships and save:
-            // - DeliveryMan updates (address, IdentityNumber, images, DeliveryType, DeliveryLicenseType, Active, DeliveryState)
-            // - DeliveryVehicle (through the navigation property relationship)
             var saveResult = await _context.SaveChangesAsyncWithResult();
-
             if (saveResult.IsFailure)
-                return Result.Failure<int>($"Failed To Save Data: {saveResult.Error}");
+                return Result.Failure<int>("FailedToSaveData");
 
             return Result.Success(deliveryMan.Id);
         }

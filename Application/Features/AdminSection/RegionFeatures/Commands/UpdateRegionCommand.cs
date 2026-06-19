@@ -27,7 +27,7 @@ namespace Application.Features.AdminSection.RegionFeatures.Commands
                 var region = await _context.Regions.AsTracking().FirstOrDefaultAsync(x => x.Id == command.Id);
                 if (region == null)
                 {
-                    return Result.Failure<int>("Region Not Found");
+                    return Result.Failure<int>("RegionNotFound");
                 }
                 region.Update(command.ArabicName, command.EnglishName);
                 var result = await _context.SaveChangesAsyncWithResult();

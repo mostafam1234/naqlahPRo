@@ -59,7 +59,7 @@ namespace Application.Features.AdminSection.Dashboard.Queries
                 }
                 catch (Exception ex)
                 {
-                    return Result.Failure<DashboardStatisticsDto>($"Error retrieving dashboard statistics: {ex.Message}");
+                    return Result.Failure<DashboardStatisticsDto>("FailedToGetDashboardStatistics");
                 }
             }
         }
