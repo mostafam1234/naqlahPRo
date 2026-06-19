@@ -33,7 +33,7 @@ namespace Application.Features.AdminSection.WalletTransactionFeatures.Queries
             {
                 if (!request.CustomerId.HasValue)
                 {
-                    return Result.Failure<PagedResult<WalletTransactionAdminDto>>("Customer ID is required");
+                    return Result.Failure<PagedResult<WalletTransactionAdminDto>>("CustomerIdRequired");
                 }
 
                 var query = _context.WalletTransctions

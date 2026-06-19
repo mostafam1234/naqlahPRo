@@ -1,271 +1,594 @@
-import { NgClass, NgFor, NgIf, DecimalPipe } from '@angular/common';
-import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
+import { DatePipe, DecimalPipe, NgClass, NgFor, NgIf } from '@angular/common';
+
+import { Component, OnDestroy, OnInit } from '@angular/core';
+
+import { ActivatedRoute, Router } from '@angular/router';
+
+import { FormsModule } from '@angular/forms';
+
 import { TranslateModule } from '@ngx-translate/core';
-import * as L from 'leaflet';
+
+import { ToasterService } from 'src/app/Core/services/toaster.service';
+
 import {
+
   DeliveryManAdminClient,
+
+  DeliveryManOrderStatusCountDto,
+
+  DeliveryManSummaryDto,
+
   GetAllOrdersDto,
+
   OrderStatus,
+
   PagedResultOfGetAllOrdersDto
+
 } from 'src/app/Core/services/NaqlahClient';
+
+import { FormalSelectComponent } from 'src/app/shared/components/formal-select/formal-select.component';
+
 import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
-import { catchError, finalize, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { of } from 'rxjs';
-import { SubSink } from 'subsink';
+
 import { PermissionService } from 'src/app/shared/services/permission.service';
 
+import { of } from 'rxjs';
+
+import { catchError, finalize, map } from 'rxjs/operators';
+
+import { SubSink } from 'subsink';
+
+import {
+
+  buildVisiblePages,
+
+  CaptainOrdersFilterForm,
+
+  CUSTOMER_TYPE_OPTIONS,
+
+  EMPTY_CAPTAIN_ORDERS_FILTER,
+
+  getOrderStatCardClass,
+
+  getOrderStatusBadgeClass,
+
+  isActiveOrdersStatKey,
+
+  mapFileResponse,
+
+  orderStatusToStatKey,
+
+  OrderTrackingStatKey,
+
+  parseDateFilter,
+
+  resolveCustomerTypeFilter,
+
+  resolveStatusFilter,
+
+  triggerFileDownload
+
+} from '../captain-orders.helpers';
+
+
+
 @Component({
+
   selector: 'app-order-tracking',
+
   standalone: true,
-  imports: [NgIf, NgFor, NgClass, RouterLink, FormsModule, ReactiveFormsModule, PageHeaderComponent, TranslateModule, DecimalPipe],
+
+  imports: [NgIf, NgFor, NgClass, FormsModule, PageHeaderComponent, TranslateModule, DecimalPipe, DatePipe, FormalSelectComponent],
+
   templateUrl: './order-tracking.component.html',
+
   styleUrl: './order-tracking.component.css'
+
 })
-export class OrderTrackingComponent implements OnInit, AfterViewInit, OnDestroy {
+
+export class OrderTrackingComponent implements OnInit, OnDestroy {
+
   deliveryManId: number | null = null;
-  deliveryManName: string = '';
-  deliveryManPhone: string = '';
-  
-  // Orders Data
+
+  deliveryManSummary: DeliveryManSummaryDto | null = null;
+
+  isLoadingSummary = false;
+
+
+
   orders: GetAllOrdersDto[] = [];
+
   totalCount = 0;
+
   totalPages = 0;
+
   isLoading = false;
-  searchControl = new FormControl('');
-  statusFilter?: OrderStatus;
-  
+
+  isExporting = false;
+  isExportingSummary = false;
+  hasSearched = false;
+
+
+
+  filterDraft: CaptainOrdersFilterForm = { ...EMPTY_CAPTAIN_ORDERS_FILTER };
+
+  filterApplied: CaptainOrdersFilterForm = { ...EMPTY_CAPTAIN_ORDERS_FILTER };
+
+  selectedStatKey: OrderTrackingStatKey = 'all';
+
+
+
   currentPage = 1;
-  itemsPerPage = 9;
-  activeProgressTab: string = 'all';
-  
-  map: L.Map | null = null;
+
+  readonly itemsPerPage = 10;
+
+  readonly customerTypeOptions = CUSTOMER_TYPE_OPTIONS;
+
+
+
   private sub = new SubSink();
 
+
+
   constructor(
+
     private route: ActivatedRoute,
+
     private router: Router,
+
     private deliveryManClient: DeliveryManAdminClient,
-    private permissionService: PermissionService
+
+    private permissionService: PermissionService,
+
+    private toasterService: ToasterService
+
   ) {}
 
-  hasPermission(permission: string): boolean {
-    return this.permissionService.hasPermission(permission);
-  }
+
 
   ngOnInit(): void {
+
     this.permissionService.getPermissions().subscribe(() => {});
-    this.route.paramMap.subscribe(params => {
+
+    this.sub.sink = this.route.paramMap.subscribe((params) => {
+
       const id = params.get('id');
+
       if (id) {
+
         this.deliveryManId = +id;
-        this.loadDeliveryManOrders();
-        this.setupSearch();
+
+        this.loadDeliveryManSummary();
+
       }
+
     });
+
   }
 
-  ngAfterViewInit(): void {
-    // Map will be initialized when we have waypoints data
-  }
+
 
   ngOnDestroy(): void {
+
     this.sub.unsubscribe();
-    if (this.map) {
-      this.map.remove();
-    }
+
   }
 
-  setupSearch(): void {
-    this.sub.sink = this.searchControl.valueChanges
-      .pipe(
-        debounceTime(500),
-        distinctUntilChanged()
-      )
-      .subscribe(() => {
-        this.currentPage = 1;
-        this.loadDeliveryManOrders();
-      });
+
+
+  hasPermission(permission: string): boolean {
+
+    return this.permissionService.hasPermission(permission);
+
   }
+
+
+
+  onStatCardClick(key: OrderTrackingStatKey): void {
+
+    this.filterDraft.statusKey = key;
+
+    this.selectedStatKey = key;
+
+    this.search();
+
+  }
+
+
+
+  search(): void {
+
+    this.filterApplied = { ...this.filterDraft };
+
+    this.selectedStatKey = this.toStatKey(this.filterApplied.statusKey);
+
+    this.currentPage = 1;
+
+    this.hasSearched = true;
+
+    this.loadDeliveryManOrders();
+
+  }
+
+
+
+  resetFilters(): void {
+
+    this.filterDraft = { ...EMPTY_CAPTAIN_ORDERS_FILTER };
+
+    this.selectedStatKey = 'all';
+
+    this.search();
+
+  }
+
+
+
+  isStatCardSelected(key: OrderTrackingStatKey): boolean {
+
+    return this.selectedStatKey === key;
+
+  }
+
+
+
+  getStatCardClass(key: OrderTrackingStatKey): string {
+
+    return getOrderStatCardClass(key);
+
+  }
+
+
+
+  getStatCount(key: OrderTrackingStatKey): number {
+
+    if (!this.deliveryManSummary) return 0;
+
+    switch (key) {
+
+      case 'all': return this.deliveryManSummary.totalOrders ?? 0;
+
+      case 'active': return this.deliveryManSummary.activeOrders ?? 0;
+
+      case 'pending': return this.deliveryManSummary.pendingOrders ?? 0;
+
+      case 'assigned': return this.deliveryManSummary.assignedOrders ?? 0;
+
+      case 'confirmed': return this.deliveryManSummary.confirmedGoingToPickupOrders ?? 0;
+
+      case 'pickedup': return this.deliveryManSummary.pickedUpOrders ?? 0;
+
+      case 'completed': return this.deliveryManSummary.completedOrders ?? 0;
+
+      case 'cancelled': return this.deliveryManSummary.cancelledOrders ?? 0;
+
+      default: return 0;
+
+    }
+
+  }
+
+
+
+  get statusStatCards(): DeliveryManOrderStatusCountDto[] {
+    const hiddenStatuses = new Set([OrderStatus.Pending, OrderStatus.Assigned]);
+    return (this.deliveryManSummary?.ordersByStatus ?? []).filter(
+      (item) => !hiddenStatuses.has(item.status)
+    );
+  }
+
+  getStatCardLabel(item: DeliveryManOrderStatusCountDto): string {
+    if (item.status === OrderStatus.PickedUpFromDeliveryMan) {
+      return 'شحنات تم تسليمها للعميل';
+    }
+    return item.statusName;
+  }
+
+
+
+  getStatusStatKey(item: DeliveryManOrderStatusCountDto): OrderTrackingStatKey {
+
+    return orderStatusToStatKey(item.status);
+
+  }
+
+
+
+  private toStatKey(key: string): OrderTrackingStatKey {
+
+    const valid: OrderTrackingStatKey[] = [
+
+      'all', 'active', 'pending', 'assigned', 'confirmed', 'pickedup', 'completed', 'cancelled'
+
+    ];
+
+    return valid.includes(key as OrderTrackingStatKey) ? key as OrderTrackingStatKey : 'all';
+
+  }
+
+
+
+  private getAppliedStatusFilter(): OrderStatus | undefined {
+
+    if (isActiveOrdersStatKey(this.filterApplied.statusKey)) return undefined;
+
+    return resolveStatusFilter(this.filterApplied.statusKey);
+
+  }
+
+
+
+  private isActiveOrdersFilter(): boolean {
+
+    return isActiveOrdersStatKey(this.filterApplied.statusKey);
+
+  }
+
+
+
+  private getAppliedCustomerTypeFilter() {
+
+    return resolveCustomerTypeFilter(this.filterApplied.customerTypeKey);
+
+  }
+
+
+
+  loadDeliveryManSummary(): void {
+
+    if (!this.deliveryManId) return;
+
+    this.isLoadingSummary = true;
+
+    this.sub.sink = this.deliveryManClient.getDeliveryManSummary(this.deliveryManId)
+
+      .pipe(
+
+        catchError(() => of(null)),
+
+        finalize(() => { this.isLoadingSummary = false; })
+
+      )
+
+      .subscribe((summary) => {
+
+        this.deliveryManSummary = summary;
+
+        if (summary && !this.hasSearched) {
+
+          this.search();
+
+        }
+
+      });
+
+  }
+
+
 
   loadDeliveryManOrders(): void {
+
     if (!this.deliveryManId) return;
 
     this.isLoading = true;
+
     const skip = (this.currentPage - 1) * this.itemsPerPage;
 
-    this.deliveryManClient.getOrdersByDeliveryManId(
+    const term = this.filterApplied.searchTerm?.trim() || undefined;
+
+
+
+    this.sub.sink = this.deliveryManClient.getOrdersByDeliveryManId(
+
       this.deliveryManId,
+
       skip,
+
       this.itemsPerPage,
-      this.searchControl.value || undefined,
-      this.statusFilter
+
+      term ?? null,
+
+      this.getAppliedStatusFilter() ?? null,
+
+      this.isActiveOrdersFilter() ? true : null,
+
+      this.getAppliedCustomerTypeFilter() ?? null,
+
+      parseDateFilter(this.filterApplied.fromDate) ?? null,
+
+      parseDateFilter(this.filterApplied.toDate) ?? null
+
     ).pipe(
-      catchError(error => {
-        console.error('Error loading delivery man orders:', error);
-        const emptyResult = new PagedResultOfGetAllOrdersDto();
-        emptyResult.data = [];
-        emptyResult.totalCount = 0;
-        emptyResult.totalPages = 0;
-        return of(emptyResult);
+
+      catchError(() => {
+
+        const empty = new PagedResultOfGetAllOrdersDto();
+
+        empty.data = [];
+
+        empty.totalCount = 0;
+
+        empty.totalPages = 0;
+
+        return of(empty);
+
       }),
-      finalize(() => {
-        this.isLoading = false;
-      })
-    ).subscribe(response => {
-      if (response && response.data) {
-        this.orders = response.data;
-        this.totalCount = response.totalCount;
-        this.totalPages = response.totalPages;
-        
-        // Get delivery man name from first order if available
-        if (this.orders.length > 0) {
-          // We don't have delivery man name in orders, so we'll use a placeholder
-          this.deliveryManName = 'مندوب التوصيل';
-        }
-      } else {
-        this.orders = [];
-        this.totalCount = 0;
-        this.totalPages = 0;
-      }
+
+      finalize(() => { this.isLoading = false; })
+
+    ).subscribe((response) => {
+
+      this.orders = response?.data ?? [];
+
+      this.totalCount = response?.totalCount ?? 0;
+
+      this.totalPages = response?.totalPages ?? 0;
+
+    });
+
+  }
+
+
+
+  exportSummaryStats(): void {
+    if (!this.deliveryManId) return;
+
+    this.isExportingSummary = true;
+    this.sub.sink = this.deliveryManClient.exportDeliveryManSummary(this.deliveryManId).pipe(
+      map((file) => mapFileResponse(file, `CaptainShipmentStats_${this.deliveryManId}.xlsx`)),
+      catchError(() => {
+        this.toasterService.error('خطأ', 'تعذر تصدير الإحصائيات');
+        return of(null);
+      }),
+      finalize(() => { this.isExportingSummary = false; })
+    ).subscribe((result) => {
+      if (!result) return;
+      triggerFileDownload(result.blob, result.fileName);
+      this.toasterService.success('تم', 'تم تصدير إحصائيات الشحنات بنجاح');
     });
   }
 
-  clearSearch(): void {
-    this.searchControl.setValue('', { emitEvent: false });
-    this.currentPage = 1;
-    this.loadDeliveryManOrders();
+  exportOrders(): void {
+    if (!this.deliveryManId) return;
+    if (!this.hasSearched) this.search();
+
+    this.isExporting = true;
+    const term = this.filterApplied.searchTerm?.trim() || undefined;
+
+
+
+    this.sub.sink = this.deliveryManClient.exportOrdersByDeliveryManId(
+
+      this.deliveryManId,
+
+      term ?? null,
+
+      this.getAppliedStatusFilter() ?? null,
+
+      this.isActiveOrdersFilter() ? true : null,
+
+      this.getAppliedCustomerTypeFilter() ?? null,
+
+      parseDateFilter(this.filterApplied.fromDate) ?? null,
+
+      parseDateFilter(this.filterApplied.toDate) ?? null
+
+    ).pipe(
+      map((file) => mapFileResponse(file, `CaptainOrders_${this.deliveryManId}.xlsx`)),
+
+      catchError(() => {
+
+        this.toasterService.error('خطأ', 'تعذر تصدير البيانات');
+
+        return of(null);
+
+      }),
+
+      finalize(() => { this.isExporting = false; })
+
+    ).subscribe((result) => {
+
+      if (!result) return;
+
+      triggerFileDownload(result.blob, result.fileName);
+
+      this.toasterService.success('تم', 'تم تصدير الطلبات بنجاح');
+
+    });
+
   }
 
-  setActiveProgressTab(tab: string): void {
-    this.activeProgressTab = tab;
-    this.currentPage = 1;
 
-    switch (tab) {
-      case 'all':
-        this.statusFilter = undefined;
-        break;
-      case 'pending':
-        this.statusFilter = OrderStatus.Pending;
-        break;
-      case 'assigned':
-        this.statusFilter = OrderStatus.Assigned;
-        break;
-      case 'completed':
-        this.statusFilter = OrderStatus.Completed;
-        break;
-      case 'cancelled':
-        this.statusFilter = OrderStatus.Cancelled;
-        break;
-      default:
-        this.statusFilter = undefined;
-    }
-
-    this.loadDeliveryManOrders();
-  }
 
   changePage(page: number): void {
+
     if (page >= 1 && page <= this.totalPages) {
+
       this.currentPage = page;
+
       this.loadDeliveryManOrders();
+
     }
+
   }
+
+
 
   viewOrderDetails(orderId: number): void {
+
     this.router.navigate(['/admin/requests/details', orderId]);
+
   }
 
-  getStatusText(status: OrderStatus): string {
-    switch (status) {
-      case OrderStatus.Pending:
-        return 'معلق';
-      case OrderStatus.Assigned:
-        return 'مخصص';
-      case OrderStatus.Completed:
-        return 'مكتمل';
-      case OrderStatus.Cancelled:
-        return 'ملغي';
-      default:
-        return 'غير محدد';
-    }
-  }
+
 
   getStatusClass(status: OrderStatus): string {
-    switch (status) {
-      case OrderStatus.Pending:
-        return 'bg-blue-100 text-blue-800';
-      case OrderStatus.Assigned:
-        return 'bg-purple-100 text-purple-800';
-      case OrderStatus.Completed:
-        return 'bg-green-100 text-green-800';
-      case OrderStatus.Cancelled:
-        return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
+    return getOrderStatusBadgeClass(status);
+  }
+
+  getOrderStatusLabel(order: GetAllOrdersDto): string {
+    if (order.status === OrderStatus.PickedUpFromDeliveryMan) {
+      return 'تم تسليمها للعميل';
     }
+    return order.statusName;
   }
 
-  getOriginWayPoint(wayPoints: any[]): any {
-    return wayPoints?.find(wp => wp.isOrigin);
-  }
 
-  getDestinationWayPoint(wayPoints: any[]): any {
-    return wayPoints?.find(wp => wp.isDestination);
-  }
-
-  get displayStartCount(): number {
-    if (this.totalCount === 0) return 0;
-    return (this.currentPage - 1) * this.itemsPerPage + 1;
-  }
-
-  get displayEndCount(): number {
-    const end = this.currentPage * this.itemsPerPage;
-    return end > this.totalCount ? this.totalCount : end;
-  }
 
   get visiblePages(): (number | string)[] {
-    const pages: (number | string)[] = [];
-    const maxVisible = 5;
-    const total = this.totalPages;
-    const current = this.currentPage;
-    
-    if (total <= maxVisible) {
-      for (let i = 1; i <= total; i++) {
-        pages.push(i);
-      }
-    } else {
-      if (current <= 3) {
-        for (let i = 1; i <= 4; i++) {
-          pages.push(i);
-        }
-        pages.push('ellipsis');
-        pages.push(total);
-      } else if (current >= total - 2) {
-        pages.push(1);
-        pages.push('ellipsis');
-        for (let i = total - 3; i <= total; i++) {
-          pages.push(i);
-        }
-      } else {
-        pages.push(1);
-        pages.push('ellipsis');
-        for (let i = current - 1; i <= current + 1; i++) {
-          pages.push(i);
-        }
-        pages.push('ellipsis');
-        pages.push(total);
-      }
-    }
-    
-    return pages;
+
+    return buildVisiblePages(this.currentPage, this.totalPages);
+
   }
+
+
+
+  get displayStartCount(): number {
+
+    return this.totalCount === 0 ? 0 : (this.currentPage - 1) * this.itemsPerPage + 1;
+
+  }
+
+
+
+  get displayEndCount(): number {
+
+    return Math.min(this.currentPage * this.itemsPerPage, this.totalCount);
+
+  }
+
+
+
+  getOriginAddress(order: GetAllOrdersDto): string {
+
+    return order.wayPoints?.find((w) => w.isOrigin)?.address || '—';
+
+  }
+
+
+
+  getDestinationAddress(order: GetAllOrdersDto): string {
+
+    return order.wayPoints?.find((w) => w.isDestination)?.address || '—';
+
+  }
+
+
 
   isPageNumber(page: number | string): boolean {
+
     return typeof page === 'number';
+
   }
 
+
+
   isPageEllipsis(page: number | string): boolean {
+
     return page === 'ellipsis';
+
   }
+
 }
+
+

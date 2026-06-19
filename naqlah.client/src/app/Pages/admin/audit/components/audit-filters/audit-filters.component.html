@@ -20,39 +20,12 @@
       <input id="toDate" type="date" [(ngModel)]="model.toDate"
         class="block w-full rounded-lg border border-neutral-300 bg-white px-3 py-2.5 text-sm text-neutral-900 placeholder-neutral-400 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors"/>
     </div>
-    <div class="audit-entity-type-dropdown relative">
-      <label for="entityTypeInput" class="block text-sm font-medium text-neutral-600 mb-1.5">{{ 'ADMIN.AUDIT.ENTITY_TYPE' | translate }}</label>
-      <div (click)="openEntityTypeDropdown()" id="entityTypeInput" role="combobox" [attr.aria-expanded]="entityTypeDropdownOpen"
-        class="flex cursor-pointer items-center justify-between rounded-lg border border-neutral-300 bg-white px-3 py-2.5 text-sm text-neutral-900 hover:border-neutral-400 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 min-h-[42px] transition-colors">
-        <span class="truncate flex-1 text-right" [class.text-neutral-400]="!entityTypeDisplayText">
-          {{ entityTypeDisplayText || ('ADMIN.AUDIT.ALL_ENTITY_TYPES' | translate) }}
-        </span>
-        <svg class="w-4 h-4 shrink-0 text-neutral-400 mr-1 transition-transform" [class.rotate-180]="entityTypeDropdownOpen" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-        </svg>
-      </div>
-      <div *ngIf="entityTypeDropdownOpen" class="absolute z-10 mt-1 left-0 right-0 rounded-lg border border-neutral-200 bg-white shadow-lg max-h-60 overflow-hidden flex flex-col">
-        <div class="p-2 border-b border-neutral-100 bg-neutral-50 sticky top-0">
-          <input type="text" [(ngModel)]="entityTypeSearch" (click)="$event.stopPropagation()"
-            class="block w-full rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-sm text-neutral-900 placeholder-neutral-400 focus:border-primary-500 focus:ring-1 focus:ring-primary-500/20"
-            [placeholder]="'ADMIN.AUDIT.SEARCH_ENTITY_TYPE' | translate" />
-        </div>
-        <div class="overflow-y-auto flex-1 min-h-0 py-1">
-          <button type="button" (click)="clearEntityType(); $event.stopPropagation()"
-            class="block w-full text-right px-3 py-2 text-sm text-neutral-600 hover:bg-neutral-50 transition-colors">
-            {{ 'ADMIN.AUDIT.ALL_ENTITY_TYPES' | translate }}
-          </button>
-          <button *ngFor="let type of filteredEntityTypes" type="button" (click)="selectEntityType(type); $event.stopPropagation()"
-            class="block w-full text-right px-3 py-2 text-sm text-neutral-900 hover:bg-primary-50 transition-colors"
-            [class.bg-primary-50]="model.entityType === type" [class.font-semibold]="model.entityType === type">
-            {{ type }}
-          </button>
-          <p *ngIf="filteredEntityTypes.length === 0" class="px-3 py-2 text-sm text-neutral-500">
-            {{ 'ADMIN.AUDIT.NO_RECORDS' | translate }}
-          </p>
-        </div>
-      </div>
-    </div>
+    <app-formal-select
+      [label]="'ADMIN.AUDIT.ENTITY_TYPE' | translate"
+      [placeholder]="entityTypePlaceholder"
+      [options]="entityTypeOptions"
+      [(value)]="model.entityType"
+    ></app-formal-select>
   </div>
   <div class="flex flex-wrap gap-3">
     <button type="button" (click)="onSearch()" [disabled]="loading"

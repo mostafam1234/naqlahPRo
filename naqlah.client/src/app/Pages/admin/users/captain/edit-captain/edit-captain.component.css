@@ -1,0 +1,9 @@
+  .captain-document-upload-grid > div {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .captain-document-upload-grid .captain-doc-preview {
+    aspect-ratio: 16 / 9;
+    width: 100%;
+  }

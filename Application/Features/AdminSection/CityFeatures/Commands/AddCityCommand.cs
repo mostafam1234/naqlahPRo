@@ -29,7 +29,7 @@ namespace Application.Features.AdminSection.CityFeatures.Commands
                 var regionExists = await _context.Regions.AnyAsync(x => x.Id == command.RegionId, cancellationToken);
                 if (!regionExists)
                 {
-                    return Result.Failure<int>("Region Not Found");
+                    return Result.Failure<int>("RegionNotFound");
                 }
 
                 var city = City.Instance(command.ArabicName, command.EnglishName, command.RegionId);

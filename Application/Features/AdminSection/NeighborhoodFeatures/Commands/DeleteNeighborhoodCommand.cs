@@ -25,7 +25,7 @@ namespace Application.Features.AdminSection.NeighborhoodFeatures.Commands
                 var neighborhood = await _context.Neighborhoods.AsTracking().FirstOrDefaultAsync(x => x.Id == command.Id);
                 if (neighborhood == null)
                 {
-                    return Result.Failure<int>("Neighborhood Not Found");
+                    return Result.Failure<int>("NeighborhoodNotFound");
                 }
                 await _context.Neighborhoods.Where(x => x.Id == command.Id).ExecuteDeleteAsync();
                 var result = await _context.SaveChangesAsyncWithResult();

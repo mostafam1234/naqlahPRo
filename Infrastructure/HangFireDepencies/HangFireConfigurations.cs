@@ -24,6 +24,7 @@ namespace Infrastructure.HangFireDepencies
 
             services.AddScoped<HangfireBridge>();
             services.AddScoped<IHangfireJobWriter, HangfireJobWriter>();
+            services.AddScoped<Jobs.CaptainIncompleteProfileReminderJob>();
 
             return services;
         }

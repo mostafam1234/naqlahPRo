@@ -37,6 +37,10 @@ namespace Domain.Constants
         public const string CanViewSystemUsers = "CanViewSystemUsers";
         public const string SystemUserActions = "SystemUserActions";
 
+        // Customers (admin)
+        public const string CanViewCustomers = "CanViewCustomers";
+        public const string CustomerAdminActions = "CustomerAdminActions";
+
         // New captain applications
         public const string CanViewNewCaptainApplications = "CanViewNewCaptainApplications";
         public const string NewCaptainActions = "NewCaptainActions";
@@ -105,6 +109,8 @@ namespace Domain.Constants
             new PermissionDefinition(CaptainActions, "Captain actions", "Users"),
             new PermissionDefinition(CanViewSystemUsers, "View system users", "Users"),
             new PermissionDefinition(SystemUserActions, "System user actions", "Users"),
+            new PermissionDefinition(CanViewCustomers, "View customers", "Users"),
+            new PermissionDefinition(CustomerAdminActions, "Customer admin actions", "Users"),
             new PermissionDefinition(CanViewNewCaptainApplications, "View new captain applications", "Users"),
             new PermissionDefinition(NewCaptainActions, "New captain actions", "Users"),
             new PermissionDefinition(CanViewVehicles, "View vehicles", "Vehicles"),

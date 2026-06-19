@@ -1,13 +1,11 @@
 using Application.Features.DeliveryManSection.CurrentDeliveryMen.Commands;
+using Application.Shared.Services;
 using CSharpFunctionalExtensions;
-using Domain.Enums;
 using Domain.InterFaces;
 using Domain.Models;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,7 +19,10 @@ namespace Application.Features.DeliveryManSection.CurrentDeliveryMen.Commands
         private readonly UserManager<User> _userManager;
         private const string DeliveryFolderPrefix = "DeliveryMan";
 
-        public UpdateDeliveryManCommandHandler(INaqlahContext context, IMediaUploader mediaUploader, UserManager<User> userManager)
+        public UpdateDeliveryManCommandHandler(
+            INaqlahContext context,
+            IMediaUploader mediaUploader,
+            UserManager<User> userManager)
         {
             _context = context;
             this.mediaUploader = mediaUploader;
@@ -30,19 +31,24 @@ namespace Application.Features.DeliveryManSection.CurrentDeliveryMen.Commands
 
         public async Task<Result<int>> Handle(UpdateDeliveryManCommand request, CancellationToken cancellationToken)
         {
-            // Load existing delivery man with related data
             var deliveryMan = await _context.DeliveryMen
                 .Include(x => x.User)
-                .Include(x => x.Vehicle)
+                .Include(x => x.Vehicle!)
+                    .ThenInclude(v => v.Resident)
+                .Include(x => x.Vehicle!)
+                    .ThenInclude(v => v.Company)
+                .Include(x => x.Vehicle!)
+                    .ThenInclude(v => v.Renter)
                 .AsTracking()
                 .FirstOrDefaultAsync(x => x.Id == request.DeliveryManId, cancellationToken);
 
             if (deliveryMan == null)
-            {
-                return Result.Failure<int>("Delivery man not found");
-            }
+                return Result.Failure<int>("DeliveryManNotFound");
 
-            // Update user email if provided and different
+            var requiredValidation = DeliveryManRequiredFieldsValidator.ValidateForAdminUpdate(request.DeliveryMan, deliveryMan);
+            if (requiredValidation.IsFailure)
+                return Result.Failure<int>(requiredValidation.Error);
+
             if (!string.IsNullOrWhiteSpace(request.DeliveryMan.Email) && deliveryMan.User != null)
             {
                 var user = deliveryMan.User;
@@ -54,135 +60,91 @@ namespace Application.Features.DeliveryManSection.CurrentDeliveryMen.Commands
                     user.NormalizedUserName = request.DeliveryMan.Email.ToUpperInvariant();
                 }
 
-                // Update password if provided
                 if (!string.IsNullOrWhiteSpace(request.DeliveryMan.Password))
                 {
                     var token = await _userManager.GeneratePasswordResetTokenAsync(user);
                     var passwordResult = await _userManager.ResetPasswordAsync(user, token, request.DeliveryMan.Password);
                     if (!passwordResult.Succeeded)
-                    {
-                        return Result.Failure<int>($"Failed to update password: {string.Join(", ", passwordResult.Errors.Select(e => e.Description))}");
-                    }
+                        return Result.Failure<int>("FailedToUpdatePassword");
                 }
             }
 
-            // Parse dates
-            DateTime identityExpirationDate;
-            DateTime licenceExpirationDate;
-            DateTime vehicleLicenseExpirationDate = DateTime.MinValue;
-            DateTime vehicleInsuranceExpirationDate = DateTime.MinValue;
+            if (!DeliveryManCommandHelper.TryParseOptionalDate(request.DeliveryMan.IdentityExpirationDate, out var identityExpirationDate))
+                return Result.Failure<int>("InvalidIdentityExpirationDateFormat");
 
-            if (!DateTime.TryParseExact(request.DeliveryMan.IdentityExpirationDate, "yyyy-MM-dd", new CultureInfo("en-US"), DateTimeStyles.None, out identityExpirationDate))
-            {
-                return Result.Failure<int>("Invalid Identity Expiration Date format");
-            }
+            if (!DeliveryManCommandHelper.TryParseOptionalDate(request.DeliveryMan.DrivingLicenseExpirationDate, out var licenceExpirationDate))
+                return Result.Failure<int>("InvalidDrivingLicenseExpirationDateFormat");
 
-            if (!DateTime.TryParseExact(request.DeliveryMan.DrivingLicenseExpirationDate, "yyyy-MM-dd", new CultureInfo("en-US"), DateTimeStyles.None, out licenceExpirationDate))
-            {
-                return Result.Failure<int>("Invalid Driving License Expiration Date format");
-            }
+            if (!DeliveryManCommandHelper.TryParseOptionalDate(request.DeliveryMan.BirthDate, out var birthDate))
+                return Result.Failure<int>("InvalidBirthDateFormat");
 
-            if (!string.IsNullOrWhiteSpace(request.DeliveryMan.VehicleLicenseExpirationDate))
-            {
-                if (!DateTime.TryParseExact(request.DeliveryMan.VehicleLicenseExpirationDate, "yyyy-MM-dd", new CultureInfo("en-US"), DateTimeStyles.None, out vehicleLicenseExpirationDate))
-                {
-                    return Result.Failure<int>("Invalid Vehicle License Expiration Date format");
-                }
-            }
+            if (!DeliveryManCommandHelper.TryParseOptionalDate(request.DeliveryMan.VehicleLicenseExpirationDate, out var vehicleLicenseExpirationDate))
+                return Result.Failure<int>("InvalidVehicleLicenseExpirationDateFormat");
 
-            if (!string.IsNullOrWhiteSpace(request.DeliveryMan.VehicleInsuranceExpirationDate))
-            {
-                if (!DateTime.TryParseExact(request.DeliveryMan.VehicleInsuranceExpirationDate, "yyyy-MM-dd", new CultureInfo("en-US"), DateTimeStyles.None, out vehicleInsuranceExpirationDate))
-                {
-                    return Result.Failure<int>("Invalid Vehicle Insurance Expiration Date format");
-                }
-            }
+            if (!DeliveryManCommandHelper.TryParseOptionalDate(request.DeliveryMan.VehicleInsuranceExpirationDate, out var vehicleInsuranceExpirationDate))
+                return Result.Failure<int>("InvalidVehicleInsuranceExpirationDateFormat");
 
-            // Create delivery folder
-            var deliveryFolder = string.Format("{0}_{1}", DeliveryFolderPrefix, deliveryMan.Id);
+            var deliveryFolder = $"{DeliveryFolderPrefix}_{deliveryMan.Id}";
 
-            // Helper to check if string is base64 (new image) or URL (existing image)
-            bool IsBase64Image(string value)
+            bool IsBase64Image(string? value)
             {
                 if (string.IsNullOrWhiteSpace(value)) return false;
                 return value.StartsWith("data:image/") || (value.Length > 100 && !value.StartsWith("http"));
             }
 
-            // Handle image uploads - only upload if it's a new base64 image
-            var frontIdenitytImagePath = deliveryMan.FrontIdenitytImagePath ?? "";
-            var backIdenitytImagePath = deliveryMan.BackIdenitytImagePath ?? "";
-            var personalImagePath = deliveryMan.PersonalImagePath ?? "";
-            var frontLicenseImagePath = deliveryMan.FrontDrivingLicenseImagePath ?? "";
-            var backLicenseImagePath = deliveryMan.BackDrivingLicenseImagePath ?? "";
-
-            if (!string.IsNullOrEmpty(request.DeliveryMan.FrontIdentityImagePath) && IsBase64Image(request.DeliveryMan.FrontIdentityImagePath))
+            string ResolveImage(string? incoming, string current)
             {
-                frontIdenitytImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.FrontIdentityImagePath, deliveryFolder);
-            }
-            else if (!string.IsNullOrEmpty(request.DeliveryMan.FrontIdentityImagePath))
-            {
-                // Keep existing path if URL provided
-                frontIdenitytImagePath = request.DeliveryMan.FrontIdentityImagePath.Contains("/ImageBank/") 
-                    ? request.DeliveryMan.FrontIdentityImagePath.Split('/').Last() 
-                    : deliveryMan.FrontIdenitytImagePath ?? "";
+                if (string.IsNullOrEmpty(incoming))
+                    return current;
+                if (IsBase64Image(incoming))
+                    return incoming;
+                if (incoming.Contains("/ImageBank/"))
+                    return incoming.Split('/').Last();
+                return current;
             }
 
-            if (!string.IsNullOrEmpty(request.DeliveryMan.BackIdentityImagePath) && IsBase64Image(request.DeliveryMan.BackIdentityImagePath))
+            async Task<string?> UploadIfBase64Async(string? incoming, string? current)
             {
-                backIdenitytImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.BackIdentityImagePath, deliveryFolder);
-            }
-            else if (!string.IsNullOrEmpty(request.DeliveryMan.BackIdentityImagePath))
-            {
-                backIdenitytImagePath = request.DeliveryMan.BackIdentityImagePath.Contains("/ImageBank/") 
-                    ? request.DeliveryMan.BackIdentityImagePath.Split('/').Last() 
-                    : deliveryMan.BackIdenitytImagePath ?? "";
+                if (string.IsNullOrEmpty(incoming))
+                    return current;
+                if (IsBase64Image(incoming))
+                    return await mediaUploader.UploadFromBase64(incoming, deliveryFolder);
+                return ResolveImage(incoming, current ?? string.Empty);
             }
 
-            if (!string.IsNullOrEmpty(request.DeliveryMan.PersonalImagePath) && IsBase64Image(request.DeliveryMan.PersonalImagePath))
+            async Task<string?> UploadOrClearDeprecatedAsync(string? incoming)
             {
-                personalImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.PersonalImagePath, deliveryFolder);
-            }
-            else if (!string.IsNullOrEmpty(request.DeliveryMan.PersonalImagePath))
-            {
-                personalImagePath = request.DeliveryMan.PersonalImagePath.Contains("/ImageBank/") 
-                    ? request.DeliveryMan.PersonalImagePath.Split('/').Last() 
-                    : deliveryMan.PersonalImagePath ?? "";
-            }
-
-            if (!string.IsNullOrEmpty(request.DeliveryMan.FrontDrivingLicenseImagePath) && IsBase64Image(request.DeliveryMan.FrontDrivingLicenseImagePath))
-            {
-                frontLicenseImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.FrontDrivingLicenseImagePath, deliveryFolder);
-            }
-            else if (!string.IsNullOrEmpty(request.DeliveryMan.FrontDrivingLicenseImagePath))
-            {
-                frontLicenseImagePath = request.DeliveryMan.FrontDrivingLicenseImagePath.Contains("/ImageBank/") 
-                    ? request.DeliveryMan.FrontDrivingLicenseImagePath.Split('/').Last() 
-                    : deliveryMan.FrontDrivingLicenseImagePath ?? "";
+                if (string.IsNullOrEmpty(incoming))
+                    return null;
+                if (IsBase64Image(incoming))
+                    return await mediaUploader.UploadFromBase64(incoming, deliveryFolder);
+                if (incoming.Contains("/ImageBank/"))
+                    return incoming.Split('/').Last();
+                return null;
             }
 
-            if (!string.IsNullOrEmpty(request.DeliveryMan.BackDrivingLicenseImagePath) && IsBase64Image(request.DeliveryMan.BackDrivingLicenseImagePath))
-            {
-                backLicenseImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.BackDrivingLicenseImagePath, deliveryFolder);
-            }
-            else if (!string.IsNullOrEmpty(request.DeliveryMan.BackDrivingLicenseImagePath))
-            {
-                backLicenseImagePath = request.DeliveryMan.BackDrivingLicenseImagePath.Contains("/ImageBank/") 
-                    ? request.DeliveryMan.BackDrivingLicenseImagePath.Split('/').Last() 
-                    : deliveryMan.BackDrivingLicenseImagePath ?? "";
-            }
+            var frontIdenitytImagePath = await UploadIfBase64Async(request.DeliveryMan.FrontIdentityImagePath, deliveryMan.FrontIdenitytImagePath) ?? deliveryMan.FrontIdenitytImagePath;
+            var backIdenitytImagePath = await UploadOrClearDeprecatedAsync(request.DeliveryMan.BackIdentityImagePath);
+            var personalImagePath = await UploadIfBase64Async(request.DeliveryMan.PersonalImagePath, deliveryMan.PersonalImagePath);
+            var frontLicenseImagePath = await UploadIfBase64Async(request.DeliveryMan.FrontDrivingLicenseImagePath, deliveryMan.FrontDrivingLicenseImagePath) ?? deliveryMan.FrontDrivingLicenseImagePath;
+            var backLicenseImagePath = await UploadOrClearDeprecatedAsync(request.DeliveryMan.BackDrivingLicenseImagePath);
 
-            // Update delivery man personal information
+            var resolvedBirthDate = birthDate ?? deliveryMan.BirthDate;
+            var resolvedIdentityExpiry = identityExpirationDate ?? deliveryMan.IdentityExpirationDate;
+            var resolvedLicenseExpiry = licenceExpirationDate ?? deliveryMan.DrivingLicenseExpirationDate;
+
             var updateResult = deliveryMan.UpdatePersnalInfo(
-                request.DeliveryMan.FullName,
-                request.DeliveryMan.Address,
-                request.DeliveryMan.IdentityNumber,
+                string.IsNullOrWhiteSpace(request.DeliveryMan.FullName) ? deliveryMan.FullName : request.DeliveryMan.FullName,
+                request.DeliveryMan.Address ?? deliveryMan.Address,
+                string.IsNullOrWhiteSpace(request.DeliveryMan.IdentityNumber) ? deliveryMan.IdentityNumber : request.DeliveryMan.IdentityNumber,
                 frontIdenitytImagePath,
                 backIdenitytImagePath,
                 personalImagePath,
-                identityExpirationDate,
-                licenceExpirationDate,
-                request.DeliveryMan.DeliveryType,
-                request.DeliveryMan.DeliveryLicenseType,
+                resolvedIdentityExpiry,
+                resolvedLicenseExpiry,
+                resolvedBirthDate,
+                request.DeliveryMan.DeliveryType > 0 ? request.DeliveryMan.DeliveryType : (int)deliveryMan.DeliveryType,
+                request.DeliveryMan.DeliveryLicenseType > 0 ? request.DeliveryMan.DeliveryLicenseType : (int)deliveryMan.DeliveryLicenseType,
                 frontLicenseImagePath,
                 backLicenseImagePath
             );
@@ -190,135 +152,58 @@ namespace Application.Features.DeliveryManSection.CurrentDeliveryMen.Commands
             if (updateResult.IsFailure)
                 return Result.Failure<int>(updateResult.Error);
 
-
-            // Handle vehicle update or creation
             if (request.DeliveryMan.VehicleTypeId.HasValue &&
                 request.DeliveryMan.VehicleBrandId.HasValue &&
                 !string.IsNullOrWhiteSpace(request.DeliveryMan.VehiclePlateNumber))
             {
-                var ownerTypeId = request.DeliveryMan.VehicleOwnerTypeId ?? 0;
+                var ownerTypeId = request.DeliveryMan.VehicleOwnerTypeId ?? (int?)deliveryMan.Vehicle?.VehicleOwnerType ?? 0;
 
-                // Use provided dates or default
-                if (vehicleLicenseExpirationDate == DateTime.MinValue)
-                {
-                    vehicleLicenseExpirationDate = DateTime.Now.AddYears(1);
-                }
+                var vehicleFrontImagePath = deliveryMan.Vehicle?.FrontImagePath ?? string.Empty;
+                var vehicleSideImagePath = deliveryMan.Vehicle?.SideImagePath ?? string.Empty;
+                var vehicleFrontLicenseImagePath = deliveryMan.Vehicle?.FrontLicenseImagePath ?? string.Empty;
 
-                if (vehicleInsuranceExpirationDate == DateTime.MinValue)
-                {
-                    vehicleInsuranceExpirationDate = DateTime.Now.AddYears(1);
-                }
+                vehicleFrontImagePath = await UploadIfBase64Async(request.DeliveryMan.VehicleFrontImagePath, vehicleFrontImagePath) ?? vehicleFrontImagePath;
+                vehicleSideImagePath = await UploadIfBase64Async(request.DeliveryMan.VehicleSideImagePath, vehicleSideImagePath) ?? vehicleSideImagePath;
+                vehicleFrontLicenseImagePath = await UploadIfBase64Async(request.DeliveryMan.VehicleFrontLicenseImagePath, vehicleFrontLicenseImagePath) ?? vehicleFrontLicenseImagePath;
+                var vehicleBackLicenseImagePath = await UploadOrClearDeprecatedAsync(request.DeliveryMan.VehicleBackLicenseImagePath);
+                var vehicleFrontInsuranceImagePath = await UploadIfBase64Async(request.DeliveryMan.VehicleFrontInsuranceImagePath, deliveryMan.Vehicle?.FrontInsuranceImagePath);
+                var vehicleBackInsuranceImagePath = await UploadOrClearDeprecatedAsync(request.DeliveryMan.VehicleBackInsuranceImagePath);
 
-                // Handle vehicle images
-                var vehicleFrontImagePath = "";
-                var vehicleSideImagePath = "";
-                var vehicleFrontLicenseImagePath = "";
-                var vehicleBackLicenseImagePath = "";
-                var vehicleFrontInsuranceImagePath = "";
-                var vehicleBackInsuranceImagePath = "";
+                var resolvedVehicleLicenseExpiry = vehicleLicenseExpirationDate ?? deliveryMan.Vehicle?.LicenseExpirationDate;
+                var resolvedVehicleInsuranceExpiry = vehicleInsuranceExpirationDate ?? deliveryMan.Vehicle?.InSuranceExpirationDate;
 
                 if (deliveryMan.Vehicle != null)
-                {
-                    // Keep existing paths as defaults
-                    vehicleFrontImagePath = deliveryMan.Vehicle.FrontImagePath ?? "";
-                    vehicleSideImagePath = deliveryMan.Vehicle.SideImagePath ?? "";
-                    vehicleFrontLicenseImagePath = deliveryMan.Vehicle.FrontLicenseImagePath ?? "";
-                    vehicleBackLicenseImagePath = deliveryMan.Vehicle.BackLicenseImagePath ?? "";
-                    vehicleFrontInsuranceImagePath = deliveryMan.Vehicle.FrontInsuranceImagePath ?? "";
-                    vehicleBackInsuranceImagePath = deliveryMan.Vehicle.BackInsuranceImagePath ?? "";
-                }
-
-                // Upload new vehicle images if provided as base64
-                if (!string.IsNullOrEmpty(request.DeliveryMan.VehicleFrontImagePath) && IsBase64Image(request.DeliveryMan.VehicleFrontImagePath))
-                {
-                    vehicleFrontImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.VehicleFrontImagePath, deliveryFolder);
-                }
-
-                if (!string.IsNullOrEmpty(request.DeliveryMan.VehicleSideImagePath) && IsBase64Image(request.DeliveryMan.VehicleSideImagePath))
-                {
-                    vehicleSideImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.VehicleSideImagePath, deliveryFolder);
-                }
-
-                if (!string.IsNullOrEmpty(request.DeliveryMan.VehicleFrontLicenseImagePath) && IsBase64Image(request.DeliveryMan.VehicleFrontLicenseImagePath))
-                {
-                    vehicleFrontLicenseImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.VehicleFrontLicenseImagePath, deliveryFolder);
-                }
-
-                if (!string.IsNullOrEmpty(request.DeliveryMan.VehicleBackLicenseImagePath) && IsBase64Image(request.DeliveryMan.VehicleBackLicenseImagePath))
-                {
-                    vehicleBackLicenseImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.VehicleBackLicenseImagePath, deliveryFolder);
-                }
-
-                if (!string.IsNullOrEmpty(request.DeliveryMan.VehicleFrontInsuranceImagePath) && IsBase64Image(request.DeliveryMan.VehicleFrontInsuranceImagePath))
-                {
-                    vehicleFrontInsuranceImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.VehicleFrontInsuranceImagePath, deliveryFolder);
-                }
-
-                if (!string.IsNullOrEmpty(request.DeliveryMan.VehicleBackInsuranceImagePath) && IsBase64Image(request.DeliveryMan.VehicleBackInsuranceImagePath))
-                {
-                    vehicleBackInsuranceImagePath = await mediaUploader.UploadFromBase64(request.DeliveryMan.VehicleBackInsuranceImagePath, deliveryFolder);
-                }
-
-                if (deliveryMan.Vehicle != null)
-                {
-                    // Update existing vehicle - remove and add new one since there's no comprehensive update method
-                    var oldVehicleId = deliveryMan.Vehicle.Id;
                     _context.DeliveryVehicles.Remove(deliveryMan.Vehicle);
-                    
-                    // Add new vehicle with updated data
-                    var addVehicleResult = deliveryMan.AddVehicle(
-                        request.DeliveryMan.VehicleTypeId.Value,
-                        request.DeliveryMan.VehicleBrandId.Value,
-                        request.DeliveryMan.VehiclePlateNumber,
-                        vehicleFrontImagePath,
-                        vehicleSideImagePath,
-                        vehicleFrontLicenseImagePath,
-                        vehicleBackLicenseImagePath,
-                        vehicleLicenseExpirationDate,
-                        vehicleFrontInsuranceImagePath,
-                        vehicleBackInsuranceImagePath,
-                        vehicleInsuranceExpirationDate,
-                        ownerTypeId
-                    );
 
-                    if (addVehicleResult.IsFailure)
-                    {
-                        return Result.Failure<int>(addVehicleResult.Error);
-                    }
-                }
-                else
-                {
-                    // Add new vehicle
-                    var addVehicleResult = deliveryMan.AddVehicle(
-                        request.DeliveryMan.VehicleTypeId.Value,
-                        request.DeliveryMan.VehicleBrandId.Value,
-                        request.DeliveryMan.VehiclePlateNumber,
-                        vehicleFrontImagePath,
-                        vehicleSideImagePath,
-                        vehicleFrontLicenseImagePath,
-                        vehicleBackLicenseImagePath,
-                        vehicleLicenseExpirationDate,
-                        vehicleFrontInsuranceImagePath,
-                        vehicleBackInsuranceImagePath,
-                        vehicleInsuranceExpirationDate,
-                        ownerTypeId
-                    );
+                var addVehicleResult = deliveryMan.AddVehicle(
+                    request.DeliveryMan.VehicleTypeId.Value,
+                    request.DeliveryMan.VehicleBrandId.Value,
+                    request.DeliveryMan.VehiclePlateNumber,
+                    vehicleFrontImagePath,
+                    vehicleSideImagePath,
+                    vehicleFrontLicenseImagePath,
+                    vehicleBackLicenseImagePath,
+                    resolvedVehicleLicenseExpiry,
+                    vehicleFrontInsuranceImagePath,
+                    vehicleBackInsuranceImagePath,
+                    resolvedVehicleInsuranceExpiry,
+                    ownerTypeId
+                );
 
-                    if (addVehicleResult.IsFailure)
-                    {
-                        return Result.Failure<int>(addVehicleResult.Error);
-                    }
-                }
+                if (addVehicleResult.IsFailure)
+                    return Result.Failure<int>(addVehicleResult.Error);
+
+                if (!string.IsNullOrWhiteSpace(request.DeliveryMan.VehicleOwnerName))
+                    await DeliveryManCommandHelper.ApplyVehicleOwnerAsync(deliveryMan, request.DeliveryMan, mediaUploader, deliveryFolder);
             }
 
-            // Save all changes
-            var saveResult = await _context.SaveChangesAsyncWithResult();
+            DeliveryManCommandHelper.RefreshCompleteness(deliveryMan);
 
+            var saveResult = await _context.SaveChangesAsyncWithResult();
             if (saveResult.IsFailure)
-                return Result.Failure<int>($"Failed To Save Data: {saveResult.Error}");
+                return Result.Failure<int>("FailedToSaveData");
 
             return Result.Success(deliveryMan.Id);
         }
     }
 }
-

@@ -15,12 +15,8 @@ namespace Domain.Models
         {
             this.LicensePlateNumber = string.Empty;
             this.FrontImagePath = string.Empty;
-            this.FrontLicenseImagePath = string.Empty;
             this.SideImagePath = string.Empty;
             this.FrontLicenseImagePath = string.Empty;
-            this.BackLicenseImagePath = string.Empty;
-            this.BackInsuranceImagePath = string.Empty;
-            this.FrontInsuranceImagePath = string.Empty;
         }
         public int Id { get; private set; }
 
@@ -32,11 +28,11 @@ namespace Domain.Models
         public string FrontImagePath { get; private set; }
         public string SideImagePath { get; private set; }
         public string FrontLicenseImagePath { get; private set; }
-        public string BackLicenseImagePath { get; private set; }
-        public DateTime LicenseExpirationDate { get; private set; }
-        public string FrontInsuranceImagePath { get; private set; }
-        public string BackInsuranceImagePath { get; private set; }
-        public DateTime InSuranceExpirationDate { get; private set; }
+        public string? BackLicenseImagePath { get; private set; }
+        public DateTime? LicenseExpirationDate { get; private set; }
+        public string? FrontInsuranceImagePath { get; private set; }
+        public string? BackInsuranceImagePath { get; private set; }
+        public DateTime? InSuranceExpirationDate { get; private set; }
         public VehicleOwnerType VehicleOwnerType { get; private set; }
         public Resident? Resident { get; private set; }
         public Company? Company { get; private set; }
@@ -52,11 +48,11 @@ namespace Domain.Models
                                                       string frontImagePath,
                                                       string sideImagePath,
                                                       string frontLicenseImagePath,
-                                                      string backLicenseImagePath,
-                                                      DateTime licenseExpirationDate,
-                                                      string frontInsuranceImagePath,
-                                                      string backInsuranceImagePath,
-                                                      DateTime inSuranceExpirationDate,
+                                                      string? backLicenseImagePath,
+                                                      DateTime? licenseExpirationDate,
+                                                      string? frontInsuranceImagePath,
+                                                      string? backInsuranceImagePath,
+                                                      DateTime? inSuranceExpirationDate,
                                                       int vehicleOwnerTypeId
                                                       )
         {
@@ -66,11 +62,11 @@ namespace Domain.Models
                 VehicleTypeId = vehicleTypeId,
                 LicensePlateNumber = licensePlateNumber,
                 LicenseExpirationDate = licenseExpirationDate,
-                FrontImagePath = frontImagePath,
-                SideImagePath = sideImagePath,
+                FrontImagePath = frontImagePath ?? string.Empty,
+                SideImagePath = sideImagePath ?? string.Empty,
                 BackInsuranceImagePath = backInsuranceImagePath,
                 FrontInsuranceImagePath = frontInsuranceImagePath,
-                FrontLicenseImagePath = frontLicenseImagePath,
+                FrontLicenseImagePath = frontLicenseImagePath ?? string.Empty,
                 BackLicenseImagePath = backLicenseImagePath,
                 InSuranceExpirationDate = inSuranceExpirationDate,
                 VehicleOwnerType=(VehicleOwnerType)vehicleOwnerTypeId,
@@ -82,8 +78,8 @@ namespace Domain.Models
         public Result SetCarOwnerAsResident(string citizenName,
                                             string IdentityNumber,
                                             string frontIdentityImage,
-                                            string backIdentityImage,
-                                            string bankAccountNumber)
+                                            string? backIdentityImage,
+                                            string? bankAccountNumber)
         {
             var carOwner = Resident.Instance(citizenName,
                                            IdentityNumber,
@@ -116,9 +112,9 @@ namespace Domain.Models
         public Result SetCarOwnerAsRenter(string citizenName,
                                           string identityNumber,
                                           string frontIdentityImagePath,
-                                          string backIdentityImagePath,
-                                          string rentContractImagePath,
-                                          string bankAccountNumber)
+                                          string? backIdentityImagePath,
+                                          string? rentContractImagePath,
+                                          string? bankAccountNumber)
         {
             var carOwner = Renter.Instance(citizenName,
                                            identityNumber,

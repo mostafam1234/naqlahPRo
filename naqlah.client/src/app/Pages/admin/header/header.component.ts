@@ -8,6 +8,7 @@ import { AuthService } from 'src/app/shared/services/auth.service';
 import { AdminUserClient } from 'src/app/Core/services/NaqlahClient';
 import { PermissionService } from 'src/app/shared/services/permission.service';
 import { NotificationsComponent } from '../notifications/notifications.component';
+import { ThemeService } from 'src/app/shared/services/theme.service';
 import { trigger, state, style, transition, animate } from '@angular/animations';
 
 @Component({
@@ -71,6 +72,7 @@ export class HeaderComponent {
   dropdownOpen: boolean = false;           // User profile dropdown
   languageDropdownOpen: boolean = false;   // Language dropdown
   settingsDropdownOpen: boolean = false;   // Settings dropdown
+  isDarkMode: boolean = false;
 
   profileItems = [
     {
@@ -147,7 +149,8 @@ export class HeaderComponent {
     private elementRef: ElementRef,
     private authService: AuthService,
     private adminUserClient: AdminUserClient,
-    private permissionService: PermissionService
+    private permissionService: PermissionService,
+    private themeService: ThemeService
   ) {}
 
   hasPermission(name: string): boolean {
@@ -169,6 +172,9 @@ export class HeaderComponent {
     // Load user information
     this.loadUserInfo();
 
+    this.isDarkMode = this.themeService.isDarkMode;
+    this.themeService.isDark$.subscribe((dark) => (this.isDarkMode = dark));
+
     // Subscribe to router events
     this.router.events.subscribe(() => {
       this.activePath = this.location.path();
@@ -189,6 +195,10 @@ export class HeaderComponent {
     return this.userEmail.charAt(0).toUpperCase();
   }
 
+
+  toggleTheme(): void {
+    this.themeService.toggle();
+  }
 
   // ============== Language Methods ==============
   isActive(path: string): boolean {
@@ -298,8 +308,9 @@ export class HeaderComponent {
 
     // Handle toggle actions
     if (action === 'dark_mode') {
+      this.toggleTheme();
       const item = this.preferenceItems.find(i => i.action === 'dark_mode');
-      if (item) item.isActive = !item.isActive;
+      if (item) item.isActive = this.isDarkMode;
     } else if (action === 'notifications') {
       const item = this.preferenceItems.find(i => i.action === 'notifications');
       if (item) item.isActive = !item.isActive;

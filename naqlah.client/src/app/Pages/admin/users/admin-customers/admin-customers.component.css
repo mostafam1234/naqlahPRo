@@ -1,0 +1,59 @@
+.customers-table-scroll {
+  max-height: min(70vh, 640px);
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.customers-list-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: rgb(250 250 250);
+  box-shadow: inset 0 -1px 0 rgb(229 229 229);
+}
+
+.cust-th {
+  padding: 0.85rem 0.65rem;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgb(82 82 82);
+}
+
+.cust-td {
+  padding: 0.7rem 0.65rem;
+  vertical-align: middle;
+}
+
+.cust-tr:hover {
+  background-color: rgb(250 250 250);
+}
+
+.cust-tr--muted {
+  opacity: 0.82;
+}
+
+.cust-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.5rem;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.cust-chip--ok {
+  background-color: rgb(236 253 245);
+  color: rgb(6 95 70);
+}
+
+.cust-chip--off {
+  background-color: rgb(255 241 242);
+  color: rgb(159 18 57);
+}
+
+.cust-chip--neutral {
+  background-color: rgb(245 245 245);
+  color: rgb(64 64 64);
+}

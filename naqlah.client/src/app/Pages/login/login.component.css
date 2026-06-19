@@ -1,8 +1,8 @@
-/* ===== Login – Naqlah project theme (primary teal, neutral) ===== */
+/* ===== Login — colors from theme (src/theme/colors.json) ===== */
 
 .login-page {
   font-family: 'Cairo', 'Poppins', sans-serif;
-  background: linear-gradient(160deg, #f0fdfa 0%, #fafafa 45%, #f5f5f5 100%);
+  background: linear-gradient(160deg, var(--color-primary-50) 0%, var(--shell-body-bg) 45%, var(--color-brand-100) 100%);
 }
 
 /* Background layer */
@@ -16,7 +16,7 @@
 .login-bg-gradient {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(20, 184, 166, 0.06) 0%, transparent 50%, rgba(20, 184, 166, 0.04) 100%);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-primary-500) 6%, transparent) 0%, transparent 50%, color-mix(in srgb, var(--color-primary-500) 4%, transparent) 100%);
 }
 
 .login-bg-shape {
@@ -29,7 +29,7 @@
 .login-bg-shape-1 {
   width: 480px;
   height: 480px;
-  background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+  background: var(--gradient-brand);
   top: -15%;
   right: -10%;
 }
@@ -37,7 +37,7 @@
 .login-bg-shape-2 {
   width: 360px;
   height: 360px;
-  background: linear-gradient(135deg, #99f6e4 0%, #5eead4 100%);
+  background: linear-gradient(135deg, var(--color-primary-200) 0%, var(--color-accent-300) 100%);
   bottom: 10%;
   left: -5%;
 }
@@ -45,7 +45,7 @@
 .login-bg-shape-3 {
   width: 240px;
   height: 240px;
-  background: linear-gradient(135deg, #ccfbf1 0%, #99f6e4 100%);
+  background: linear-gradient(135deg, var(--color-accent-100) 0%, var(--color-primary-200) 100%);
   top: 50%;
   left: 30%;
 }
@@ -198,12 +198,12 @@
 }
 
 .login-input:focus {
-  border-color: #14b8a6;
-  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.2);
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary-500) 20%, transparent);
 }
 
 .login-input-wrap:focus-within .login-input-icon {
-  color: #14b8a6;
+  color: var(--color-primary-500);
 }
 
 .login-input-invalid {
@@ -238,7 +238,7 @@
 }
 
 .login-password-toggle:hover {
-  color: #14b8a6;
+  color: var(--color-primary-500);
   background: rgba(20, 184, 166, 0.08);
 }
 
@@ -254,13 +254,13 @@
 .login-link {
   font-size: 0.875rem;
   font-weight: 500;
-  color: #0d9488;
+  color: var(--color-primary-600);
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 .login-link:hover {
-  color: #0f766e;
+  color: var(--color-primary-700);
 }
 
 /* Submit button */
@@ -270,7 +270,7 @@
   font-size: 1rem;
   font-weight: 600;
   color: #ffffff;
-  background: linear-gradient(180deg, #14b8a6 0%, #0d9488 100%);
+  background: var(--gradient-brand);
   border: none;
   border-radius: 12px;
   cursor: pointer;
@@ -279,7 +279,7 @@
 }
 
 .login-submit:not(:disabled):hover {
-  background: linear-gradient(180deg, #0d9488 0%, #0f766e 100%);
+  background: var(--gradient-brand-hover);
   box-shadow: 0 4px 14px rgba(20, 184, 166, 0.4);
   transform: translateY(-1px);
 }

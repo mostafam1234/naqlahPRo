@@ -28,7 +28,7 @@ namespace Application.Features.VehicleSection.Commands
                 var VehicleBrand = await _context.VehicleBrands.AsTracking().FirstOrDefaultAsync(x => request.VehicleBrandId == x.Id );
                 if (VehicleBrand == null)
                 {
-                    return Result.Failure<int>("Vehicle Brand Not Found");
+                    return Result.Failure<int>("VehicleBrandNotFound");
                 }
                 VehicleBrand.Update(request.ArabicName, request.EnglishName);
                 var result = await _context.SaveChangesAsyncWithResult();

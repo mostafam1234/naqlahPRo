@@ -26,7 +26,7 @@ namespace Application.Features.AdminSection.AssistantWork.Commands
                 var assistantWork = await _context.AssistanWorks.AsTracking().FirstOrDefaultAsync(x => x.Id == command.Id);
                 if (assistantWork == null)
                 {
-                    return Result.Failure<int>("Assistant Work Not Found");
+                    return Result.Failure<int>("AssistantWorkNotFound");
                 }
                 assistantWork.Delete();
                 var result = await _context.SaveChangesAsyncWithResult();

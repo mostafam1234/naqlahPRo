@@ -1,30 +1,27 @@
-﻿using CSharpFunctionalExtensions;
+﻿using Application.Shared.Services;
+using CSharpFunctionalExtensions;
 using Domain.InterFaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.DeliveryManSection.Regestration.Commands
 {
     public sealed record SaveDeliveryManInfoCommand:IRequest<Result>
     {
         public string FullName { get; set; } = string.Empty;
-        public string Address { get; set; } = string.Empty;
+        public string? Address { get; set; }
         public string IdentityNumber { get; set; } = string.Empty;
+        public string? BirthDate { get; set; }
         public string FrontIdenitytImage { get; set; } = string.Empty;
-        public string BackIdenitytImage { get; set; } = string.Empty;
-        public string PersonalImage { get; set; } = string.Empty;
-        public string IdentityExpirationDate { get; set; } = string.Empty;
-        public string DrivingLicenseExpirationDate { get; set; } = string.Empty;
+        public string? BackIdenitytImage { get; set; }
+        public string? PersonalImage { get; set; }
+        public string? IdentityExpirationDate { get; set; }
+        public string? DrivingLicenseExpirationDate { get; set; }
         public int DeliveryTypeId { get; set; }
         public int DeliveryLicenseTypeId { get; set; }
         public string FrontDrivingLicenseImage { get; set; } = string.Empty;
-        public string BackDrivingLicenseImage { get; set; } = string.Empty;
+        public string? BackDrivingLicenseImage { get; set; }
 
         private class SaveDeliveryManInfoCommandHandler : IRequestHandler<SaveDeliveryManInfoCommand, Result>
         {
@@ -44,55 +41,82 @@ namespace Application.Features.DeliveryManSection.Regestration.Commands
             {
                 var userId = userSession.UserId;
                 var deliveryMan = await context.DeliveryMen
+                                             .Include(x => x.Vehicle!)
+                                                .ThenInclude(v => v.Resident)
+                                             .Include(x => x.Vehicle!)
+                                                .ThenInclude(v => v.Company)
+                                             .Include(x => x.Vehicle!)
+                                                .ThenInclude(v => v.Renter)
                                              .AsTracking()
                                              .Where(x => x.UserId == userId)
-                                             .FirstOrDefaultAsync();
+                                             .FirstOrDefaultAsync(cancellationToken);
 
                 if (deliveryMan == null)
-                {
                     return Result.Failure("Delivery Man Not Found");
+
+                DateTime? identityExpirationDate = null;
+                DateTime? licenceExpirationDate = null;
+                DateTime? birthDate = null;
+
+                if (!string.IsNullOrWhiteSpace(request.IdentityExpirationDate))
+                {
+                    if (!DateTime.TryParseExact(request.IdentityExpirationDate, "yyyy/MM/dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsed))
+                        return Result.Failure("Invalid identity expiration date");
+                    identityExpirationDate = parsed;
                 }
 
-                DateTime identityExpirationDate;
-                DateTime licenceExpirationDate;
-                DateTime.TryParseExact(request.IdentityExpirationDate, "yyyy/MM/dd", new CultureInfo("en-US"), DateTimeStyles.None, out identityExpirationDate);
-                DateTime.TryParseExact(request.DrivingLicenseExpirationDate, "yyyy/MM/dd", new CultureInfo("en-US"), DateTimeStyles.None, out licenceExpirationDate);
+                if (!string.IsNullOrWhiteSpace(request.DrivingLicenseExpirationDate))
+                {
+                    if (!DateTime.TryParseExact(request.DrivingLicenseExpirationDate, "yyyy/MM/dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsed))
+                        return Result.Failure("Invalid driving license expiration date");
+                    licenceExpirationDate = parsed;
+                }
 
-                var deliveryFolder = string.Join("{0}_{1}", DeliveryFolderPrefix, deliveryMan.Id);
+                if (!string.IsNullOrWhiteSpace(request.BirthDate))
+                {
+                    if (!DateTime.TryParseExact(request.BirthDate, "yyyy/MM/dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsed)
+                        && !DateTime.TryParseExact(request.BirthDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out parsed))
+                        return Result.Failure("Invalid birth date");
+                    birthDate = parsed;
+                }
 
-                var frontIdenitytImagePath = await mediaUploader.UploadFromBase64(request.FrontIdenitytImage,
-                                                                                deliveryFolder);
-                var backIdenitytImagePath = await mediaUploader.UploadFromBase64(request.BackIdenitytImage,
-                                                                                 deliveryFolder);
+                var deliveryFolder = $"{DeliveryFolderPrefix}_{deliveryMan.Id}";
 
-                var personalImage = await mediaUploader.UploadFromBase64(request.PersonalImage,
-                                                                        deliveryFolder);
-                 
-                var frontLicenseImage= await mediaUploader.UploadFromBase64(request.FrontDrivingLicenseImage,
-                                                                            deliveryFolder);
+                var frontIdenitytImagePath = await mediaUploader.UploadFromBase64(request.FrontIdenitytImage, deliveryFolder);
+                var frontLicenseImage = await mediaUploader.UploadFromBase64(request.FrontDrivingLicenseImage, deliveryFolder);
 
-                var backLicenseImage= await mediaUploader.UploadFromBase64(request.BackDrivingLicenseImage,
-                                                                                 deliveryFolder);
+                string? backIdenitytImagePath = null;
+                if (!string.IsNullOrWhiteSpace(request.BackIdenitytImage))
+                    backIdenitytImagePath = await mediaUploader.UploadFromBase64(request.BackIdenitytImage, deliveryFolder);
 
+                string? personalImage = null;
+                if (!string.IsNullOrWhiteSpace(request.PersonalImage))
+                    personalImage = await mediaUploader.UploadFromBase64(request.PersonalImage, deliveryFolder);
+
+                string? backLicenseImage = null;
+                if (!string.IsNullOrWhiteSpace(request.BackDrivingLicenseImage))
+                    backLicenseImage = await mediaUploader.UploadFromBase64(request.BackDrivingLicenseImage, deliveryFolder);
 
                 var updateResult = deliveryMan.UpdatePersnalInfo(request.FullName,
-                                                               request.Address,
-                                                               request.IdentityNumber,
-                                                               frontIdenitytImagePath,
-                                                               backIdenitytImagePath,
-                                                               personalImage,
-                                                               identityExpirationDate,
-                                                               licenceExpirationDate,
-                                                               request.DeliveryTypeId,
-                                                               request.DeliveryLicenseTypeId,
-                                                               frontLicenseImage,
-                                                               backLicenseImage);
+                                               request.Address,
+                                               request.IdentityNumber,
+                                               frontIdenitytImagePath,
+                                               backIdenitytImagePath,
+                                               personalImage,
+                                               identityExpirationDate,
+                                               licenceExpirationDate,
+                                               birthDate,
+                                               request.DeliveryTypeId,
+                                               request.DeliveryLicenseTypeId,
+                                               frontLicenseImage,
+                                               backLicenseImage);
 
-                var saveResult = await context.SaveChangesAsyncWithResult();
-                return saveResult;
+                if (updateResult.IsFailure)
+                    return Result.Failure(updateResult.Error);
 
+                DeliveryManCommandHelper.RefreshCompleteness(deliveryMan);
+                return await context.SaveChangesAsyncWithResult();
             }
         }
-
     }
 }

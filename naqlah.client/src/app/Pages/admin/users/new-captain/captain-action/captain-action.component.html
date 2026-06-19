@@ -1,983 +1,160 @@
-<div class="min-h-screen bg-neutral-50 py-6">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <!-- Header Section -->
-    <div class="mb-8">
-      <div class="flex items-center justify-between">
-        <div class="header-content" [class.rtl]="lang === 'ar'">
-          <button
-            (click)="goBack()"
-            class="inline-flex items-center px-3 py-2 border border-neutral-300 shadow-sm text-sm leading-4 font-medium rounded-lg text-neutral-700 bg-white hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
-          >
-            <svg
-              class="w-4 h-4"
-              [class.ml-2]="lang === 'ar'"
-              [class.mr-2]="lang === 'en'"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                [attr.d]="
-                  lang === 'ar'
-                    ? 'M10 19l-7-7m0 0l7-7m-7 7h18'
-                    : 'M14 5l7 7m0 0l-7 7m7-7H3'
-                "
-              ></path>
-            </svg>
-            {{ "ADMIN.PAGES.CAPTAIN_DETAILS.BACK" | translate }}
+<div class="min-h-screen theme-page">
+  <div class="page-wrap">
+    <header class="page-head">
+      <button type="button" (click)="goBack()" class="page-head__back">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        رجوع
+      </button>
+      <h1 class="page-head__title">مراجعة طلب كابتن</h1>
+    </header>
+
+    <div *ngIf="isLoading" class="state-loading">
+      <div class="state-loading__spinner"></div>
+    </div>
+
+    <ng-container *ngIf="!isLoading && deliveryManDetails">
+      <!-- Profile strip + actions -->
+      <section class="dock">
+        <div class="dock__profile">
+          <div class="dock__avatar-wrap">
+            <img *ngIf="avatarUrl; else noAvatar" [src]="avatarUrl" [alt]="displayName" class="dock__avatar" decoding="async" loading="eager" />
+            <ng-template #noAvatar>
+              <div class="dock__avatar dock__avatar--empty">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+              </div>
+            </ng-template>
+            <span class="dock__status" [class.dock__status--on]="deliveryManDetails.active"></span>
+          </div>
+
+          <div class="dock__info">
+            <p class="dock__id">#{{ deliveryManDetails.deliveryManId }}</p>
+            <h2 class="dock__name">{{ displayName }}</h2>
+            <p class="dock__meta">{{ deliveryTypeLabel }} · {{ deliveryManDetails.phoneNumber }} · {{ deliveryManDetails.identityNumber }}</p>
+            <div class="dock__badges">
+              <span class="tag" [ngClass]="deliveryManDetails.active ? 'tag--ok' : 'tag--off'">{{ deliveryManDetails.active ? 'نشط' : 'غير نشط' }}</span>
+              <span class="tag tag--muted">{{ deliveryManDetails.stateName || getStateLabel(deliveryManDetails.state) }}</span>
+              <span class="tag" [ngClass]="deliveryManDetails.hasIncompleteRegistration ? 'tag--warn' : 'tag--ok'">
+                {{ deliveryManDetails.hasIncompleteRegistration ? 'بيانات غير مكتملة' : 'بيانات مكتملة' }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="dock__actions">
+          <button type="button" class="act act--primary" [disabled]="actionInProgress.approve" (click)="approveDeliveryMan()">
+            {{ actionInProgress.approve ? 'جاري الموافقة...' : 'موافقة' }}
           </button>
-          <h1 class="text-3xl font-bold text-gray-900">
-            {{ "ADMIN.PAGES.CAPTAIN_DETAILS.TITLE" | translate }}
-          </h1>
+          <button type="button" class="act" [disabled]="actionInProgress.suspend" (click)="suspendDeliveryMan()">
+            {{ actionInProgress.suspend ? 'جاري التعليق...' : 'تعليق' }}
+          </button>
+          <button type="button" class="act act--danger" [disabled]="actionInProgress.reject" (click)="rejectDeliveryMan()">
+            {{ actionInProgress.reject ? 'جاري الرفض...' : 'رفض' }}
+          </button>
+          <button type="button" class="act" [disabled]="actionInProgress.block" (click)="blockDeliveryMan()">
+            {{ actionInProgress.block ? 'جاري الحظر...' : 'حظر' }}
+          </button>
         </div>
-      </div>
-    </div>
+      </section>
 
-    <!-- Loading State -->
-    <div *ngIf="isLoading" class="flex justify-center items-center py-12">
-      <div
-        class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"
-      ></div>
-    </div>
-
-    <!-- Main Content -->
-    <div *ngIf="deliveryManDetails && !isLoading" class="space-y-6">
-      <!-- Captain Header Card -->
-      <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-        <div class="bg-gradient-to-r from-primary-600 to-primary-700 px-6 py-8">
-          <div class="flex items-center justify-between">
-            <div class="profile-section" [class.rtl]="lang === 'ar'">
-              <div class="h-20 w-20 rounded-full bg-white p-2">
-                <img
-                  [src]="
-                    deliveryManDetails.personalImagePath
-                  "
-                  [alt]="deliveryManDetails.fullName"
-                  class="h-full w-full rounded-full object-cover"
-                />
-              </div>
-              <div class="text-white">
-                <h2 class="text-2xl font-bold">
-                  {{ deliveryManDetails.fullName }}
-                </h2>
-                <p class="text-primary-100">
-                  {{
-                    "ADMIN.PAGES.CAPTAIN_DETAILS.IDENTITY_NUMBER_LABEL"
-                      | translate
-                  }}
-                  {{ deliveryManDetails.identityNumber }}
-                </p>
-                <span
-                  class="inline-flex px-3 py-1 rounded-full text-xs font-medium mt-2"
-                  [ngClass]="getStateClass(deliveryManDetails.state)"
-                >
-                  {{ getStateLabel(deliveryManDetails.state) }}
-                </span>
-              </div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="action-buttons" [class.rtl]="lang === 'ar'">
-              <button
-                (click)="approveDeliveryMan()"
-                [disabled]="actionInProgress.approve || isLoading"
-                [class]="
-                  actionInProgress.approve
-                    ? 'bg-green-300 cursor-not-allowed text-white px-4 py-2 rounded-lg font-medium transition-colors'
-                    : 'bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-medium transition-colors transform hover:scale-105'
-                "
-              >
-                <span *ngIf="!actionInProgress.approve">
-                  {{
-                    "ADMIN.PAGES.CAPTAIN_DETAILS.ACTIONS.APPROVE" | translate
-                  }}
-                </span>
-                <span
-                  *ngIf="actionInProgress.approve"
-                  class="flex items-center"
-                >
-                  <svg
-                    class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      class="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      stroke-width="4"
-                    ></circle>
-                    <path
-                      class="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  جارِ الموافقة...
-                </span>
-              </button>
-
-              <button
-                (click)="suspendDeliveryMan()"
-                [disabled]="actionInProgress.suspend || isLoading"
-                [class]="
-                  actionInProgress.suspend
-                    ? 'bg-yellow-300 cursor-not-allowed text-white px-4 py-2 rounded-lg font-medium transition-colors'
-                    : 'bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg font-medium transition-colors transform hover:scale-105'
-                "
-              >
-                <span *ngIf="!actionInProgress.suspend">
-                  {{
-                    "ADMIN.PAGES.CAPTAIN_DETAILS.ACTIONS.SUSPEND" | translate
-                  }}
-                </span>
-                <span
-                  *ngIf="actionInProgress.suspend"
-                  class="flex items-center"
-                >
-                  <svg
-                    class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      class="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      stroke-width="4"
-                    ></circle>
-                    <path
-                      class="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  جارِ التعليق...
-                </span>
-              </button>
-
-              <button
-                (click)="rejectDeliveryMan()"
-                [disabled]="actionInProgress.reject || isLoading"
-                [class]="
-                  actionInProgress.reject
-                    ? 'bg-red-300 cursor-not-allowed text-white px-4 py-2 rounded-lg font-medium transition-colors'
-                    : 'bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium transition-colors transform hover:scale-105'
-                "
-              >
-                <span *ngIf="!actionInProgress.reject">
-                  {{ "ADMIN.PAGES.CAPTAIN_DETAILS.ACTIONS.REJECT" | translate }}
-                </span>
-                <span *ngIf="actionInProgress.reject" class="flex items-center">
-                  <svg
-                    class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      class="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      stroke-width="4"
-                    ></circle>
-                    <path
-                      class="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  جارِ الرفض...
-                </span>
-              </button>
-
-              <button
-                (click)="blockDeliveryMan()"
-                [disabled]="actionInProgress.block || isLoading"
-                [class]="
-                  actionInProgress.block
-                    ? 'bg-gray-300 cursor-not-allowed text-white px-4 py-2 rounded-lg font-medium transition-colors'
-                    : 'bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium transition-colors transform hover:scale-105'
-                "
-              >
-                <span *ngIf="!actionInProgress.block">
-                  {{ "ADMIN.PAGES.CAPTAIN_DETAILS.ACTIONS.BLOCK" | translate }}
-                </span>
-                <span *ngIf="actionInProgress.block" class="flex items-center">
-                  <svg
-                    class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      class="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      stroke-width="4"
-                    ></circle>
-                    <path
-                      class="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  جارِ الحظر...
-                </span>
-              </button>
+      <!-- Data — equal 2-column grid, row-based fields -->
+      <div class="data-grid">
+        <article class="data-card">
+          <h3 class="data-card__title">البيانات الشخصية والحساب</h3>
+          <div class="data-card__body">
+            <div *ngFor="let item of personalInfo; trackBy: trackInfoItem" class="data-row">
+              <span class="data-row__label">{{ item.label }}</span>
+              <span *ngIf="!item.badge" class="data-row__value">{{ item.value }}</span>
+              <span *ngIf="item.badge" class="tag tag--sm" [ngClass]="'tag--' + item.badge">{{ item.value }}</span>
             </div>
           </div>
-        </div>
+        </article>
+
+        <article class="data-card">
+          <h3 class="data-card__title">الهوية ورخصة القيادة</h3>
+          <div class="data-card__body">
+            <div *ngFor="let item of licenseInfo; trackBy: trackInfoItem" class="data-row">
+              <span class="data-row__label">{{ item.label }}</span>
+              <span *ngIf="!item.badge" class="data-row__value">{{ item.value }}</span>
+              <span *ngIf="item.badge" class="tag tag--sm" [ngClass]="'tag--' + item.badge">{{ item.value }}</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="data-card">
+          <h3 class="data-card__title">بيانات المركبة والمالك</h3>
+          <div class="data-card__body">
+            <div *ngFor="let item of vehicleInfo; trackBy: trackInfoItem" class="data-row">
+              <span class="data-row__label">{{ item.label }}</span>
+              <span class="data-row__value">{{ item.value }}</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="data-card">
+          <h3 class="data-card__title">ملخص الطلب</h3>
+          <div class="data-card__body">
+            <div *ngFor="let item of summaryInfo; trackBy: trackInfoItem" class="data-row">
+              <span class="data-row__label">{{ item.label }}</span>
+              <span *ngIf="!item.badge" class="data-row__value" [class.data-row__value--warn]="item.warn">{{ item.value }}</span>
+              <span *ngIf="item.badge" class="tag tag--sm" [ngClass]="'tag--' + item.badge">{{ item.value }}</span>
+            </div>
+          </div>
+        </article>
       </div>
 
-      <!-- Details Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Personal Information -->
-        <div class="lg:col-span-2 space-y-6">
-          <!-- Contact Information Card -->
-          <div class="bg-white shadow-sm rounded-xl border border-neutral-200 p-6">
-            <h3
-              class="text-lg font-semibold text-neutral-900 mb-4 flex items-center"
-            >
-              <svg
-                class="h-5 w-5 text-primary-500"
-                [class.ml-2]="lang === 'ar'"
-                [class.mr-2]="lang === 'en'"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                ></path>
-              </svg>
-              {{
-                "ADMIN.PAGES.CAPTAIN_DETAILS.SECTIONS.CONTACT_INFO" | translate
-              }}
-            </h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="space-y-3">
-                <div>
-                  <label class="block text-sm font-medium text-neutral-700 mb-1">{{
-                    "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.FULL_NAME" | translate
-                  }}</label>
-                  <p class="text-neutral-900 bg-neutral-50 p-3 rounded-lg">
-                    {{ deliveryManDetails.fullName }}
-                  </p>
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-neutral-700 mb-1">{{
-                    "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.PHONE" | translate
-                  }}</label>
-                  <p class="text-neutral-900 bg-neutral-50 p-3 rounded-lg">
-                    {{ deliveryManDetails.phoneNumber }}
-                  </p>
-                </div>
-              </div>
-              <div class="space-y-3">
-                <div>
-                  <label class="block text-sm font-medium text-neutral-700 mb-1">{{
-                    "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.ADDRESS" | translate
-                  }}</label>
-                  <p class="text-neutral-900 bg-neutral-50 p-3 rounded-lg">
-                    {{ deliveryManDetails.address }}
-                  </p>
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-neutral-700 mb-1">{{
-                    "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.DELIVERY_TYPE"
-                      | translate
-                  }}</label>
-                  <p class="text-neutral-900 bg-neutral-50 p-3 rounded-lg">
-                    {{ deliveryManDetails.deliveryType }}
-                  </p>
-                </div>
-              </div>
-            </div>
+      <!-- Documents -->
+      <section class="docs">
+        <div class="docs__head">
+          <div>
+            <h2 class="docs__title">المستندات والمرفقات</h2>
+            <p class="docs__sub">صور السائق والمركبة والمالك</p>
           </div>
+          <span class="docs__count">{{ documentItems.length }} مستند</span>
+        </div>
 
-          <!-- Identity Information Card -->
-          <div class="bg-white shadow-sm rounded-xl border border-neutral-200 p-6">
-            <h3
-              class="text-lg font-semibold text-neutral-900 mb-4 flex items-center"
-            >
-              <svg
-                class="h-5 w-5 text-blue-500"
-                [class.ml-2]="lang === 'ar'"
-                [class.mr-2]="lang === 'en'"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2"
-                ></path>
-              </svg>
-              {{
-                "ADMIN.PAGES.CAPTAIN_DETAILS.SECTIONS.IDENTITY_INFO" | translate
-              }}
-            </h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="space-y-3">
-                <div>
-                  <label class="block text-sm font-medium text-neutral-700 mb-1">{{
-                    "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.IDENTITY_NUMBER"
-                      | translate
-                  }}</label>
-                  <p class="text-neutral-900 bg-neutral-50 p-3 rounded-lg">
-                    {{ deliveryManDetails.identityNumber }}
-                  </p>
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-neutral-700 mb-1">{{
-                    "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.IDENTITY_EXPIRY"
-                      | translate
-                  }}</label>
-                  <div class="flex items-center gap-2">
-                    <p class="text-neutral-900 bg-neutral-50 p-3 rounded-lg flex-1">
-                      {{ formatDate(deliveryManDetails.identityExpirationDate) }}
-                    </p>
-                    <span class="inline-flex items-center px-2 py-1 rounded text-xs"
-                      [ngClass]="{
-                        'bg-green-100 text-green-700': isIdentityValid(),
-                        'bg-red-100 text-red-700': !isIdentityValid()
-                      }">
-                      {{ isIdentityValid() ? 'سارية' : 'منتهية' }}
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div class="space-y-3">
-                <div>
-                  <label class="block text-sm font-medium text-neutral-700 mb-1">{{
-                    "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.LICENSE_TYPE"
-                      | translate
-                  }}</label>
-                  <p class="text-neutral-900 bg-neutral-50 p-3 rounded-lg">
-                    {{ getDeliveryLicenseTypeLabel(deliveryManDetails.deliveryLicenseType) }}
-                  </p>
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-neutral-700 mb-1">{{
-                    "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.LICENSE_EXPIRY"
-                      | translate
-                  }}</label>
-                  <div class="flex items-center gap-2">
-                    <p class="text-neutral-900 bg-neutral-50 p-3 rounded-lg flex-1">
-                      {{
-                        formatDate(
-                          deliveryManDetails.drivingLicenseExpirationDate
-                        )
-                      }}
-                    </p>
-                    <span class="inline-flex items-center px-2 py-1 rounded text-xs"
-                      [ngClass]="{
-                        'bg-green-100 text-green-700': isLicenseValid(),
-                        'bg-red-100 text-red-700': !isLicenseValid()
-                      }">
-                      {{ isLicenseValid() ? 'سارية' : 'منتهية' }}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Vehicle Information Card (if available) -->
-          <div
-            *ngIf="deliveryManDetails.vehicleId"
-            class="bg-white shadow-md rounded-lg p-6"
+        <div class="docs__grid">
+          <button
+            *ngFor="let doc of documentItems; trackBy: trackDocument"
+            type="button"
+            class="doc"
+            [class.doc--missing]="!doc.url"
+            (click)="openPreview(doc.url, doc.label)"
           >
-            <h3
-              class="text-lg font-semibold text-gray-900 mb-4 flex items-center"
-            >
-              <svg
-                class="h-5 w-5 text-green-500"
-                [class.ml-2]="lang === 'ar'"
-                [class.mr-2]="lang === 'en'"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 9l-7 7-7-7"
-                ></path>
-              </svg>
-              {{
-                "ADMIN.PAGES.CAPTAIN_DETAILS.SECTIONS.VEHICLE_INFO" | translate
-              }}
-            </h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="space-y-3">
-                <div>
-                  <label class="block text-sm font-medium text-neutral-700 mb-1">{{
-                    "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.PLATE_NUMBER"
-                      | translate
-                  }}</label>
-                  <p class="text-neutral-900 bg-neutral-50 p-3 rounded-lg">
-                    {{
-                      deliveryManDetails.vehiclePlateNumber ||
-                        ("ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.NOT_SPECIFIED"
-                          | translate)
-                    }}
-                  </p>
+            <div class="doc__img">
+              <img *ngIf="doc.url; else noDoc" [src]="doc.url" [alt]="doc.label" loading="lazy" decoding="async" />
+              <ng-template #noDoc>
+                <div class="doc__empty">
+                  <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                  </svg>
+                  <span>غير مرفوعة</span>
                 </div>
-                <div>
-                  <label class="block text-sm font-medium text-neutral-700 mb-1">{{
-                    "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.VEHICLE_TYPE"
-                      | translate
-                  }}</label>
-                  <p class="text-neutral-900 bg-neutral-50 p-3 rounded-lg">
-                    {{
-                      deliveryManDetails.vehicleType ||
-                        ("ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.NOT_SPECIFIED"
-                          | translate)
-                    }}
-                  </p>
-                </div>
-              </div>
-              <div class="space-y-3">
-                <div>
-                  <label class="block text-sm font-medium text-neutral-700 mb-1">{{
-                    "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.VEHICLE_MODEL"
-                      | translate
-                  }}</label>
-                  <p class="text-neutral-900 bg-neutral-50 p-3 rounded-lg">
-                    {{
-                      deliveryManDetails.vehicleModel ||
-                        ("ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.NOT_SPECIFIED"
-                          | translate)
-                    }}
-                  </p>
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-neutral-700 mb-1">{{
-                    "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.VEHICLE_MODEL"
-                      | translate
-                  }}</label>
-                  <p class="text-neutral-900 bg-neutral-50 p-3 rounded-lg">
-                    {{
-                      deliveryManDetails.vehicleModel ||
-                        ("ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.NOT_SPECIFIED"
-                          | translate)
-                    }}
-                  </p>
-                </div>
-                <div *ngIf="deliveryManDetails.vehicleColor">
-                  <label class="block text-sm font-medium text-neutral-700 mb-1">{{
-                    "ADMIN.PAGES.CAPTAIN_DETAILS.FIELDS.VEHICLE_COLOR"
-                      | translate
-                  }}</label>
-                  <p class="text-neutral-900 bg-neutral-50 p-3 rounded-lg">
-                    {{ deliveryManDetails.vehicleColor }}
-                  </p>
-                </div>
-              </div>
+              </ng-template>
             </div>
-          </div>
-        </div>
-
-        <!-- Documents Section -->
-        <div class="space-y-6">
-          <div class="bg-white shadow-md rounded-lg p-6">
-            <h3
-              class="text-lg font-semibold text-gray-900 mb-4 flex items-center"
-            >
-              <svg
-                class="h-5 w-5 text-purple-500"
-                [class.ml-2]="lang === 'ar'"
-                [class.mr-2]="lang === 'en'"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                ></path>
-              </svg>
-              {{ "ADMIN.PAGES.CAPTAIN_DETAILS.SECTIONS.DOCUMENTS" | translate }}
-            </h3>
-
-            <div class="space-y-4">
-              <!-- Personal Image -->
-              <div class="text-center">
-                <label class="block text-sm font-medium text-neutral-700 mb-2">{{
-                  "ADMIN.PAGES.CAPTAIN_DETAILS.DOCUMENTS_LABELS.PERSONAL_IMAGE"
-                    | translate
-                }}</label>
-                <div
-                      class="mx-auto h-32 w-32 rounded-lg overflow-hidden bg-neutral-100 flex items-center justify-center"
-                >
-                  <img
-                    *ngIf="deliveryManDetails.personalImagePath; else noImage"
-                    [src]="deliveryManDetails.personalImagePath"
-                    alt="الصورة الشخصية"
-                    class="h-full w-full object-cover"
-                    onerror="this.style.display='none'"
-                  />
-                  <ng-template #noImage>
-                      <svg
-                        class="h-12 w-12 text-neutral-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                      ></path>
-                    </svg>
-                  </ng-template>
-                </div>
-              </div>
-
-              <!-- Identity Images -->
-              <div>
-                <label class="block text-sm font-medium text-neutral-700 mb-2">{{
-                  "ADMIN.PAGES.CAPTAIN_DETAILS.DOCUMENTS_LABELS.IDENTITY_IMAGES"
-                    | translate
-                }}</label>
-                <div class="grid grid-cols-2 gap-2">
-                  <div class="text-center">
-                    <p class="text-xs text-gray-500 mb-1">
-                      {{
-                        "ADMIN.PAGES.CAPTAIN_DETAILS.DOCUMENTS_LABELS.FRONT_SIDE"
-                          | translate
-                      }}
-                    </p>
-                    <div
-                      class="h-24 w-full rounded bg-neutral-100 flex items-center justify-center"
-                    >
-                      <img
-                        *ngIf="
-                          deliveryManDetails.frontIdentityImagePath;
-                          else noDoc
-                        "
-                        [src]="deliveryManDetails.frontIdentityImagePath"
-                        alt="الهوية - الوجه الأمامي"
-                        class="h-full w-full object-cover rounded"
-                        onerror="this.style.display='none'"
-                      />
-                      <ng-template #noDoc>
-                        <svg
-                          class="h-8 w-8 text-neutral-400"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                          ></path>
-                        </svg>
-                      </ng-template>
-                    </div>
-                  </div>
-                  <div class="text-center">
-                    <p class="text-xs text-gray-500 mb-1">
-                      {{
-                        "ADMIN.PAGES.CAPTAIN_DETAILS.DOCUMENTS_LABELS.BACK_SIDE"
-                          | translate
-                      }}
-                    </p>
-                    <div
-                      class="h-24 w-full rounded bg-neutral-100 flex items-center justify-center"
-                    >
-                      <img
-                        *ngIf="
-                          deliveryManDetails.backIdentityImagePath;
-                          else noDoc2
-                        "
-                        [src]="deliveryManDetails.backIdentityImagePath"
-                        alt="الهوية - الوجه الخلفي"
-                        class="h-full w-full object-cover rounded"
-                        onerror="this.style.display='none'"
-                      />
-                      <ng-template #noDoc2>
-                        <svg
-                          class="h-8 w-8 text-neutral-400"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                          ></path>
-                        </svg>
-                      </ng-template>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- License Images -->
-              <div>
-                <label class="block text-sm font-medium text-neutral-700 mb-2">{{
-                  "ADMIN.PAGES.CAPTAIN_DETAILS.DOCUMENTS_LABELS.LICENSE_IMAGES"
-                    | translate
-                }}</label>
-                <div class="grid grid-cols-2 gap-2">
-                  <div class="text-center">
-                    <p class="text-xs text-gray-500 mb-1">
-                      {{
-                        "ADMIN.PAGES.CAPTAIN_DETAILS.DOCUMENTS_LABELS.FRONT_SIDE"
-                          | translate
-                      }}
-                    </p>
-                    <div
-                      class="h-24 w-full rounded bg-neutral-100 flex items-center justify-center"
-                    >
-                      <img
-                        *ngIf="
-                          deliveryManDetails.frontDrivingLicenseImagePath;
-                          else noLicense
-                        "
-                        [src]="deliveryManDetails.frontDrivingLicenseImagePath"
-                        alt="رخصة القيادة - الوجه الأمامي"
-                        class="h-full w-full object-cover rounded"
-                        onerror="this.style.display='none'"
-                      />
-                      <ng-template #noLicense>
-                        <svg
-                          class="h-8 w-8 text-neutral-400"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                          ></path>
-                        </svg>
-                      </ng-template>
-                    </div>
-                  </div>
-                  <div class="text-center">
-                    <p class="text-xs text-gray-500 mb-1">
-                      {{
-                        "ADMIN.PAGES.CAPTAIN_DETAILS.DOCUMENTS_LABELS.BACK_SIDE"
-                          | translate
-                      }}
-                    </p>
-                    <div
-                      class="h-24 w-full rounded bg-neutral-100 flex items-center justify-center"
-                    >
-                      <img
-                        *ngIf="
-                          deliveryManDetails.backDrivingLicenseImagePath;
-                          else noLicense2
-                        "
-                        [src]="deliveryManDetails.backDrivingLicenseImagePath"
-                        alt="رخصة القيادة - الوجه الخلفي"
-                        class="h-full w-full object-cover rounded"
-                        onerror="this.style.display='none'"
-                      />
-                      <ng-template #noLicense2>
-                        <svg
-                          class="h-8 w-8 text-neutral-400"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                          ></path>
-                        </svg>
-                      </ng-template>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Vehicle Images (if available) -->
-              <div *ngIf="deliveryManDetails.vehicleId" class="border-t pt-4">
-                <label class="block text-sm font-medium text-neutral-700 mb-2">{{
-                  "ADMIN.PAGES.CAPTAIN_DETAILS.DOCUMENTS_LABELS.VEHICLE_IMAGES"
-                    | translate
-                }}</label>
-                <div class="grid grid-cols-2 gap-2">
-                  <!-- Vehicle Front -->
-                  <div class="text-center">
-                    <p class="text-xs text-gray-500 mb-1">أمامي</p>
-                    <div
-                      class="h-24 w-full rounded bg-neutral-100 flex items-center justify-center"
-                    >
-                      <img
-                        *ngIf="deliveryManDetails.vehicleFrontImagePath; else noVehicleFront"
-                        [src]="deliveryManDetails.vehicleFrontImagePath"
-                        alt="المركبة - أمامي"
-                        class="h-full w-full object-cover rounded"
-                        onerror="this.style.display='none'"
-                      />
-                      <ng-template #noVehicleFront>
-                        <svg
-                          class="h-8 w-8 text-neutral-400"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                          ></path>
-                        </svg>
-                      </ng-template>
-                    </div>
-                  </div>
-                  <!-- Vehicle Side -->
-                  <div class="text-center">
-                    <p class="text-xs text-gray-500 mb-1">جانبي</p>
-                    <div
-                      class="h-24 w-full rounded bg-neutral-100 flex items-center justify-center"
-                    >
-                      <img
-                        *ngIf="deliveryManDetails.vehicleSideImagePath; else noVehicleSide"
-                        [src]="deliveryManDetails.vehicleSideImagePath"
-                        alt="المركبة - جانبي"
-                        class="h-full w-full object-cover rounded"
-                        onerror="this.style.display='none'"
-                      />
-                      <ng-template #noVehicleSide>
-                        <svg
-                          class="h-8 w-8 text-neutral-400"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                          ></path>
-                        </svg>
-                      </ng-template>
-                    </div>
-                  </div>
-                  <!-- Vehicle License Front -->
-                  <div class="text-center">
-                    <p class="text-xs text-gray-500 mb-1">رخصة أمامية</p>
-                    <div
-                      class="h-24 w-full rounded bg-neutral-100 flex items-center justify-center"
-                    >
-                      <img
-                        *ngIf="deliveryManDetails.vehicleFrontLicenseImagePath; else noVehicleLicenseFront"
-                        [src]="deliveryManDetails.vehicleFrontLicenseImagePath"
-                        alt="رخصة المركبة - أمامي"
-                        class="h-full w-full object-cover rounded"
-                        onerror="this.style.display='none'"
-                      />
-                      <ng-template #noVehicleLicenseFront>
-                        <svg
-                          class="h-8 w-8 text-neutral-400"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                          ></path>
-                        </svg>
-                      </ng-template>
-                    </div>
-                  </div>
-                  <!-- Vehicle License Back -->
-                  <div class="text-center">
-                    <p class="text-xs text-gray-500 mb-1">رخصة خلفية</p>
-                    <div
-                      class="h-24 w-full rounded bg-neutral-100 flex items-center justify-center"
-                    >
-                      <img
-                        *ngIf="deliveryManDetails.vehicleBackLicenseImagePath; else noVehicleLicenseBack"
-                        [src]="deliveryManDetails.vehicleBackLicenseImagePath"
-                        alt="رخصة المركبة - خلفي"
-                        class="h-full w-full object-cover rounded"
-                        onerror="this.style.display='none'"
-                      />
-                      <ng-template #noVehicleLicenseBack>
-                        <svg
-                          class="h-8 w-8 text-neutral-400"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                          ></path>
-                        </svg>
-                      </ng-template>
-                    </div>
-                  </div>
-                  <!-- Vehicle Insurance Front -->
-                  <div class="text-center">
-                    <p class="text-xs text-gray-500 mb-1">تأمين أمامي</p>
-                    <div
-                      class="h-24 w-full rounded bg-neutral-100 flex items-center justify-center"
-                    >
-                      <img
-                        *ngIf="deliveryManDetails.vehicleFrontInsuranceImagePath; else noVehicleInsuranceFront"
-                        [src]="deliveryManDetails.vehicleFrontInsuranceImagePath"
-                        alt="تأمين المركبة - أمامي"
-                        class="h-full w-full object-cover rounded"
-                        onerror="this.style.display='none'"
-                      />
-                      <ng-template #noVehicleInsuranceFront>
-                        <svg
-                          class="h-8 w-8 text-neutral-400"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                          ></path>
-                        </svg>
-                      </ng-template>
-                    </div>
-                  </div>
-                  <!-- Vehicle Insurance Back -->
-                  <div class="text-center">
-                    <p class="text-xs text-gray-500 mb-1">تأمين خلفي</p>
-                    <div
-                      class="h-24 w-full rounded bg-neutral-100 flex items-center justify-center"
-                    >
-                      <img
-                        *ngIf="deliveryManDetails.vehicleBackInsuranceImagePath; else noVehicleInsuranceBack"
-                        [src]="deliveryManDetails.vehicleBackInsuranceImagePath"
-                        alt="تأمين المركبة - خلفي"
-                        class="h-full w-full object-cover rounded"
-                        onerror="this.style.display='none'"
-                      />
-                      <ng-template #noVehicleInsuranceBack>
-                        <svg
-                          class="h-8 w-8 text-neutral-400"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                          ></path>
-                        </svg>
-                      </ng-template>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Status Information -->
-              <div class="border-t pt-4">
-                <h4 class="text-sm font-medium text-gray-700 mb-2">
-                  {{
-                    "ADMIN.PAGES.CAPTAIN_DETAILS.DOCUMENTS_LABELS.ADDITIONAL_INFO"
-                      | translate
-                  }}
-                </h4>
-                <div class="space-y-2 text-sm">
-                  <div class="flex justify-between">
-                    <span class="text-neutral-500">{{
-                      "ADMIN.PAGES.CAPTAIN_DETAILS.DOCUMENTS_LABELS.ACTIVE_STATUS"
-                        | translate
-                    }}</span>
-                    <span
-                      class="font-medium"
-                      [class]="
-                        deliveryManDetails.active
-                          ? 'text-green-600'
-                          : 'text-red-600'
-                      "
-                    >
-                      {{
-                        deliveryManDetails.active
-                          ? ("ADMIN.PAGES.CAPTAIN_DETAILS.DOCUMENTS_LABELS.ACTIVE"
-                            | translate)
-                          : ("ADMIN.PAGES.CAPTAIN_DETAILS.DOCUMENTS_LABELS.INACTIVE"
-                            | translate)
-                      }}
-                    </span>
-                  </div>
-                  <div class="flex justify-between">
-                    <span class="text-neutral-500">{{
-                      "ADMIN.PAGES.CAPTAIN_DETAILS.DOCUMENTS_LABELS.USER_ID"
-                        | translate
-                    }}</span>
-                    <span class="font-medium"
-                      >#{{ deliveryManDetails.userId }}</span
-                    >
-                  </div>
-                  <div
-                    *ngIf="deliveryManDetails.vehicleId"
-                    class="flex justify-between"
-                  >
-                    <span class="text-neutral-500">{{
-                      "ADMIN.PAGES.CAPTAIN_DETAILS.DOCUMENTS_LABELS.VEHICLE_ID"
-                        | translate
-                    }}</span>
-                    <span class="font-medium"
-                      >#{{ deliveryManDetails.vehicleId }}</span
-                    >
-                  </div>
-                </div>
-              </div>
+            <div class="doc__foot">
+              <span class="doc__label">{{ doc.label }}</span>
+              <span class="tag tag--xs" [ngClass]="doc.optional ? 'tag--muted' : 'tag--primary'">{{ doc.optional ? 'اختياري' : 'مطلوب' }}</span>
             </div>
-          </div>
+          </button>
         </div>
+      </section>
+    </ng-container>
+  </div>
+
+  <div *ngIf="previewImage" class="lightbox" (click)="closePreview()">
+    <div class="lightbox__box" (click)="$event.stopPropagation()">
+      <div class="lightbox__top">
+        <h3>{{ previewLabel }}</h3>
+        <button type="button" (click)="closePreview()">✕</button>
       </div>
+      <img [src]="previewImage" [alt]="previewLabel" />
     </div>
   </div>
 
-  <!-- Confirmation Modal -->
   <app-confirmation-modal
     [show]="showConfirmModal"
     [title]="confirmationTitle"

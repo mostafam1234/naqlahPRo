@@ -1,4 +1,5 @@
-﻿using CSharpFunctionalExtensions;
+﻿using Application.Shared.Services;
+using CSharpFunctionalExtensions;
 using Domain.InterFaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -71,8 +72,8 @@ namespace Application.Features.DeliveryManSection.Regestration.Commands
                     return result;
                 }
 
-                var saveResult = await context.SaveChangesAsyncWithResult();
-                return saveResult;
+                DeliveryManCommandHelper.RefreshCompleteness(deliveryMan);
+                return await context.SaveChangesAsyncWithResult();
 
             }
         }

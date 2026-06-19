@@ -2,8 +2,8 @@
   <!-- Notification Bell Icon -->
   <button
     (click)="toggleDropdown()"
-    class="relative p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-    [class.text-blue-600]="isOpen"
+    class="naqlah-header__icon-btn relative"
+    [class.naqlah-header__icon-btn--active]="isOpen"
   >
     <!-- SVG Icon -->
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -24,7 +24,7 @@
   <!-- Dropdown Menu -->
   <div
     *ngIf="isOpen"
-    class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-2xl border border-gray-100 z-50 transform transition-all duration-200 ease-out"
+    class="absolute right-0 mt-2 w-80 theme-surface rounded-lg shadow-2xl border z-50 transform transition-all duration-200 ease-out"
     [class.opacity-0]="!isOpen"
     [class.scale-95]="!isOpen"
     [class.opacity-100]="isOpen"

@@ -15,6 +15,11 @@ namespace Infrastructure.MappingConfigurations
         {
             builder.ToTable("NA_DeliveryVehicle");
             builder.HasKey(x => x.Id);
+            builder.Property(x => x.BackLicenseImagePath).IsRequired(false);
+            builder.Property(x => x.FrontInsuranceImagePath).IsRequired(false);
+            builder.Property(x => x.BackInsuranceImagePath).IsRequired(false);
+            builder.Property(x => x.LicenseExpirationDate).IsRequired(false);
+            builder.Property(x => x.InSuranceExpirationDate).IsRequired(false);
             builder.HasOne(x => x.VehicleType).WithMany().HasForeignKey(x => x.VehicleTypeId);
             builder.HasOne(x => x.VehicleBrand).WithMany().HasForeignKey(x => x.VehicleBrandId);
             builder.HasOne(x => x.Resident).WithOne().HasForeignKey<Resident>(x => x.DeliveryVehicleId);

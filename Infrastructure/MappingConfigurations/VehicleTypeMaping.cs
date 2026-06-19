@@ -1,11 +1,7 @@
-﻿using Domain.Models;
+﻿using Domain.Enums;
+using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.MappingConfigurations
 {
@@ -15,6 +11,14 @@ namespace Infrastructure.MappingConfigurations
         {
             builder.ToTable("NA_VehicleType");
             builder.HasKey(x => x.Id);
+
+            builder.Property(x => x.ArabicName).IsRequired();
+            builder.Property(x => x.EnglishName).IsRequired();
+            builder.Property(x => x.IconImagePath).IsRequired();
+            builder.Property(x => x.Cost).HasColumnType("decimal(18,2)");
+            builder.Property(x => x.ServiceFee).HasColumnType("decimal(18,2)");
+            builder.Property(x => x.LoadCategory).HasConversion<int?>();
+            builder.Property(x => x.CreationDate).IsRequired();
         }
     }
 }

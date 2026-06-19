@@ -1,146 +1,232 @@
-import { NgClass, NgFor, NgIf, DecimalPipe } from '@angular/common';
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
-import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
+import { DatePipe, DecimalPipe, NgClass, NgFor, NgIf } from '@angular/common';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { LanguageService } from 'src/app/Core/services/language.service';
+import { ToasterService } from 'src/app/Core/services/toaster.service';
 import {
   DeliveryManAdminClient,
-  GetAllDeliveryMenDto,
   DeliveryManStatisticsDto,
+  GetAllDeliveryMenDto,
   PagedResultOfGetAllDeliveryMenDto
 } from 'src/app/Core/services/NaqlahClient';
 import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
-import { catchError, finalize, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { of } from 'rxjs';
-import { SubSink } from 'subsink';
 import { PermissionService } from 'src/app/shared/services/permission.service';
+import { of, Subject } from 'rxjs';
+import { catchError, debounceTime, finalize, map, switchMap } from 'rxjs/operators';
+import { SubSink } from 'subsink';
+import { FormalSelectComponent } from 'src/app/shared/components/formal-select/formal-select.component';
+import { FormalMultiSelectComponent } from 'src/app/shared/components/formal-multi-select/formal-multi-select.component';
+import {
+  buildVisiblePages,
+  CaptainsListFilterForm,
+  cloneCaptainsListFilter,
+  DELIVERY_MAN_ACTIVE_OPTIONS,
+  EMPTY_CAPTAINS_LIST_FILTER,
+  mapDeliveryManToSelectOption,
+  mapFileResponse,
+  parseDateFilter,
+  resolveDeliveryManActiveFilter,
+  resolveDeliveryManFilters,
+  SelectOption,
+  triggerFileDownload
+} from '../captain-orders.helpers';
+
+type CaptainActiveStatKey = 'all' | 'active' | 'inactive';
 
 @Component({
   selector: 'app-control-captain-orders',
   standalone: true,
-  imports: [NgFor, NgClass, NgIf, FormsModule, ReactiveFormsModule, RouterLink, PageHeaderComponent, TranslateModule, DecimalPipe],
+  imports: [
+    NgFor, NgClass, NgIf, FormsModule, PageHeaderComponent, TranslateModule,
+    DecimalPipe, DatePipe, FormalSelectComponent, FormalMultiSelectComponent
+  ],
   templateUrl: './control-captain-orders.component.html',
   styleUrl: './control-captain-orders.component.css'
 })
 export class ControlCaptainOrdersComponent implements OnInit, OnDestroy {
-  lang: string = 'ar';
-  
-  // Statistics cards
   statistics: DeliveryManStatisticsDto | null = null;
   isLoadingStatistics = false;
 
-  // Delivery Men Data
   deliveryMen: GetAllDeliveryMenDto[] = [];
-  totalCount = 0;
-  totalPages = 0;
-  isLoading = false;
-  searchControl = new FormControl('');
+  filterDraft: CaptainsListFilterForm = { ...EMPTY_CAPTAINS_LIST_FILTER };
+  filterApplied: CaptainsListFilterForm = { ...EMPTY_CAPTAINS_LIST_FILTER };
+  selectedStatKey: CaptainActiveStatKey = 'all';
 
-  currentPage = 1;
-  itemsPerPage = 9;
-  
+  captainTotalCount = 0;
+  captainTotalPages = 0;
+  isLoadingCaptains = false;
+  captainPage = 1;
+  hasSearchedCaptains = false;
+  isExporting = false;
+
+  deliveryManLookupOptions: SelectOption[] = [];
+  selectedDeliveryMenCache: SelectOption[] = [];
+  isLoadingDeliveryMenLookup = false;
+  readonly deliveryManSearchPlaceholder = 'ابحث بالاسم أو الهاتف...';
+  private deliveryManLookupSearchTerm = '';
+
+  readonly deliveryManActiveOptions = DELIVERY_MAN_ACTIVE_OPTIONS;
+  readonly itemsPerPage = 10;
+
+  private readonly deliveryManSearch$ = new Subject<string>();
   private sub = new SubSink();
 
   constructor(
-    private languageService: LanguageService,
     private router: Router,
     private deliveryManClient: DeliveryManAdminClient,
-    private permissionService: PermissionService
+    private permissionService: PermissionService,
+    private toasterService: ToasterService
   ) {}
-
-  get language() {
-    return this.languageService.getLanguage();
-  }
-
-  hasPermission(permission: string): boolean {
-    return this.permissionService.hasPermission(permission);
-  }
 
   ngOnInit(): void {
     this.permissionService.getPermissions().subscribe(() => {});
     this.loadStatistics();
-    this.loadDeliveryMen();
-    this.setupSearch();
+
+    this.sub.sink = this.deliveryManSearch$
+      .pipe(
+        debounceTime(300),
+        switchMap((term) => this.fetchDeliveryManLookup(term, this.filterDraft.deliveryManActiveKey))
+      )
+      .subscribe((items) => {
+        this.deliveryManLookupOptions = items.map((dm) => mapDeliveryManToSelectOption(dm));
+      });
   }
 
   ngOnDestroy(): void {
     this.sub.unsubscribe();
   }
 
-  setupSearch(): void {
-    this.sub.sink = this.searchControl.valueChanges
-      .pipe(
-        debounceTime(500),
-        distinctUntilChanged()
-      )
-      .subscribe(() => {
-        this.currentPage = 1;
-        this.loadDeliveryMen();
-      });
+  onDeliveryManPanelOpen(): void {
+    this.deliveryManLookupSearchTerm = '';
+    this.deliveryManSearch$.next('');
+  }
+
+  onDeliveryManSearch(term: string): void {
+    this.deliveryManLookupSearchTerm = term;
+    this.deliveryManSearch$.next(term);
+  }
+
+  onDeliveryManActiveFilterChange(key: string): void {
+    this.filterDraft.deliveryManActiveKey = key;
+    this.filterDraft.deliveryManIds = [];
+    this.selectedDeliveryMenCache = [];
+    this.selectedStatKey = this.toStatKey(key);
+    this.refreshDeliveryManLookupNow();
+  }
+
+  onStatCardClick(key: CaptainActiveStatKey): void {
+    this.filterDraft.deliveryManActiveKey = key;
+    this.selectedStatKey = key;
+    this.searchCaptains();
+  }
+
+  private refreshDeliveryManLookupNow(): void {
+    this.sub.sink = this.fetchDeliveryManLookup(
+      this.deliveryManLookupSearchTerm,
+      this.filterDraft.deliveryManActiveKey
+    ).subscribe((items) => {
+      this.deliveryManLookupOptions = items.map((dm) => mapDeliveryManToSelectOption(dm));
+    });
+  }
+
+  private fetchDeliveryManLookup(term: string, activeKey: string) {
+    this.isLoadingDeliveryMenLookup = true;
+    const searchTerm = term?.trim() || undefined;
+    const activeFilter = resolveDeliveryManActiveFilter(activeKey);
+
+    return this.deliveryManClient.getAvailableDeliveryMenLookup(searchTerm ?? null, activeFilter ?? null).pipe(
+      catchError(() => {
+        this.toasterService.error('خطأ', 'تعذر تحميل قائمة المناديب');
+        return of([]);
+      }),
+      finalize(() => { this.isLoadingDeliveryMenLookup = false; })
+    );
   }
 
   loadStatistics(): void {
     this.isLoadingStatistics = true;
-    this.deliveryManClient.getDeliveryManStatistics()
-      .pipe(
-        catchError(error => {
-          console.error('Error loading delivery man statistics:', error);
-          return of(null);
-        }),
-        finalize(() => {
-          this.isLoadingStatistics = false;
-        })
-      )
-      .subscribe(data => {
-        if (data) {
-          this.statistics = data;
-        }
-      });
+    this.sub.sink = this.deliveryManClient.getDeliveryManStatistics()
+      .pipe(catchError(() => of(null)), finalize(() => { this.isLoadingStatistics = false; }))
+      .subscribe((data) => { this.statistics = data; });
   }
 
-  loadDeliveryMen(): void {
-    this.isLoading = true;
-    const skip = (this.currentPage - 1) * this.itemsPerPage;
-
-    this.deliveryManClient.getAllDeliveryMen(
-      skip,
-      this.itemsPerPage,
-      this.searchControl.value || undefined
-    ).pipe(
-      catchError(error => {
-        console.error('Error loading delivery men:', error);
-        const emptyResult = new PagedResultOfGetAllDeliveryMenDto();
-        emptyResult.data = [];
-        emptyResult.totalCount = 0;
-        emptyResult.totalPages = 0;
-        return of(emptyResult);
-      }),
-      finalize(() => {
-        this.isLoading = false;
-      })
-    ).subscribe(response => {
-      if (response && response.data) {
-        this.deliveryMen = response.data;
-        this.totalCount = response.totalCount;
-        this.totalPages = response.totalPages;
-      } else {
-        this.deliveryMen = [];
-        this.totalCount = 0;
-        this.totalPages = 0;
-      }
-    });
-  }
-
-  clearSearch(): void {
-    this.searchControl.setValue('', { emitEvent: false });
-    this.currentPage = 1;
+  searchCaptains(): void {
+    this.filterApplied = cloneCaptainsListFilter(this.filterDraft);
+    this.selectedStatKey = this.toStatKey(this.filterApplied.deliveryManActiveKey);
+    this.captainPage = 1;
+    this.hasSearchedCaptains = true;
     this.loadDeliveryMen();
   }
 
-  changePage(page: number): void {
-    if (page >= 1 && page <= this.totalPages) {
-      this.currentPage = page;
+  resetCaptainSearch(): void {
+    this.filterDraft = { ...EMPTY_CAPTAINS_LIST_FILTER };
+    this.selectedDeliveryMenCache = [];
+    this.deliveryManLookupOptions = [];
+    this.selectedStatKey = 'all';
+    this.searchCaptains();
+  }
+
+  loadDeliveryMen(): void {
+    this.isLoadingCaptains = true;
+    const skip = (this.captainPage - 1) * this.itemsPerPage;
+    const term = this.filterApplied.searchTerm?.trim() || undefined;
+
+    this.sub.sink = this.deliveryManClient.getAllDeliveryMen(
+      resolveDeliveryManFilters(this.filterApplied.deliveryManIds) ?? null,
+      skip,
+      this.itemsPerPage,
+      term ?? null,
+      resolveDeliveryManActiveFilter(this.filterApplied.deliveryManActiveKey) ?? null,
+      parseDateFilter(this.filterApplied.fromDate) ?? null,
+      parseDateFilter(this.filterApplied.toDate) ?? null
+    ).pipe(
+      catchError(() => {
+        const empty = new PagedResultOfGetAllDeliveryMenDto();
+        empty.data = [];
+        empty.totalCount = 0;
+        empty.totalPages = 0;
+        return of(empty);
+      }),
+      finalize(() => { this.isLoadingCaptains = false; })
+    ).subscribe((response) => {
+      this.deliveryMen = response?.data ?? [];
+      this.captainTotalCount = response?.totalCount ?? 0;
+      this.captainTotalPages = response?.totalPages ?? 0;
+    });
+  }
+
+  exportCaptains(): void {
+    if (!this.hasSearchedCaptains) {
+      this.searchCaptains();
+    }
+
+    this.isExporting = true;
+    const term = this.filterApplied.searchTerm?.trim() || undefined;
+
+    this.sub.sink = this.deliveryManClient.exportAllDeliveryMen(
+      resolveDeliveryManFilters(this.filterApplied.deliveryManIds) ?? null,
+      term ?? null,
+      resolveDeliveryManActiveFilter(this.filterApplied.deliveryManActiveKey) ?? null,
+      parseDateFilter(this.filterApplied.fromDate) ?? null,
+      parseDateFilter(this.filterApplied.toDate) ?? null
+    ).pipe(
+      map((file) => mapFileResponse(file, `DeliveryMen_${Date.now()}.xlsx`)),
+      catchError(() => {
+        this.toasterService.error('خطأ', 'تعذر تصدير البيانات');
+        return of(null);
+      }),
+      finalize(() => { this.isExporting = false; })
+    ).subscribe((result) => {
+      if (!result) return;
+      triggerFileDownload(result.blob, result.fileName);
+      this.toasterService.success('تم', 'تم تصدير المناديب بنجاح');
+    });
+  }
+
+  changeCaptainPage(page: number): void {
+    if (page >= 1 && page <= this.captainTotalPages) {
+      this.captainPage = page;
       this.loadDeliveryMen();
     }
   }
@@ -149,49 +235,25 @@ export class ControlCaptainOrdersComponent implements OnInit, OnDestroy {
     this.router.navigate(['/admin/requests/controlCaptainRequest/requestTracking', deliveryManId]);
   }
 
-  get displayStartCount(): number {
-    if (this.totalCount === 0) return 0;
-    return (this.currentPage - 1) * this.itemsPerPage + 1;
+  isStatCardSelected(key: CaptainActiveStatKey): boolean {
+    return this.selectedStatKey === key;
   }
 
-  get displayEndCount(): number {
-    const end = this.currentPage * this.itemsPerPage;
-    return end > this.totalCount ? this.totalCount : end;
+  private toStatKey(key: string): CaptainActiveStatKey {
+    if (key === 'active' || key === 'inactive') return key;
+    return 'all';
   }
 
-  get visiblePages(): (number | string)[] {
-    const pages: (number | string)[] = [];
-    const maxVisible = 5;
-    
-    if (this.totalPages <= maxVisible) {
-      for (let i = 1; i <= this.totalPages; i++) {
-        pages.push(i);
-      }
-    } else {
-      if (this.currentPage <= 3) {
-        for (let i = 1; i <= 4; i++) {
-          pages.push(i);
-        }
-        pages.push('ellipsis');
-        pages.push(this.totalPages);
-      } else if (this.currentPage >= this.totalPages - 2) {
-        pages.push(1);
-        pages.push('ellipsis');
-        for (let i = this.totalPages - 3; i <= this.totalPages; i++) {
-          pages.push(i);
-        }
-      } else {
-        pages.push(1);
-        pages.push('ellipsis');
-        for (let i = this.currentPage - 1; i <= this.currentPage + 1; i++) {
-          pages.push(i);
-        }
-        pages.push('ellipsis');
-        pages.push(this.totalPages);
-      }
-    }
-    
-    return pages;
+  get captainVisiblePages(): (number | string)[] {
+    return buildVisiblePages(this.captainPage, this.captainTotalPages);
+  }
+
+  get captainDisplayStart(): number {
+    return this.captainTotalCount === 0 ? 0 : (this.captainPage - 1) * this.itemsPerPage + 1;
+  }
+
+  get captainDisplayEnd(): number {
+    return Math.min(this.captainPage * this.itemsPerPage, this.captainTotalCount);
   }
 
   isPageNumber(page: number | string): boolean {
@@ -200,11 +262,5 @@ export class ControlCaptainOrdersComponent implements OnInit, OnDestroy {
 
   isPageEllipsis(page: number | string): boolean {
     return page === 'ellipsis';
-  }
-
-  getImageUrl(imagePath: string): string {
-    if (!imagePath) return 'assets/images/default-avatar.png';
-    if (imagePath.startsWith('http')) return imagePath;
-    return imagePath; // Adjust based on your image serving strategy
   }
 }

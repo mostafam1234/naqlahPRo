@@ -1,15 +1,229 @@
 @import 'ngx-toastr/toastr';
+@import './app/shared/styles/admin-ui-dark.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --color-primary-50: theme('colors.primary.50');
+    --color-primary-100: theme('colors.primary.100');
+    --color-primary-200: theme('colors.primary.200');
+    --color-primary-300: theme('colors.primary.300');
+    --color-primary-400: theme('colors.primary.400');
+    --color-primary-500: theme('colors.primary.500');
+    --color-primary-600: theme('colors.primary.600');
+    --color-primary-700: theme('colors.primary.700');
+    --color-primary-800: theme('colors.primary.800');
+    --color-primary-900: theme('colors.primary.900');
+
+    --color-accent-50: theme('colors.accent.50');
+    --color-accent-100: theme('colors.accent.100');
+    --color-accent-200: theme('colors.accent.200');
+    --color-accent-300: theme('colors.accent.300');
+    --color-accent-400: theme('colors.accent.400');
+    --color-accent-500: theme('colors.accent.500');
+    --color-accent-600: theme('colors.accent.600');
+
+    --color-brand-50: theme('colors.brand.50');
+    --color-brand-100: theme('colors.brand.100');
+    --color-brand-200: theme('colors.brand.200');
+    --color-brand-300: theme('colors.brand.300');
+    --color-brand-400: theme('colors.brand.400');
+    --color-brand-500: theme('colors.brand.500');
+    --color-brand-600: theme('colors.brand.600');
+    --color-brand-700: theme('colors.brand.700');
+    --color-brand-800: theme('colors.brand.800');
+    --color-brand-900: theme('colors.brand.900');
+    --color-brand-950: theme('colors.brand.950');
+
+    --color-error-50: theme('colors.error.50');
+    --color-error-100: theme('colors.error.100');
+    --color-error-300: theme('colors.error.300');
+    --color-error-500: theme('colors.error.500');
+    --color-error-600: theme('colors.error.600');
+    --color-error-700: theme('colors.error.700');
+
+    --color-success-500: theme('colors.success.500');
+    --color-success-600: theme('colors.success.600');
+
+    --gradient-brand: theme('backgroundImage.naqlah-gradient');
+    --gradient-brand-hover: theme('backgroundImage.naqlah-gradient-hover');
+    --gradient-sidebar: theme('backgroundImage.naqlah-sidebar');
+    --gradient-surface: theme('backgroundImage.naqlah-surface');
+
+    --shadow-glow: theme('boxShadow.glow');
+    --shadow-glow-accent: theme('boxShadow.glow-accent');
+
+    --chart-0: theme('colors.chart.0');
+    --chart-1: theme('colors.chart.1');
+    --chart-2: theme('colors.chart.2');
+    --chart-3: theme('colors.chart.3');
+    --chart-4: theme('colors.chart.4');
+    --chart-5: theme('colors.chart.5');
+    --chart-6: theme('colors.chart.6');
+    --chart-7: theme('colors.chart.7');
+
+    --shell-body-bg: #fafcfb;
+    --shell-header-bg: rgba(255, 255, 255, 0.96);
+    --shell-header-border: #e6faf6;
+    --shell-header-shadow: 0 1px 0 rgba(255,255,255,0.9), 0 4px 20px color-mix(in srgb, var(--color-primary-500) 6%, transparent);
+    --shell-sidebar-bg: #ffffff;
+    --shell-sidebar-border: #e6faf6;
+    --shell-sidebar-text: #64748b;
+    --shell-sidebar-text-hover: #334155;
+    --shell-sidebar-text-active: var(--color-primary-600);
+    --shell-sidebar-active-bg: var(--color-primary-50);
+    --shell-sidebar-active-border: var(--color-primary-200);
+    --shell-sidebar-brand-text: #0f172a;
+    --shell-sidebar-brand-sub: #94a3b8;
+    --shell-sidebar-hover-bg: #fafcfb;
+    --shell-sidebar-glow: color-mix(in srgb, var(--color-primary-500) 8%, transparent);
+    --shell-text: #0f172a;
+    --shell-text-muted: #64748b;
+    --shell-surface: #ffffff;
+    --shell-surface-border: #e8f5f2;
+    --shell-muted-surface: #fafcfb;
+    --shell-input-bg: #ffffff;
+    --shell-table-head: #fafcfb;
+    --shell-btn-bg: #fafcfb;
+    --shell-btn-border: #d1fae5;
+    --shell-btn-text: #475569;
+    --shell-btn-hover-bg: var(--color-primary-50);
+    --shell-btn-hover-border: var(--color-primary-200);
+    --shell-btn-hover-text: var(--color-primary-700);
+    --gradient-sidebar: linear-gradient(180deg, #ffffff 0%, #fafcfb 100%);
+    --shell-header-height: 68px;
+  }
+
+  .dark {
+    --shell-body-bg: #0f172a;
+    --shell-header-bg: rgba(15, 23, 42, 0.94);
+    --shell-header-border: #1e293b;
+    --shell-header-shadow: 0 1px 0 rgba(30, 41, 59, 0.8), 0 4px 24px color-mix(in srgb, var(--color-primary-600) 12%, transparent);
+    --shell-sidebar-bg: #1e293b;
+    --shell-sidebar-border: #334155;
+    --shell-sidebar-text: #94a3b8;
+    --shell-sidebar-text-hover: #e2e8f0;
+    --shell-sidebar-text-active: var(--color-primary-300);
+    --shell-sidebar-active-bg: color-mix(in srgb, var(--color-primary-600) 18%, transparent);
+    --shell-sidebar-active-border: color-mix(in srgb, var(--color-primary-400) 35%, transparent);
+    --shell-sidebar-brand-text: #f1f5f9;
+    --shell-sidebar-brand-sub: #64748b;
+    --shell-sidebar-hover-bg: color-mix(in srgb, white 4%, transparent);
+    --shell-sidebar-glow: color-mix(in srgb, var(--color-primary-500) 14%, transparent);
+    --shell-text: #f1f5f9;
+    --shell-text-muted: #94a3b8;
+    --shell-surface: #1e293b;
+    --shell-surface-border: #334155;
+    --shell-muted-surface: #172033;
+    --shell-input-bg: #0f172a;
+    --shell-table-head: #172033;
+    --shell-btn-bg: #1e293b;
+    --shell-btn-border: #334155;
+    --shell-btn-text: #94a3b8;
+    --shell-btn-hover-bg: color-mix(in srgb, var(--color-primary-600) 20%, transparent);
+    --shell-btn-hover-border: color-mix(in srgb, var(--color-primary-400) 40%, transparent);
+    --shell-btn-hover-text: var(--color-primary-300);
+    --gradient-sidebar: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+  }
+}
+
+@layer components {
+  .btn-naqlah-primary {
+    background: var(--gradient-brand);
+    color: #fff;
+    transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  }
+
+  .btn-naqlah-primary:hover:not(:disabled) {
+    background: var(--gradient-brand-hover);
+    box-shadow: var(--shadow-glow);
+  }
+
+  .naqlah-focus-ring:focus {
+    outline: none;
+    border-color: var(--color-primary-500);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary-500) 20%, transparent);
+  }
+
+  /* Semantic surface utilities — use in new components */
+  .theme-page {
+    background: var(--shell-body-bg);
+    color: var(--shell-text);
+    min-height: 100%;
+  }
+
+  .theme-surface {
+    background: var(--shell-surface);
+    border-color: var(--shell-surface-border);
+    color: var(--shell-text);
+  }
+
+  .theme-muted {
+    background: var(--shell-muted-surface);
+    border-color: var(--shell-surface-border);
+  }
+
+  .theme-input {
+    background: var(--shell-input-bg);
+    border-color: var(--shell-surface-border);
+    color: var(--shell-text);
+  }
+
+  /* Full-width admin pages — use all main-area width (orders/vehicles pattern) */
+  .G-sub_container .theme-page .container.mx-auto,
+  .G-sub_container .min-h-screen > .container.mx-auto:first-child,
+  .G-sub_container .theme-page > [class*='max-w-5xl'],
+  .G-sub_container .theme-page > [class*='max-w-7xl'],
+  .G-sub_container .theme-page > [class*='max-w-[1600px]'],
+  .G-sub_container .min-h-screen > [class*='max-w-5xl']:first-child,
+  .G-sub_container .min-h-screen > [class*='max-w-7xl']:first-child {
+    max-width: none !important;
+    width: 100%;
+    margin-inline: 0 !important;
+  }
+}
+
 * {
   box-sizing: border-box;
 }
 
-body{
+body {
   margin: 0;
+  font-family: 'IBM Plex Sans Arabic', 'Plus Jakarta Sans', system-ui, sans-serif;
+  background-color: var(--shell-body-bg);
+  color: var(--shell-text);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.bg-adminBodyBG {
+  background: var(--shell-body-bg);
+  min-height: calc(100vh - var(--shell-header-height));
+}
+
+.naqlah-header__icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  border: 1px solid var(--shell-btn-border);
+  background: var(--shell-btn-bg);
+  color: var(--shell-btn-text);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.naqlah-header__icon-btn:hover,
+.naqlah-header__icon-btn--active {
+  background: var(--shell-btn-hover-bg);
+  border-color: var(--shell-btn-hover-border);
+  color: var(--shell-btn-hover-text);
+  box-shadow: 0 2px 12px color-mix(in srgb, var(--color-primary-600) 12%, transparent);
 }
 
 /* SweetAlert2 RTL Support */
@@ -49,7 +263,9 @@ body{
   font-size: 24px;
 }
 .custom-card {
-  @apply rounded-xl shadow-md p-4 bg-white;
+  @apply rounded-2xl shadow-sm p-4 border;
+  background: var(--shell-surface);
+  border-color: var(--shell-surface-border);
 }
 /* Responsive max-widths */
 @media (min-width: 576px) {
@@ -78,3 +294,297 @@ body{
   }
 }
 
+/* ============================================================
+   Dark mode — global overrides for admin page components
+   (bg-white, text-neutral-*, etc. without per-file dark: classes)
+   ============================================================ */
+.dark .G-sub_container,
+.dark .na-shell,
+.dark .bg-adminBodyBG {
+  color: var(--shell-text);
+}
+
+.dark .bg-white { background-color: var(--shell-surface) !important; }
+.dark .bg-neutral-50,
+.dark .bg-gray-50,
+.dark .bg-slate-50 { background-color: var(--shell-body-bg) !important; }
+.dark .bg-neutral-100,
+.dark .bg-gray-100 { background-color: var(--shell-muted-surface) !important; }
+.dark .bg-neutral-50\/50 { background-color: color-mix(in srgb, var(--shell-muted-surface) 50%, transparent) !important; }
+
+.dark .border-neutral-100,
+.dark .border-neutral-200,
+.dark .border-neutral-300,
+.dark .border-gray-100,
+.dark .border-gray-200,
+.dark .border-gray-300,
+.dark .border-slate-200,
+.dark .border-slate-300 {
+  border-color: var(--shell-surface-border) !important;
+}
+
+.dark .divide-neutral-100 > :not([hidden]) ~ :not([hidden]),
+.dark .divide-neutral-200 > :not([hidden]) ~ :not([hidden]),
+.dark .divide-gray-200 > :not([hidden]) ~ :not([hidden]) {
+  border-color: var(--shell-surface-border);
+}
+
+.dark .text-neutral-900,
+.dark .text-gray-900,
+.dark .text-slate-900 { color: var(--shell-text) !important; }
+.dark .text-neutral-800,
+.dark .text-neutral-700,
+.dark .text-gray-800,
+.dark .text-gray-700,
+.dark .text-slate-800,
+.dark .text-slate-700 { color: var(--shell-text) !important; }
+.dark .text-neutral-600,
+.dark .text-gray-600,
+.dark .text-slate-600 { color: var(--shell-text-muted) !important; }
+.dark .text-neutral-500,
+.dark .text-neutral-400,
+.dark .text-gray-500,
+.dark .text-gray-400,
+.dark .text-slate-500,
+.dark .text-slate-400 { color: var(--shell-text-muted) !important; }
+
+.dark .hover\:bg-neutral-50:hover,
+.dark .hover\:bg-gray-50:hover { background-color: var(--shell-sidebar-hover-bg) !important; }
+.dark .hover\:bg-neutral-100:hover,
+.dark .hover\:bg-neutral-200:hover,
+.dark .hover\:bg-gray-100:hover { background-color: var(--shell-muted-surface) !important; }
+
+.dark .bg-primary-50 { background-color: color-mix(in srgb, var(--color-primary-600) 12%, var(--shell-surface)) !important; }
+.dark .bg-primary-100 { background-color: color-mix(in srgb, var(--color-primary-600) 18%, var(--shell-surface)) !important; }
+.dark .from-primary-50 { --tw-gradient-from: color-mix(in srgb, var(--color-primary-600) 12%, var(--shell-surface)) !important; }
+.dark .to-primary-100 { --tw-gradient-to: color-mix(in srgb, var(--color-primary-600) 18%, var(--shell-surface)) !important; }
+
+.dark input:not([type='checkbox']):not([type='radio']),
+.dark select,
+.dark textarea {
+  background-color: var(--shell-input-bg) !important;
+  border-color: var(--shell-surface-border) !important;
+  color: var(--shell-text) !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: var(--shell-text-muted) !important;
+}
+
+.dark thead,
+.dark .bg-neutral-50\/50 {
+  background-color: var(--shell-table-head) !important;
+}
+
+.dark .shadow-sm,
+.dark .shadow-md {
+  box-shadow: 0 1px 3px color-mix(in srgb, black 25%, transparent) !important;
+}
+
+.dark .G-sub_container option {
+  background-color: var(--shell-surface);
+  color: var(--shell-text);
+}
+
+/* Component CSS hardcoded backgrounds inside admin content */
+.dark .G-sub_container .form-input,
+.dark .G-sub_container .backup-card,
+.dark .G-sub_container .backup-input,
+.dark .G-sub_container .type-card,
+.dark .G-sub_container .cities-container,
+.dark .G-sub_container .city-card,
+.dark .G-sub_container .city-badge,
+.dark .G-sub_container .role-permissions-page .rp-card {
+  background-color: var(--shell-surface) !important;
+  border-color: var(--shell-surface-border) !important;
+  color: var(--shell-text);
+}
+
+.dark .G-sub_container .upload-zone,
+.dark .G-sub_container .backup-module-chip {
+  background-color: var(--shell-muted-surface) !important;
+  border-color: var(--shell-surface-border) !important;
+}
+
+.dark .G-sub_container .city-card {
+  background: var(--shell-muted-surface) !important;
+  border-color: var(--shell-surface-border) !important;
+}
+
+.dark .G-sub_container .city-card:hover {
+  background: var(--shell-surface) !important;
+}
+
+.dark .G-sub_container .section-title,
+.dark .G-sub_container .section-subtitle,
+.dark .G-sub_container .city-name {
+  color: var(--shell-text) !important;
+}
+
+.dark .G-sub_container .section-subtitle,
+.dark .G-sub_container .badge-text {
+  color: var(--shell-text-muted) !important;
+}
+
+.dark .G-sub_container .progress-track {
+  background: var(--shell-surface-border) !important;
+}
+
+.dark .G-sub_container th {
+  background-color: var(--shell-table-head) !important;
+  color: var(--shell-text-muted) !important;
+}
+
+.dark .G-sub_container tr:hover td {
+  background-color: var(--shell-muted-surface) !important;
+}
+
+.dark .G-sub_container .cities-container,
+.dark .G-sub_container .orders-map-container {
+  background: var(--shell-surface) !important;
+  border-color: var(--shell-surface-border) !important;
+}
+
+.dark .G-sub_container .btn-secondary {
+  background: var(--shell-surface) !important;
+  border-color: var(--shell-surface-border) !important;
+  color: var(--shell-text) !important;
+}
+
+.dark .G-sub_container .btn-secondary:hover {
+  background: var(--shell-muted-surface) !important;
+}
+
+/* ---- Extended dark-mode: text, gradients, surfaces (project-wide) ---- */
+.dark .text-black,
+.dark .text-neutral-300,
+.dark .text-neutral-200,
+.dark .text-slate-300,
+.dark .text-slate-200,
+.dark .text-gray-300,
+.dark .text-gray-200 {
+  color: var(--shell-text-muted) !important;
+}
+
+.dark .G-sub_container label,
+.dark .G-sub_container h1,
+.dark .G-sub_container h2,
+.dark .G-sub_container h3,
+.dark .G-sub_container h4,
+.dark .G-sub_container h5,
+.dark .G-sub_container h6 {
+  color: var(--shell-text);
+}
+
+.dark .G-sub_container p,
+.dark .G-sub_container li,
+.dark .G-sub_container td,
+.dark .G-sub_container dd,
+.dark .G-sub_container dt {
+  color: inherit;
+}
+
+.dark .bg-amber-50,
+.dark .bg-amber-100,
+.dark .from-amber-50,
+.dark .to-amber-100,
+.dark .from-amber-100 {
+  --tw-gradient-from: var(--shell-muted-surface) !important;
+  --tw-gradient-to: var(--shell-surface) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to) !important;
+  background-color: var(--shell-muted-surface) !important;
+}
+
+.dark [class*='from-amber-50'],
+.dark [class*='to-amber-100'],
+.dark [class*='from-amber-100'] {
+  --tw-gradient-from: var(--shell-muted-surface) !important;
+  --tw-gradient-to: var(--shell-surface) !important;
+  background-image: none !important;
+  background-color: var(--shell-muted-surface) !important;
+}
+
+.dark .px-6.py-5.border-b.bg-gradient-to-r,
+.dark .border-b.border-neutral-200.bg-gradient-to-r.from-amber-50 {
+  background: var(--shell-muted-surface) !important;
+  background-image: none !important;
+}
+
+.dark .custom-card,
+.dark .rounded-xl.border,
+.dark .rounded-lg.border {
+  border-color: var(--shell-surface-border);
+}
+
+.dark .G-sub_container .backup-card-header {
+  background: var(--shell-muted-surface) !important;
+  border-bottom-color: var(--shell-surface-border) !important;
+}
+
+.dark .G-sub_container .backup-card-title,
+.dark .G-sub_container .backup-module-label,
+.dark .G-sub_container .backup-label {
+  color: #f1f5f9 !important;
+}
+
+.dark .G-sub_container .backup-card-hint,
+.dark .G-sub_container .backup-group-title,
+.dark .G-sub_container .backup-group-label {
+  color: #cbd5e1 !important;
+}
+
+.dark .G-sub_container .backup-module-chip {
+  background: var(--shell-muted-surface) !important;
+  border-color: var(--shell-surface-border) !important;
+}
+
+.dark .G-sub_container .backup-module-chip .backup-module-label {
+  color: #e2e8f0 !important;
+}
+
+.dark .G-sub_container .backup-module-chip-selected {
+  background: color-mix(in srgb, var(--color-primary-600) 20%, var(--shell-surface)) !important;
+  border-color: color-mix(in srgb, var(--color-primary-500) 45%, var(--shell-surface-border)) !important;
+}
+
+.dark .G-sub_container .backup-module-chip-selected .backup-module-label {
+  color: #99f6e4 !important;
+}
+
+.dark .G-sub_container .backup-input,
+.dark .G-sub_container .backup-select {
+  background: var(--shell-input-bg) !important;
+  color: #f1f5f9 !important;
+  border-color: var(--shell-surface-border) !important;
+}
+
+.dark .audit-page,
+.dark .backup-page,
+.dark .role-permissions-page {
+  color: var(--shell-text);
+}
+
+.dark input[type='date']::-webkit-calendar-picker-indicator,
+.dark input[type='datetime-local']::-webkit-calendar-picker-indicator {
+  filter: invert(1) brightness(0.85);
+}
+
+.dark .bg-surface-50,
+.dark .bg-surface-100,
+.dark .bg-surface-200 {
+  background-color: var(--shell-surface) !important;
+}
+
+.dark .bg-info-50,
+.dark .bg-success-50,
+.dark .bg-warning-50 {
+  background-color: color-mix(in srgb, var(--shell-muted-surface) 80%, var(--shell-surface)) !important;
+}
+
+.dark .text-info-600,
+.dark .text-success-600,
+.dark .text-warning-600,
+.dark .text-primary-600 {
+  color: var(--color-primary-300) !important;
+}

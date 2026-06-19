@@ -27,14 +27,14 @@ namespace Application.Features.AdminSection.OrderFeature.Commands
 
                 if (orderPackage == null)
                 {
-                    return Result.Failure<int>("Order Package Not Found");
+                    return Result.Failure<int>("OrderPackageNotFound");
                 }
 
                 // Check if any orders are using this package
                 var hasOrders = await _context.Orders.AnyAsync(x => x.OrderPackageId == command.Id, cancellationToken);
                 if (hasOrders)
                 {
-                    return Result.Failure<int>("Cannot delete order package because it is being used by existing orders.");
+                    return Result.Failure<int>("OrderPackageInUseCannotDelete");
                 }
 
                 await _context.OrderPackages.Where(x => x.Id == command.Id).ExecuteDeleteAsync(cancellationToken);

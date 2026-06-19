@@ -1,0 +1,173 @@
+<div class="min-h-screen theme-page na-shell vf-animate">
+  <app-page-header
+    title="إضافة نوع مركبة"
+    subtitle="إنشاء نوع مركبة جديد مع تصنيف الحمولة ورسوم الخدمة"
+    [showBackButton]="true"
+    iconPath="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"
+    (onBackClick)="onCancel()"
+  ></app-page-header>
+
+  <div class="vf-hero add-type-hero">
+    <div class="vf-hero__content">
+      <span class="vf-hero__eyebrow">نوع مركبة جديد</span>
+      <h1 class="vf-hero__title">إضافة نوع مركبة</h1>
+      <p class="vf-hero__subtitle">
+        كل الحقول اختيارية — صنّف الحمولة بشكل مستقل عن أقسام الشحنات، وحدّد رسوم الخدمة لكل نوع.
+      </p>
+    </div>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="vf-preview-strip">
+      <div class="vf-preview-item">
+        <span class="vf-preview-item__label">الاسم العربي</span>
+        <span class="vf-preview-item__value">{{ form.get('arabicName')?.value || '—' }}</span>
+      </div>
+      <div class="vf-preview-item">
+        <span class="vf-preview-item__label">تصنيف الحمولة</span>
+        <span class="vf-preview-item__value">{{ selectedLoadCategoryName }}</span>
+      </div>
+      <div class="vf-preview-item">
+        <span class="vf-preview-item__label">التكلفة</span>
+        <span class="vf-preview-item__value">{{ form.get('cost')?.value | number:'1.2-2' }}</span>
+      </div>
+      <div class="vf-preview-item">
+        <span class="vf-preview-item__label">رسوم الخدمة</span>
+        <span class="vf-preview-item__value">{{ form.get('serviceFee')?.value | number:'1.2-2' }}</span>
+      </div>
+      <div class="vf-preview-item">
+        <span class="vf-preview-item__label">أقسام الشحنات</span>
+        <span class="vf-preview-item__value">{{ selectedCategories.length }}</span>
+      </div>
+    </div>
+
+    <div class="vf-grid vf-grid--type">
+      <div class="vf-card">
+        <div class="vf-card__head">
+          <h2 class="vf-card__title">البيانات الأساسية</h2>
+          <p class="vf-card__desc">اسم النوع بالعربية والإنجليزية</p>
+        </div>
+        <div class="vf-card__body vf-fields-2">
+          <div class="vf-field">
+            <label class="vf-label">الاسم بالعربية</label>
+            <input class="vf-input" formControlName="arabicName" type="text" placeholder="مثال: دينا 5 طن" />
+          </div>
+          <div class="vf-field">
+            <label class="vf-label">الاسم بالإنجليزية</label>
+            <input class="vf-input" formControlName="englishName" type="text" placeholder="Example: Dina 5T" />
+          </div>
+        </div>
+      </div>
+
+      <div class="vf-card">
+        <div class="vf-card__head">
+          <h2 class="vf-card__title">تصنيف الحمولة</h2>
+          <p class="vf-card__desc">تصنيف مستقل عن أقسام الشحنات — خاص بحجم حمولة المركبة</p>
+        </div>
+        <div class="vf-card__body">
+          <div class="vf-load-cards">
+            <button
+              type="button"
+              class="vf-load-card"
+              [class.vf-load-card--selected]="form.get('loadCategory')?.value == null"
+              (click)="selectLoadCategory(null)"
+            >
+              <div class="vf-load-card__title">بدون تصنيف</div>
+              <div class="vf-load-card__hint">يمكن تركه فارغاً</div>
+            </button>
+            <button
+              *ngFor="let category of loadCategories"
+              type="button"
+              class="vf-load-card"
+              [class.vf-load-card--selected]="isLoadCategorySelected(category.id)"
+              (click)="selectLoadCategory(category.id)"
+            >
+              <div class="vf-load-card__title">{{ category.name }}</div>
+              <div class="vf-load-card__hint">تصنيف حمولة مركبة</div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="vf-card">
+        <div class="vf-card__head">
+          <h2 class="vf-card__title">التسعير</h2>
+          <p class="vf-card__desc">التكلفة ورسوم الخدمة لكل نوع مركبة</p>
+        </div>
+        <div class="vf-card__body vf-fields-2">
+          <div class="vf-field">
+            <label class="vf-label">التكلفة</label>
+            <input class="vf-input" formControlName="cost" type="number" step="0.01" min="0" />
+          </div>
+          <div class="vf-field">
+            <label class="vf-label">رسوم الخدمة</label>
+            <input class="vf-input" formControlName="serviceFee" type="number" step="0.01" min="0" />
+          </div>
+        </div>
+      </div>
+
+      <div class="vf-card">
+        <div class="vf-card__head">
+          <h2 class="vf-card__title">أيقونة النوع</h2>
+          <p class="vf-card__desc">اختياري — PNG أو JPG حتى 2MB</p>
+        </div>
+        <div class="vf-card__body">
+          <div
+            class="vf-upload"
+            [class.vf-upload--active]="isDragOver"
+            (dragover)="onDragOver($event)"
+            (dragleave)="onDragLeave($event)"
+            (drop)="onDrop($event)"
+          >
+            <div class="vf-upload__preview" *ngIf="iconPreview">
+              <img [src]="iconPreview" alt="preview" />
+            </div>
+            <p class="text-sm text-neutral-600 mb-3" *ngIf="!iconPreview">اسحب الصورة هنا أو اختر ملفاً</p>
+            <p class="text-xs text-neutral-500" *ngIf="selectedIconName">{{ selectedIconName }} — {{ formatFileSize(selectedIconSize) }}</p>
+            <input #iconInput type="file" accept="image/*" class="hidden" (change)="onIconSelect($event)" />
+            <div class="flex gap-2 justify-center mt-3">
+              <button type="button" class="vf-btn vf-btn--ghost" (click)="iconInput.click()">اختيار صورة</button>
+              <button type="button" class="vf-btn vf-btn--ghost" *ngIf="iconPreview" (click)="removeIcon()">حذف</button>
+            </div>
+          </div>
+          <p class="vf-error mt-2" *ngIf="iconError">{{ iconError }}</p>
+        </div>
+      </div>
+
+      <div class="vf-card">
+        <div class="vf-card__head">
+          <h2 class="vf-card__title">أقسام الشحنات</h2>
+          <p class="vf-card__desc">اختياري — لربط النوع بأقسام الشحنات عند مطابقة الطلبات</p>
+        </div>
+        <div class="vf-card__body">
+          <input
+            class="vf-input vf-search"
+            type="text"
+            [(ngModel)]="categorySearchTerm"
+            [ngModelOptions]="{ standalone: true }"
+            placeholder="ابحث في الأقسام..."
+          />
+          <div class="vf-chip-grid">
+            <button
+              type="button"
+              *ngFor="let category of filteredCategories"
+              class="vf-chip"
+              [class.vf-chip--selected]="isCategorySelected(category)"
+              (click)="toggleCategory(category)"
+            >
+              <span class="vf-chip__check">{{ isCategorySelected(category) ? '✓' : '' }}</span>
+              {{ category.name }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="vf-actions">
+        <button type="button" class="vf-btn vf-btn--ghost" (click)="onCancel()">إلغاء</button>
+        <button type="submit" class="vf-btn vf-btn--primary" [disabled]="isSubmitting">
+          {{ isSubmitting ? 'جاري الحفظ...' : 'حفظ نوع المركبة' }}
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

@@ -1,131 +1,90 @@
 /** @type {import('tailwindcss').Config} */
+const colors = require('./src/theme/colors.json');
+
+const chartColors = Object.fromEntries(
+  colors.chart.map((hex, index) => [index, hex])
+);
+
 module.exports = {
-  content: [
-    "./src/**/*.{html,ts}",
-  ],
+  darkMode: 'class',
+  content: ['./src/**/*.{html,ts}'],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['"Plus Jakarta Sans"', '"IBM Plex Sans Arabic"', 'system-ui', 'sans-serif'],
+      },
       colors: {
-        // Primary/Button Colors - Modern Teal/Cyan - Use for primary buttons, links, active states, focus rings
-        // Usage: bg-primary-500, text-primary-600, border-primary-300, hover:bg-primary-600
-        primary: {
-          50: '#f0fdfa',   // Very light teal
-          100: '#ccfbf1',  // Light teal
-          200: '#99f6e4',  // Subtle teal
-          300: '#5eead4',  // Borders, dividers
-          400: '#2dd4bf',  // Hover states
-          500: '#14b8a6',  // Primary button color (main brand)
-          600: '#0d9488',  // Primary button hover
-          700: '#0f766e',  // Primary button active
-          800: '#115e59',  // Darker variants
-          900: '#134e4a',  // Darkest variants
-          950: '#042f2e',
-        },
-        
-        // Secondary/Neutral Colors - Use for text, backgrounds, borders, cards
-        // Usage: bg-neutral-50, text-neutral-900, border-neutral-200
-        neutral: {
-          50: '#fafafa',   // Lightest backgrounds
-          100: '#f5f5f5',  // Light backgrounds
-          200: '#e5e5e5',  // Borders, dividers
-          300: '#d4d4d4',  // Disabled states
-          400: '#a3a3a3',  // Placeholder text
-          500: '#737373',  // Secondary text
-          600: '#525252',  // Body text
-          700: '#404040',  // Headings
-          800: '#262626',  // Dark text
-          900: '#171717',  // Darkest text
-          950: '#0a0a0a',
-        },
-        
-        // Input Colors - Use for form inputs, text fields, selects
-        // Usage: bg-input-50, border-input-300, focus:border-input-500
+        primary: colors.primary,
+        accent: colors.accent,
+        brand: colors.brand,
+        chart: chartColors,
+        neutral: colors.brand,
         input: {
-          50: '#f9fafb',   // Input background
-          100: '#f3f4f6',  // Input hover background
-          200: '#e5e7eb',  // Input border
-          300: '#d1d5db',  // Input border hover
-          400: '#9ca3af',  // Input placeholder
-          500: '#6b7280',  // Input text
-          600: '#4b5563',  // Input text focus
+          50: colors.brand[50],
+          100: colors.brand[100],
+          200: colors.brand[200],
+          300: colors.brand[300],
+          400: colors.brand[400],
+          500: colors.brand[500],
+          600: colors.brand[600],
         },
-        
-        // Success Colors - Use for success messages, positive actions, checkmarks
-        // Usage: bg-success-50, text-success-600, border-success-200
         success: {
-          50: '#f0fdf4',  // Success background
-          100: '#dcfce7',  // Success light background
-          200: '#bbf7d0',  // Success border
-          300: '#86efac',  // Success icon
-          400: '#4ade80',  // Success hover
-          500: '#22c55e',  // Success main
-          600: '#16a34a',  // Success dark
-          700: '#15803d',
+          50: '#ecfdf5',
+          100: '#d1fae5',
+          200: '#a7f3d0',
+          300: '#6ee7b7',
+          400: '#34d399',
+          ...colors.success,
+          700: '#047857',
         },
-        
-        // Error/Danger Colors - Use for error messages, delete buttons, warnings
-        // Usage: bg-error-50, text-error-600, border-error-200
         error: {
-          50: '#fef2f2',   // Error background
-          100: '#fee2e2',  // Error light background
-          200: '#fecaca',  // Error border
-          300: '#fca5a5',  // Error icon
-          400: '#f87171',  // Error hover
-          500: '#ef4444',  // Error main
-          600: '#dc2626',  // Error dark
+          50: '#fef2f2',
+          100: '#fee2e2',
+          200: '#fecaca',
+          300: '#fca5a5',
+          400: '#f87171',
+          ...colors.error,
           700: '#b91c1c',
         },
-        
-        // Warning Colors - Use for warnings, alerts, caution states
-        // Usage: bg-warning-50, text-warning-600
         warning: {
-          50: '#fffbeb',   // Warning background
-          100: '#fef3c7',  // Warning light background
-          200: '#fde68a',  // Warning border
-          300: '#fcd34d',  // Warning icon
-          400: '#fbbf24',  // Warning hover
-          500: '#f59e0b',  // Warning main
-          600: '#d97706',  // Warning dark
+          50: '#fffbeb',
+          100: '#fef3c7',
+          200: '#fde68a',
+          300: '#fcd34d',
+          400: '#fbbf24',
+          ...colors.warning,
           700: '#b45309',
         },
-        
-        // Info Colors - Use for informational messages, info badges
-        // Usage: bg-info-50, text-info-600
-        info: {
-          50: '#eff6ff',   // Info background
-          100: '#dbeafe',  // Info light background
-          200: '#bfdbfe',  // Info border
-          300: '#93c5fd',  // Info icon
-          400: '#60a5fa',  // Info hover
-          500: '#3b82f6',  // Info main
-          600: '#2563eb',  // Info dark
-          700: '#1d4ed8',
-        },
-        
-        // Surface Colors - Use for cards, panels, modals, dropdowns
-        // Usage: bg-surface-50, bg-surface-100
+        info: colors.accent,
         surface: {
-          50: '#ffffff',   // White surface (cards)
-          100: '#f9fafb',  // Light surface
-          200: '#f3f4f6',  // Subtle surface
-          300: '#e5e7eb',  // Border surface
+          50: '#ffffff',
+          100: colors.brand[50],
+          200: colors.brand[100],
+          300: colors.brand[200],
         },
-        
-        // Background Colors - Use for page backgrounds, layouts
-        // Usage: bg-background-primary, bg-background-secondary
         background: {
-          primary: '#ffffff',    // Main page background
-          secondary: '#f8f9fa',  // Secondary background
-          tertiary: '#f1f3f5',   // Tertiary background
+          primary: '#ffffff',
+          secondary: colors.brand[50],
+          tertiary: colors.brand[100],
         },
+      },
+      boxShadow: {
+        sidebar: '4px 0 32px rgba(0, 0, 0, 0.35)',
+        glow: `0 0 24px ${colors.primary[500]}73`,
+        'glow-accent': `0 0 20px ${colors.accent[400]}59`,
+        header: '0 1px 0 rgba(0,0,0,0.06), 0 4px 24px rgba(0,0,0,0.04)',
+      },
+      backgroundImage: {
+        'naqlah-gradient': `linear-gradient(135deg, ${colors.primary[500]} 0%, ${colors.primary[600]} 100%)`,
+        'naqlah-gradient-hover': `linear-gradient(135deg, ${colors.primary[600]} 0%, ${colors.primary[700]} 100%)`,
+        'naqlah-sidebar': `linear-gradient(180deg, ${colors.brand[50]} 0%, ${colors.brand[100]} 100%)`,
+        'naqlah-sidebar-dark': `linear-gradient(180deg, ${colors.brand[800]} 0%, ${colors.brand[900]} 100%)`,
+        'naqlah-surface': `linear-gradient(135deg, ${colors.primary[50]} 0%, ${colors.accent[50]} 100%)`,
       },
       animation: {
         'fade-in': 'fadeIn 0.3s ease-in-out',
         'slide-in-right': 'slideInRight 0.3s ease-out',
-        'slide-in-down': 'slideInDown 0.3s ease-out',
-        'scale-in': 'scaleIn 0.2s ease-out',
-        'pulse-slow': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'shimmer': 'shimmer 2s linear infinite',
+        'pulse-glow': 'pulseGlow 3s ease-in-out infinite',
       },
       keyframes: {
         fadeIn: {
@@ -133,24 +92,15 @@ module.exports = {
           '100%': { opacity: '1' },
         },
         slideInRight: {
-          '0%': { transform: 'translateX(100%)', opacity: '0' },
+          '0%': { transform: 'translateX(16px)', opacity: '0' },
           '100%': { transform: 'translateX(0)', opacity: '1' },
         },
-        slideInDown: {
-          '0%': { transform: 'translateY(-10px)', opacity: '0' },
-          '100%': { transform: 'translateY(0)', opacity: '1' },
-        },
-        scaleIn: {
-          '0%': { transform: 'scale(0.95)', opacity: '0' },
-          '100%': { transform: 'scale(1)', opacity: '1' },
-        },
-        shimmer: {
-          '0%': { backgroundPosition: '-1000px 0' },
-          '100%': { backgroundPosition: '1000px 0' },
+        pulseGlow: {
+          '0%, 100%': { boxShadow: `0 0 16px ${colors.primary[500]}59` },
+          '50%': { boxShadow: `0 0 28px ${colors.accent[400]}73` },
         },
       },
     },
   },
   plugins: [],
-}
-
+};

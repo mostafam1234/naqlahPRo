@@ -36,7 +36,7 @@ namespace Application.Features.AdminSection.SystemUsers.Queries
 
                 if (user == null)
                 {
-                    return Result.Failure<SystemUserAdminDto>("المستخدم غير موجود");
+                    return Result.Failure<SystemUserAdminDto>("UserNotFound");
                 }
 
                 // Get user role from UserRoles table
@@ -50,7 +50,7 @@ namespace Application.Features.AdminSection.SystemUsers.Queries
 
                 if (userRole == null)
                 {
-                    return Result.Failure<SystemUserAdminDto>("المستخدم ليس لديه دور محدد");
+                    return Result.Failure<SystemUserAdminDto>("UserHasNoRole");
                 }
 
                 var claims = await _userManager.GetClaimsAsync(user);

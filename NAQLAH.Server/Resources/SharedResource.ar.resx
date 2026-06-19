@@ -117,4 +117,316 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="DeliveryTypeRequired" xml:space="preserve">
+    <value>نوع الكابتن مطلوب</value>
+  </data>
+  <data name="DeliveryLicenseTypeRequired" xml:space="preserve">
+    <value>نوع رخصة القيادة مطلوب</value>
+  </data>
+  <data name="EmailRequired" xml:space="preserve">
+    <value>البريد الإلكتروني مطلوب</value>
+  </data>
+  <data name="PasswordRequired" xml:space="preserve">
+    <value>كلمة المرور مطلوبة</value>
+  </data>
+  <data name="DriverNameRequired" xml:space="preserve">
+    <value>اسم الكابتن مطلوب</value>
+  </data>
+  <data name="PhoneNumberRequired" xml:space="preserve">
+    <value>رقم الهاتف مطلوب</value>
+  </data>
+  <data name="IdentityNumberRequired" xml:space="preserve">
+    <value>رقم الهوية مطلوب</value>
+  </data>
+  <data name="BirthDateRequired" xml:space="preserve">
+    <value>تاريخ الميلاد مطلوب</value>
+  </data>
+  <data name="DriverIdentityPhotoRequired" xml:space="preserve">
+    <value>صورة هوية الكابتن مطلوبة</value>
+  </data>
+  <data name="DriverDrivingLicensePhotoRequired" xml:space="preserve">
+    <value>صورة رخصة قيادة الكابتن مطلوبة</value>
+  </data>
+  <data name="VehicleTypeRequired" xml:space="preserve">
+    <value>نوع المركبة مطلوب</value>
+  </data>
+  <data name="VehicleBrandRequired" xml:space="preserve">
+    <value>ماركة المركبة مطلوبة</value>
+  </data>
+  <data name="VehiclePlateNumberRequired" xml:space="preserve">
+    <value>رقم لوحة المركبة مطلوب</value>
+  </data>
+  <data name="VehicleOwnerTypeRequired" xml:space="preserve">
+    <value>نوع مالك المركبة مطلوب</value>
+  </data>
+  <data name="VehicleOwnerNameRequired" xml:space="preserve">
+    <value>اسم مالك المركبة مطلوب</value>
+  </data>
+  <data name="VehicleFrontPhotoRequired" xml:space="preserve">
+    <value>صورة المركبة الأمامية مطلوبة</value>
+  </data>
+  <data name="VehicleSidePhotoRequired" xml:space="preserve">
+    <value>صورة المركبة الجانبية مطلوبة</value>
+  </data>
+  <data name="VehicleRegistrationPhotoRequired" xml:space="preserve">
+    <value>صورة استمارة المركبة مطلوبة</value>
+  </data>
+  <data name="VehicleOwnerIdentityPhotoRequired" xml:space="preserve">
+    <value>صورة هوية مالك المركبة مطلوبة</value>
+  </data>
+  <data name="CommercialRegisterPhotoRequired" xml:space="preserve">
+    <value>صورة السجل التجاري مطلوبة لمالك الشركة</value>
+  </data>
+  <data name="CustomerIdInvalid" xml:space="preserve">
+    <value>معرّف العميل غير صالح</value>
+  </data>
+  <data name="CustomerNotFound" xml:space="preserve">
+    <value>العميل غير موجود</value>
+  </data>
+  <data name="RecordNotCustomerAccount" xml:space="preserve">
+    <value>هذا السجل لا يخص حساب عميل</value>
+  </data>
+  <data name="NewPasswordRequired" xml:space="preserve">
+    <value>كلمة المرور الجديدة مطلوبة</value>
+  </data>
+  <data name="UserNotFoundOrDeleted" xml:space="preserve">
+    <value>المستخدم غير موجود أو تم حذفه</value>
+  </data>
+  <data name="UserNotFound" xml:space="preserve">
+    <value>المستخدم غير موجود</value>
+  </data>
+  <data name="CannotModifyDeletedAccount" xml:space="preserve">
+    <value>لا يمكن تعديل حالة حساب تم حذفه</value>
+  </data>
+  <data name="NeighborhoodNotFound" xml:space="preserve">
+    <value>الحي غير موجود</value>
+  </data>
+  <data name="CityNotFound" xml:space="preserve">
+    <value>المدينة غير موجودة</value>
+  </data>
+  <data name="RegionNotFound" xml:space="preserve">
+    <value>المنطقة غير موجودة</value>
+  </data>
+  <data name="UserNotAuthenticated" xml:space="preserve">
+    <value>المستخدم غير مصادق عليه</value>
+  </data>
+  <data name="UsernameRequired" xml:space="preserve">
+    <value>اسم المستخدم مطلوب</value>
+  </data>
+  <data name="UsernameAlreadyTaken" xml:space="preserve">
+    <value>اسم المستخدم مستخدم بالفعل</value>
+  </data>
+  <data name="EmailAlreadyTaken" xml:space="preserve">
+    <value>البريد الإلكتروني مستخدم بالفعل</value>
+  </data>
+  <data name="FailedToUpdatePassword" xml:space="preserve">
+    <value>فشل في تحديث كلمة المرور</value>
+  </data>
+  <data name="OrderPackageNotFound" xml:space="preserve">
+    <value>باقة الطلب غير موجودة</value>
+  </data>
+  <data name="ArabicDescriptionRequired" xml:space="preserve">
+    <value>الوصف بالعربية مطلوب</value>
+  </data>
+  <data name="EnglishDescriptionRequired" xml:space="preserve">
+    <value>الوصف بالإنجليزية مطلوب</value>
+  </data>
+  <data name="MinimumWeightCannotBeNegative" xml:space="preserve">
+    <value>الوزن الأدنى لا يمكن أن يكون سالباً</value>
+  </data>
+  <data name="MaximumWeightCannotBeNegative" xml:space="preserve">
+    <value>الوزن الأقصى لا يمكن أن يكون سالباً</value>
+  </data>
+  <data name="MinimumWeightGreaterThanMaximum" xml:space="preserve">
+    <value>الوزن الأدنى لا يمكن أن يكون أكبر من الأقصى</value>
+  </data>
+  <data name="CategoryNotFound" xml:space="preserve">
+    <value>التصنيف غير موجود</value>
+  </data>
+  <data name="FailedToUploadImage" xml:space="preserve">
+    <value>فشل في رفع الصورة</value>
+  </data>
+  <data name="AdminEmailNotRegistered" xml:space="preserve">
+    <value>البريد الإلكتروني غير مسجل</value>
+  </data>
+  <data name="EmailAlreadyExists" xml:space="preserve">
+    <value>البريد الإلكتروني مستخدم بالفعل</value>
+  </data>
+  <data name="EmailAlreadyExist" xml:space="preserve">
+    <value>البريد الإلكتروني مستخدم بالفعل</value>
+  </data>
+  <data name="PhoneNumberInvalid" xml:space="preserve">
+    <value>رقم الهاتف غير صحيح. يجب أن يبدأ بـ 05 ويتكون من 10 أرقام</value>
+  </data>
+  <data name="PhoneNumberAlreadyExists" xml:space="preserve">
+    <value>رقم الهاتف مستخدم بالفعل</value>
+  </data>
+  <data name="PhoneNumberAlreadyExist" xml:space="preserve">
+    <value>رقم الهاتف مستخدم بالفعل</value>
+  </data>
+  <data name="UsernameAlreadyExists" xml:space="preserve">
+    <value>اسم المستخدم مستخدم بالفعل</value>
+  </data>
+  <data name="RoleNotFound" xml:space="preserve">
+    <value>الدور المحدد غير موجود</value>
+  </data>
+  <data name="FailedToAssignRole" xml:space="preserve">
+    <value>فشل في تعيين الدور</value>
+  </data>
+  <data name="FailedToSaveRoleRecord" xml:space="preserve">
+    <value>فشل في حفظ سجل الدور</value>
+  </data>
+  <data name="ConfigurationNotFound" xml:space="preserve">
+    <value>الإعدادات غير موجودة</value>
+  </data>
+  <data name="CustomerIdRequired" xml:space="preserve">
+    <value>معرّف العميل مطلوب</value>
+  </data>
+  <data name="ModuleKeyRequired" xml:space="preserve">
+    <value>مفتاح الوحدة مطلوب</value>
+  </data>
+  <data name="UnknownModule" xml:space="preserve">
+    <value>وحدة غير معروفة</value>
+  </data>
+  <data name="NoExporterForModule" xml:space="preserve">
+    <value>لا يوجد مصدر بيانات لهذه الوحدة</value>
+  </data>
+  <data name="AssistantWorkNotFound" xml:space="preserve">
+    <value>عمل المساعد غير موجود</value>
+  </data>
+  <data name="OrderNotFound" xml:space="preserve">
+    <value>الطلب غير موجود</value>
+  </data>
+  <data name="OrderPackageInUseCannotDelete" xml:space="preserve">
+    <value>لا يمكن حذف باقة الطلب لأنها مستخدمة في طلبات موجودة</value>
+  </data>
+  <data name="UserHasNoRole" xml:space="preserve">
+    <value>المستخدم ليس لديه دور محدد</value>
+  </data>
+  <data name="ImageRequired" xml:space="preserve">
+    <value>الصورة مطلوبة</value>
+  </data>
+  <data name="IconRequired" xml:space="preserve">
+    <value>الأيقونة مطلوبة</value>
+  </data>
+  <data name="MainCategoryRequired" xml:space="preserve">
+    <value>تصنيف رئيسي واحد على الأقل مطلوب</value>
+  </data>
+  <data name="VehicleTypeNotFound" xml:space="preserve">
+    <value>نوع المركبة غير موجود</value>
+  </data>
+  <data name="VehicleBrandNotFound" xml:space="preserve">
+    <value>ماركة المركبة غير موجودة</value>
+  </data>
+  <data name="FailedToGetOrders" xml:space="preserve">
+    <value>فشل في جلب الطلبات</value>
+  </data>
+  <data name="FailedToGetOrderDetails" xml:space="preserve">
+    <value>فشل في جلب تفاصيل الطلب</value>
+  </data>
+  <data name="FailedToGetDashboardStatistics" xml:space="preserve">
+    <value>فشل في جلب إحصائيات لوحة التحكم</value>
+  </data>
+  <data name="FailedToUploadIcon" xml:space="preserve">
+    <value>فشل في رفع الأيقونة</value>
+  </data>
+  <data name="OrderAlreadyCancelled" xml:space="preserve">
+    <value>الطلب ملغي بالفعل</value>
+  </data>
+  <data name="OnlyPendingOrdersCanBeCanceled" xml:space="preserve">
+    <value>يمكن إلغاء الطلبات المعلقة فقط</value>
+  </data>
+  <data name="OnlyPendingOrdersCanBeAssigned" xml:space="preserve">
+    <value>يمكن تعيين الطلبات المعلقة فقط</value>
+  </data>
+  <data name="DeliveryManNotFoundOrNotAvailable" xml:space="preserve">
+    <value>مندوب التوصيل غير موجود أو غير متاح</value>
+  </data>
+  <data name="DeliveryManAlreadyHasActiveOrder" xml:space="preserve">
+    <value>مندوب التوصيل لديه طلب نشط بالفعل</value>
+  </data>
+  <data name="OnlyAssignedOrdersCanBeCompleted" xml:space="preserve">
+    <value>يمكن إكمال الطلبات المعينة فقط</value>
+  </data>
+  <data name="NotificationNotFound" xml:space="preserve">
+    <value>الإشعار غير موجود</value>
+  </data>
+  <data name="DeliveryManNotFound" xml:space="preserve">
+    <value>مندوب التوصيل غير موجود</value>
+  </data>
+  <data name="DeliveryManNotExists" xml:space="preserve">
+    <value>مندوب التوصيل غير موجود</value>
+  </data>
+  <data name="InvalidBirthDateFormat" xml:space="preserve">
+    <value>تنسيق تاريخ الميلاد غير صالح. استخدم yyyy-MM-dd</value>
+  </data>
+  <data name="InvalidIdentityExpirationDateFormat" xml:space="preserve">
+    <value>تنسيق تاريخ انتهاء الهوية غير صالح</value>
+  </data>
+  <data name="InvalidDrivingLicenseExpirationDateFormat" xml:space="preserve">
+    <value>تنسيق تاريخ انتهاء رخصة القيادة غير صالح</value>
+  </data>
+  <data name="InvalidVehicleLicenseExpirationDateFormat" xml:space="preserve">
+    <value>تنسيق تاريخ انتهاء رخصة المركبة غير صالح</value>
+  </data>
+  <data name="InvalidVehicleInsuranceExpirationDateFormat" xml:space="preserve">
+    <value>تنسيق تاريخ انتهاء تأمين المركبة غير صالح</value>
+  </data>
+  <data name="FailedToLoadCreatedUser" xml:space="preserve">
+    <value>فشل في تحميل المستخدم أو مندوب التوصيل الذي تم إنشاؤه</value>
+  </data>
+  <data name="FailedToSaveUserRole" xml:space="preserve">
+    <value>فشل في حفظ دور المستخدم</value>
+  </data>
+  <data name="FailedToSaveData" xml:space="preserve">
+    <value>فشل في حفظ البيانات</value>
+  </data>
+  <data name="DeliveryManShouldHaveVehicle" xml:space="preserve">
+    <value>يجب أن يكون لدى مندوب التوصيل مركبة</value>
+  </data>
+  <data name="InvalidVehicleTypeName" xml:space="preserve">
+    <value>اسم نوع المركبة غير صالح</value>
+  </data>
+  <data name="CostCannotBeNegative" xml:space="preserve">
+    <value>التكلفة لا يمكن أن تكون سالبة</value>
+  </data>
+  <data name="ServiceFeeCannotBeNegative" xml:space="preserve">
+    <value>رسوم الخدمة لا يمكن أن تكون سالبة</value>
+  </data>
+  <data name="OrderNotInPendingStatus" xml:space="preserve">
+    <value>الطلب ليس في حالة معلقة</value>
+  </data>
+  <data name="OrderAlreadyAssignedToDeliveryMan" xml:space="preserve">
+    <value>الطلب معيّن بالفعل لمندوب توصيل</value>
+  </data>
+  <data name="InvalidDeliveryManId" xml:space="preserve">
+    <value>معرّف مندوب التوصيل غير صالح</value>
+  </data>
+  <data name="InsufficientWalletBalance" xml:space="preserve">
+    <value>رصيد المحفظة غير كافٍ لإكمال الطلب</value>
+  </data>
+  <data name="OrderAlreadyInStatus" xml:space="preserve">
+    <value>الطلب في هذه الحالة بالفعل</value>
+  </data>
+  <data name="OrderStatusTransitionNotAllowed" xml:space="preserve">
+    <value>لا يمكن تغيير حالة الطلب إلى الحالة المطلوبة</value>
+  </data>
+  <data name="InvalidVehicleTypeId" xml:space="preserve">
+    <value>معرّف نوع المركبة غير صالح</value>
+  </data>
+  <data name="VehicleTypeAlreadySelected" xml:space="preserve">
+    <value>تم اختيار نوع المركبة لهذا الطلب بالفعل</value>
+  </data>
+  <data name="VehicleTypeOnlyForPendingOrders" xml:space="preserve">
+    <value>يمكن تعيين نوع المركبة للطلبات المعلقة فقط</value>
+  </data>
+  <data name="OrderWayPointNotFound" xml:space="preserve">
+    <value>نقطة الطلب غير موجودة</value>
+  </data>
+  <data name="InvalidUserNameOrPassword" xml:space="preserve">
+    <value>اسم المستخدم أو كلمة المرور غير صحيحة</value>
+  </data>
+  <data name="InValidUsernameOrPassword" xml:space="preserve">
+    <value>اسم المستخدم أو كلمة المرور غير صحيحة</value>
+  </data>
 </root>

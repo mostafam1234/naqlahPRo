@@ -1,4 +1,5 @@
 using Application.Features.AdminSection.Dashboard.Dtos;
+using Application.Shared.Services;
 using CSharpFunctionalExtensions;
 using Domain.Enums;
 using Domain.InterFaces;
@@ -45,7 +46,7 @@ namespace Application.Features.AdminSection.Dashboard.Queries
                                             OrderTypeName = GetOrderTypeName(order.OrderType, request.LanguageId),
                                             Total = order.Total,
                                             OrderStatus = order.OrderStatus,
-                                            OrderStatusName = GetOrderStatusName(order.OrderStatus, request.LanguageId)
+                                            OrderStatusName = OrderDisplayLabels.GetOrderStatusName(order.OrderStatus, request.LanguageId)
                                         })
                                         .ToListAsync(cancellationToken);
 
@@ -62,19 +63,8 @@ namespace Application.Features.AdminSection.Dashboard.Queries
                     _ => languageId == 1 ? "غير محدد" : "Not Specified"
                 };
             }
-
-            private static string GetOrderStatusName(OrderStatus status, int languageId)
-            {
-                return status switch
-                {
-                    OrderStatus.Pending => languageId == 1 ? "في الانتظار" : "Pending",
-                    OrderStatus.Assigned => languageId == 1 ? "تم تعيين كابتن" : "Assigned",
-                    OrderStatus.Completed => languageId == 1 ? "مكتمل" : "Completed",
-                    OrderStatus.Cancelled => languageId == 1 ? "ملغي" : "Cancelled",
-                    _ => languageId == 1 ? "غير محدد" : "Not Specified"
-                };
-            }
         }
     }
 }
+
 

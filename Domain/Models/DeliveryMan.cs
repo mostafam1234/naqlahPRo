@@ -16,32 +16,34 @@ namespace Domain.Models
         public DeliveryMan()
         {
             this.FullName = string.Empty;
-            this.Address = string.Empty;
             this.PhoneNumber = string.Empty;
             this.IdentityNumber = string.Empty;
-            this.BackDrivingLicenseImagePath = string.Empty;
             this.FrontIdenitytImagePath = string.Empty;
-            this.BackIdenitytImagePath = string.Empty;
-            this.PersonalImagePath = string.Empty;
             this.FrontDrivingLicenseImagePath = string.Empty;
             this.AndriodDevice = string.Empty;
             this.IosDevice = string.Empty;
+            this.MissingProfileFieldsJson = "[]";
         }
         public int Id { get; set; }
         public string FullName { get; private set; }
-        public string Address { get; private set; }
+        public string? Address { get; private set; }
         public string PhoneNumber { get; private set; }
         public string IdentityNumber { get; private set; }
         public string FrontIdenitytImagePath { get; private set; }
-        public string BackIdenitytImagePath { get; private set; }
-        public string PersonalImagePath { get; private set; }
-        public DateTime IdentityExpirationDate { get; private set; }
-        public DateTime DrivingLicenseExpirationDate { get; private set; }
+        public string? BackIdenitytImagePath { get; private set; }
+        public string? PersonalImagePath { get; private set; }
+        public DateTime? BirthDate { get; private set; }
+        public DateTime? IdentityExpirationDate { get; private set; }
+        public DateTime? DrivingLicenseExpirationDate { get; private set; }
+        public DateTime RegisteredAt { get; private set; } = DateTime.UtcNow;
+        public bool HasIncompleteRegistration { get; private set; }
+        public string MissingProfileFieldsJson { get; private set; }
+        public DateTime? IncompleteProfileReminderSentAt { get; private set; }
         public DeliveryType DeliveryType { get; private set; }
         public DeliveryRequesState DeliveryState { get; private set; }
         public DeliveryLicenseType DeliveryLicenseType { get; private set; }
         public string FrontDrivingLicenseImagePath { get; private set; }
-        public string BackDrivingLicenseImagePath { get; private set; }
+        public string? BackDrivingLicenseImagePath { get; private set; }
 
         [Required]
         public int UserId { get; private set; }
@@ -71,10 +73,22 @@ namespace Domain.Models
             var deliveryMan = new DeliveryMan
             {
                 PhoneNumber = phoneNumber,
-                FullName = name
+                FullName = name,
+                RegisteredAt = DateTime.UtcNow
             };
 
             return deliveryMan;
+        }
+
+        public void SetProfileCompleteness(bool hasIncompleteRegistration, string missingFieldsJson)
+        {
+            HasIncompleteRegistration = hasIncompleteRegistration;
+            MissingProfileFieldsJson = missingFieldsJson;
+        }
+
+        public void MarkIncompleteProfileReminderSent()
+        {
+            IncompleteProfileReminderSentAt = DateTime.UtcNow;
         }
 
         public void SaveLocation(double longitude,double latitude)
@@ -120,13 +134,13 @@ namespace Domain.Models
         public Result SetDeliveryVehicleOwnerAsResident(string citizenName,
                                                         string IdentityNumber,
                                                         string frontIdentityImage,
-                                                        string backIdentityImage,
-                                                        string bankAccountNumber)
+                                                        string? backIdentityImage,
+                                                        string? bankAccountNumber)
         {
             var vehicle = this.Vehicle;
             if (vehicle is null)
             {
-                return Result.Failure("DeliveryMan Should Have vehicle");
+                return Result.Failure("DeliveryManShouldHaveVehicle");
             }
             vehicle.SetCarOwnerAsResident(citizenName,
                                           IdentityNumber,
@@ -141,14 +155,14 @@ namespace Domain.Models
         public Result SetDeliveryVehicleOwnerAsRenter(string citizenName,
                                                       string identityNumber,
                                                       string frontIdentityImagePath,
-                                                      string backIdentityImagePath,
-                                                      string rentContractImagePath,
-                                                      string bankAccountNumber)
+                                                      string? backIdentityImagePath,
+                                                      string? rentContractImagePath,
+                                                      string? bankAccountNumber)
         {
             var vehicle = this.Vehicle;
             if (vehicle is null)
             {
-                return Result.Failure("DeliveryMan Should Have vehicle");
+                return Result.Failure("DeliveryManShouldHaveVehicle");
             }
             vehicle.SetCarOwnerAsRenter(citizenName,
                                         identityNumber,
@@ -169,7 +183,7 @@ namespace Domain.Models
             var vehicle = this.Vehicle;
             if (vehicle is null)
             {
-                return Result.Failure("DeliveryMan Should Have vehicle");
+                return Result.Failure("DeliveryManShouldHaveVehicle");
             }
             vehicle.SetCarOwnerAsCompany(companName,
                                          commercialRecordNumbeer,
@@ -182,20 +196,27 @@ namespace Domain.Models
         }
 
         public Result UpdatePersnalInfo(string fullName,
-                                        string address,
+                                        string? address,
                                         string IdentityNumber,
                                         string frontIdenitytImage,
-                                        string backIdentityImage,
-                                        string personalImage,
-                                        DateTime identityExpirationDate,
-                                        DateTime DrivingLicenseExpirationDate,
-                                        int deliveryTypeId,
+                                        string? backIdentityImage,
+                                        string? personalImage,
+                                        DateTime? identityExpirationDate,
+                                        DateTime? drivingLicenseExpirationDate,
+                                        DateTime? birthDate,
+                                        int? deliveryTypeId,
                                         int deliveryLicenseTypeId,
                                         string frontDrivingLicenseImage,
-                                        string backDrivingLicenseImage
+                                        string? backDrivingLicenseImage
                                         )
         {
-            var deliveryType = (DeliveryType)deliveryTypeId;
+            if (!deliveryTypeId.HasValue || !Enum.IsDefined(typeof(DeliveryType), deliveryTypeId.Value))
+                return Result.Failure("DeliveryTypeRequired");
+
+            if (!Enum.IsDefined(typeof(DeliveryLicenseType), deliveryLicenseTypeId))
+                return Result.Failure("DeliveryLicenseTypeRequired");
+
+            var deliveryType = (DeliveryType)deliveryTypeId.Value;
             var licenseType = (DeliveryLicenseType)deliveryLicenseTypeId;
 
             this.FullName = fullName;
@@ -205,7 +226,8 @@ namespace Domain.Models
             this.BackIdenitytImagePath = backIdentityImage;
             this.PersonalImagePath = personalImage;
             this.IdentityExpirationDate = identityExpirationDate;
-            this.DrivingLicenseExpirationDate = DrivingLicenseExpirationDate;
+            this.DrivingLicenseExpirationDate = drivingLicenseExpirationDate;
+            this.BirthDate = birthDate;
             this.FrontDrivingLicenseImagePath = frontDrivingLicenseImage;
             this.BackDrivingLicenseImagePath = backDrivingLicenseImage;
             this.DeliveryType = deliveryType;
@@ -219,11 +241,11 @@ namespace Domain.Models
                                  string frontImagePath,
                                  string sideImagePath,
                                  string frontLicenseImagePath,
-                                 string backLicenseImagePath,
-                                 DateTime licenseExpirationDate,
-                                 string frontInsuranceImagePath,
-                                 string backInsuranceImagePath,
-                                 DateTime inSuranceExpirationDate,
+                                 string? backLicenseImagePath,
+                                 DateTime? licenseExpirationDate,
+                                 string? frontInsuranceImagePath,
+                                 string? backInsuranceImagePath,
+                                 DateTime? inSuranceExpirationDate,
                                  int vehicleOwnerTypeId)
         {
             var vehicle = DeliveryVehicle.Instance(vehicleTypeId,

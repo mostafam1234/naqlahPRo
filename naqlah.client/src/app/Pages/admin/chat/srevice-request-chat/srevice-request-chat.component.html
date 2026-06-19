@@ -4,7 +4,7 @@
       <button
         (click)="setActiveTab('all')"
         [ngClass]="{
-          'bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-md z-10': activeTab === 'all',
+          'bg-gradient-to-r from-primary-600 to-accent-500 text-white shadow-md z-10': activeTab === 'all',
           'text-gray-600 hover:text-gray-800 hover:bg-white hover:shadow-md': activeTab !== 'all'
         }"
         class="relative px-8 py-4 font-bold rounded-xl transition-all duration-300 transform hover:scale-105"
@@ -15,7 +15,7 @@
       <button
         (click)="setActiveTab('individual')"
         [ngClass]="{
-          'bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-md z-10': activeTab === 'individual',
+          'bg-gradient-to-r from-primary-600 to-accent-500 text-white shadow-md z-10': activeTab === 'individual',
           'text-gray-600 hover:text-gray-800 hover:bg-white hover:shadow-md': activeTab !== 'individual'
         }"
         class="px-8 py-4 font-bold rounded-xl transition-all duration-300 transform hover:scale-105"
@@ -26,7 +26,7 @@
       <button
         (click)="setActiveTab('institution')"
         [ngClass]="{
-          'bg-gradient-to-r from-teal-500 to-blue-500 text-white shadow-md z-10': activeTab === 'institution',
+          'bg-gradient-to-r from-primary-600 to-accent-500 text-white shadow-md z-10': activeTab === 'institution',
           'text-gray-600 hover:text-gray-800 hover:bg-white hover:shadow-md': activeTab !== 'institution'
         }"
         class="px-8 py-4 font-bold rounded-xl transition-all duration-300 transform hover:scale-105"
@@ -272,7 +272,7 @@
                [class.justify-end]="message.isSent">
 
             <div class="max-w-xs lg:max-w-md px-4 py-2 rounded-2xl"
-                 [class.bg-teal-700]="message.isSent"
+                 [class.bg-primary-700]="message.isSent"
                  [class.text-white]="message.isSent"
                  [class.bg-white]="!message.isSent"
                  [class.text-gray-800]="!message.isSent"
@@ -333,7 +333,7 @@
                      class="w-full bg-gray-100 rounded-full py-3 px-4 pr-12 text-right focus:outline-none focus:ring-2 focus:ring-blue-500">
 
               <button (click)="sendMessage()"
-                      class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-teal-600 hover:bg-teal-700 text-white p-2 rounded-full transition-colors">
+                      class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-primary-600 hover:bg-primary-700 text-white p-2 rounded-full transition-colors">
                 <svg class="w-4 h-4 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
                 </svg>
