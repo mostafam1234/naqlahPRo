@@ -1,5 +1,8 @@
 import { CustomerType, DeliveryManLookupDto, DeliveryRequesState, OrderStatus } from 'src/app/Core/services/NaqlahClient';
 import { SelectOption } from 'src/app/shared/models/select-option.model';
+import { getDefaultSearchDateRange } from 'src/app/shared/utils/date-filter.helpers';
+
+const defaultSearchDates = getDefaultSearchDateRange();
 
 export type { SelectOption };
 
@@ -15,8 +18,8 @@ export const EMPTY_CAPTAINS_LIST_FILTER: CaptainsListFilterForm = {
   searchTerm: '',
   deliveryManIds: [],
   deliveryManActiveKey: 'all',
-  fromDate: '',
-  toDate: ''
+  fromDate: defaultSearchDates.fromDate,
+  toDate: defaultSearchDates.toDate
 };
 
 export interface CaptainOrdersFilterForm {
@@ -35,8 +38,8 @@ export const EMPTY_CAPTAIN_ORDERS_FILTER: CaptainOrdersFilterForm = {
   deliveryManActiveKey: 'all',
   customerTypeKey: 'all',
   statusKey: 'all',
-  fromDate: '',
-  toDate: ''
+  fromDate: defaultSearchDates.fromDate,
+  toDate: defaultSearchDates.toDate
 };
 
 export const DELIVERY_MAN_ACTIVE_OPTIONS: SelectOption[] = [

@@ -2,8 +2,8 @@
   <div class="container mx-auto max-w-7xl">
     <!-- Page Header -->
     <app-page-header
-      [title]="'الفئات الرئيسية' | translate"
-      [subtitle]="'إدارة الفئات الرئيسية للمنتجات' | translate"
+      [title]="'ADMIN.SHIPMENT_CATEGORIES.TITLE' | translate"
+      [subtitle]="'ADMIN.SHIPMENT_CATEGORIES.SUBTITLE' | translate"
       [showBackButton]="true"
       iconPath="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
       (onBackClick)="goBack()"
@@ -26,7 +26,7 @@
             <input
               type="text"
               [formControl]="searchControl"
-              placeholder="البحث في الفئات الرئيسية..."
+              placeholder="{{ 'ADMIN.SHIPMENT_CATEGORIES.SEARCH' | translate }}"
               class="block w-full pl-10 pr-3 py-2.5 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 text-sm"
             />
           </div>
@@ -38,7 +38,7 @@
             class="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 active:bg-primary-800 text-white px-4 py-2.5 rounded-lg shadow-sm transition-all duration-200 text-sm font-medium"
           >
             <i class="bi bi-plus-lg"></i>
-            <span>إضافة فئة جديدة</span>
+            <span>{{ 'ADMIN.SHIPMENT_CATEGORIES.ADD' | translate }}</span>
           </button>
         </div>
       </div>
@@ -52,7 +52,7 @@
       <div class="px-6 py-4 border-b border-neutral-200 bg-neutral-50/50">
         <div class="flex items-center justify-between">
           <h3 class="font-semibold text-neutral-900 text-lg">
-            الفئات الرئيسية
+            {{ 'ADMIN.SHIPMENT_CATEGORIES.LIST_TITLE' | translate }}
           </h3>
           <span
             class="text-sm text-neutral-500 bg-neutral-100 px-3 py-1 rounded-full"
@@ -83,22 +83,22 @@
               <th
                 class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider"
               >
-                الاسم بالعربية
+                {{ 'ADMIN.SHIPMENT_CATEGORIES.ARABIC_NAME' | translate }}
               </th>
               <th
                 class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider"
               >
-                الاسم بالإنجليزية
+                {{ 'ADMIN.SHIPMENT_CATEGORIES.ENGLISH_NAME' | translate }}
               </th>
               <th
                 class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider"
               >
-                الصورة
+                {{ 'ADMIN.SHIPMENT_CATEGORIES.IMAGE' | translate }}
               </th>
               <th
                 class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider"
               >
-                الإجراءات
+                {{ 'ADMIN.SHIPMENT_CATEGORIES.ACTIONS' | translate }}
               </th>
             </tr>
           </thead>
@@ -141,6 +141,20 @@
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-right">
                 <div class="inline-flex items-center gap-2">
+                  <button
+                    type="button"
+                    (click)="openLinkedVehicles(item)"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary-50 text-primary-700 rounded-lg hover:bg-primary-100 transition-colors text-xs font-medium"
+                    [title]="'ADMIN.SHIPMENT_CATEGORIES.VIEW_VEHICLES' | translate"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4M16 17H4m0 0l4 4m-4-4l4-4" />
+                    </svg>
+                    <span>{{ 'ADMIN.SHIPMENT_CATEGORIES.VIEW_VEHICLES' | translate }}</span>
+                    <span class="bg-primary-100 text-primary-800 px-1.5 py-0.5 rounded-full text-[10px]">
+                      {{ getVehicleTypeCount(item) }}
+                    </span>
+                  </button>
                   <button
                     *ngIf="hasPermission('MainCategoryActions')"
                     (click)="openEdit(item)"
@@ -189,7 +203,7 @@
                 <div class="text-neutral-400 mb-2">
                   <i class="bi bi-inbox text-4xl"></i>
                 </div>
-                <p class="text-sm text-neutral-500">لا توجد فئات رئيسية</p>
+                <p class="text-sm text-neutral-500">{{ 'ADMIN.SHIPMENT_CATEGORIES.EMPTY' | translate }}</p>
               </td>
             </tr>
           </tbody>
@@ -277,7 +291,7 @@
       <div class="px-6 py-4 border-b border-neutral-200">
         <div class="flex items-center justify-between">
           <h3 class="text-lg font-semibold text-neutral-900">
-            إضافة فئة رئيسية جديدة
+            {{ 'ADMIN.SHIPMENT_CATEGORIES.ADD_MODAL_TITLE' | translate }}
           </h3>
           <button
             (click)="closeModal()"
@@ -482,7 +496,7 @@
       <div class="px-6 py-4 border-b border-neutral-200">
         <div class="flex items-center justify-between">
           <h3 class="text-lg font-semibold text-neutral-900">
-            تعديل الفئة الرئيسية
+            {{ 'ADMIN.SHIPMENT_CATEGORIES.EDIT_MODAL_TITLE' | translate }}
           </h3>
           <button
             (click)="closeModal()"

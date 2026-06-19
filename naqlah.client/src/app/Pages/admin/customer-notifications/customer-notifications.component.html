@@ -1,233 +1,221 @@
-<!-- Page Header -->
-<div class="px-6 py-5 border-b border-neutral-200 bg-white">
-  <div class="flex items-center justify-between">
-    <div>
-      <h2 class="text-xl font-bold text-neutral-900">إشعارات العملاء</h2>
-      <p class="text-sm text-neutral-500 mt-0.5">إرسال وجدولة الإشعارات لعملاء التطبيق</p>
-    </div>
-    <!-- Bell icon -->
-    <div class="w-10 h-10 rounded-xl bg-primary-50 flex items-center justify-center">
-      <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-      </svg>
-    </div>
-  </div>
+<div class="min-h-screen theme-page na-shell w-full">
+  <app-page-header
+    title="إشعارات العملاء"
+    subtitle="إرسال وجدولة الإشعارات لعملاء التطبيق"
+    [showBackButton]="true"
+    iconPath="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+    (onBackClick)="goBack()"
+  >
+  </app-page-header>
 
   <!-- Tabs -->
-  <div class="flex gap-1 mt-5 bg-neutral-100 rounded-xl p-1 w-fit">
-    <button
-      (click)="switchTab('compose')"
-      [class]="activeTab === 'compose' ? 'bg-white shadow text-primary-700 font-semibold' : 'text-neutral-600 hover:text-neutral-800'"
-      class="px-5 py-2 rounded-lg text-sm transition-all duration-200 flex items-center gap-2"
-    >
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
-      </svg>
-      إرسال إشعار
-    </button>
-    <button
-      (click)="switchTab('history')"
-      [class]="activeTab === 'history' ? 'bg-white shadow text-primary-700 font-semibold' : 'text-neutral-600 hover:text-neutral-800'"
-      class="px-5 py-2 rounded-lg text-sm transition-all duration-200 flex items-center gap-2"
-    >
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
-      </svg>
-      الإشعارات المرسلة
-      <span *ngIf="totalCount > 0" class="bg-primary-100 text-primary-700 text-xs px-1.5 py-0.5 rounded-full font-medium">
-        {{ totalCount }}
-      </span>
-    </button>
+  <div class="mb-6">
+    <div class="cn-tabs">
+      <button
+        type="button"
+        (click)="switchTab('compose')"
+        class="cn-tab"
+        [class.cn-tab--active]="activeTab === 'compose'"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+        </svg>
+        إرسال إشعار
+      </button>
+      <button
+        type="button"
+        (click)="switchTab('history')"
+        class="cn-tab"
+        [class.cn-tab--active]="activeTab === 'history'"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+        </svg>
+        الإشعارات المرسلة
+        <span *ngIf="totalCount > 0" class="bg-primary-100 text-primary-700 text-xs px-1.5 py-0.5 rounded-full font-medium">
+          {{ totalCount }}
+        </span>
+      </button>
+    </div>
   </div>
-</div>
 
-<!-- ===== COMPOSE TAB ===== -->
-<div *ngIf="activeTab === 'compose'" class="p-6">
-  <div class="max-w-2xl mx-auto">
+  <!-- ===== COMPOSE TAB ===== -->
+  <div *ngIf="activeTab === 'compose'">
     <form [formGroup]="form" (ngSubmit)="send()">
-
-      <!-- Notification Content Card -->
-      <div class="bg-white border border-neutral-200 rounded-xl p-6 mb-5 shadow-sm">
-        <h3 class="text-base font-semibold text-neutral-800 mb-4 flex items-center gap-2">
-          <svg class="w-4 h-4 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-          </svg>
-          محتوى الإشعار
-        </h3>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <!-- Arabic Title -->
-          <div>
-            <label class="block text-xs font-medium text-neutral-600 mb-1.5">العنوان (عربي) <span class="text-red-500">*</span></label>
-            <input
-              formControlName="arabicTitle"
-              type="text"
-              dir="rtl"
-              placeholder="عنوان الإشعار بالعربية"
-              class="w-full px-3 py-2.5 border rounded-lg text-sm transition-all duration-200 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-              [class.border-red-400]="hasError('arabicTitle')"
-              [class.border-neutral-300]="!hasError('arabicTitle')"
-            />
-            <p *ngIf="hasError('arabicTitle')" class="text-xs text-red-500 mt-1">هذا الحقل مطلوب</p>
-          </div>
-
-          <!-- English Title -->
-          <div>
-            <label class="block text-xs font-medium text-neutral-600 mb-1.5">العنوان (إنجليزي) <span class="text-red-500">*</span></label>
-            <input
-              formControlName="englishTitle"
-              type="text"
-              dir="ltr"
-              placeholder="Notification title in English"
-              class="w-full px-3 py-2.5 border rounded-lg text-sm transition-all duration-200 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-              [class.border-red-400]="hasError('englishTitle')"
-              [class.border-neutral-300]="!hasError('englishTitle')"
-            />
-            <p *ngIf="hasError('englishTitle')" class="text-xs text-red-500 mt-1">This field is required</p>
-          </div>
-
-          <!-- Arabic Message -->
-          <div>
-            <label class="block text-xs font-medium text-neutral-600 mb-1.5">الرسالة (عربي) <span class="text-red-500">*</span></label>
-            <textarea
-              formControlName="arabicMessage"
-              rows="3"
-              dir="rtl"
-              placeholder="نص الإشعار بالعربية"
-              class="w-full px-3 py-2.5 border rounded-lg text-sm transition-all duration-200 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 resize-none"
-              [class.border-red-400]="hasError('arabicMessage')"
-              [class.border-neutral-300]="!hasError('arabicMessage')"
-            ></textarea>
-            <p *ngIf="hasError('arabicMessage')" class="text-xs text-red-500 mt-1">هذا الحقل مطلوب</p>
-          </div>
-
-          <!-- English Message -->
-          <div>
-            <label class="block text-xs font-medium text-neutral-600 mb-1.5">الرسالة (إنجليزي) <span class="text-red-500">*</span></label>
-            <textarea
-              formControlName="englishMessage"
-              rows="3"
-              dir="ltr"
-              placeholder="Notification body in English"
-              class="w-full px-3 py-2.5 border rounded-lg text-sm transition-all duration-200 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 resize-none"
-              [class.border-red-400]="hasError('englishMessage')"
-              [class.border-neutral-300]="!hasError('englishMessage')"
-            ></textarea>
-            <p *ngIf="hasError('englishMessage')" class="text-xs text-red-500 mt-1">This field is required</p>
-          </div>
-        </div>
-
-        <!-- Notification Type -->
-        <div class="mt-4">
-          <label class="block text-xs font-medium text-neutral-600 mb-1.5">نوع الإشعار</label>
-          <select
-            formControlName="notificationType"
-            class="w-full px-3 py-2.5 border border-neutral-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white"
-          >
-            <option *ngFor="let t of notificationTypes" [value]="t.value">{{ t.label }}</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Targeting Card -->
-      <div class="bg-white border border-neutral-200 rounded-xl p-6 mb-5 shadow-sm">
-        <h3 class="text-base font-semibold text-neutral-800 mb-4 flex items-center gap-2">
-          <svg class="w-4 h-4 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
-          </svg>
-          الفئة المستهدفة
-        </h3>
-
-        <!-- Target All toggle -->
-        <div class="flex items-center gap-3 mb-4">
-          <label class="relative inline-flex items-center cursor-pointer">
-            <input type="checkbox" formControlName="targetAll" class="sr-only peer"/>
-            <div class="w-10 h-5 bg-neutral-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-600"></div>
-          </label>
-          <span class="text-sm font-medium text-neutral-700">إرسال لجميع العملاء</span>
-        </div>
-
-        <!-- Customer Type filter (shown when targetAll = true) -->
-        <div *ngIf="targetAll" class="mt-1">
-          <label class="block text-xs font-medium text-neutral-600 mb-2">تصفية حسب نوع العميل</label>
-          <div class="flex gap-2 flex-wrap">
-            <button
-              *ngFor="let ct of customerTypes"
-              type="button"
-              (click)="form.get('targetCustomerType')!.setValue(ct.value)"
-              [class]="form.get('targetCustomerType')!.value === ct.value
-                ? 'bg-primary-600 text-white border-primary-600'
-                : 'bg-white text-neutral-700 border-neutral-300 hover:border-primary-400 hover:text-primary-600'"
-              class="px-4 py-2 border rounded-lg text-sm font-medium transition-all duration-200"
-            >
-              {{ ct.label }}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Schedule Card -->
-      <div class="bg-white border border-neutral-200 rounded-xl p-6 mb-6 shadow-sm">
-        <h3 class="text-base font-semibold text-neutral-800 mb-4 flex items-center gap-2">
-          <svg class="w-4 h-4 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
-          وقت الإرسال
-        </h3>
-
-        <!-- Send type toggle -->
-        <div class="flex gap-2 mb-4">
-          <button
-            type="button"
-            (click)="form.get('isScheduled')!.setValue(false)"
-            [class]="!isScheduled ? 'bg-primary-600 text-white border-primary-600' : 'bg-white text-neutral-700 border-neutral-300 hover:border-primary-400'"
-            class="flex-1 px-4 py-2.5 border rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center gap-2"
-          >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-            </svg>
-            إرسال فوري
-          </button>
-          <button
-            type="button"
-            (click)="form.get('isScheduled')!.setValue(true)"
-            [class]="isScheduled ? 'bg-primary-600 text-white border-primary-600' : 'bg-white text-neutral-700 border-neutral-300 hover:border-primary-400'"
-            class="flex-1 px-4 py-2.5 border rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center gap-2"
-          >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-5 mb-5">
+        <!-- Notification Content Card -->
+        <div class="cn-card p-6 xl:col-span-2">
+          <h3 class="text-base font-semibold text-neutral-800 mb-4 flex items-center gap-2">
+            <svg class="w-4 h-4 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
             </svg>
-            جدولة لاحقاً
-          </button>
+            محتوى الإشعار
+          </h3>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-medium text-neutral-600 mb-1.5">العنوان (عربي) <span class="text-red-500">*</span></label>
+              <input
+                formControlName="arabicTitle"
+                type="text"
+                dir="rtl"
+                placeholder="عنوان الإشعار بالعربية"
+                class="w-full px-3 py-2.5 border rounded-lg text-sm transition-all duration-200 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 theme-input"
+                [class.border-red-400]="hasError('arabicTitle')"
+                [class.border-neutral-300]="!hasError('arabicTitle')"
+              />
+              <p *ngIf="hasError('arabicTitle')" class="text-xs text-red-500 mt-1">هذا الحقل مطلوب</p>
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-neutral-600 mb-1.5">العنوان (إنجليزي) <span class="text-red-500">*</span></label>
+              <input
+                formControlName="englishTitle"
+                type="text"
+                dir="ltr"
+                placeholder="Notification title in English"
+                class="w-full px-3 py-2.5 border rounded-lg text-sm transition-all duration-200 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 theme-input"
+                [class.border-red-400]="hasError('englishTitle')"
+                [class.border-neutral-300]="!hasError('englishTitle')"
+              />
+              <p *ngIf="hasError('englishTitle')" class="text-xs text-red-500 mt-1">This field is required</p>
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-neutral-600 mb-1.5">الرسالة (عربي) <span class="text-red-500">*</span></label>
+              <textarea
+                formControlName="arabicMessage"
+                rows="4"
+                dir="rtl"
+                placeholder="نص الإشعار بالعربية"
+                class="w-full px-3 py-2.5 border rounded-lg text-sm transition-all duration-200 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 resize-none theme-input"
+                [class.border-red-400]="hasError('arabicMessage')"
+                [class.border-neutral-300]="!hasError('arabicMessage')"
+              ></textarea>
+              <p *ngIf="hasError('arabicMessage')" class="text-xs text-red-500 mt-1">هذا الحقل مطلوب</p>
+            </div>
+
+            <div>
+              <label class="block text-xs font-medium text-neutral-600 mb-1.5">الرسالة (إنجليزي) <span class="text-red-500">*</span></label>
+              <textarea
+                formControlName="englishMessage"
+                rows="4"
+                dir="ltr"
+                placeholder="Notification body in English"
+                class="w-full px-3 py-2.5 border rounded-lg text-sm transition-all duration-200 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 resize-none theme-input"
+                [class.border-red-400]="hasError('englishMessage')"
+                [class.border-neutral-300]="!hasError('englishMessage')"
+              ></textarea>
+              <p *ngIf="hasError('englishMessage')" class="text-xs text-red-500 mt-1">This field is required</p>
+            </div>
+          </div>
+
+          <div class="mt-4">
+            <label class="block text-xs font-medium text-neutral-600 mb-1.5">نوع الإشعار</label>
+            <select
+              formControlName="notificationType"
+              class="w-full px-3 py-2.5 border border-neutral-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 theme-input"
+            >
+              <option *ngFor="let t of notificationTypes" [value]="t.value">{{ t.label }}</option>
+            </select>
+          </div>
         </div>
 
-        <!-- Schedule datetime picker -->
-        <div *ngIf="isScheduled">
-          <label class="block text-xs font-medium text-neutral-600 mb-1.5">تاريخ ووقت الإرسال <span class="text-red-500">*</span></label>
-          <input
-            formControlName="scheduledDate"
-            type="datetime-local"
-            class="w-full px-3 py-2.5 border border-neutral-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-          />
-        </div>
+        <div class="flex flex-col gap-5">
+          <!-- Targeting Card -->
+          <div class="cn-card p-6">
+            <h3 class="text-base font-semibold text-neutral-800 mb-4 flex items-center gap-2">
+              <svg class="w-4 h-4 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+              الفئة المستهدفة
+            </h3>
 
-        <!-- Immediate hint -->
-        <div *ngIf="!isScheduled" class="flex items-center gap-2 text-sm text-green-700 bg-green-50 rounded-lg px-4 py-2.5">
-          <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
-          سيتم إرسال الإشعار فور الضغط على زر الإرسال
+            <div class="flex items-center gap-3 mb-4">
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" formControlName="targetAll" class="sr-only peer"/>
+                <div class="w-10 h-5 bg-neutral-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary-300 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-600"></div>
+              </label>
+              <span class="text-sm font-medium text-neutral-700">إرسال لجميع العملاء</span>
+            </div>
+
+            <div *ngIf="targetAll">
+              <label class="block text-xs font-medium text-neutral-600 mb-2">تصفية حسب نوع العميل</label>
+              <div class="flex gap-2 flex-wrap">
+                <button
+                  *ngFor="let ct of customerTypes"
+                  type="button"
+                  (click)="form.get('targetCustomerType')!.setValue(ct.value)"
+                  [class]="form.get('targetCustomerType')!.value === ct.value
+                    ? 'bg-primary-600 text-white border-primary-600'
+                    : 'bg-white text-neutral-700 border-neutral-300 hover:border-primary-400 hover:text-primary-600'"
+                  class="px-4 py-2 border rounded-lg text-sm font-medium transition-all duration-200"
+                >
+                  {{ ct.label }}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Schedule Card -->
+          <div class="cn-card p-6">
+            <h3 class="text-base font-semibold text-neutral-800 mb-4 flex items-center gap-2">
+              <svg class="w-4 h-4 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              وقت الإرسال
+            </h3>
+
+            <div class="flex gap-2 mb-4">
+              <button
+                type="button"
+                (click)="form.get('isScheduled')!.setValue(false)"
+                [class]="!isScheduled ? 'bg-primary-600 text-white border-primary-600' : 'bg-white text-neutral-700 border-neutral-300 hover:border-primary-400'"
+                class="flex-1 px-4 py-2.5 border rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center gap-2"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                </svg>
+                إرسال فوري
+              </button>
+              <button
+                type="button"
+                (click)="form.get('isScheduled')!.setValue(true)"
+                [class]="isScheduled ? 'bg-primary-600 text-white border-primary-600' : 'bg-white text-neutral-700 border-neutral-300 hover:border-primary-400'"
+                class="flex-1 px-4 py-2.5 border rounded-lg text-sm font-medium transition-all duration-200 flex items-center justify-center gap-2"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                جدولة لاحقاً
+              </button>
+            </div>
+
+            <div *ngIf="isScheduled">
+              <label class="block text-xs font-medium text-neutral-600 mb-1.5">تاريخ ووقت الإرسال <span class="text-red-500">*</span></label>
+              <input
+                formControlName="scheduledDate"
+                type="datetime-local"
+                class="w-full px-3 py-2.5 border border-neutral-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 theme-input"
+              />
+            </div>
+
+            <div *ngIf="!isScheduled" class="flex items-center gap-2 text-sm text-green-700 bg-green-50 rounded-lg px-4 py-2.5">
+              <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              سيتم إرسال الإشعار فور الضغط على زر الإرسال
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Submit -->
       <button
         type="submit"
         [disabled]="isSending"
@@ -243,177 +231,165 @@
         </svg>
         {{ isSending ? 'جاري الإرسال...' : (isScheduled ? 'جدولة الإشعار' : 'إرسال الإشعار') }}
       </button>
-
     </form>
   </div>
-</div>
 
-<!-- ===== HISTORY TAB ===== -->
-<div *ngIf="activeTab === 'history'">
-
-  <!-- Filters -->
-  <div class="px-6 py-4 border-b border-neutral-200 bg-neutral-50/50">
-    <div class="flex items-center gap-3 flex-wrap">
-      <span class="text-xs font-medium text-neutral-500">فلترة:</span>
-      <div class="flex gap-1 bg-neutral-100 rounded-lg p-1">
-        <button
-          (click)="setScheduledFilter(null)"
-          [class]="scheduledOnlyFilter === null ? 'bg-white shadow text-primary-600' : 'text-neutral-600 hover:text-neutral-800'"
-          class="px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200"
-        >الكل</button>
-        <button
-          (click)="setScheduledFilter(true)"
-          [class]="scheduledOnlyFilter === true ? 'bg-white shadow text-primary-600' : 'text-neutral-600 hover:text-neutral-800'"
-          class="px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200 flex items-center gap-1"
-        >
-          <svg class="w-3.5 h-3.5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-          </svg>
-          المجدولة
-        </button>
-      </div>
-      <span class="text-sm text-neutral-500 mr-auto">{{ totalCount }} إشعار</span>
-    </div>
-  </div>
-
-  <!-- Loading -->
-  <div *ngIf="isLoading" class="p-12 text-center">
-    <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
-    <p class="mt-2 text-sm text-neutral-500">جاري التحميل...</p>
-  </div>
-
-  <!-- Table -->
-  <div *ngIf="!isLoading" class="overflow-x-auto">
-    <table class="min-w-full divide-y divide-neutral-200">
-      <thead class="bg-neutral-50">
-        <tr>
-          <th class="px-5 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">#</th>
-          <th class="px-5 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">العنوان</th>
-          <th class="px-5 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">الفئة المستهدفة</th>
-          <th class="px-5 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">المستلمون</th>
-          <th class="px-5 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">الحالة</th>
-          <th class="px-5 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">موعد الإرسال</th>
-          <th class="px-5 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">تاريخ الإنشاء</th>
-        </tr>
-      </thead>
-      <tbody class="bg-white divide-y divide-neutral-200">
-        <tr *ngFor="let item of items; let i = index" class="hover:bg-neutral-50 transition-colors duration-150">
-
-          <!-- Row # -->
-          <td class="px-5 py-4 whitespace-nowrap text-sm text-neutral-400">
-            {{ currentPage * itemsPerPage + i + 1 }}
-          </td>
-
-          <!-- Title & Message -->
-          <td class="px-5 py-4 max-w-xs">
-            <p class="text-sm font-semibold text-neutral-900 truncate" [title]="item.arabicTitle">{{ item.arabicTitle }}</p>
-            <p class="text-xs text-neutral-500 truncate mt-0.5" [title]="item.arabicMessage">{{ item.arabicMessage }}</p>
-            <span class="inline-block mt-1 px-1.5 py-0.5 rounded text-xs bg-neutral-100 text-neutral-600">{{ typeName(item.notificationType) }}</span>
-          </td>
-
-          <!-- Target -->
-          <td class="px-5 py-4 whitespace-nowrap">
-            <div class="flex items-center gap-1.5">
-              <svg class="w-4 h-4 text-neutral-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
-              </svg>
-              <span class="text-sm text-neutral-700">{{ targetLabel(item) }}</span>
-            </div>
-          </td>
-
-          <!-- Recipient count -->
-          <td class="px-5 py-4 whitespace-nowrap">
-            <span class="inline-flex items-center gap-1 text-sm font-semibold text-primary-700 bg-primary-50 px-2.5 py-1 rounded-full">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-              </svg>
-              {{ item.recipientCount }}
-            </span>
-          </td>
-
-          <!-- Status badge -->
-          <td class="px-5 py-4 whitespace-nowrap">
-            <span
-              class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium"
-              [class]="statusBadge(item).cls"
-            >
-              {{ statusBadge(item).label }}
-            </span>
-            <div *ngIf="item.isScheduled && !item.isProcessed" class="text-xs text-amber-600 mt-1 flex items-center gap-1">
-              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
-              في انتظار التنفيذ
-            </div>
-          </td>
-
-          <!-- Scheduled date / immediate -->
-          <td class="px-5 py-4 whitespace-nowrap text-sm">
-            <span *ngIf="item.isScheduled && item.scheduledDate" class="text-neutral-700">
-              {{ item.scheduledDate | date:'yyyy/MM/dd HH:mm' }}
-            </span>
-            <span *ngIf="!item.isScheduled" class="text-neutral-400">فوري</span>
-          </td>
-
-          <!-- Creation Date -->
-          <td class="px-5 py-4 whitespace-nowrap text-sm text-neutral-500">
-            {{ item.creationDate | date:'yyyy/MM/dd' }}
-          </td>
-        </tr>
-
-        <!-- Empty State -->
-        <tr *ngIf="items.length === 0">
-          <td colspan="7" class="px-6 py-12 text-center">
-            <div class="text-neutral-300 mb-3">
-              <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-              </svg>
-            </div>
-            <p class="text-sm font-medium text-neutral-500">لا توجد إشعارات مرسلة</p>
-            <p class="text-xs text-neutral-400 mt-1">ابدأ بإرسال إشعار من تبويب "إرسال إشعار"</p>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- Pagination -->
-  <div *ngIf="!isLoading && totalPages > 1" class="px-6 py-4 border-t border-neutral-200 bg-neutral-50/30">
-    <div class="flex items-center justify-between">
-      <div class="text-sm text-neutral-700">
-        عرض <span class="font-medium">{{ displayStartCount }}</span> إلى
-        <span class="font-medium">{{ displayEndCount }}</span> من أصل
-        <span class="font-medium">{{ totalCount }}</span> نتيجة
-      </div>
-      <nav class="flex items-center gap-1">
-        <button
-          [disabled]="displayCurrentPage === 1"
-          (click)="changePage(displayCurrentPage - 1)"
-          [class]="displayCurrentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-neutral-100'"
-          class="px-3 py-2 text-sm font-medium text-neutral-700 bg-white border border-neutral-300 rounded-lg transition-colors duration-150"
-        >
-          <i class="bi bi-chevron-left"></i>
-        </button>
-        <ng-container *ngFor="let page of visiblePages">
+  <!-- ===== HISTORY TAB ===== -->
+  <div *ngIf="activeTab === 'history'" class="cn-panel">
+    <!-- Filters -->
+    <div class="px-6 py-4 border-b border-neutral-200 bg-neutral-50/50">
+      <div class="flex items-center gap-3 flex-wrap">
+        <span class="text-xs font-medium text-neutral-500">فلترة:</span>
+        <div class="flex gap-1 bg-neutral-100 rounded-lg p-1">
           <button
-            *ngIf="page !== -1"
-            (click)="changePage(page)"
-            [class]="page === displayCurrentPage ? 'bg-primary-600 text-white border-primary-600' : 'bg-white text-neutral-700 border-neutral-300 hover:bg-neutral-100'"
-            class="px-3 py-2 text-sm font-medium border rounded-lg transition-colors duration-150"
-          >{{ page }}</button>
-          <span *ngIf="page === -1" class="px-2 py-2 text-neutral-500">...</span>
-        </ng-container>
-        <button
-          [disabled]="displayCurrentPage === totalPages"
-          (click)="changePage(displayCurrentPage + 1)"
-          [class]="displayCurrentPage === totalPages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-neutral-100'"
-          class="px-3 py-2 text-sm font-medium text-neutral-700 bg-white border border-neutral-300 rounded-lg transition-colors duration-150"
-        >
-          <i class="bi bi-chevron-right"></i>
-        </button>
-      </nav>
+            type="button"
+            (click)="setScheduledFilter(null)"
+            [class]="scheduledOnlyFilter === null ? 'bg-white shadow text-primary-600' : 'text-neutral-600 hover:text-neutral-800'"
+            class="px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200"
+          >الكل</button>
+          <button
+            type="button"
+            (click)="setScheduledFilter(true)"
+            [class]="scheduledOnlyFilter === true ? 'bg-white shadow text-primary-600' : 'text-neutral-600 hover:text-neutral-800'"
+            class="px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200 flex items-center gap-1"
+          >
+            <svg class="w-3.5 h-3.5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            المجدولة
+          </button>
+        </div>
+        <span class="text-sm text-neutral-500 mr-auto">{{ totalCount }} إشعار</span>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="isLoading" class="p-12 text-center">
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+      <p class="mt-2 text-sm text-neutral-500">جاري التحميل...</p>
+    </div>
+
+    <!-- Table -->
+    <div *ngIf="!isLoading" class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-neutral-200">
+        <thead class="bg-neutral-50">
+          <tr>
+            <th class="px-5 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">#</th>
+            <th class="px-5 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">العنوان</th>
+            <th class="px-5 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">الفئة المستهدفة</th>
+            <th class="px-5 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">المستلمون</th>
+            <th class="px-5 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">الحالة</th>
+            <th class="px-5 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">موعد الإرسال</th>
+            <th class="px-5 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">تاريخ الإنشاء</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-neutral-200">
+          <tr *ngFor="let item of items; let i = index" class="hover:bg-neutral-50 transition-colors duration-150">
+            <td class="px-5 py-4 whitespace-nowrap text-sm text-neutral-400">
+              {{ currentPage * itemsPerPage + i + 1 }}
+            </td>
+            <td class="px-5 py-4 max-w-xs">
+              <p class="text-sm font-semibold text-neutral-900 truncate" [title]="item.arabicTitle">{{ item.arabicTitle }}</p>
+              <p class="text-xs text-neutral-500 truncate mt-0.5" [title]="item.arabicMessage">{{ item.arabicMessage }}</p>
+              <span class="inline-block mt-1 px-1.5 py-0.5 rounded text-xs bg-neutral-100 text-neutral-600">{{ typeName(item.notificationType) }}</span>
+            </td>
+            <td class="px-5 py-4 whitespace-nowrap">
+              <div class="flex items-center gap-1.5">
+                <svg class="w-4 h-4 text-neutral-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                <span class="text-sm text-neutral-700">{{ targetLabel(item) }}</span>
+              </div>
+            </td>
+            <td class="px-5 py-4 whitespace-nowrap">
+              <span class="inline-flex items-center gap-1 text-sm font-semibold text-primary-700 bg-primary-50 px-2.5 py-1 rounded-full">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                </svg>
+                {{ item.recipientCount }}
+              </span>
+            </td>
+            <td class="px-5 py-4 whitespace-nowrap">
+              <span
+                class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium"
+                [class]="statusBadge(item).cls"
+              >
+                {{ statusBadge(item).label }}
+              </span>
+              <div *ngIf="item.isScheduled && !item.isProcessed" class="text-xs text-amber-600 mt-1 flex items-center gap-1">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                في انتظار التنفيذ
+              </div>
+            </td>
+            <td class="px-5 py-4 whitespace-nowrap text-sm">
+              <span *ngIf="item.isScheduled && item.scheduledDate" class="text-neutral-700">
+                {{ item.scheduledDate | date:'yyyy/MM/dd HH:mm' }}
+              </span>
+              <span *ngIf="!item.isScheduled" class="text-neutral-400">فوري</span>
+            </td>
+            <td class="px-5 py-4 whitespace-nowrap text-sm text-neutral-500">
+              {{ item.creationDate | date:'yyyy/MM/dd' }}
+            </td>
+          </tr>
+
+          <tr *ngIf="items.length === 0">
+            <td colspan="7" class="px-6 py-12 text-center">
+              <div class="text-neutral-300 mb-3">
+                <svg class="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                </svg>
+              </div>
+              <p class="text-sm font-medium text-neutral-500">لا توجد إشعارات مرسلة</p>
+              <p class="text-xs text-neutral-400 mt-1">ابدأ بإرسال إشعار من تبويب "إرسال إشعار"</p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div *ngIf="!isLoading && totalPages > 1" class="px-6 py-4 border-t border-neutral-200 bg-neutral-50/30">
+      <div class="flex items-center justify-between">
+        <div class="text-sm text-neutral-700">
+          عرض <span class="font-medium">{{ displayStartCount }}</span> إلى
+          <span class="font-medium">{{ displayEndCount }}</span> من أصل
+          <span class="font-medium">{{ totalCount }}</span> نتيجة
+        </div>
+        <nav class="flex items-center gap-1">
+          <button
+            type="button"
+            [disabled]="displayCurrentPage === 1"
+            (click)="changePage(displayCurrentPage - 1)"
+            [class]="displayCurrentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-neutral-100'"
+            class="px-3 py-2 text-sm font-medium text-neutral-700 bg-white border border-neutral-300 rounded-lg transition-colors duration-150"
+          >
+            <i class="bi bi-chevron-left"></i>
+          </button>
+          <ng-container *ngFor="let page of visiblePages">
+            <button
+              type="button"
+              *ngIf="page !== -1"
+              (click)="changePage(page)"
+              [class]="page === displayCurrentPage ? 'bg-primary-600 text-white border-primary-600' : 'bg-white text-neutral-700 border-neutral-300 hover:bg-neutral-100'"
+              class="px-3 py-2 text-sm font-medium border rounded-lg transition-colors duration-150"
+            >{{ page }}</button>
+            <span *ngIf="page === -1" class="px-2 py-2 text-neutral-500">...</span>
+          </ng-container>
+          <button
+            type="button"
+            [disabled]="displayCurrentPage === totalPages"
+            (click)="changePage(displayCurrentPage + 1)"
+            [class]="displayCurrentPage === totalPages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-neutral-100'"
+            class="px-3 py-2 text-sm font-medium text-neutral-700 bg-white border border-neutral-300 rounded-lg transition-colors duration-150"
+          >
+            <i class="bi bi-chevron-right"></i>
+          </button>
+        </nav>
+      </div>
     </div>
   </div>
 </div>

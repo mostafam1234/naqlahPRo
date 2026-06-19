@@ -7182,6 +7182,73 @@ export class DeliveryManAdminClient {
         return _observableOf(null as any);
     }
 
+    exportApprovedDeliveryMen(deliveryTypeFilter?: number | undefined, searchTerm?: string | undefined): Observable<FileResponse> {
+        let url_ = this.baseUrl + "/api/DeliveryManAdmin/ExportApprovedDeliveryMen?";
+        if (deliveryTypeFilter === null)
+            throw new Error("The parameter 'deliveryTypeFilter' cannot be null.");
+        else if (deliveryTypeFilter !== undefined)
+            url_ += "deliveryTypeFilter=" + encodeURIComponent("" + deliveryTypeFilter) + "&";
+        if (searchTerm === null)
+            throw new Error("The parameter 'searchTerm' cannot be null.");
+        else if (searchTerm !== undefined)
+            url_ += "searchTerm=" + encodeURIComponent("" + searchTerm) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/octet-stream"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processExportApprovedDeliveryMen(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processExportApprovedDeliveryMen(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<FileResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<FileResponse>;
+        }));
+    }
+
+    protected processExportApprovedDeliveryMen(response: HttpResponseBase): Observable<FileResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
+            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
+            if (fileName) {
+                fileName = decodeURIComponent(fileName);
+            } else {
+                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            }
+            return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
     addDeliveryMan(deliveryManDto: AddDeliveryManDto): Observable<number> {
         let url_ = this.baseUrl + "/api/DeliveryManAdmin/AddDeliveryMan";
         url_ = url_.replace(/[?&]$/, "");
@@ -8738,6 +8805,128 @@ export class MainCategoryAdminClient {
     
             return _observableOf(result200);
             }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getVehicleTypesByMainCategoryId(mainCategoryId?: number | undefined): Observable<MainCategoryVehicleTypesResultDto> {
+        let url_ = this.baseUrl + "/api/MainCategoryAdmin/GetVehicleTypesByMainCategoryId?";
+        if (mainCategoryId === null)
+            throw new Error("The parameter 'mainCategoryId' cannot be null.");
+        else if (mainCategoryId !== undefined)
+            url_ += "mainCategoryId=" + encodeURIComponent("" + mainCategoryId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetVehicleTypesByMainCategoryId(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetVehicleTypesByMainCategoryId(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<MainCategoryVehicleTypesResultDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<MainCategoryVehicleTypesResultDto>;
+        }));
+    }
+
+    protected processGetVehicleTypesByMainCategoryId(response: HttpResponseBase): Observable<MainCategoryVehicleTypesResultDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MainCategoryVehicleTypesResultDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    exportMainCategoryVehicleTypes(mainCategoryId?: number | undefined): Observable<FileResponse> {
+        let url_ = this.baseUrl + "/api/MainCategoryAdmin/ExportMainCategoryVehicleTypes?";
+        if (mainCategoryId === null)
+            throw new Error("The parameter 'mainCategoryId' cannot be null.");
+        else if (mainCategoryId !== undefined)
+            url_ += "mainCategoryId=" + encodeURIComponent("" + mainCategoryId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/octet-stream"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processExportMainCategoryVehicleTypes(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processExportMainCategoryVehicleTypes(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<FileResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<FileResponse>;
+        }));
+    }
+
+    protected processExportMainCategoryVehicleTypes(response: HttpResponseBase): Observable<FileResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
+            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
+            if (fileName) {
+                fileName = decodeURIComponent(fileName);
+            } else {
+                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            }
+            return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
         } else if (status === 400) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result400: any = null;
@@ -18667,6 +18856,7 @@ export class MainCategoryAdminDto {
     arabicName!: string;
     englishName!: string;
     imagePath!: string;
+    vehicleTypeCount!: number;
 
     init(_data?: any) {
         if (_data) {
@@ -18674,6 +18864,7 @@ export class MainCategoryAdminDto {
             this.arabicName = _data["arabicName"] !== undefined ? _data["arabicName"] : <any>null;
             this.englishName = _data["englishName"] !== undefined ? _data["englishName"] : <any>null;
             this.imagePath = _data["imagePath"] !== undefined ? _data["imagePath"] : <any>null;
+            this.vehicleTypeCount = _data["vehicleTypeCount"] !== undefined ? _data["vehicleTypeCount"] : <any>null;
         }
     }
 
@@ -18690,6 +18881,7 @@ export class MainCategoryAdminDto {
         data["arabicName"] = this.arabicName !== undefined ? this.arabicName : <any>null;
         data["englishName"] = this.englishName !== undefined ? this.englishName : <any>null;
         data["imagePath"] = this.imagePath !== undefined ? this.imagePath : <any>null;
+        data["vehicleTypeCount"] = this.vehicleTypeCount !== undefined ? this.vehicleTypeCount : <any>null;
         return data;
     }
 }
@@ -18779,6 +18971,97 @@ export class UpdateMainAdminCategory {
         data["imageBase64"] = this.imageBase64 !== undefined ? this.imageBase64 : <any>null;
         return data;
     }
+}
+
+export class MainCategoryVehicleTypesResultDto {
+    mainCategoryId!: number;
+    mainCategoryArabicName!: string;
+    mainCategoryEnglishName!: string;
+    vehicleTypes!: MainCategoryVehicleTypeDto[];
+
+    init(_data?: any) {
+        if (_data) {
+            this.mainCategoryId = _data["mainCategoryId"] !== undefined ? _data["mainCategoryId"] : <any>null;
+            this.mainCategoryArabicName = _data["mainCategoryArabicName"] !== undefined ? _data["mainCategoryArabicName"] : <any>null;
+            this.mainCategoryEnglishName = _data["mainCategoryEnglishName"] !== undefined ? _data["mainCategoryEnglishName"] : <any>null;
+            if (Array.isArray(_data["vehicleTypes"])) {
+                this.vehicleTypes = [] as any;
+                for (let item of _data["vehicleTypes"])
+                    this.vehicleTypes!.push(MainCategoryVehicleTypeDto.fromJS(item));
+            }
+            else {
+                this.vehicleTypes = <any>null;
+            }
+        }
+    }
+
+    static fromJS(data: any): MainCategoryVehicleTypesResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MainCategoryVehicleTypesResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["mainCategoryId"] = this.mainCategoryId !== undefined ? this.mainCategoryId : <any>null;
+        data["mainCategoryArabicName"] = this.mainCategoryArabicName !== undefined ? this.mainCategoryArabicName : <any>null;
+        data["mainCategoryEnglishName"] = this.mainCategoryEnglishName !== undefined ? this.mainCategoryEnglishName : <any>null;
+        if (Array.isArray(this.vehicleTypes)) {
+            data["vehicleTypes"] = [];
+            for (let item of this.vehicleTypes)
+                data["vehicleTypes"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export class MainCategoryVehicleTypeDto {
+    id!: number;
+    arabicName!: string;
+    englishName!: string;
+    loadCategory!: VehicleLoadCategory | null;
+    loadCategoryArabicName!: string;
+    loadCategoryEnglishName!: string;
+    cost!: number;
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.arabicName = _data["arabicName"] !== undefined ? _data["arabicName"] : <any>null;
+            this.englishName = _data["englishName"] !== undefined ? _data["englishName"] : <any>null;
+            this.loadCategory = _data["loadCategory"] !== undefined ? _data["loadCategory"] : <any>null;
+            this.loadCategoryArabicName = _data["loadCategoryArabicName"] !== undefined ? _data["loadCategoryArabicName"] : <any>null;
+            this.loadCategoryEnglishName = _data["loadCategoryEnglishName"] !== undefined ? _data["loadCategoryEnglishName"] : <any>null;
+            this.cost = _data["cost"] !== undefined ? _data["cost"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): MainCategoryVehicleTypeDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MainCategoryVehicleTypeDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["arabicName"] = this.arabicName !== undefined ? this.arabicName : <any>null;
+        data["englishName"] = this.englishName !== undefined ? this.englishName : <any>null;
+        data["loadCategory"] = this.loadCategory !== undefined ? this.loadCategory : <any>null;
+        data["loadCategoryArabicName"] = this.loadCategoryArabicName !== undefined ? this.loadCategoryArabicName : <any>null;
+        data["loadCategoryEnglishName"] = this.loadCategoryEnglishName !== undefined ? this.loadCategoryEnglishName : <any>null;
+        data["cost"] = this.cost !== undefined ? this.cost : <any>null;
+        return data;
+    }
+}
+
+export enum VehicleLoadCategory {
+    Dina5Ton = 1,
+    HalfTransport3_5Ton = 2,
+    Truck5TonInsulated = 3,
+    HalfTransport3_5TonInsulatedAc = 4,
 }
 
 export class PagedResultOfNotificationDto {
@@ -20300,17 +20583,11 @@ export class VehicleLoadCategoryLookupDto {
     }
 }
 
-export enum VehicleLoadCategory {
-    Dina5Ton = 1,
-    HalfTransport3_5Ton = 2,
-    Truck5TonInsulated = 3,
-    HalfTransport3_5TonInsulatedAc = 4,
-}
-
 export class VehicleTypeStatisticsDto {
     totalVehicleTypes!: number;
     totalRegisteredVehicles!: number;
     loadCategoryCounts!: VehicleLoadCategoryCountDto[];
+    mainCategoryCounts!: MainCategoryVehicleCountDto[];
 
     init(_data?: any) {
         if (_data) {
@@ -20323,6 +20600,14 @@ export class VehicleTypeStatisticsDto {
             }
             else {
                 this.loadCategoryCounts = <any>null;
+            }
+            if (Array.isArray(_data["mainCategoryCounts"])) {
+                this.mainCategoryCounts = [] as any;
+                for (let item of _data["mainCategoryCounts"])
+                    this.mainCategoryCounts!.push(MainCategoryVehicleCountDto.fromJS(item));
+            }
+            else {
+                this.mainCategoryCounts = <any>null;
             }
         }
     }
@@ -20342,6 +20627,11 @@ export class VehicleTypeStatisticsDto {
             data["loadCategoryCounts"] = [];
             for (let item of this.loadCategoryCounts)
                 data["loadCategoryCounts"].push(item.toJSON());
+        }
+        if (Array.isArray(this.mainCategoryCounts)) {
+            data["mainCategoryCounts"] = [];
+            for (let item of this.mainCategoryCounts)
+                data["mainCategoryCounts"].push(item.toJSON());
         }
         return data;
     }
@@ -20373,6 +20663,44 @@ export class VehicleLoadCategoryCountDto {
         data = typeof data === 'object' ? data : {};
         data["loadCategory"] = this.loadCategory !== undefined ? this.loadCategory : <any>null;
         data["loadCategoryName"] = this.loadCategoryName !== undefined ? this.loadCategoryName : <any>null;
+        data["vehicleTypeCount"] = this.vehicleTypeCount !== undefined ? this.vehicleTypeCount : <any>null;
+        data["registeredVehicleCount"] = this.registeredVehicleCount !== undefined ? this.registeredVehicleCount : <any>null;
+        return data;
+    }
+}
+
+export class MainCategoryVehicleCountDto {
+    mainCategoryId!: number;
+    arabicName!: string;
+    englishName!: string;
+    name!: string;
+    vehicleTypeCount!: number;
+    registeredVehicleCount!: number;
+
+    init(_data?: any) {
+        if (_data) {
+            this.mainCategoryId = _data["mainCategoryId"] !== undefined ? _data["mainCategoryId"] : <any>null;
+            this.arabicName = _data["arabicName"] !== undefined ? _data["arabicName"] : <any>null;
+            this.englishName = _data["englishName"] !== undefined ? _data["englishName"] : <any>null;
+            this.name = _data["name"] !== undefined ? _data["name"] : <any>null;
+            this.vehicleTypeCount = _data["vehicleTypeCount"] !== undefined ? _data["vehicleTypeCount"] : <any>null;
+            this.registeredVehicleCount = _data["registeredVehicleCount"] !== undefined ? _data["registeredVehicleCount"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): MainCategoryVehicleCountDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new MainCategoryVehicleCountDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["mainCategoryId"] = this.mainCategoryId !== undefined ? this.mainCategoryId : <any>null;
+        data["arabicName"] = this.arabicName !== undefined ? this.arabicName : <any>null;
+        data["englishName"] = this.englishName !== undefined ? this.englishName : <any>null;
+        data["name"] = this.name !== undefined ? this.name : <any>null;
         data["vehicleTypeCount"] = this.vehicleTypeCount !== undefined ? this.vehicleTypeCount : <any>null;
         data["registeredVehicleCount"] = this.registeredVehicleCount !== undefined ? this.registeredVehicleCount : <any>null;
         return data;

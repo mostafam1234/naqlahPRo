@@ -28,6 +28,7 @@ namespace Domain.InterFaces
         DbSet<DeliveryVehicle> DeliveryVehicles { get; set; }
         DbSet<DeliveryManLocation> DeliveryManLocations { get; set; }
         DbSet<MainCategory> MainCategories { get; set; }
+        DbSet<VehiclTypeCategory> VehicleTypeCategories { get; set; }
         DbSet<OrderPackage> OrderPackages { get; set; }
         DbSet<Region> Regions { get; set; }
         DbSet<City> Cities { get; set; }

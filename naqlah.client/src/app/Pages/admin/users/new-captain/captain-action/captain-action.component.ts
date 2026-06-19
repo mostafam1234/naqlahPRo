@@ -7,7 +7,7 @@ import {
   OnInit
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import {
   catchError,
@@ -24,7 +24,7 @@ import { ConfirmationModalComponent } from '../../../../../shared/components/con
 import { SubSink } from 'subsink';
 import {
   getCaptainDetailDocuments,
-  getVehicleOwnerTypeLabel
+  getVehicleOwnerTypeLabelKey
 } from '../../captain/captain-form.helpers';
 
 enum DeliveryRequesState {
@@ -44,7 +44,7 @@ interface InfoItem {
 
 interface DocumentViewItem {
   key: string;
-  label: string;
+  labelKey: string;
   url: string | null;
   optional?: boolean;
 }
@@ -90,6 +90,7 @@ export class CaptainActionComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private deliveryManClient: DeliveryManAdminClient,
     private toasterService: ToasterService,
+    private translate: TranslateService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -217,7 +218,7 @@ export class CaptainActionComponent implements OnInit, OnDestroy {
       { label: 'نوع المركبة', value: d.vehicleType || '—' },
       { label: 'ماركة المركبة', value: d.vehicleModel || '—' },
       { label: 'رقم اللوحة', value: d.vehiclePlateNumber || '—' },
-      { label: 'نوع مالك المركبة', value: getVehicleOwnerTypeLabel(d.vehicleOwnerTypeId) },
+      { label: 'نوع مالك المركبة', value: this.translate.instant(getVehicleOwnerTypeLabelKey(d.vehicleOwnerTypeId)) },
       { label: 'اسم المالك', value: d.vehicleOwnerName || '—' },
       { label: 'رقم هوية المالك', value: d.vehicleOwnerIdentityNumber || '—' },
       { label: 'رقم السجل التجاري', value: d.commercialRecordNumber || '—' },
@@ -242,7 +243,7 @@ export class CaptainActionComponent implements OnInit, OnDestroy {
 
     this.documentItems = getCaptainDetailDocuments(d).map((doc) => ({
       key: doc.key,
-      label: doc.label,
+      labelKey: doc.labelKey,
       url: doc.getUrl(d) || null,
       optional: doc.optional
     }));
@@ -375,10 +376,10 @@ export class CaptainActionComponent implements OnInit, OnDestroy {
     }
   }
 
-  openPreview(url: string | null | undefined, label: string): void {
+  openPreview(url: string | null | undefined, labelKey: string): void {
     if (!url) return;
     this.previewImage = url;
-    this.previewLabel = label;
+    this.previewLabel = this.translate.instant(labelKey);
     this.cdr.markForCheck();
   }
 

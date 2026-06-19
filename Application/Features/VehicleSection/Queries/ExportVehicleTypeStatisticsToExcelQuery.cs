@@ -87,8 +87,37 @@ namespace Application.Features.VehicleSection.Queries
                     allDetailRows.AddRange(detailRows);
                     detailsSheet.Cell(1, 1).InsertData(allDetailRows);
 
+                    var sectionsSheet = workbook.AddWorksheet(isArabic ? "أقسام الشحنات" : "ShipmentSections");
+                    var sectionsHeader = isArabic
+                        ? new object[]
+                        {
+                            "قسم الشحنات",
+                            "عدد أنواع المركبات",
+                            "عدد المركبات المسجلة"
+                        }
+                        : new object[]
+                        {
+                            "ShipmentSection",
+                            "VehicleTypeCount",
+                            "RegisteredVehicleCount"
+                        };
+
+                    var sectionRows = stats.MainCategoryCounts
+                        .Select(item => new object[]
+                        {
+                            item.Name,
+                            item.VehicleTypeCount,
+                            item.RegisteredVehicleCount
+                        })
+                        .ToList();
+
+                    var allSectionRows = new List<object[]> { sectionsHeader };
+                    allSectionRows.AddRange(sectionRows);
+                    sectionsSheet.Cell(1, 1).InsertData(allSectionRows);
+
                     summarySheet.Columns().AdjustToContents();
                     detailsSheet.Columns().AdjustToContents();
+                    sectionsSheet.Columns().AdjustToContents();
                     workbook.SaveAs(stream);
                 }
 

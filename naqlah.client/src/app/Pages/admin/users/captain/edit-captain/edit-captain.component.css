@@ -1,9 +1,131 @@
-  .captain-document-upload-grid > div {
-    display: flex;
-    flex-direction: column;
-  }
+@import '../add-captain/add-captain.component.css';
 
-  .captain-document-upload-grid .captain-doc-preview {
-    aspect-ratio: 16 / 9;
-    width: 100%;
+.captain-docs-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .captain-docs-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
+
+@media (min-width: 1024px) {
+  .captain-docs-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1280px) {
+  .captain-docs-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.upload-item {
+  min-width: 0;
+  isolation: isolate;
+}
+
+.upload-label {
+  display: block;
+  line-height: 1.45;
+  margin-bottom: 0.35rem;
+}
+
+.upload-placeholder span {
+  text-align: center;
+  padding: 0 0.35rem;
+  line-height: 1.35;
+}
+
+.upload-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.btn-upload {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.btn-remove {
+  flex: 0 0 auto;
+  min-width: 3.25rem;
+  white-space: nowrap;
+}
+
+:host-context(.dark) .captain-form-card {
+  background: var(--shell-surface) !important;
+  border-color: var(--shell-surface-border) !important;
+}
+
+:host-context(.dark) .captain-form-card__head {
+  background: var(--shell-muted-surface) !important;
+  border-color: var(--shell-surface-border) !important;
+}
+
+:host-context(.dark) .captain-form-card__head h2,
+:host-context(.dark) .form-label,
+:host-context(.dark) .upload-label {
+  color: var(--shell-text) !important;
+}
+
+:host-context(.dark) .captain-form-card__head p,
+:host-context(.dark) .text-neutral-500,
+:host-context(.dark) .text-neutral-600 {
+  color: var(--shell-text-muted) !important;
+}
+
+:host-context(.dark) .captain-form-footer {
+  background: var(--shell-muted-surface) !important;
+  border-color: var(--shell-surface-border) !important;
+}
+
+:host-context(.dark) .upload-zone {
+  background: var(--shell-muted-surface) !important;
+  border-color: var(--shell-surface-border) !important;
+}
+
+:host-context(.dark) .type-card {
+  background: var(--shell-surface) !important;
+  border-color: var(--shell-surface-border) !important;
+}
+
+:host-context(.dark) .type-card-active {
+  background: color-mix(in srgb, var(--color-primary-600) 14%, var(--shell-surface)) !important;
+}
+
+:host-context(.dark) .captain-ready-banner {
+  background: color-mix(in srgb, var(--color-primary-600) 12%, var(--shell-surface)) !important;
+  border-color: color-mix(in srgb, var(--color-primary-500) 35%, var(--shell-surface-border)) !important;
+}
+
+:host-context(.dark) .captain-ready-banner .font-semibold {
+  color: var(--color-primary-300) !important;
+}
+
+:host-context(.dark) .captain-ready-banner .text-sm {
+  color: var(--shell-text-muted) !important;
+}
+
+:host-context(.dark) [class*='bg-white'],
+:host-context(.dark) [class*='bg-neutral-50'],
+:host-context(.dark) [class*='bg-primary-50'] {
+  background-color: var(--shell-surface) !important;
+}
+
+:host-context(.dark) [class*='border-neutral-200'],
+:host-context(.dark) [class*='border-neutral-100'] {
+  border-color: var(--shell-surface-border) !important;
+}
+
+:host-context(.dark) [class*='text-neutral-900'],
+:host-context(.dark) [class*='text-neutral-800'] {
+  color: var(--shell-text) !important;
+}

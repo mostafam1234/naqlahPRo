@@ -11,7 +11,7 @@
     <div class="mt-8 mb-6 animate-fade-in">
       <div class="flex items-center justify-between mb-3">
         <span class="text-sm font-medium text-neutral-600">
-          اكتمال البيانات: {{ completedRequiredCount }} / {{ totalRequiredCount }} حقل مطلوب
+          {{ 'ADMIN.PAGES.CAPTAIN_FORM.PROGRESS' | translate:{ completed: completedRequiredCount, total: totalRequiredCount } }}
         </span>
         <span class="text-sm font-semibold text-primary-600">{{ progressPercent }}%</span>
       </div>
@@ -41,8 +41,8 @@
             {{ i + 1 }}
           </div>
           <div class="min-w-0">
-            <p class="text-sm font-semibold truncate" [class.text-primary-700]="currentStep === i" [class.text-neutral-800]="currentStep !== i">{{ step.title }}</p>
-            <p class="text-xs text-neutral-500 truncate hidden lg:block">{{ step.subtitle }}</p>
+            <p class="text-sm font-semibold truncate" [class.text-primary-700]="currentStep === i" [class.text-neutral-800]="currentStep !== i">{{ step.titleKey | translate }}</p>
+            <p class="text-xs text-neutral-500 truncate hidden lg:block">{{ step.subtitleKey | translate }}</p>
           </div>
         </div>
       </button>
@@ -51,8 +51,8 @@
     <form [formGroup]="captainForm" (ngSubmit)="onSubmit()">
       <div class="bg-white rounded-2xl border border-neutral-200 shadow-sm overflow-hidden animate-fade-in">
         <div class="px-6 py-5 border-b border-neutral-100 bg-gradient-to-l from-primary-50 via-white to-white">
-          <h2 class="text-xl font-bold text-neutral-900">{{ wizardSteps[currentStep].title }}</h2>
-          <p class="text-sm text-neutral-500 mt-1">{{ wizardSteps[currentStep].subtitle }}</p>
+          <h2 class="text-xl font-bold text-neutral-900">{{ wizardSteps[currentStep].titleKey | translate }}</h2>
+          <p class="text-sm text-neutral-500 mt-1">{{ wizardSteps[currentStep].subtitleKey | translate }}</p>
         </div>
 
         <div class="p-6 md:p-8">
@@ -60,7 +60,7 @@
           <div *ngIf="currentStep === 0" class="space-y-8">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div class="space-y-2 md:col-span-2">
-                <label class="form-label">نوع الكابتن <span class="text-error-500">*</span></label>
+                <label class="form-label">{{ 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.DELIVERY_TYPE' | translate }} <span class="text-error-500">*</span></label>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <button *ngFor="let type of deliveryTypes" type="button" (click)="selectDeliveryType(type.value)" class="type-card" [class.type-card-active]="isDeliveryTypeSelected(type.value)">
                     <div class="flex items-start gap-4">
@@ -70,8 +70,8 @@
                         </svg>
                       </div>
                       <div class="text-right flex-1">
-                        <p class="font-semibold text-neutral-900">{{ type.label }}</p>
-                        <p class="text-sm text-neutral-500 mt-0.5">{{ type.description }}</p>
+                        <p class="font-semibold text-neutral-900">{{ type.labelKey | translate }}</p>
+                        <p class="text-sm text-neutral-500 mt-0.5">{{ type.descriptionKey | translate }}</p>
                       </div>
                     </div>
                   </button>
@@ -114,7 +114,7 @@
               <div class="space-y-2">
                 <label class="form-label">{{ 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.DRIVING_LICENSE_TYPE' | translate }} <span class="text-error-500">*</span></label>
                 <select formControlName="deliveryLicenseType" class="form-input">
-                  <option *ngFor="let licenseType of deliveryLicenseTypes" [value]="licenseType.value">{{ licenseType.label }}</option>
+                  <option *ngFor="let licenseType of deliveryLicenseTypes" [value]="licenseType.value">{{ licenseType.labelKey | translate }}</option>
                 </select>
               </div>
 
@@ -139,47 +139,47 @@
           <div *ngIf="currentStep === 1" class="space-y-8">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div class="space-y-2">
-                <label class="form-label">نوع المركبة <span class="text-error-500">*</span></label>
+                <label class="form-label">{{ 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_TYPE' | translate }} <span class="text-error-500">*</span></label>
                 <select formControlName="vehicleTypeId" class="form-input" [class.input-invalid]="isFieldInvalid('vehicleTypeId')">
-                  <option value="">اختر نوع المركبة</option>
+                  <option value="">{{ 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.SELECT_VEHICLE_TYPE' | translate }}</option>
                   <option *ngFor="let type of vehicleTypes" [value]="type.id">{{ type.name }}</option>
                 </select>
               </div>
               <div class="space-y-2">
-                <label class="form-label">ماركة المركبة <span class="text-error-500">*</span></label>
+                <label class="form-label">{{ 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_BRAND' | translate }} <span class="text-error-500">*</span></label>
                 <select formControlName="vehicleBrandId" class="form-input" [class.input-invalid]="isFieldInvalid('vehicleBrandId')">
-                  <option value="">اختر الماركة</option>
+                  <option value="">{{ 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.SELECT_VEHICLE_BRAND' | translate }}</option>
                   <option *ngFor="let brand of vehicleBrands" [value]="brand.id">{{ brand.name }}</option>
                 </select>
               </div>
               <div class="space-y-2">
-                <label class="form-label">رقم اللوحة <span class="text-error-500">*</span></label>
+                <label class="form-label">{{ 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_PLATE_NUMBER' | translate }} <span class="text-error-500">*</span></label>
                 <input type="text" formControlName="vehiclePlateNumber" class="form-input" [class.input-invalid]="isFieldInvalid('vehiclePlateNumber')" />
               </div>
               <div class="space-y-2">
-                <label class="form-label">نوع المالك <span class="text-error-500">*</span></label>
+                <label class="form-label">{{ 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_OWNER_TYPE' | translate }} <span class="text-error-500">*</span></label>
                 <select formControlName="vehicleOwnerTypeId" class="form-input" [class.input-invalid]="isFieldInvalid('vehicleOwnerTypeId')">
-                  <option *ngFor="let owner of vehicleOwnerTypes" [value]="owner.value">{{ owner.label }}</option>
+                  <option *ngFor="let owner of vehicleOwnerTypes" [value]="owner.value">{{ owner.labelKey | translate }}</option>
                 </select>
               </div>
               <div class="space-y-2">
-                <label class="form-label">اسم المالك <span class="text-error-500">*</span></label>
+                <label class="form-label">{{ 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_OWNER_NAME' | translate }} <span class="text-error-500">*</span></label>
                 <input type="text" formControlName="vehicleOwnerName" class="form-input" [class.input-invalid]="isFieldInvalid('vehicleOwnerName')" />
               </div>
               <div class="space-y-2" *ngIf="isOwnerIndividual()">
-                <label class="form-label">رقم هوية المالك</label>
+                <label class="form-label">{{ 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.OWNER_IDENTITY_NUMBER' | translate }}</label>
                 <input type="text" formControlName="vehicleOwnerIdentityNumber" class="form-input" />
               </div>
               <div class="space-y-2" *ngIf="isOwnerCompany()">
-                <label class="form-label">رقم السجل التجاري</label>
+                <label class="form-label">{{ 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.COMMERCIAL_RECORD_NUMBER' | translate }}</label>
                 <input type="text" formControlName="commercialRecordNumber" class="form-input" />
               </div>
               <div class="space-y-2">
-                <label class="form-label">تاريخ انتهاء الاستمارة</label>
+                <label class="form-label">{{ 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_LICENSE_EXPIRATION_DATE' | translate }}</label>
                 <input type="date" formControlName="vehicleLicenseExpirationDate" class="form-input" />
               </div>
               <div class="space-y-2">
-                <label class="form-label">تاريخ انتهاء التأمين</label>
+                <label class="form-label">{{ 'ADMIN.PAGES.ADD_CAPTAIN_FIELDS.VEHICLE_INSURANCE_EXPIRY' | translate }}</label>
                 <input type="date" formControlName="vehicleInsuranceExpirationDate" class="form-input" />
               </div>
             </div>
@@ -188,22 +188,22 @@
           <!-- STEP 3: All documents in ONE tab -->
           <div *ngIf="currentStep === 2" class="space-y-6">
             <p class="text-sm text-neutral-500">
-              ارفع كل المستندات هنا — صور السائق والمركبة والمالك في مكان واحد.
-              <span class="text-error-500">*</span> مطلوب
+              {{ 'ADMIN.PAGES.ADD_CAPTAIN.DOCUMENTS_HINT' | translate }}
+              <span class="text-error-500">*</span> {{ 'ADMIN.PAGES.ADD_CAPTAIN.DOCUMENTS_REQUIRED' | translate }}
             </p>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
               <div *ngFor="let doc of visibleDocuments" class="upload-item">
                 <label class="upload-label">
-                  {{ doc.label }}
+                  {{ doc.labelKey | translate }}
                   <span *ngIf="isImageRequired(doc.type)" class="text-error-500">*</span>
-                  <span *ngIf="doc.optional" class="text-neutral-400 text-xs mr-1">(اختياري)</span>
+                  <span *ngIf="doc.optional" class="text-neutral-400 text-xs mr-1">{{ 'ADMIN.PAGES.CAPTAIN_FORM.OPTIONAL_PAREN' | translate }}</span>
                 </label>
                 <div class="upload-zone">
                   <img
                     *ngIf="imagesPreviews[getPreviewKey(doc.type)]; else emptyDoc"
                     [src]="imagesPreviews[getPreviewKey(doc.type)]"
-                    [alt]="doc.label"
+                    [alt]="doc.labelKey | translate"
                     class="upload-preview"
                   />
                   <ng-template #emptyDoc>
@@ -211,14 +211,14 @@
                       <svg class="w-8 h-8 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                       </svg>
-                      <span>اختر صورة</span>
+                      <span>{{ 'ADMIN.PAGES.ADD_CAPTAIN.CHOOSE_IMAGE' | translate }}</span>
                     </div>
                   </ng-template>
                 </div>
                 <input type="file" [id]="getUploadInputId(doc.type)" accept="image/*" (change)="onImageSelected($event, doc.type)" class="hidden" />
                 <div class="upload-actions">
-                  <label [for]="getUploadInputId(doc.type)" class="btn-upload">رفع</label>
-                  <button *ngIf="imagesPreviews[getPreviewKey(doc.type)]" type="button" (click)="removeImage(doc.type)" class="btn-remove">حذف</button>
+                  <label [for]="getUploadInputId(doc.type)" class="btn-upload">{{ 'ADMIN.PAGES.ADD_CAPTAIN.UPLOAD' | translate }}</label>
+                  <button *ngIf="imagesPreviews[getPreviewKey(doc.type)]" type="button" (click)="removeImage(doc.type)" class="btn-remove">{{ 'ADMIN.PAGES.ADD_CAPTAIN.REMOVE' | translate }}</button>
                 </div>
               </div>
             </div>
@@ -230,21 +230,21 @@
                 </svg>
               </div>
               <div>
-                <p class="font-semibold text-primary-800">جاهز للإرسال</p>
-                <p class="text-sm text-primary-700 mt-1">راجع جميع البيانات والصور ثم اضغط "إضافة الكابتن".</p>
+                <p class="font-semibold text-primary-800">{{ 'ADMIN.PAGES.ADD_CAPTAIN.READY_TITLE' | translate }}</p>
+                <p class="text-sm text-primary-700 mt-1">{{ 'ADMIN.PAGES.ADD_CAPTAIN.READY_DESC' | translate }}</p>
               </div>
             </div>
           </div>
         </div>
 
         <div class="px-6 md:px-8 py-5 bg-neutral-50 border-t border-neutral-100 flex flex-col-reverse sm:flex-row items-center justify-between gap-3">
-          <button type="button" (click)="onCancel()" class="btn-secondary w-full sm:w-auto">إلغاء</button>
+          <button type="button" (click)="onCancel()" class="btn-secondary w-full sm:w-auto">{{ 'ADMIN.PAGES.ADD_CAPTAIN.CANCEL' | translate }}</button>
           <div class="flex items-center gap-3 w-full sm:w-auto">
-            <button *ngIf="currentStep > 0" type="button" (click)="prevStep()" class="btn-secondary flex-1 sm:flex-none">السابق</button>
-            <button *ngIf="currentStep < wizardSteps.length - 1" type="button" (click)="nextStep()" class="btn-primary flex-1 sm:flex-none">التالي</button>
+            <button *ngIf="currentStep > 0" type="button" (click)="prevStep()" class="btn-secondary flex-1 sm:flex-none">{{ 'ADMIN.PAGES.ADD_CAPTAIN.PREV' | translate }}</button>
+            <button *ngIf="currentStep < wizardSteps.length - 1" type="button" (click)="nextStep()" class="btn-primary flex-1 sm:flex-none">{{ 'ADMIN.PAGES.ADD_CAPTAIN.NEXT' | translate }}</button>
             <button *ngIf="currentStep === wizardSteps.length - 1" type="submit" [disabled]="isSubmitting" class="btn-primary flex-1 sm:flex-none disabled:opacity-60">
-              <span *ngIf="!isSubmitting">إضافة الكابتن</span>
-              <span *ngIf="isSubmitting">جاري الحفظ...</span>
+              <span *ngIf="!isSubmitting">{{ 'ADMIN.PAGES.ADD_CAPTAIN.SUBMIT' | translate }}</span>
+              <span *ngIf="isSubmitting">{{ 'ADMIN.PAGES.ADD_CAPTAIN.SUBMITTING' | translate }}</span>
             </button>
           </div>
         </div>

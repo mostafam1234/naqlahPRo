@@ -62,6 +62,7 @@ namespace Infrastructure
         public DbSet<Renter> Renters { get; set; }
         public DbSet<SystemConfiguration> SystemConfigurations { get; set; }
         public DbSet<MainCategory> MainCategories { get; set; }
+        public DbSet<VehiclTypeCategory> VehicleTypeCategories { get; set; }
         public DbSet<Assistant> Assistants { get; set; }
         public DbSet<AssistanWork> AssistanWorks { get; set; }
         public DbSet<DeliveryVehicle> DeliveryVehicles { get; set; }

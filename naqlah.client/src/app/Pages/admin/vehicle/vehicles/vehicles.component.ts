@@ -5,14 +5,15 @@ import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
 import {
+  ActiveCategoryDto,
   DeliveryManVehicleDto,
+  MainCategoryVehicleCountDto,
   VehicleAdminClient,
-  VehicleLoadCategoryCountDto,
   VehicleTypeStatisticsDto
 } from 'src/app/Core/services/NaqlahClient';
 import { SubSink } from 'subsink';
-import { catchError, debounceTime, distinctUntilChanged, filter, finalize, map } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, filter, finalize, map, switchMap } from 'rxjs/operators';
+import { forkJoin, of } from 'rxjs';
 import { ToasterService } from 'src/app/Core/services/toaster.service';
 import { ConfirmationModalComponent } from 'src/app/shared/components/confirmation-modal/confirmation-modal.component';
 import { PermissionService } from 'src/app/shared/services/permission.service';
@@ -21,7 +22,7 @@ import {
   triggerFileDownload
 } from '../../orders/captain-orders.helpers';
 
-type VehicleStatFilterKey = 'all' | 'uncategorized' | number;
+type VehicleStatFilterKey = 'all' | number;
 
 @Component({
   selector: 'app-vehicles',
@@ -107,22 +108,20 @@ export class VehiclesComponent implements OnInit, OnDestroy {
     this.sub.unsubscribe();
   }
 
-  get loadCategoryStatCards(): VehicleLoadCategoryCountDto[] {
-    return (this.vehicleStatistics?.loadCategoryCounts ?? []).filter(
-      (item) => item.loadCategory != null
-    );
+  get mainCategoryStatCards(): MainCategoryVehicleCountDto[] {
+    return this.vehicleStatistics?.mainCategoryCounts ?? [];
   }
 
   get totalVehicleTypesCount(): number {
     return this.vehicleStatistics?.totalVehicleTypes ?? 0;
   }
 
-  get totalRegisteredVehiclesCount(): number {
-    return this.vehicleStatistics?.totalRegisteredVehicles ?? 0;
+  getSectionStatCount(item: MainCategoryVehicleCountDto): number {
+    return item.vehicleTypeCount ?? 0;
   }
 
-  getStatCount(item: VehicleLoadCategoryCountDto): number {
-    return item.vehicleTypeCount ?? 0;
+  getSectionStatLabel(item: MainCategoryVehicleCountDto): string {
+    return item.name || item.arabicName || item.englishName || '';
   }
 
   hasPermission(permission: string): boolean {
@@ -156,11 +155,10 @@ export class VehiclesComponent implements OnInit, OnDestroy {
         let totalPages = response.totalPages ?? 0;
 
         if (filterByCategory) {
-          if (this.selectedStatFilter === 'uncategorized') {
-            data = data.filter((item) => item.loadCategory == null);
-          } else {
-            data = data.filter((item) => item.loadCategory === this.selectedStatFilter);
-          }
+          const categoryId = this.selectedStatFilter as number;
+          data = data.filter((item) =>
+            item.mainCategories?.some((category) => category.id === categoryId)
+          );
 
           totalCount = data.length;
           const start = this.currentPage * this.itemsPerPage;
@@ -186,7 +184,36 @@ export class VehiclesComponent implements OnInit, OnDestroy {
     this.sub.sink = this.vehicleClient
       .getVehicleTypeStatistics()
       .pipe(
+        map((stats) => this.normalizeStatistics(stats)),
         catchError(() => of(null)),
+        switchMap((stats) => {
+          const normalized = stats;
+          const needsFallback =
+            !normalized ||
+            (normalized.totalVehicleTypes ?? 0) === 0 ||
+            (normalized.mainCategoryCounts?.length ?? 0) === 0;
+
+          if (!needsFallback) {
+            return of(normalized);
+          }
+
+          return this.buildStatisticsFallback$().pipe(
+            map((fallback) => {
+              if (!fallback) {
+                return normalized;
+              }
+              if (!normalized || (normalized.totalVehicleTypes ?? 0) === 0) {
+                return fallback;
+              }
+              normalized.mainCategoryCounts = fallback.mainCategoryCounts;
+              return normalized;
+            })
+          );
+        }),
+        catchError(() => {
+          this.toasterService.error('خطأ', 'تعذر تحميل إحصائيات أنواع المركبات');
+          return of(null);
+        }),
         finalize(() => {
           this.isLoadingStatistics = false;
         })
@@ -194,6 +221,89 @@ export class VehiclesComponent implements OnInit, OnDestroy {
       .subscribe((stats) => {
         this.vehicleStatistics = stats;
       });
+  }
+
+  private normalizeStatistics(stats: VehicleTypeStatisticsDto | null): VehicleTypeStatisticsDto | null {
+    if (!stats) return null;
+
+    const raw = stats as unknown as Record<string, unknown>;
+    return VehicleTypeStatisticsDto.fromJS({
+      totalVehicleTypes: stats.totalVehicleTypes ?? raw['TotalVehicleTypes'],
+      totalRegisteredVehicles: stats.totalRegisteredVehicles ?? raw['TotalRegisteredVehicles'],
+      loadCategoryCounts: stats.loadCategoryCounts ?? raw['LoadCategoryCounts'],
+      mainCategoryCounts: stats.mainCategoryCounts ?? raw['MainCategoryCounts']
+    });
+  }
+
+  private buildStatisticsFallback$() {
+    return forkJoin({
+      types: this.vehicleClient.getVehiclesTypes(0, 5000, ''),
+      categories: this.vehicleClient.getMainCategoriesLookup().pipe(catchError(() => of([] as ActiveCategoryDto[])))
+    }).pipe(
+      map(({ types, categories }) =>
+        this.buildStatisticsFromTypes(types.data ?? [], categories ?? [])
+      ),
+      catchError(() => of(null))
+    );
+  }
+
+  private buildStatisticsFromTypes(
+    types: DeliveryManVehicleDto[],
+    categories: ActiveCategoryDto[]
+  ): VehicleTypeStatisticsDto {
+    const typeCountByCategory = new Map<number, number>();
+    const categoryLabels = new Map<number, string>();
+
+    for (const category of categories) {
+      categoryLabels.set(category.id, category.name);
+    }
+
+    for (const type of types) {
+      for (const category of type.mainCategories ?? []) {
+        if (!categoryLabels.has(category.id)) {
+          categoryLabels.set(
+            category.id,
+            category.name || category.arabicName || category.englishName || `#${category.id}`
+          );
+        }
+        typeCountByCategory.set(category.id, (typeCountByCategory.get(category.id) ?? 0) + 1);
+      }
+    }
+
+    const mainCategoryCounts: MainCategoryVehicleCountDto[] =
+      categories.length > 0
+        ? categories
+            .slice()
+            .sort((a, b) => (a.name || '').localeCompare(b.name || '', 'ar'))
+            .map((category) =>
+              MainCategoryVehicleCountDto.fromJS({
+                mainCategoryId: category.id,
+                name: category.name,
+                arabicName: category.name,
+                englishName: category.name,
+                vehicleTypeCount: typeCountByCategory.get(category.id) ?? 0,
+                registeredVehicleCount: 0
+              })
+            )
+        : Array.from(categoryLabels.entries())
+            .sort((a, b) => a[1].localeCompare(b[1], 'ar'))
+            .map(([id, name]) =>
+              MainCategoryVehicleCountDto.fromJS({
+                mainCategoryId: id,
+                name,
+                arabicName: name,
+                englishName: name,
+                vehicleTypeCount: typeCountByCategory.get(id) ?? 0,
+                registeredVehicleCount: 0
+              })
+            );
+
+    return VehicleTypeStatisticsDto.fromJS({
+      totalVehicleTypes: types.length,
+      totalRegisteredVehicles: 0,
+      loadCategoryCounts: [],
+      mainCategoryCounts
+    });
   }
 
   exportVehicleStatistics(): void {
@@ -226,6 +336,14 @@ export class VehiclesComponent implements OnInit, OnDestroy {
 
   isStatCardSelected(key: VehicleStatFilterKey): boolean {
     return this.selectedStatFilter === key;
+  }
+
+  isSectionStatSelected(mainCategoryId: number): boolean {
+    return this.selectedStatFilter === mainCategoryId;
+  }
+
+  onSectionStatClick(mainCategoryId: number): void {
+    this.onStatCardClick(mainCategoryId);
   }
 
   getStatCardClass(index: number): string {

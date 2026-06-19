@@ -8,6 +8,7 @@ import { ToasterService } from 'src/app/Core/services/toaster.service';
 import { WalletTransactionAdminDto, CustomerLookupDto, AddWalletTransactionCommand, WalletTransactionsAdminClient } from 'src/app/Core/services/NaqlahClient';
 import { PageHeaderComponent } from 'src/app/shared/components/page-header/page-header.component';
 import { PermissionService } from 'src/app/shared/services/permission.service';
+import { getDefaultSearchDateRange } from 'src/app/shared/utils/date-filter.helpers';
 
 @Component({
   selector: 'app-customer-wallet-transactions',
@@ -56,10 +57,11 @@ export class CustomerWalletTransactionsComponent implements OnInit, OnDestroy {
       orderId: [null]
     });
 
+    const defaultDates = getDefaultSearchDateRange();
     this.filterForm = this.fb.group({
       searchTerm: [''],
-      fromDate: [null],
-      toDate: [null],
+      fromDate: [defaultDates.fromDate],
+      toDate: [defaultDates.toDate],
       withdraw: [null]
     });
   }
@@ -111,10 +113,11 @@ export class CustomerWalletTransactionsComponent implements OnInit, OnDestroy {
   }
 
   resetFilters(): void {
+    const defaultDates = getDefaultSearchDateRange();
     this.filterForm.reset({
       searchTerm: '',
-      fromDate: null,
-      toDate: null,
+      fromDate: defaultDates.fromDate,
+      toDate: defaultDates.toDate,
       withdraw: null
     });
     if (this.selectedCustomer) {

@@ -38,6 +38,31 @@
       }
     },
     "VEHICLES": "المركبات",
+    "SHIPMENT_CATEGORIES": {
+      "TITLE": "أصناف الشحنات",
+      "SUBTITLE": "إدارة أصناف الشحنات",
+      "SEARCH": "البحث في أصناف الشحنات...",
+      "ADD": "إضافة صنف جديد",
+      "LIST_TITLE": "أصناف الشحنات",
+      "EMPTY": "لا توجد أصناف شحنات",
+      "ADD_MODAL_TITLE": "إضافة صنف شحن جديد",
+      "EDIT_MODAL_TITLE": "تعديل صنف الشحن",
+      "VIEW_VEHICLES": "المركبات المرتبطة",
+      "VEHICLE_COUNT": "مركبة",
+      "VEHICLES_PAGE_TITLE": "المركبات المرتبطة",
+      "VEHICLES_PAGE_SUBTITLE": "أنواع المركبات المرتبطة بصنف الشحن",
+      "LOAD_CATEGORY": "تصنيف الحمولة",
+      "COST": "التكلفة",
+      "NO_VEHICLES": "لا توجد مركبات مرتبطة بهذا الصنف",
+      "EXPORT": "تصدير Excel",
+      "EXPORTING": "جاري التصدير...",
+      "EXPORT_SUCCESS": "تم تصدير المركبات المرتبطة بنجاح",
+      "EXPORT_ERROR": "تعذر تصدير المركبات المرتبطة",
+      "ARABIC_NAME": "الاسم بالعربية",
+      "ENGLISH_NAME": "الاسم بالإنجليزية",
+      "IMAGE": "الصورة",
+      "ACTIONS": "الإجراءات"
+    },
     "VEHICLESMENUE": {
       "BRANDS": "العلامات التجارية",
       "TYPES": "أنواع المركبات",
@@ -52,7 +77,12 @@
       "ENGLISH_NAME": "الاسم بالإنجليزية",
       "ACTIONS": "الإجراءات",
       "NO_DATA": "لا توجد أنواع مركبات مضافة بعد",
-      "NO_DATA_BRAND": "لا توجد ماركات مركبات مضافة بعد"
+      "NO_DATA_BRAND": "لا توجد ماركات مركبات مضافة بعد",
+      "STATS_HINT": "إحصائيات أنواع المركبات — اضغط على أي بطاقة لتصفية الجدول",
+      "STATS_EXPORT": "تصدير الإحصائيات Excel",
+      "STATS_EXPORTING": "جاري التصدير...",
+      "STAT_TOTAL_TYPES": "إجمالي أنواع المركبات",
+      "NO_SECTIONS": "لا توجد أقسام"
     },
     "HEADER": {
       "SELECT_LANGUAGE": "اختر اللغة",
@@ -261,7 +291,7 @@
         "VEHICLES": "المركبات",
         "SYSTEM_USERS": "مستخدمو النظام",
         "DELIVERY_MEN": "الكباتن",
-        "MAIN_CATEGORIES": "الفئات الرئيسية",
+        "MAIN_CATEGORIES": "أصناف الشحنات",
         "WALLET_TRANSACTIONS": "معاملات المحفظة",
         "COMPLAINS": "الشكاوى",
         "SUGGESTIONS": "الاقتراحات",
@@ -524,12 +554,36 @@
           "DELETE": "حذف"
         }
       },
+      "CAPTAINS": {
+        "TITLE": "الكباتن",
+        "TABS": {
+          "ALL": "الكل",
+          "CITIZEN": "المواطنين",
+          "RESIDENT": "المقيمين"
+        },
+        "SEARCH_PLACEHOLDER": "البحث بالاسم أو الهاتف...",
+        "LOADING": "جاري التحميل...",
+        "NO_CAPTAINS": "لا يوجد كباتن",
+        "NO_CAPTAINS_DESC": "لم يتم العثور على أي كباتن مسجلين في النظام",
+        "TABLE": {
+          "TITLE": "جدول الكباتن",
+          "CAPTAIN": "كابتن",
+          "NUMBER": "#",
+          "IMAGE": "الصورة",
+          "CAPTAIN_NAME": "اسم الكابتن",
+          "ADDRESS": "العنوان",
+          "PHONE": "رقم الهاتف",
+          "IDENTITY_NUMBER": "رقم الهوية الشخصية",
+          "ACTIONS": "الإجراءات"
+        }
+      },
       "CAPTAIN_DETAILS": {
         "HEADER": {
           "TITLE": "إدارة الكباتن",
           "SUBTITLE": "إدارة الكباتن الحاليين وإضافة كباتن جدد"
         },
         "TITLE": "تفاصيل الكابتن",
+        "SUBTITLE": "عرض بيانات الكابتن الكاملة والمستندات",
         "BACK": "العودة",
         "LOADING": "جاري التحميل...",
         "ERROR": "حدث خطأ أثناء تحميل البيانات",
@@ -591,26 +645,98 @@
           "DELIVERY_COMPLETED_DESC": "تم توصيل الطلب بنجاح"
         }
       },
+      "CAPTAIN_FORM": {
+        "PROGRESS": "اكتمال البيانات: {{completed}} / {{total}} حقل مطلوب",
+        "STEPS": {
+          "ACCOUNT_TITLE": "الحساب والبيانات الأساسية",
+          "ACCOUNT_SUBTITLE": "معلومات الدخول والتعريف الشخصي",
+          "VEHICLE_TITLE": "بيانات المركبة والمالك",
+          "VEHICLE_SUBTITLE": "معلومات المركبة ونوع مالكها",
+          "DOCUMENTS_TITLE": "المستندات والمرفقات",
+          "DOCUMENTS_SUBTITLE": "جميع صور الكابتن والمركبة والمالك في مكان واحد"
+        },
+        "DELIVERY_RESIDENT_LABEL": "مقيم",
+        "DELIVERY_RESIDENT_DESC": "كابتن مقيم في المملكة",
+        "DELIVERY_CITIZEN_LABEL": "مواطن",
+        "DELIVERY_CITIZEN_DESC": "كابتن سعودي الجنسية",
+        "LICENSE_PUBLIC": "رخصة عامة",
+        "LICENSE_PRIVATE": "رخصة خاصة",
+        "OWNER_UNKNOWN": "غير محدد",
+        "OPTIONAL_PAREN": "(اختياري)",
+        "DOCUMENTS": {
+          "FRONT_IDENTITY": "صورة الهوية لسائق المركبة",
+          "FRONT_DRIVING_LICENSE": "صورة رخصة القيادة لسائق المركبة",
+          "OWNER_FRONT_IDENTITY": "صورة الهوية لمالك المركبة",
+          "COMMERCIAL_RECORD": "صورة السجل التجاري",
+          "VEHICLE_FRONT": "صورة أمامية للمركبة",
+          "VEHICLE_SIDE": "صورة جانبية للمركبة",
+          "VEHICLE_FRONT_LICENSE": "صورة رخصة سير المركبة (الاستمارة)",
+          "PERSONAL": "صورة شخصية لسائق المركبة",
+          "VEHICLE_FRONT_INSURANCE": "صورة تأمين المركبة",
+          "RENT_CONTRACT": "صورة وثيقة استئجار المركبة"
+        },
+        "TOAST": {
+          "ERROR_TITLE": "خطأ",
+          "SUCCESS_TITLE": "تمت العملية بنجاح",
+          "STEP_INCOMPLETE_TITLE": "بيانات ناقصة",
+          "STEP_INCOMPLETE_MSG": "يرجى تعبئة الحقول المطلوبة في هذه الخطوة",
+          "FORM_INVALID_TITLE": "بيانات ناقصة أو غير صحيحة",
+          "FORM_INVALID_MSG": "يرجى تعبئة جميع الحقول المطلوبة",
+          "ADD_SUCCESS_MSG": "تم إضافة الكابتن الجديد بنجاح",
+          "ADD_ERROR_MSG": "حدث خطأ أثناء إضافة الكابتن",
+          "EDIT_SUCCESS_MSG": "تم تحديث بيانات الكابتن بنجاح",
+          "EDIT_ERROR_MSG": "حدث خطأ أثناء تحديث بيانات الكابتن",
+          "LOAD_ERROR_MSG": "حدث خطأ أثناء تحميل بيانات الكابتن"
+        },
+        "CANCEL_DIALOG": {
+          "TITLE": "هل أنت متأكد؟",
+          "MESSAGE_ADD": "سيتم فقدان جميع البيانات المدخلة",
+          "MESSAGE_EDIT": "سيتم فقدان التغييرات غير المحفوظة",
+          "CONFIRM": "نعم، إلغاء",
+          "CANCEL": "الرجوع للنموذج"
+        }
+      },
       "ADD_CAPTAIN": {
         "TITLE": "إضافة كابتن",
         "HEADER_TITLE": "إضافة كابتن جديد",
         "HEADER_SUBTITLE": "أدخل جميع البيانات المطلوبة",
         "BACK": "عودة",
         "CANCEL": "إلغاء",
+        "PREV": "السابق",
+        "NEXT": "التالي",
         "SUBMIT": "إضافة الكابتن",
         "SUBMITTING": "جاري الإضافة...",
         "REQUIRED_FIELDS_NOTE": "الحقول المميزة بـ * مطلوبة",
-        "HEADER_ADD_BUTTON": "إضافة كابتن"
+        "HEADER_ADD_BUTTON": "إضافة كابتن",
+        "DOCUMENTS_HINT": "ارفع كل المستندات هنا — صور السائق والمركبة والمالك في مكان واحد.",
+        "DOCUMENTS_REQUIRED": "مطلوب",
+        "OPTIONAL": "اختياري",
+        "CHOOSE_IMAGE": "اختر صورة",
+        "UPLOAD": "رفع",
+        "REMOVE": "حذف",
+        "READY_TITLE": "جاهز للإرسال",
+        "READY_DESC": "راجع جميع البيانات والصور ثم اضغط «إضافة الكابتن»."
       },
       "EDIT_CAPTAIN": {
         "TITLE": "تعديل كابتن",
-        "HEADER_TITLE": "تعديل كابتن",
-        "HEADER_SUBTITLE": "أدخل جميع البيانات المطلوبة",
+        "HEADER_TITLE": "تعديل بيانات الكابتن",
+        "HEADER_SUBTITLE": "حدّث بيانات الكابتن والمركبة والمستندات",
         "BACK": "عودة",
         "CANCEL": "إلغاء",
-        "SUBMIT": "تعديل الكابتن",
-        "SUBMITTING": "جاري التعديل...",
+        "PREV": "السابق",
+        "NEXT": "التالي",
+        "SUBMIT": "حفظ التعديلات",
+        "SUBMITTING": "جاري الحفظ...",
         "REQUIRED_FIELDS_NOTE": "الحقول المميزة بـ * مطلوبة",
+        "PASSWORD_HINT": "اترك الحقل فارغاً إذا لم ترد تغيير كلمة المرور",
+        "DOCUMENTS_HINT": "ارفع أو حدّث المستندات هنا — صور السائق والمركبة والمالك في مكان واحد.",
+        "DOCUMENTS_REQUIRED": "مطلوب",
+        "OPTIONAL": "اختياري",
+        "CHOOSE_IMAGE": "اختر صورة",
+        "UPLOAD": "رفع",
+        "REMOVE": "حذف",
+        "READY_TITLE": "جاهز للحفظ",
+        "READY_DESC": "راجع جميع البيانات والصور ثم اضغط «حفظ التعديلات».",
         "HEADER_ADD_BUTTON": "تعديل كابتن"
       },
       "ADD_CAPTAIN_FIELDS": {
@@ -643,7 +769,10 @@
         "FULL_NAME_PLACEHOLDER": "أدخل اسم سائق المركبة (الكابتن)",
         "PHONE_NUMBER": "رقم الهاتف",
         "IDENTITY_NUMBER": "رقم الهوية",
-        "DELIVERY_TYPE": "نوع التوصيل",
+        "DELIVERY_TYPE": "نوع الكابتن",
+        "SELECT_VEHICLE_TYPE": "اختر نوع المركبة",
+        "SELECT_VEHICLE_BRAND": "اختر الماركة",
+        "OWNER_IDENTITY_NUMBER": "رقم هوية المالك",
         "ADDRESS": "العنوان",
         "ADDRESS_PLACEHOLDER": "أدخل العنوان التفصيلي",
         "VEHICLE_INFO_TITLE": "معلومات المركبة",

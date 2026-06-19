@@ -4767,6 +4767,58 @@
         }
       }
     },
+    "/api/DeliveryManAdmin/ExportApprovedDeliveryMen": {
+      "get": {
+        "tags": [
+          "DeliveryManAdmin"
+        ],
+        "operationId": "DeliveryManAdmin_ExportApprovedDeliveryMen",
+        "parameters": [
+          {
+            "name": "deliveryTypeFilter",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            },
+            "x-position": 1
+          },
+          {
+            "name": "searchTerm",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": ""
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/DeliveryManAdmin/AddDeliveryMan": {
       "post": {
         "tags": [
@@ -6249,6 +6301,89 @@
                 "schema": {
                   "type": "integer",
                   "format": "int32"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/MainCategoryAdmin/GetVehicleTypesByMainCategoryId": {
+      "get": {
+        "tags": [
+          "MainCategoryAdmin"
+        ],
+        "operationId": "MainCategoryAdmin_GetVehicleTypesByMainCategoryId",
+        "parameters": [
+          {
+            "name": "mainCategoryId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MainCategoryVehicleTypesResultDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/MainCategoryAdmin/ExportMainCategoryVehicleTypes": {
+      "get": {
+        "tags": [
+          "MainCategoryAdmin"
+        ],
+        "operationId": "MainCategoryAdmin_ExportMainCategoryVehicleTypes",
+        "parameters": [
+          {
+            "name": "mainCategoryId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
                 }
               }
             }
@@ -13294,6 +13429,10 @@
           },
           "imagePath": {
             "type": "string"
+          },
+          "vehicleTypeCount": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
@@ -13344,6 +13483,78 @@
             "nullable": true
           }
         }
+      },
+      "MainCategoryVehicleTypesResultDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "mainCategoryId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "mainCategoryArabicName": {
+            "type": "string"
+          },
+          "mainCategoryEnglishName": {
+            "type": "string"
+          },
+          "vehicleTypes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MainCategoryVehicleTypeDto"
+            }
+          }
+        }
+      },
+      "MainCategoryVehicleTypeDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "arabicName": {
+            "type": "string"
+          },
+          "englishName": {
+            "type": "string"
+          },
+          "loadCategory": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/VehicleLoadCategory"
+              }
+            ]
+          },
+          "loadCategoryArabicName": {
+            "type": "string"
+          },
+          "loadCategoryEnglishName": {
+            "type": "string"
+          },
+          "cost": {
+            "type": "number",
+            "format": "decimal"
+          }
+        }
+      },
+      "VehicleLoadCategory": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "Dina5Ton",
+          "HalfTransport3_5Ton",
+          "Truck5TonInsulated",
+          "HalfTransport3_5TonInsulatedAc"
+        ],
+        "enum": [
+          1,
+          2,
+          3,
+          4
+        ]
       },
       "PagedResultOfNotificationDto": {
         "type": "object",
@@ -14362,22 +14573,6 @@
           }
         }
       },
-      "VehicleLoadCategory": {
-        "type": "integer",
-        "description": "",
-        "x-enumNames": [
-          "Dina5Ton",
-          "HalfTransport3_5Ton",
-          "Truck5TonInsulated",
-          "HalfTransport3_5TonInsulatedAc"
-        ],
-        "enum": [
-          1,
-          2,
-          3,
-          4
-        ]
-      },
       "VehicleTypeStatisticsDto": {
         "type": "object",
         "additionalProperties": false,
@@ -14395,6 +14590,12 @@
             "items": {
               "$ref": "#/components/schemas/VehicleLoadCategoryCountDto"
             }
+          },
+          "mainCategoryCounts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MainCategoryVehicleCountDto"
+            }
           }
         }
       },
@@ -14408,6 +14609,33 @@
             "nullable": true
           },
           "loadCategoryName": {
+            "type": "string"
+          },
+          "vehicleTypeCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "registeredVehicleCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "MainCategoryVehicleCountDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "mainCategoryId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "arabicName": {
+            "type": "string"
+          },
+          "englishName": {
+            "type": "string"
+          },
+          "name": {
             "type": "string"
           },
           "vehicleTypeCount": {

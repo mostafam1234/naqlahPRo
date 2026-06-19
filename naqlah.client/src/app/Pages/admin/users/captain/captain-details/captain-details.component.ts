@@ -7,7 +7,7 @@ import {
   OnInit
 } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { of } from 'rxjs';
 import {
   catchError,
@@ -29,7 +29,7 @@ import {
 import { SubSink } from 'subsink';
 import {
   getCaptainDetailDocuments,
-  getVehicleOwnerTypeLabel
+  getVehicleOwnerTypeLabelKey
 } from '../captain-form.helpers';
 import { CaptainActiveHistoryModalComponent } from '../captain-active-history-modal/captain-active-history-modal.component';
 import { triggerFileDownload, mapFileResponse } from '../../../orders/captain-orders.helpers';
@@ -42,7 +42,7 @@ interface InfoItem {
 
 interface DocumentViewItem {
   key: string;
-  label: string;
+  labelKey: string;
   url: string | null;
   optional?: boolean;
 }
@@ -90,6 +90,7 @@ export class CaptainDetailsComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private deliveryManClient: DeliveryManAdminClient,
     private toasterService: ToasterService,
+    private translate: TranslateService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -313,7 +314,7 @@ export class CaptainDetailsComponent implements OnInit, OnDestroy {
       { label: 'نوع المركبة', value: d.vehicleType || '—' },
       { label: 'ماركة المركبة', value: d.vehicleModel || '—' },
       { label: 'رقم اللوحة', value: d.vehiclePlateNumber || '—' },
-      { label: 'نوع مالك المركبة', value: getVehicleOwnerTypeLabel(d.vehicleOwnerTypeId) },
+      { label: 'نوع مالك المركبة', value: this.translate.instant(getVehicleOwnerTypeLabelKey(d.vehicleOwnerTypeId)) },
       { label: 'اسم المالك', value: d.vehicleOwnerName || '—' },
       { label: 'رقم هوية المالك', value: d.vehicleOwnerIdentityNumber || '—' },
       { label: 'رقم السجل التجاري', value: d.commercialRecordNumber || '—' },
@@ -325,7 +326,7 @@ export class CaptainDetailsComponent implements OnInit, OnDestroy {
 
     this.documentItems = getCaptainDetailDocuments(d).map((doc) => ({
       key: doc.key,
-      label: doc.label,
+      labelKey: doc.labelKey,
       url: doc.getUrl(d) || null,
       optional: doc.optional
     }));
@@ -371,10 +372,10 @@ export class CaptainDetailsComponent implements OnInit, OnDestroy {
     return new Date(details.drivingLicenseExpirationDate) > new Date();
   }
 
-  openPreview(url: string | null | undefined, label: string): void {
+  openPreview(url: string | null | undefined, labelKey: string): void {
     if (!url) return;
     this.previewImage = url;
-    this.previewLabel = label;
+    this.previewLabel = this.translate.instant(labelKey);
     this.cdr.markForCheck();
   }
 

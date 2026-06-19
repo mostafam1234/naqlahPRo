@@ -1,0 +1,90 @@
+<div class="min-h-screen theme-page">
+  <div class="container mx-auto max-w-7xl">
+    <app-page-header
+      [title]="'ADMIN.SHIPMENT_CATEGORIES.VEHICLES_PAGE_TITLE' | translate"
+      [subtitle]="pageSubtitle || ('ADMIN.SHIPMENT_CATEGORIES.VEHICLES_PAGE_SUBTITLE' | translate)"
+      [showBackButton]="true"
+      iconPath="M8 7h12m0 0l-4-4m4 4l-4 4M16 17H4m0 0l4 4m-4-4l4-4"
+      (onBackClick)="goBack()"
+    >
+    </app-page-header>
+
+    <div class="bg-white rounded-xl shadow-sm border border-neutral-200 overflow-hidden">
+      <div class="px-6 py-4 border-b border-neutral-200 bg-neutral-50/50">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h3 class="font-semibold text-neutral-900 text-lg">
+              {{ 'ADMIN.SHIPMENT_CATEGORIES.VEHICLES_PAGE_TITLE' | translate }}
+            </h3>
+            <p class="text-sm text-neutral-500 mt-1" *ngIf="categoryArabicName || categoryEnglishName">
+              {{ categoryArabicName }}
+              <span *ngIf="categoryEnglishName"> — {{ categoryEnglishName }}</span>
+            </p>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-sm text-neutral-500 bg-neutral-100 px-3 py-1 rounded-full">
+              {{ vehicleTypes.length }} {{ 'ADMIN.SHIPMENT_CATEGORIES.VEHICLE_COUNT' | translate }}
+            </span>
+            <button
+              type="button"
+              class="text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed px-4 py-2 rounded-lg transition-colors inline-flex items-center gap-2"
+              [disabled]="isExporting || isLoading || vehicleTypes.length === 0"
+              (click)="exportLinkedVehicles()"
+            >
+              <i class="bi bi-file-earmark-excel"></i>
+              <span>
+                {{ (isExporting ? 'ADMIN.SHIPMENT_CATEGORIES.EXPORTING' : 'ADMIN.SHIPMENT_CATEGORIES.EXPORT') | translate }}
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="isLoading" class="p-12 text-center">
+        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+      </div>
+
+      <div *ngIf="!isLoading" class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-neutral-200">
+          <thead class="bg-neutral-50">
+            <tr>
+              <th class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">#</th>
+              <th class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                {{ 'ADMIN.SHIPMENT_CATEGORIES.ARABIC_NAME' | translate }}
+              </th>
+              <th class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                {{ 'ADMIN.SHIPMENT_CATEGORIES.ENGLISH_NAME' | translate }}
+              </th>
+              <th class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                {{ 'ADMIN.SHIPMENT_CATEGORIES.LOAD_CATEGORY' | translate }}
+              </th>
+              <th class="px-6 py-3 text-right text-xs font-medium text-neutral-500 uppercase tracking-wider">
+                {{ 'ADMIN.SHIPMENT_CATEGORIES.COST' | translate }}
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-neutral-200">
+            <tr *ngFor="let item of vehicleTypes; let i = index" class="hover:bg-neutral-50 transition-colors duration-150">
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-900">{{ i + 1 }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-neutral-900">{{ item.arabicName }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-700">{{ item.englishName }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-700">{{ getLoadCategoryLabel(item) }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-neutral-900">{{ item.cost | number:'1.2-2' }}</td>
+            </tr>
+
+            <tr *ngIf="vehicleTypes.length === 0">
+              <td colspan="5" class="px-6 py-12 text-center">
+                <div class="text-neutral-400 mb-2">
+                  <i class="bi bi-inbox text-4xl"></i>
+                </div>
+                <p class="text-sm text-neutral-500">
+                  {{ 'ADMIN.SHIPMENT_CATEGORIES.NO_VEHICLES' | translate }}
+                </p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
