@@ -15,6 +15,15 @@ namespace Application.Features.CustomerSection.Feature.Order.Dtos
         public OrderStatus Status { get; set; }
         public string StatusName { get; set; }
         public decimal Total { get; set; }
+
+        // Payment status & cost breakdown
+        public bool IsPaid { get; set; }
+        public decimal TransportAmount { get; set; }
+        public decimal BaseAmount { get; set; }
+        public decimal ServiceFee { get; set; }
+        public decimal TaxAmount { get; set; }
+        public decimal DiscountAmount { get; set; }
+
         public OrderType OrderType { get; set; }
         public string OrderTypeName { get; set; }
         

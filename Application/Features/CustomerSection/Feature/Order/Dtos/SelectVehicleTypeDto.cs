@@ -10,6 +10,13 @@ namespace Application.Features.CustomerSection.Feature.Order.Dtos
     {
         public int OrderId { get; set; }
         public int VehicleTypeId { get; set; }
+
+        /// <summary>
+        /// Selected payment method (backend enum: Cash/COD = 1, Online/Mada = 2, Wallet = 3).
+        /// Stored on the order so payment-timing logic can decide when to charge.
+        /// Defaults to Wallet when not supplied to preserve existing behavior.
+        /// </summary>
+        public int? PaymentMethodId { get; set; }
     }
 
     public class SelectVehicleTypeResponseDto

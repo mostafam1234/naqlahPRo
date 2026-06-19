@@ -1255,17 +1255,22 @@ export class CustomerOrderClient {
         this.baseUrl = baseUrl ?? "";
     }
 
-    cancelOrder(orderId: number): Observable<void> {
+    cancelOrder(orderId: number, request?: CancelOrderRequestDto | undefined): Observable<CancelOrderResponseDto> {
         let url_ = this.baseUrl + "/api/CustomerOrder/CancelOrder/{orderId}";
         if (orderId === undefined || orderId === null)
             throw new Error("The parameter 'orderId' must be defined.");
         url_ = url_.replace("{orderId}", encodeURIComponent("" + orderId));
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(request);
+
         let options_ : any = {
+            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
             })
         };
 
@@ -1276,14 +1281,14 @@ export class CustomerOrderClient {
                 try {
                     return this.processCancelOrder(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
+                    return _observableThrow(e) as any as Observable<CancelOrderResponseDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<void>;
+                return _observableThrow(response_) as any as Observable<CancelOrderResponseDto>;
         }));
     }
 
-    protected processCancelOrder(response: HttpResponseBase): Observable<void> {
+    protected processCancelOrder(response: HttpResponseBase): Observable<CancelOrderResponseDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1292,7 +1297,10 @@ export class CustomerOrderClient {
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
         if (status === 200) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return _observableOf(null as any);
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CancelOrderResponseDto.fromJS(resultData200);
+            return _observableOf(result200);
             }));
         } else if (status === 400) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
@@ -2190,6 +2198,68 @@ export class CustomerWalletClient {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result200 = CustomerWalletBalanceDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getTransactions(): Observable<WalletTransactionDto[]> {
+        let url_ = this.baseUrl + "/api/CustomerWallet/GetTransactions";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetTransactions(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetTransactions(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<WalletTransactionDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<WalletTransactionDto[]>;
+        }));
+    }
+
+    protected processGetTransactions(response: HttpResponseBase): Observable<WalletTransactionDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(WalletTransactionDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
             return _observableOf(result200);
             }));
         } else if (status === 400) {
@@ -12429,6 +12499,61 @@ export enum NotificationType {
     CustomerGeneral = 12,
 }
 
+export class CancelOrderResponseDto {
+    success!: boolean;
+    message!: string;
+    refundInitiated!: boolean;
+    refundStatus!: string | null;
+
+    init(_data?: any) {
+        if (_data) {
+            this.success = _data["success"] !== undefined ? _data["success"] : <any>null;
+            this.message = _data["message"] !== undefined ? _data["message"] : <any>null;
+            this.refundInitiated = _data["refundInitiated"] !== undefined ? _data["refundInitiated"] : <any>null;
+            this.refundStatus = _data["refundStatus"] !== undefined ? _data["refundStatus"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): CancelOrderResponseDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CancelOrderResponseDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["success"] = this.success !== undefined ? this.success : <any>null;
+        data["message"] = this.message !== undefined ? this.message : <any>null;
+        data["refundInitiated"] = this.refundInitiated !== undefined ? this.refundInitiated : <any>null;
+        data["refundStatus"] = this.refundStatus !== undefined ? this.refundStatus : <any>null;
+        return data;
+    }
+}
+
+export class CancelOrderRequestDto {
+    iban!: string | null;
+
+    init(_data?: any) {
+        if (_data) {
+            this.iban = _data["iban"] !== undefined ? _data["iban"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): CancelOrderRequestDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CancelOrderRequestDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["iban"] = this.iban !== undefined ? this.iban : <any>null;
+        return data;
+    }
+}
+
 export class CreateOrderResponseDto {
     orderId!: number;
     orderNumber!: string;
@@ -12735,11 +12860,13 @@ export class SelectVehicleTypeResponseDto {
 export class SelectVehicleTypeDto {
     orderId!: number;
     vehicleTypeId!: number;
+    paymentMethodId!: number | null;
 
     init(_data?: any) {
         if (_data) {
             this.orderId = _data["orderId"] !== undefined ? _data["orderId"] : <any>null;
             this.vehicleTypeId = _data["vehicleTypeId"] !== undefined ? _data["vehicleTypeId"] : <any>null;
+            this.paymentMethodId = _data["paymentMethodId"] !== undefined ? _data["paymentMethodId"] : <any>null;
         }
     }
 
@@ -12754,6 +12881,7 @@ export class SelectVehicleTypeDto {
         data = typeof data === 'object' ? data : {};
         data["orderId"] = this.orderId !== undefined ? this.orderId : <any>null;
         data["vehicleTypeId"] = this.vehicleTypeId !== undefined ? this.vehicleTypeId : <any>null;
+        data["paymentMethodId"] = this.paymentMethodId !== undefined ? this.paymentMethodId : <any>null;
         return data;
     }
 }
@@ -12878,6 +13006,7 @@ export enum OrderStatus {
     Completed = 4,
     ConfirmedGoingToPickup = 5,
     PickedUpFromDeliveryMan = 6,
+    AwaitingPayment = 7,
 }
 
 export class CustomerOrderWayPointDto {
@@ -12949,6 +13078,12 @@ export class OrderDetailsDto {
     status!: OrderStatus;
     statusName!: string;
     total!: number;
+    isPaid!: boolean;
+    transportAmount!: number;
+    baseAmount!: number;
+    serviceFee!: number;
+    taxAmount!: number;
+    discountAmount!: number;
     orderType!: OrderType;
     orderTypeName!: string;
     vehicleTypeId!: number | null;
@@ -12970,6 +13105,12 @@ export class OrderDetailsDto {
             this.status = _data["status"] !== undefined ? _data["status"] : <any>null;
             this.statusName = _data["statusName"] !== undefined ? _data["statusName"] : <any>null;
             this.total = _data["total"] !== undefined ? _data["total"] : <any>null;
+            this.isPaid = _data["isPaid"] !== undefined ? _data["isPaid"] : <any>null;
+            this.transportAmount = _data["transportAmount"] !== undefined ? _data["transportAmount"] : <any>null;
+            this.baseAmount = _data["baseAmount"] !== undefined ? _data["baseAmount"] : <any>null;
+            this.serviceFee = _data["serviceFee"] !== undefined ? _data["serviceFee"] : <any>null;
+            this.taxAmount = _data["taxAmount"] !== undefined ? _data["taxAmount"] : <any>null;
+            this.discountAmount = _data["discountAmount"] !== undefined ? _data["discountAmount"] : <any>null;
             this.orderType = _data["orderType"] !== undefined ? _data["orderType"] : <any>null;
             this.orderTypeName = _data["orderTypeName"] !== undefined ? _data["orderTypeName"] : <any>null;
             this.vehicleTypeId = _data["vehicleTypeId"] !== undefined ? _data["vehicleTypeId"] : <any>null;
@@ -13028,6 +13169,12 @@ export class OrderDetailsDto {
         data["status"] = this.status !== undefined ? this.status : <any>null;
         data["statusName"] = this.statusName !== undefined ? this.statusName : <any>null;
         data["total"] = this.total !== undefined ? this.total : <any>null;
+        data["isPaid"] = this.isPaid !== undefined ? this.isPaid : <any>null;
+        data["transportAmount"] = this.transportAmount !== undefined ? this.transportAmount : <any>null;
+        data["baseAmount"] = this.baseAmount !== undefined ? this.baseAmount : <any>null;
+        data["serviceFee"] = this.serviceFee !== undefined ? this.serviceFee : <any>null;
+        data["taxAmount"] = this.taxAmount !== undefined ? this.taxAmount : <any>null;
+        data["discountAmount"] = this.discountAmount !== undefined ? this.discountAmount : <any>null;
         data["orderType"] = this.orderType !== undefined ? this.orderType : <any>null;
         data["orderTypeName"] = this.orderTypeName !== undefined ? this.orderTypeName : <any>null;
         data["vehicleTypeId"] = this.vehicleTypeId !== undefined ? this.vehicleTypeId : <any>null;
@@ -13626,6 +13773,47 @@ export class CustomerWalletBalanceDto {
         data["customerId"] = this.customerId !== undefined ? this.customerId : <any>null;
         data["balance"] = this.balance !== undefined ? this.balance : <any>null;
         data["transactionCount"] = this.transactionCount !== undefined ? this.transactionCount : <any>null;
+        return data;
+    }
+}
+
+export class WalletTransactionDto {
+    id!: number;
+    description!: string;
+    amount!: number;
+    isWithdraw!: boolean;
+    date!: Date;
+    orderId!: number | null;
+    transactionType!: string;
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.description = _data["description"] !== undefined ? _data["description"] : <any>null;
+            this.amount = _data["amount"] !== undefined ? _data["amount"] : <any>null;
+            this.isWithdraw = _data["isWithdraw"] !== undefined ? _data["isWithdraw"] : <any>null;
+            this.date = _data["date"] ? new Date(_data["date"].toString()) : <any>null;
+            this.orderId = _data["orderId"] !== undefined ? _data["orderId"] : <any>null;
+            this.transactionType = _data["transactionType"] !== undefined ? _data["transactionType"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): WalletTransactionDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new WalletTransactionDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["description"] = this.description !== undefined ? this.description : <any>null;
+        data["amount"] = this.amount !== undefined ? this.amount : <any>null;
+        data["isWithdraw"] = this.isWithdraw !== undefined ? this.isWithdraw : <any>null;
+        data["date"] = this.date ? this.date.toISOString() : <any>null;
+        data["orderId"] = this.orderId !== undefined ? this.orderId : <any>null;
+        data["transactionType"] = this.transactionType !== undefined ? this.transactionType : <any>null;
         return data;
     }
 }

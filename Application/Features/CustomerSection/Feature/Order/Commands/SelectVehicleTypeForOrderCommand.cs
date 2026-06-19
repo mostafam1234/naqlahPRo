@@ -93,6 +93,10 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
                     return Result.Failure<SelectVehicleTypeResponseDto>("Vehicle Could be Deleted");
                 }
 
+                // Selected payment method is stored on the order; the actual charge happens
+                // later through ProcessPayment / PayFromWallet per the payment-timing rules.
+                var paymentMethodId = request.Request.PaymentMethodId ?? (int)PaymentMethodEnum.Wallet;
+
                 // Set the vehicle type using domain logic
                 var setVehicleResult = order.CompleteOrderAndSetVehicleType(request.Request.VehicleTypeId,
                                                                             vehicleType.Cost,
@@ -105,7 +109,7 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
                                                                             systemCOnfiguration.ExtraHourRate,
                                                                             systemCOnfiguration.VatRate,
                                                                             systemCOnfiguration.ServiceFess,
-                                                                            (int)PaymentMethodEnum.Wallet,
+                                                                            paymentMethodId,
                                                                             googleResponse.Value.DistanceInKiloMeter,
                                                                             googleResponse.Value.DeliveryTime,
                                                                             googleResponse.Value.EncodedPoints);
@@ -115,23 +119,6 @@ namespace Application.Features.CustomerSection.Feature.Order.Commands
                 {
                     return Result.Failure<SelectVehicleTypeResponseDto>(setVehicleResult.Error);
                 }
-
-                var arabicDescription = $"??? ?? ??????? ?? ??? ??? {order.OrderNumber}";
-                var englishDescription = $"Cost Of Order Number {order.OrderNumber}";
-
-                var walletTransction = WalletTransctions.Instance(nowDate,arabicDescription,
-                                                                 englishDescription,
-                                                                 order.CustomerId,
-                                                                 order.Total,
-                                                                 true,
-                                                                 order.Id);
-
-                if (walletTransction.IsFailure)
-                {
-                    return Result.Failure<SelectVehicleTypeResponseDto>(walletTransction.Error);
-                }
-
-                await context.WalletTransctions.AddAsync(walletTransction.Value);
 
                 // Save the changes
                 var saveResult = await context.SaveChangesAsyncWithResult();

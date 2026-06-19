@@ -8,6 +8,7 @@
        Cancelled = 3,
        Completed = 4,
        ConfirmedGoingToPickup = 5,
-       PickedUpFromDeliveryMan = 6
+       PickedUpFromDeliveryMan = 6,
+       AwaitingPayment = 7
     }
 }

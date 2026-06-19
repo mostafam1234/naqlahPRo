@@ -37,6 +37,13 @@ namespace Domain.Models
         public OrderStatus OrderStatus { get; private set; }
         public int VehicleTypdId { get; private set; }
         public decimal Total { get; private set; }
+        public decimal TransportAmount { get; private set; }
+        public decimal ServiceFee { get; private set; }
+        public decimal TaxAmount { get; private set; }
+        public bool IsPaid { get; private set; }
+        public RefundStatus RefundStatus { get; private set; }
+        public string? RefundIban { get; private set; }
+        public decimal RefundedAmount { get; private set; }
         public int? DiscountCodeId { get; private set; }
         public string? DiscountCodeName { get; private set; }
         public decimal DiscountAmount { get; private set; }
@@ -287,8 +294,11 @@ namespace Domain.Models
             this.ExpectedTimeMinutes= timeInMinutes;
             this.HashedLocation= hasedLocation;
             this.Total = orderTotal;
+            this.TransportAmount = distanceCost + timeCost;
+            this.ServiceFee = servicesFees;
+            this.TaxAmount = vatAmount;
 
-            var orderPaymentMethod = OrderPaymentMethod.Instance(paymentMethodId, orderTotal); 
+            var orderPaymentMethod = OrderPaymentMethod.Instance(paymentMethodId, orderTotal);
             this._PaymentMethods.Add(orderPaymentMethod);
             return Result.Success();
         }
@@ -406,6 +416,40 @@ namespace Domain.Models
             var statusHistory = OrderStatusHistory.Create(OrderStatus.Cancelled, nowDate);
             this._OrderStatusHistories.Add(statusHistory);
 
+            return Result.Success();
+        }
+
+        public Result MarkAsPaid()
+        {
+            if (this.IsPaid)
+            {
+                return Result.Failure("OrderAlreadyPaid");
+            }
+
+            this.IsPaid = true;
+            return Result.Success();
+        }
+
+        public Result InitiateRefund(string iban)
+        {
+            if (!this.IsPaid)
+            {
+                return Result.Failure("OrderIsNotPaidNoRefundNeeded");
+            }
+
+            if (string.IsNullOrWhiteSpace(iban))
+            {
+                return Result.Failure("IbanIsRequiredToRefundAPaidOrder");
+            }
+
+            if (this.RefundStatus != RefundStatus.None)
+            {
+                return Result.Failure("RefundAlreadyInitiated");
+            }
+
+            this.RefundIban = iban.Trim();
+            this.RefundedAmount = this.Total;
+            this.RefundStatus = RefundStatus.Pending;
             return Result.Success();
         }
     }

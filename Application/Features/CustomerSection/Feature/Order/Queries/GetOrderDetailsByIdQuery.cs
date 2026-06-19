@@ -96,6 +96,12 @@ namespace Application.Features.CustomerSection.Feature.Order.Queries
                     Status = order.OrderStatus,
                     StatusName = GetStatusName(order.OrderStatus, languageId),
                     Total = order.Total,
+                    IsPaid = order.IsPaid,
+                    TransportAmount = order.TransportAmount,
+                    BaseAmount = order.TransportAmount,
+                    ServiceFee = order.ServiceFee,
+                    TaxAmount = order.TaxAmount,
+                    DiscountAmount = order.DiscountAmount,
                     OrderType = order.OrderType,
                     OrderTypeName = GetOrderTypeName(order.OrderType, languageId),
                     VehicleTypeId = order.VehicleTypeId,
@@ -184,11 +190,24 @@ namespace Application.Features.CustomerSection.Feature.Order.Queries
                         OrderStatus.Assigned => "تم التعيين",
                         OrderStatus.Cancelled => "ملغي",
                         OrderStatus.Completed => "مكتمل",
+                        OrderStatus.ConfirmedGoingToPickup => "تم تأكيد الذهاب لالتقاط الشحنة",
+                        OrderStatus.PickedUpFromDeliveryMan => "التقاط الطلب من المندوب",
+                        OrderStatus.AwaitingPayment => "في انتظار الدفع",
                         _ => status.ToString()
                     };
                 }
 
-                return status.ToString();
+                return status switch
+                {
+                    OrderStatus.Pending => "Pending",
+                    OrderStatus.Assigned => "Assigned",
+                    OrderStatus.Cancelled => "Cancelled",
+                    OrderStatus.Completed => "Completed",
+                    OrderStatus.ConfirmedGoingToPickup => "Confirmed going to pickup",
+                    OrderStatus.PickedUpFromDeliveryMan => "Pickup from delegate",
+                    OrderStatus.AwaitingPayment => "Awaiting Payment",
+                    _ => status.ToString()
+                };
             }
 
             private string GetOrderTypeName(OrderType orderType, int languageId)

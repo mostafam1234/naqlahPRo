@@ -39,13 +39,14 @@ namespace Presentaion.Controllers
 
 
         [HttpPost("CancelOrder/{orderId:int}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CancelOrderResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CancelOrder(int orderId)
+        public async Task<IActionResult> CancelOrder(int orderId, [FromBody] CancelOrderRequestDto? request = null)
         {
             var result =await mediator.Send(new CancelCustomerOrderCommand
             {
                 OrderId = orderId,
+                Iban = request?.Iban,
             });
 
             if (result.IsFailure)
@@ -53,7 +54,7 @@ namespace Presentaion.Controllers
                 return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
             }
 
-            return Ok();
+            return Ok(result.Value);
         }
 
         [HttpPost]

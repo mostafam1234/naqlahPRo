@@ -165,6 +165,8 @@ namespace Application.Features.CustomerSection.Feature.Payment.Commands
 
                 await _context.WalletTransctions.AddAsync(walletTransaction.Value, cancellationToken);
 
+                order.MarkAsPaid();
+
                 var saveResult = await _context.SaveChangesAsyncWithResult();
                 if (saveResult.IsFailure)
                     return Result.Failure<ProcessPaymentResponseDto>(saveResult.Error);

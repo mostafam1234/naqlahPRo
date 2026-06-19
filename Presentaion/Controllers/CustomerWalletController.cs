@@ -38,5 +38,21 @@ namespace Presentaion.Controllers
 
             return Ok(result.Value);
         }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(List<WalletTransactionDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("GetTransactions")]
+        public async Task<IActionResult> GetTransactions()
+        {
+            var result = await mediator.Send(new GetCustomerWalletTransactionsQuery());
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+
+            return Ok(result.Value);
+        }
     }
 }
