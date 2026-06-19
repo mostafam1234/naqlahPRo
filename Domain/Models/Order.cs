@@ -127,7 +127,7 @@ namespace Domain.Models
                                .FirstOrDefault(x => x.Id == orderWayPoint);
             if (wayPoint is null)
             {
-                return Result.Failure("Order way point not found");
+                return Result.Failure("OrderWayPointNotFound");
             }
 
             var confirmResult = wayPoint.ChangeStatusToCustomerConfirm(nowDate);
@@ -145,7 +145,7 @@ namespace Domain.Models
                                .FirstOrDefault(x => x.Id == orderWayPoint);
             if (wayPoint is null)
             {
-                return Result.Failure("Order way point not found");
+                return Result.Failure("OrderWayPointNotFound");
             }
 
             var confirmResult = wayPoint.ChangeStatusToCustomerReject();
@@ -214,17 +214,17 @@ namespace Domain.Models
         {
             if (this.OrderStatus != OrderStatus.Pending)
             {
-                return Result.Failure("Order is not in pending status");
+                return Result.Failure("OrderNotInPendingStatus");
             }
 
             if (this.DeliveryManId != null)
             {
-                return Result.Failure("Order is already assigned to a delivery man");
+                return Result.Failure("OrderAlreadyAssignedToDeliveryMan");
             }
 
             if (deliveryManId <= 0)
             {
-                return Result.Failure("Invalid delivery man ID");
+                return Result.Failure("InvalidDeliveryManId");
             }
 
             // Update the order status and assign the delivery man
@@ -279,7 +279,7 @@ namespace Domain.Models
             if (customerWalletBalance < orderTotal &&
                 paymentMethodId == (int)PaymentMethodEnum.Wallet)
             {
-                return Result.Failure("Insufficient wallet balance to complete the order");
+                return Result.Failure("InsufficientWalletBalance");
             }
 
             this.VehicleTypdId = vehicleTypeId;
@@ -297,13 +297,13 @@ namespace Domain.Models
         {
             if (this.OrderStatus == newStatus)
             {
-                return Result.Failure($"Order is already in {newStatus} status");
+                return Result.Failure("OrderAlreadyInStatus");
             }
 
             // Add business rules for status transitions if needed
             if (!IsValidStatusTransition(this.OrderStatus, newStatus))
             {
-                return Result.Failure($"Cannot transition from {this.OrderStatus} to {newStatus}");
+                return Result.Failure("OrderStatusTransitionNotAllowed");
             }
 
             this.OrderStatus = newStatus;
@@ -319,17 +319,17 @@ namespace Domain.Models
         {
             if (vehicleTypeId <= 0)
             {
-                return Result.Failure("Invalid vehicle type ID");
+                return Result.Failure("InvalidVehicleTypeId");
             }
 
             if (this.VehicleTypeId != null)
             {
-                return Result.Failure("Vehicle type has already been selected for this order");
+                return Result.Failure("VehicleTypeAlreadySelected");
             }
 
             if (this.OrderStatus != OrderStatus.Pending)
             {
-                return Result.Failure("Vehicle type can only be set for pending orders");
+                return Result.Failure("VehicleTypeOnlyForPendingOrders");
             }
 
             this.VehicleTypeId = vehicleTypeId;
@@ -397,7 +397,7 @@ namespace Domain.Models
         {
             if (this.OrderStatus == OrderStatus.Cancelled)
             {
-                return Result.Failure("Order is already cancelled");
+                return Result.Failure("OrderAlreadyCancelled");
             }
 
             this.OrderStatus = OrderStatus.Cancelled;

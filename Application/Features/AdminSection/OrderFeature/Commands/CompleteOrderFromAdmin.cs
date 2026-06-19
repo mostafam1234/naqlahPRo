@@ -38,24 +38,14 @@ namespace Application.Features.AdminSection.OrderFeature.Commands
                     .FirstOrDefaultAsync(o => o.Id == request.OrderId, cancellationToken);
 
                 if (order == null)
-                {
-                    var errMessage = request.LanguageId == 1 ? "الطلب غير موجود." : "Order not found.";
-                    return Result.Failure<int>(errMessage);
-                }
+                    return Result.Failure<int>("OrderNotFound");
 
                 if (order.OrderStatus != OrderStatus.Assigned)
-                {
-                    var errMessage = request.LanguageId == 1
-                        ? "يمكن إكمال الطلبات المعينة فقط."
-                        : "Only assigned orders can be completed.";
-                    return Result.Failure<int>(errMessage);
-                }
+                    return Result.Failure<int>("OnlyAssignedOrdersCanBeCompleted");
 
                 var updateResult = order.UpdateStatus(OrderStatus.Completed, _dateTimeProvider.Now);
                 if (updateResult.IsFailure)
-                {
                     return Result.Failure<int>(updateResult.Error);
-                }
 
                 await _customerNotificationService.PrepareAsync(
                     order.CustomerId,

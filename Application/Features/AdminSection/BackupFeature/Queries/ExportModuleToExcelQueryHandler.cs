@@ -21,16 +21,16 @@ namespace Application.Features.AdminSection.BackupFeature.Queries
         public async Task<Result<ExportResult>> Handle(ExportModuleToExcelQuery request, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(request.ModuleKey))
-                return Result.Failure<ExportResult>("Module key is required.");
+                return Result.Failure<ExportResult>("ModuleKeyRequired");
 
             if (!BackupModuleKeys.All.Contains(request.ModuleKey))
-                return Result.Failure<ExportResult>($"Unknown module: {request.ModuleKey}.");
+                return Result.Failure<ExportResult>("UnknownModule");
 
             var exporter = _exporters.FirstOrDefault(e =>
                 string.Equals(e.ModuleKey, request.ModuleKey, StringComparison.OrdinalIgnoreCase));
 
             if (exporter == null)
-                return Result.Failure<ExportResult>($"No exporter registered for module: {request.ModuleKey}.");
+                return Result.Failure<ExportResult>("NoExporterForModule");
 
             return await exporter.ExportAsync(request, cancellationToken);
         }

@@ -25,7 +25,7 @@ namespace Application.Features.AdminSection.CityFeatures.Commands
                 var city = await _context.Cities.AsTracking().FirstOrDefaultAsync(x => x.Id == command.Id);
                 if (city == null)
                 {
-                    return Result.Failure<int>("City Not Found");
+                    return Result.Failure<int>("CityNotFound");
                 }
                 await _context.Cities.Where(x => x.Id == command.Id).ExecuteDeleteAsync();
                 var result = await _context.SaveChangesAsyncWithResult();

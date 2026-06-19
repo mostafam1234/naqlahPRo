@@ -1,4 +1,298 @@
-/* Custom styles for vehicles component */
+@import '../../orders/captain-orders.shared.css';
+
+.na-stats-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.na-stat-row--vehicles {
+  grid-template-columns: repeat(auto-fill, minmax(11.5rem, 1fr));
+  margin-bottom: 1.25rem;
+}
+
+/* Tabs */
+.veh-tabs-wrap {
+  background: var(--shell-surface);
+  border: 1px solid var(--shell-surface-border);
+  border-radius: 0.75rem 0.75rem 0 0;
+  overflow: hidden;
+}
+
+.veh-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--shell-surface-border);
+}
+
+.veh-tab {
+  display: inline-flex;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  background: transparent;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--shell-text-muted);
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+}
+
+.veh-tab:hover {
+  color: var(--shell-text);
+  background: var(--shell-muted-surface);
+}
+
+.veh-tab--active {
+  color: var(--color-primary-600);
+  border-bottom-color: var(--color-primary-600);
+  background: color-mix(in srgb, var(--color-primary-600) 8%, var(--shell-surface));
+}
+
+/* Toolbar & table card */
+.veh-toolbar__body {
+  padding: 1.25rem 1.5rem;
+}
+
+.veh-search-input {
+  background: var(--shell-input-bg);
+  border-color: var(--shell-surface-border);
+  color: var(--shell-text);
+}
+
+.veh-count-badge {
+  font-size: 0.8125rem;
+  color: var(--shell-text-muted);
+  background: var(--shell-muted-surface);
+  border: 1px solid var(--shell-surface-border);
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+}
+
+.veh-icon-box {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  border: 1px solid var(--shell-surface-border);
+  background: var(--shell-muted-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.veh-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+
+.veh-badge--sky {
+  background: color-mix(in srgb, #0ea5e9 14%, var(--shell-surface));
+  color: #0369a1;
+  border-color: color-mix(in srgb, #0ea5e9 30%, var(--shell-surface-border));
+}
+
+.veh-badge--primary {
+  background: color-mix(in srgb, var(--color-primary-600) 14%, var(--shell-surface));
+  color: var(--color-primary-800);
+  border-color: color-mix(in srgb, var(--color-primary-500) 30%, var(--shell-surface-border));
+}
+
+.veh-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.veh-action-btn--edit {
+  background: color-mix(in srgb, #eab308 18%, var(--shell-surface));
+  color: #a16207;
+  border-color: color-mix(in srgb, #eab308 35%, var(--shell-surface-border));
+}
+
+.veh-action-btn--edit:hover {
+  background: color-mix(in srgb, #eab308 28%, var(--shell-surface));
+}
+
+.veh-action-btn--delete {
+  background: color-mix(in srgb, #ef4444 14%, var(--shell-surface));
+  color: #b91c1c;
+  border-color: color-mix(in srgb, #ef4444 30%, var(--shell-surface-border));
+}
+
+.veh-action-btn--delete:hover {
+  background: color-mix(in srgb, #ef4444 24%, var(--shell-surface));
+}
+
+/* Stat card variants — light mode only */
+.na-stat-card--confirmed {
+  background: linear-gradient(135deg, #eff6ff 0%, #f0f9ff 100%);
+  border-color: #bfdbfe;
+}
+
+.na-stat-card--confirmed .na-stat-card__icon {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #fff;
+}
+
+.na-stat-card--confirmed .na-stat-card__value {
+  color: #1d4ed8;
+}
+
+.na-stat-card--pickedup {
+  background: linear-gradient(135deg, #fff7ed 0%, #fffbeb 100%);
+  border-color: #fed7aa;
+}
+
+.na-stat-card--pickedup .na-stat-card__icon {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #fff;
+}
+
+.na-stat-card--pickedup .na-stat-card__value {
+  color: #b45309;
+}
+
+.na-stat-card--completed {
+  background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+  border-color: #a7f3d0;
+}
+
+.na-stat-card--completed .na-stat-card__icon {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #fff;
+}
+
+.na-stat-card--completed .na-stat-card__value {
+  color: #047857;
+}
+
+.na-stat-card--inactive {
+  background: linear-gradient(135deg, #faf5ff 0%, #f5f3ff 100%);
+  border-color: #ddd6fe;
+}
+
+.na-stat-card--inactive .na-stat-card__icon {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  color: #fff;
+}
+
+.na-stat-card--inactive .na-stat-card__value {
+  color: #6d28d9;
+}
+
+/* Dark mode — component-scoped (beats encapsulated light gradients) */
+:host-context(.dark) .na-stat-card,
+:host-context(.dark) .na-stat-card--total,
+:host-context(.dark) .na-stat-card--active,
+:host-context(.dark) .na-stat-card--inactive,
+:host-context(.dark) .na-stat-card--completed,
+:host-context(.dark) .na-stat-card--confirmed,
+:host-context(.dark) .na-stat-card--pickedup {
+  background: var(--shell-surface) !important;
+  border-color: var(--shell-surface-border) !important;
+}
+
+:host-context(.dark) .na-stat-card--total {
+  background: color-mix(in srgb, var(--color-primary-600) 18%, var(--shell-surface)) !important;
+  border-color: color-mix(in srgb, var(--color-primary-500) 42%, var(--shell-surface-border)) !important;
+}
+
+:host-context(.dark) .na-stat-card--active {
+  background: color-mix(in srgb, #10b981 16%, var(--shell-surface)) !important;
+  border-color: color-mix(in srgb, #10b981 38%, var(--shell-surface-border)) !important;
+}
+
+:host-context(.dark) .na-stat-card--confirmed {
+  background: color-mix(in srgb, #3b82f6 14%, var(--shell-surface)) !important;
+  border-color: color-mix(in srgb, #3b82f6 35%, var(--shell-surface-border)) !important;
+}
+
+:host-context(.dark) .na-stat-card--pickedup {
+  background: color-mix(in srgb, #f59e0b 14%, var(--shell-surface)) !important;
+  border-color: color-mix(in srgb, #f59e0b 35%, var(--shell-surface-border)) !important;
+}
+
+:host-context(.dark) .na-stat-card--completed {
+  background: color-mix(in srgb, #10b981 14%, var(--shell-surface)) !important;
+  border-color: color-mix(in srgb, #10b981 35%, var(--shell-surface-border)) !important;
+}
+
+:host-context(.dark) .na-stat-card--inactive {
+  background: color-mix(in srgb, #8b5cf6 14%, var(--shell-surface)) !important;
+  border-color: color-mix(in srgb, #8b5cf6 35%, var(--shell-surface-border)) !important;
+}
+
+:host-context(.dark) .na-stat-card__label {
+  color: #cbd5e1 !important;
+}
+
+:host-context(.dark) .na-stat-card__value {
+  color: #f1f5f9 !important;
+}
+
+:host-context(.dark) .na-stat-card--total .na-stat-card__value {
+  color: #99f6e4 !important;
+}
+
+:host-context(.dark) .na-stat-card--active .na-stat-card__value {
+  color: #6ee7b7 !important;
+}
+
+:host-context(.dark) .veh-tab--active {
+  color: #99f6e4 !important;
+  border-bottom-color: var(--color-primary-400) !important;
+  background: color-mix(in srgb, var(--color-primary-600) 16%, var(--shell-surface)) !important;
+}
+
+:host-context(.dark) .veh-tab {
+  color: #94a3b8 !important;
+}
+
+:host-context(.dark) .veh-tab:hover {
+  color: #f1f5f9 !important;
+}
+
+:host-context(.dark) .veh-badge--sky {
+  background: color-mix(in srgb, #0ea5e9 18%, var(--shell-surface)) !important;
+  color: #7dd3fc !important;
+  border-color: color-mix(in srgb, #0ea5e9 35%, var(--shell-surface-border)) !important;
+}
+
+:host-context(.dark) .veh-badge--primary {
+  background: color-mix(in srgb, var(--color-primary-600) 18%, var(--shell-surface)) !important;
+  color: #99f6e4 !important;
+  border-color: color-mix(in srgb, var(--color-primary-500) 35%, var(--shell-surface-border)) !important;
+}
+
+:host-context(.dark) .veh-action-btn--edit {
+  background: color-mix(in srgb, #eab308 18%, var(--shell-surface)) !important;
+  color: #fcd34d !important;
+  border-color: color-mix(in srgb, #eab308 35%, var(--shell-surface-border)) !important;
+}
+
+:host-context(.dark) .veh-action-btn--delete {
+  background: color-mix(in srgb, #ef4444 18%, var(--shell-surface)) !important;
+  color: #fca5a5 !important;
+  border-color: color-mix(in srgb, #ef4444 35%, var(--shell-surface-border)) !important;
+}
+
 .animate-spin {
   animation: spin 1s linear infinite;
 }
@@ -8,26 +302,24 @@
   to { transform: rotate(360deg); }
 }
 
-/* Smooth transitions for tab switching */
-.tab-content {
-  transition: opacity 0.2s ease-in-out;
-}
-
-/* Custom scrollbar for table */
-.overflow-x-auto::-webkit-scrollbar {
+.overflow-x-auto::-webkit-scrollbar,
+.na-table-wrap::-webkit-scrollbar {
   height: 6px;
 }
 
-.overflow-x-auto::-webkit-scrollbar-track {
-  background: #f1f5f9;
+.overflow-x-auto::-webkit-scrollbar-track,
+.na-table-wrap::-webkit-scrollbar-track {
+  background: var(--shell-muted-surface);
   border-radius: 6px;
 }
 
-.overflow-x-auto::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+.overflow-x-auto::-webkit-scrollbar-thumb,
+.na-table-wrap::-webkit-scrollbar-thumb {
+  background: var(--shell-surface-border);
   border-radius: 6px;
 }
 
-.overflow-x-auto::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+.overflow-x-auto::-webkit-scrollbar-thumb:hover,
+.na-table-wrap::-webkit-scrollbar-thumb:hover {
+  background: var(--shell-text-muted);
 }

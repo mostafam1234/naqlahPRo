@@ -1,7 +1,8 @@
 import { RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ToasterComponent } from './shared/components/toaster/toaster.component';
+import { ThemeService } from './shared/services/theme.service';
 
 @Component({
   selector: 'app-root',
@@ -10,4 +11,6 @@ import { ToasterComponent } from './shared/components/toaster/toaster.component'
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {}
+export class AppComponent {
+  constructor(private themeService: ThemeService) {}
+}

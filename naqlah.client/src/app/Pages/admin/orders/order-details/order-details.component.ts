@@ -19,6 +19,16 @@ import {
 import { catchError, finalize } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { PermissionService } from 'src/app/shared/services/permission.service';
+import {
+  PRIMARY_COLOR,
+  PRIMARY_COLOR_DARK,
+  SUCCESS_COLOR,
+  WARNING_COLOR,
+  ERROR_COLOR,
+  ACCENT_COLOR,
+  ACCENT_COLOR_DARK,
+  NAQLAH_COLORS,
+} from 'src/app/shared/theme/naqlah-theme';
 
 interface TimelineEvent {
   title: string;
@@ -278,7 +288,7 @@ export class OrderDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
       const startIcon = L.divIcon({
         html: `
           <div style="
-            background: linear-gradient(135deg, #10b981, #059669);
+            background: linear-gradient(135deg, ${PRIMARY_COLOR}, ${PRIMARY_COLOR_DARK});
             width: 40px;
             height: 40px;
             border-radius: 50% 50% 50% 0;
@@ -303,7 +313,7 @@ export class OrderDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
       const endIcon = L.divIcon({
         html: `
           <div style="
-            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            background: linear-gradient(135deg, ${ERROR_COLOR}, ${NAQLAH_COLORS.error['600']});
             width: 40px;
             height: 40px;
             border-radius: 50% 50% 50% 0;
@@ -329,14 +339,14 @@ export class OrderDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
       const startMarker = L.marker([originWayPoint.latitude, originWayPoint.longitude], { icon: startIcon }).addTo(this.map);
       startMarker.bindPopup(`
         <div style="text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; direction: rtl;">
-          <div style="background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 10px; border-radius: 8px 8px 0 0; margin: -10px -10px 10px -10px;">
+          <div style="background: linear-gradient(135deg, ${PRIMARY_COLOR}, ${PRIMARY_COLOR_DARK}); color: white; padding: 10px; border-radius: 8px 8px 0 0; margin: -10px -10px 10px -10px;">
             <strong>🚀 نقطة الاستلام</strong>
           </div>
           <div style="padding: 5px;">
             <p style="margin: 5px 0; color: #374151;"><strong>العنوان:</strong> ${originWayPoint.address || 'غير محدد'}</p>
             <p style="margin: 5px 0; color: #6b7280; font-size: 12px;">إحداثيات: ${originWayPoint.latitude.toFixed(4)}, ${originWayPoint.longitude.toFixed(4)}</p>
             ${originWayPoint.regionName ? '<p style="margin: 5px 0; color: #6b7280; font-size: 12px;">المنطقة: ' + originWayPoint.regionName + '</p>' : ''}
-            ${originWayPoint.pickedUpDate ? '<p style="margin: 5px 0; color: #10b981; font-size: 12px;">✓ تم الاستلام</p>' : '<p style="margin: 5px 0; color: #f59e0b; font-size: 12px;">⏳ في الانتظار</p>'}
+            ${originWayPoint.pickedUpDate ? `<p style="margin: 5px 0; color: ${SUCCESS_COLOR}; font-size: 12px;">✓ تم الاستلام</p>` : `<p style="margin: 5px 0; color: ${WARNING_COLOR}; font-size: 12px;">⏳ في الانتظار</p>`}
           </div>
         </div>
       `, {
@@ -347,14 +357,14 @@ export class OrderDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
       const endMarker = L.marker([destinationWayPoint.latitude, destinationWayPoint.longitude], { icon: endIcon }).addTo(this.map);
       endMarker.bindPopup(`
         <div style="text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; direction: rtl;">
-          <div style="background: linear-gradient(135deg, #dc2626, #b91c1c); color: white; padding: 10px; border-radius: 8px 8px 0 0; margin: -10px -10px 10px -10px;">
+          <div style="background: linear-gradient(135deg, ${ERROR_COLOR}, ${NAQLAH_COLORS.error['600']}); color: white; padding: 10px; border-radius: 8px 8px 0 0; margin: -10px -10px 10px -10px;">
             <strong>🎯 نقطة التسليم</strong>
           </div>
           <div style="padding: 5px;">
             <p style="margin: 5px 0; color: #374151;"><strong>العنوان:</strong> ${destinationWayPoint.address || 'غير محدد'}</p>
             <p style="margin: 5px 0; color: #6b7280; font-size: 12px;">إحداثيات: ${destinationWayPoint.latitude.toFixed(4)}, ${destinationWayPoint.longitude.toFixed(4)}</p>
             ${destinationWayPoint.regionName ? '<p style="margin: 5px 0; color: #6b7280; font-size: 12px;">المنطقة: ' + destinationWayPoint.regionName + '</p>' : ''}
-            ${destinationWayPoint.status === 3 ? '<p style="margin: 5px 0; color: #10b981; font-size: 12px;">✓ تم التسليم</p>' : '<p style="margin: 5px 0; color: #f59e0b; font-size: 12px;">⏳ في الانتظار</p>'}
+            ${destinationWayPoint.status === 3 ? `<p style="margin: 5px 0; color: ${SUCCESS_COLOR}; font-size: 12px;">✓ تم التسليم</p>` : `<p style="margin: 5px 0; color: ${WARNING_COLOR}; font-size: 12px;">⏳ في الانتظار</p>`}
           </div>
         </div>
       `, {
@@ -388,7 +398,7 @@ export class OrderDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
       // Draw the route using REAL coordinates
       if (routeCoordinates.length > 1) {
         const mainRoute = L.polyline(routeCoordinates, {
-          color: '#3b82f6',
+          color: ACCENT_COLOR,
           weight: 6,
           opacity: 0.8,
           lineCap: 'round',
@@ -397,7 +407,7 @@ export class OrderDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
 
         // Add shadow effect
         L.polyline(routeCoordinates, {
-          color: '#1e40af',
+          color: ACCENT_COLOR_DARK,
           weight: 8,
           opacity: 0.3,
           lineCap: 'round',
@@ -411,7 +421,7 @@ export class OrderDetailsComponent implements OnInit, OnDestroy, AfterViewInit {
           const intermediateIcon = L.divIcon({
             html: `
               <div style="
-                background: linear-gradient(135deg, #f59e0b, #d97706);
+                background: linear-gradient(135deg, ${WARNING_COLOR}, ${NAQLAH_COLORS.warning['600']});
                 width: 32px;
                 height: 32px;
                 border-radius: 50%;

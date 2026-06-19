@@ -1,4 +1,4 @@
-<div class="min-h-screen bg-neutral-50">
+<div class="min-h-screen theme-page">
   <div class="container mx-auto max-w-7xl">
     <!-- Page Header -->
     <app-page-header
@@ -192,7 +192,7 @@
         <!-- Card Footer -->
         <div class="px-4 py-2 bg-neutral-50 border-t border-neutral-200 flex items-center justify-end gap-2">
           <a
-            [routerLink]="['/admin/newCaptain/action', captain.deliveryManId]"
+            [routerLink]="['/admin/users/captains/details', captain.deliveryManId]"
             class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all duration-200"
             title="عرض التفاصيل"
           >
@@ -299,7 +299,7 @@
               <td class="px-4 py-5 whitespace-nowrap text-center">
                 <div class="flex items-center justify-center gap-2">
                   <a
-                    [routerLink]="['/admin/newCaptain/action', captain.deliveryManId]"
+                    [routerLink]="['/admin/users/captains/details', captain.deliveryManId]"
                     class="inline-flex items-center p-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all duration-200"
                     title="عرض التفاصيل"
                   >

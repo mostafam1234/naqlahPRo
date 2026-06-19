@@ -25,7 +25,7 @@ namespace Application.Features.VehicleSection.Commands
                 var VehicleType = await _context.VehicleTypes.AsTracking().FirstOrDefaultAsync(x => request.VehicleTypeId == x.Id);
                 if (VehicleType == null)
                 {
-                    return Result.Failure<int>("Vehicle Type Not Found");
+                    return Result.Failure<int>("VehicleTypeNotFound");
                 }
                 await _context.VehicleTypes.Where(x => x.Id == request.VehicleTypeId).ExecuteDeleteAsync();
                 var result = await _context.SaveChangesAsyncWithResult();

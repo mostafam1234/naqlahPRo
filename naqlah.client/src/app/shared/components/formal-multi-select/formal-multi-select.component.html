@@ -1,0 +1,79 @@
+<div class="na-formal-select na-formal-multi-select na-formal-select--wide" [class.na-formal-select--open]="isOpen" [class.na-formal-select--disabled]="disabled">
+  <label *ngIf="label" class="na-formal-select__label">{{ label }}</label>
+
+  <button
+    #triggerBtn
+    type="button"
+    class="na-formal-select__trigger"
+    [disabled]="disabled || loading"
+    (click)="toggle()"
+    [attr.aria-expanded]="isOpen"
+  >
+    <span class="na-formal-select__value" [class.na-formal-select__value--placeholder]="!hasSelection">
+      <ng-container *ngIf="loading">جاري التحميل...</ng-container>
+      <ng-container *ngIf="!loading">{{ displaySummary }}</ng-container>
+    </span>
+    <svg class="na-formal-select__chevron" [class.na-formal-select__chevron--open]="isOpen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+    </svg>
+  </button>
+
+  <div *ngIf="isOpen" #panel class="na-formal-select__panel na-formal-select__panel--wide na-formal-select__panel--floating">
+    <div class="na-formal-select__search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
+        [placeholder]="searchPlaceholder"
+        (input)="onSearchInput()"
+        (click)="$event.stopPropagation()"
+      />
+    </div>
+
+    <div class="na-formal-multi-select__selected-bar" *ngIf="hasSelection">
+      <span class="na-formal-multi-select__chip" *ngFor="let opt of selectedOptions">
+        {{ opt.label }}
+        <button type="button" class="na-formal-multi-select__chip-remove" (click)="removeValue(opt.value, $event)" aria-label="إزالة">×</button>
+      </span>
+    </div>
+
+    <p *ngIf="searchHint" class="na-formal-multi-select__hint">{{ searchHint }}</p>
+
+    <div class="na-formal-select__list na-formal-select__list--tall" *ngIf="!remoteSearch || searchTerm.trim().length >= minSearchLength">
+      <button
+        type="button"
+        *ngFor="let opt of filteredOptions"
+        class="na-formal-select__option na-formal-multi-select__option"
+        [class.na-formal-select__option--selected]="isSelected(opt.value)"
+        (click)="toggleOption(opt); $event.stopPropagation()"
+      >
+        <span class="na-formal-multi-select__check" [class.na-formal-multi-select__check--on]="isSelected(opt.value)">
+          <svg *ngIf="isSelected(opt.value)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+          </svg>
+        </span>
+        <span class="na-formal-multi-select__option-body">
+          <span class="na-formal-select__option-label">{{ opt.label }}</span>
+          <span class="na-formal-select__option-hint" *ngIf="opt.hint" dir="ltr">{{ opt.hint }}</span>
+          <span class="na-formal-multi-select__badges" *ngIf="opt.activeLabel || opt.stateLabel">
+            <span *ngIf="opt.activeLabel" [ngClass]="opt.activeBadgeClass">{{ opt.activeLabel }}</span>
+            <span *ngIf="opt.stateLabel" [ngClass]="opt.stateBadgeClass">{{ opt.stateLabel }}</span>
+          </span>
+        </span>
+      </button>
+      <p *ngIf="!loading && filteredOptions.length === 0 && (!remoteSearch || searchTerm.trim().length >= minSearchLength)" class="na-formal-select__empty">لا توجد نتائج</p>
+    </div>
+
+    <div class="na-formal-select__footer">
+      <button
+        type="button"
+        class="na-formal-select__footer-clear"
+        [disabled]="!hasSelection"
+        (click)="clearAll($event)"
+      >مسح</button>
+      <button type="button" class="na-formal-select__footer-done" (click)="close(); $event.stopPropagation()">تم</button>
+    </div>
+  </div>
+</div>

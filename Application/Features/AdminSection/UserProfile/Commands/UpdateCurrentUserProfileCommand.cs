@@ -37,7 +37,7 @@ namespace Application.Features.AdminSection.UserProfile.Commands
             {
                 if (_userSession.UserId == 0)
                 {
-                    return Result.Failure<int>("User not authenticated");
+                    return Result.Failure<int>("UserNotAuthenticated");
                 }
 
                 var user = await _context.Users
@@ -46,18 +46,18 @@ namespace Application.Features.AdminSection.UserProfile.Commands
 
                 if (user == null)
                 {
-                    return Result.Failure<int>("User not found");
+                    return Result.Failure<int>("UserNotFound");
                 }
 
                 // Validation
                 if (string.IsNullOrWhiteSpace(request.UserName))
                 {
-                    return Result.Failure<int>("Username is required");
+                    return Result.Failure<int>("UsernameRequired");
                 }
 
                 if (string.IsNullOrWhiteSpace(request.Email))
                 {
-                    return Result.Failure<int>("Email is required");
+                    return Result.Failure<int>("EmailRequired");
                 }
 
                 // Check if username is already taken by another user
@@ -66,7 +66,7 @@ namespace Application.Features.AdminSection.UserProfile.Commands
 
                 if (usernameExists)
                 {
-                    return Result.Failure<int>("Username is already taken");
+                    return Result.Failure<int>("UsernameAlreadyTaken");
                 }
 
                 // Check if email is already taken by another user
@@ -75,7 +75,7 @@ namespace Application.Features.AdminSection.UserProfile.Commands
 
                 if (emailExists)
                 {
-                    return Result.Failure<int>("Email is already taken");
+                    return Result.Failure<int>("EmailAlreadyTaken");
                 }
 
                 // Update user properties
@@ -94,7 +94,7 @@ namespace Application.Features.AdminSection.UserProfile.Commands
                     {
                         var errors = passwordResult.Errors.ToList();
                         var errorMessage = string.Join(", ", errors.Select(e => e.Description));
-                        return Result.Failure<int>($"فشل في تحديث كلمة المرور: {errorMessage}");
+                        return Result.Failure<int>("FailedToUpdatePassword");
                     }
                 }
 

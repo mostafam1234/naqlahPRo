@@ -190,6 +190,10 @@ namespace NAQLAH.Server
             app.UseMiddleware<SessionInfoMiddleWare>();
             app.UseHangfireDashboard();
 
+            RecurringJob.AddOrUpdate<Infrastructure.Jobs.CaptainIncompleteProfileReminderJob>(
+                "captain-incomplete-profile-reminder",
+                job => job.ExecuteAsync(),
+                Cron.Daily);
 
             app.MapControllers();
 

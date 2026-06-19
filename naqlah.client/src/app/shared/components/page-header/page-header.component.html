@@ -1,8 +1,7 @@
-<div class="bg-white shadow-sm border-b border-neutral-200 mb-4">
+<div class="theme-surface shadow-sm border-b mb-4">
   <div class="w-[100%] p-4 md:p-6">
     <div class="flex items-center justify-between gap-4">
       <div class="flex items-center gap-[20px] space-x-reverse flex-1 min-w-0">
-        <!-- Icon - Hidden on mobile -->
         <div
           class="hidden md:flex w-12 h-12 bg-primary-500 rounded-xl items-center justify-center flex-shrink-0"
         >
@@ -21,10 +20,10 @@
           </svg>
         </div>
         <div class="min-w-0 flex-1">
-          <h1 class="text-lg md:text-3xl font-bold text-neutral-900 truncate">
+          <h1 class="text-lg md:text-3xl font-bold truncate" style="color: var(--shell-text)">
             {{ title | translate }}
           </h1>
-          <p class="text-sm md:text-base text-neutral-600 mt-1 md:mt-2 hidden md:block" *ngIf="subtitle">
+          <p class="text-sm md:text-base mt-1 md:mt-2 hidden md:block" style="color: var(--shell-text-muted)" *ngIf="subtitle">
             {{ subtitle | translate }}
           </p>
         </div>
@@ -32,7 +31,8 @@
       <div class="flex items-center flex-shrink-0">
         <button
           (click)="goBack()"
-          class="flex items-center px-3 md:px-4 py-2 bg-neutral-100 border border-neutral-300 rounded-xl text-neutral-700 hover:bg-neutral-200 transition-all duration-300 group text-sm md:text-base"
+          class="flex items-center px-3 md:px-4 py-2 border rounded-xl transition-all duration-300 group text-sm md:text-base"
+          style="background: var(--shell-muted-surface); border-color: var(--shell-surface-border); color: var(--shell-text)"
         >
           <span class="hidden md:inline">{{ "COMMON.BACK" | translate }}</span>
           <span class="md:hidden">{{ "COMMON.BACK" | translate }}</span>

@@ -33,7 +33,7 @@ namespace Application.Features.AdminSection.LogIn
                 var user = await context.Users.FirstOrDefaultAsync(x => x.Email == request.UserName, cancellationToken);
                 if (user is null)
                 {
-                    return Result.Failure<AdminResponse>("البريد الإلكترونى غير مسجل من قبل !");
+                    return Result.Failure<AdminResponse>("AdminEmailNotRegistered");
                 }
 
                 // استخدام الدالة الجديدة للأدمن

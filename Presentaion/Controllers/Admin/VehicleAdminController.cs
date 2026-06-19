@@ -1,7 +1,5 @@
 ﻿using Application.Features.CustomerSection.Feature.MainCategory.Dtos;
 using Application.Features.CustomerSection.Feature.MainCategory.Queries;
-using Application.Features.DeliveryManSection.NewRequests.Dtos;
-using Application.Features.DeliveryManSection.NewRequests.Queries;
 using Application.Features.DeliveryManSection.Regestration.Dtos;
 using Application.Features.DeliveryManSection.Regestration.Qureies;
 using Application.Features.VehicleSection.Commands;
@@ -16,8 +14,6 @@ using Microsoft.AspNetCore.Mvc;
 using Presentaion.Reponse;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Presentaion.Controllers.Admin
@@ -37,8 +33,7 @@ namespace Presentaion.Controllers.Admin
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(List<VehicleTypeDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(List<VehicleBrandDto>), StatusCodes.Status200OK)]
         [Route("GetVehiclesBrandLookup")]
         public async Task<IActionResult> GetVehiclesBrandLookup()
         {
@@ -48,7 +43,6 @@ namespace Presentaion.Controllers.Admin
 
         [HttpGet]
         [ProducesResponseType(typeof(List<VehicleTypeDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
         [Route("GetVehiclesTypesLookup")]
         public async Task<IActionResult> GetVehiclesTypesLookup()
         {
@@ -58,7 +52,6 @@ namespace Presentaion.Controllers.Admin
 
         [HttpGet]
         [ProducesResponseType(typeof(List<ActiveCategoryDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
         [Route("GetMainCategoriesLookup")]
         public async Task<IActionResult> GetMainCategoriesLookup()
         {
@@ -71,8 +64,64 @@ namespace Presentaion.Controllers.Admin
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(List<VehicleLoadCategoryLookupDto>), StatusCodes.Status200OK)]
+        [Route("GetVehicleLoadCategoriesLookup")]
+        public async Task<IActionResult> GetVehicleLoadCategoriesLookup()
+        {
+            var result = await mediator.Send(new GetVehicleLoadCategoriesLookupQuery
+            {
+                LanguageId = userSession.LanguageId
+            });
+
+            if (result.IsFailure)
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+
+            return Ok(result.Value);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(VehicleTypeStatisticsDto), StatusCodes.Status200OK)]
+        [Route("GetVehicleTypeStatistics")]
+        public async Task<IActionResult> GetVehicleTypeStatistics(
+            [FromQuery] DateTime? fromDate = null,
+            [FromQuery] DateTime? toDate = null)
+        {
+            var result = await mediator.Send(new GetVehicleTypeStatisticsQuery
+            {
+                FromDate = fromDate,
+                ToDate = toDate,
+                LanguageId = userSession.LanguageId
+            });
+
+            if (result.IsFailure)
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+
+            return Ok(result.Value);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(FileResult), StatusCodes.Status200OK)]
+        [Route("ExportVehicleTypeStatistics")]
+        public async Task<IActionResult> ExportVehicleTypeStatistics(
+            [FromQuery] DateTime? fromDate = null,
+            [FromQuery] DateTime? toDate = null)
+        {
+            var result = await mediator.Send(new ExportVehicleTypeStatisticsToExcelQuery
+            {
+                FromDate = fromDate,
+                ToDate = toDate,
+                LanguageId = userSession.LanguageId
+            });
+
+            if (result.IsFailure)
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+
+            var exportResult = result.Value;
+            return File(exportResult.Stream, exportResult.ContentType, exportResult.FileName);
+        }
+
+        [HttpGet]
         [ProducesResponseType(typeof(PagedResult<DeliveryManVehicleDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
         [Route("GetVehiclesTypes")]
         public async Task<IActionResult> GetVehiclesTypes(int skip = 0, int take = 10, string searchterm = "")
         {
@@ -87,7 +136,6 @@ namespace Presentaion.Controllers.Admin
 
         [HttpGet]
         [ProducesResponseType(typeof(PagedResult<DeliveryManVehicleDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
         [Route("GetVehiclesBrands")]
         public async Task<IActionResult> GetVehiclesBrands(int skip = 0, int take = 10, string searchterm = "")
         {
@@ -102,7 +150,6 @@ namespace Presentaion.Controllers.Admin
 
         [HttpPost]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
         [Route("AddVehicleBrand")]
         public async Task<IActionResult> AddVehicleBrand(AddVehicleBrandCommand command)
         {
@@ -122,7 +169,6 @@ namespace Presentaion.Controllers.Admin
 
         [HttpPost]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
         [Route("AddVehicleType")]
         public async Task<IActionResult> AddVehicleType(AddVehicleTypeCommand command)
         {
@@ -132,7 +178,9 @@ namespace Presentaion.Controllers.Admin
             EnglishName = command.EnglishName,
             IconBase64 = command.IconBase64,
             MainCategoryIds = command.MainCategoryIds,
-            Cost = command.Cost
+            Cost = command.Cost,
+            ServiceFee = command.ServiceFee,
+            LoadCategory = command.LoadCategory
           });
 
           if (result.IsSuccess)
@@ -145,7 +193,6 @@ namespace Presentaion.Controllers.Admin
 
         [HttpPost]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
         [Route("UpdateVehicleType")]
         public async Task<IActionResult> UpdateVehicleType(UpdateVehicleTypeCommand command)
         {
@@ -155,7 +202,10 @@ namespace Presentaion.Controllers.Admin
                 ArabicName = command.ArabicName,
                 EnglishName = command.EnglishName,
                 IconBase64 = command.IconBase64,
-                MainCategoryIds = command.MainCategoryIds
+                MainCategoryIds = command.MainCategoryIds,
+                Cost = command.Cost,
+                ServiceFee = command.ServiceFee,
+                LoadCategory = command.LoadCategory
             });
 
             if (result.IsSuccess)
@@ -168,7 +218,6 @@ namespace Presentaion.Controllers.Admin
 
         [HttpPost]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
         [Route("UpdateVehicleBrand")]
         public async Task<IActionResult> UpdateVehicleBrand(UpdateVehicleBrandCommand command)
         {
@@ -189,7 +238,6 @@ namespace Presentaion.Controllers.Admin
 
         [HttpPost]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
         [Route("DeleteVehicleType")]
         public async Task<IActionResult> DeleteVehicleType(int vehicleTypeId)
         {
@@ -208,7 +256,6 @@ namespace Presentaion.Controllers.Admin
 
         [HttpPost]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
         [Route("DeleteVehicleBrand")]
         public async Task<IActionResult> DeleteVehicleBrand(int vehicleBrandId)
         {

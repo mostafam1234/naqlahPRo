@@ -1,0 +1,80 @@
+<div *ngIf="show" class="history-modal" (click)="close()">
+  <div class="history-modal__panel" (click)="$event.stopPropagation()">
+    <div class="history-modal__glow" aria-hidden="true"></div>
+
+    <header class="history-modal__head">
+      <div class="history-modal__head-main">
+        <div class="history-modal__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <div>
+          <p class="history-modal__eyebrow">سجل النشاط</p>
+          <h2 class="history-modal__title">{{ data?.fullName || 'الكابتن' }}</h2>
+          <p class="history-modal__sub">تتبع متى كان الكابتن نشطاً أو غير نشط</p>
+        </div>
+      </div>
+      <button type="button" class="history-modal__close" (click)="close()" aria-label="إغلاق">✕</button>
+    </header>
+
+    <div class="history-modal__toolbar" *ngIf="data && !loading">
+      <button
+        type="button"
+        class="history-modal__export"
+        [disabled]="isExporting"
+        (click)="onExport()"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1M16 10l-4-4m0 0L8 10m4-4v12" />
+        </svg>
+        {{ isExporting ? 'جاري التصدير...' : 'تصدير Excel' }}
+      </button>
+    </div>
+
+    <div class="history-modal__status" *ngIf="data">
+      <span class="history-modal__status-label">الحالة الحالية</span>
+      <span class="history-modal__status-pill" [ngClass]="data.currentActive ? 'is-on' : 'is-off'">
+        <span class="history-modal__status-dot"></span>
+        {{ data.currentActiveStatusName }}
+      </span>
+    </div>
+
+    <div *ngIf="loading" class="history-modal__loading">
+      <div class="history-modal__spinner"></div>
+      <p>جاري تحميل السجل...</p>
+    </div>
+
+    <div *ngIf="!loading && data?.history?.length" class="history-modal__timeline-wrap">
+      <ol class="history-modal__timeline">
+        <li
+          *ngFor="let item of data!.history; trackBy: trackHistory; let first = first"
+          class="history-item"
+          [class.history-item--first]="first"
+        >
+          <div class="history-item__rail">
+            <span class="history-item__dot" [ngClass]="item.active ? 'history-item__dot--on' : 'history-item__dot--off'"></span>
+          </div>
+          <div class="history-item__card" [ngClass]="item.active ? 'history-item__card--on' : 'history-item__card--off'">
+            <div class="history-item__top">
+              <span class="history-item__badge" [ngClass]="item.active ? 'history-item__badge--on' : 'history-item__badge--off'">
+                {{ item.activeStatusName }}
+              </span>
+              <time class="history-item__time">{{ item.changedAt | date:'dd/MM/yyyy — HH:mm' }}</time>
+            </div>
+            <p class="history-item__by" *ngIf="item.changedByUserName">
+              بواسطة <strong>{{ item.changedByUserName }}</strong>
+            </p>
+            <p class="history-item__by history-item__by--muted" *ngIf="!item.changedByUserName">تغيير تلقائي بالنظام</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+
+    <div *ngIf="!loading && data && !data.history?.length" class="history-modal__empty">
+      <div class="history-modal__empty-icon" aria-hidden="true">📋</div>
+      <p>لا يوجد سجل نشاط بعد</p>
+      <span>سيُسجَّل هنا كل تغيير بين نشط وغير نشط</span>
+    </div>
+  </div>
+</div>

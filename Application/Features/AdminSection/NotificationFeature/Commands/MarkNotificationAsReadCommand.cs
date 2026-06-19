@@ -27,10 +27,7 @@ namespace Application.Features.AdminSection.NotificationFeature.Commands
                     .FirstOrDefaultAsync(n => n.Id == request.NotificationId, cancellationToken);
 
                 if (notification == null)
-                {
-                    var errorMessage = request.LanguageId == 1 ? "الإشعار غير موجود." : "Notification not found.";
-                    return Result.Failure<int>(errorMessage);
-                }
+                    return Result.Failure<int>("NotificationNotFound");
 
                 notification.MarkAsRead();
 

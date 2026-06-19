@@ -28,13 +28,13 @@ namespace Application.Features.AdminSection.NeighborhoodFeatures.Commands
                 var neighborhood = await _context.Neighborhoods.AsTracking().FirstOrDefaultAsync(x => x.Id == command.Id);
                 if (neighborhood == null)
                 {
-                    return Result.Failure<int>("Neighborhood Not Found");
+                    return Result.Failure<int>("NeighborhoodNotFound");
                 }
 
                 var cityExists = await _context.Cities.AnyAsync(x => x.Id == command.CityId, cancellationToken);
                 if (!cityExists)
                 {
-                    return Result.Failure<int>("City Not Found");
+                    return Result.Failure<int>("CityNotFound");
                 }
 
                 neighborhood.Update(command.ArabicName, command.EnglishName, command.CityId);

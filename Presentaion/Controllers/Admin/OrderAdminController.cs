@@ -38,6 +38,44 @@ namespace Presentaion.Controllers.Admin
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(OrderStatisticsDto), StatusCodes.Status200OK)]
+        [Route("GetOrderStatistics")]
+        public async Task<IActionResult> GetOrderStatistics()
+        {
+            var result = await mediator.Send(new GetOrderStatisticsQuery
+            {
+                LanguageId = this.userSession.LanguageId
+            });
+
+            if (result.IsSuccess)
+            {
+                return Ok(result.Value);
+            }
+
+            return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(FileResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("ExportOrderStatistics")]
+        public async Task<IActionResult> ExportOrderStatistics()
+        {
+            var result = await mediator.Send(new ExportOrderStatisticsToExcelQuery
+            {
+                LanguageId = this.userSession.LanguageId
+            });
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+
+            var exportResult = result.Value;
+            return File(exportResult.Stream, exportResult.ContentType, exportResult.FileName);
+        }
+
+        [HttpGet]
         [ProducesResponseType(typeof(PagedResult<GetAllOrdersDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
         [Route("GetAllOrders")]
@@ -46,9 +84,11 @@ namespace Presentaion.Controllers.Admin
         [FromQuery] int take = 10,
         [FromQuery] string? searchTerm = null,
         [FromQuery] OrderStatus? statusFilter = null,
+        [FromQuery] bool? activeOrdersOnly = null,
         [FromQuery] CustomerType? customerTypeFilter = null,
         [FromQuery] DateTime? fromDate = null,
-        [FromQuery] DateTime? toDate = null)
+        [FromQuery] DateTime? toDate = null,
+        [FromQuery] List<int>? deliveryManIds = null)
         {
             var query = new GetAllOrdersQuery
             {
@@ -56,9 +96,11 @@ namespace Presentaion.Controllers.Admin
                 Take = take,
                 SearchTerm = searchTerm,
                 StatusFilter = statusFilter,
+                ActiveOrdersOnly = activeOrdersOnly,
                 CustomerTypeFilter = customerTypeFilter,
                 FromDate = fromDate,
                 ToDate = toDate,
+                DeliveryManIds = deliveryManIds,
                 LanguageId = this.userSession.LanguageId
             };
 
@@ -70,6 +112,40 @@ namespace Presentaion.Controllers.Admin
             }
 
             return BadRequest(result.Error);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(FileResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        [Route("ExportAllOrders")]
+        public async Task<IActionResult> ExportAllOrders(
+            [FromQuery] string? searchTerm = null,
+            [FromQuery] OrderStatus? statusFilter = null,
+            [FromQuery] bool? activeOrdersOnly = null,
+            [FromQuery] CustomerType? customerTypeFilter = null,
+            [FromQuery] DateTime? fromDate = null,
+            [FromQuery] DateTime? toDate = null,
+            [FromQuery] List<int>? deliveryManIds = null)
+        {
+            var result = await mediator.Send(new ExportAllOrdersToExcelQuery
+            {
+                SearchTerm = searchTerm,
+                StatusFilter = statusFilter,
+                ActiveOrdersOnly = activeOrdersOnly,
+                CustomerTypeFilter = customerTypeFilter,
+                FromDate = fromDate,
+                ToDate = toDate,
+                DeliveryManIds = deliveryManIds,
+                LanguageId = this.userSession.LanguageId
+            });
+
+            if (result.IsFailure)
+            {
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+            }
+
+            var exportResult = result.Value;
+            return File(exportResult.Stream, exportResult.ContentType, exportResult.FileName);
         }
 
         [HttpGet]

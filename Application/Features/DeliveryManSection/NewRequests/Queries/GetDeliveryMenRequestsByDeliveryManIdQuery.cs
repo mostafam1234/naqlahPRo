@@ -27,79 +27,124 @@ namespace Application.Features.DeliveryManSection.NewRequests.Queries
             {
                 var baseUrl = _config.GetValue<string>("apiBaseUrl");
 
-                var deliveryMan = await _context.DeliveryMen
-                    .Include(x => x.Vehicle)
+                var x = await _context.DeliveryMen
+                    .AsSplitQuery()
+                    .Include(dm => dm.Vehicle!)
                         .ThenInclude(v => v.VehicleType)
-                    .Include(x => x.Vehicle)
+                    .Include(dm => dm.Vehicle!)
                         .ThenInclude(v => v.VehicleBrand)
-                    .Include(x => x.User)
-                    .Where(x => x.Id == request.DeliveryManId)
-                    .Select(x => new GetDeliveryManRequestDetailsDto
-                    {
-                        DeliveryManId = x.Id,
-                        FullName = x.FullName,
-                        Address = x.Address,
-                        PhoneNumber = x.PhoneNumber,
-                        IdentityNumber = x.IdentityNumber,
-                        IdentityExpirationDate = x.IdentityExpirationDate,
-                        DrivingLicenseExpirationDate = x.DrivingLicenseExpirationDate,
-                        DeliveryType = x.DeliveryType.ToString(),
-                        DeliveryLicenseType = x.DeliveryLicenseType.ToString(),
-                        State = x.DeliveryState.ToString(),
-                        StateName = GetStateName(x.DeliveryState),
-                        FrontIdentityImagePath = !string.IsNullOrEmpty(x.FrontIdenitytImagePath) 
-                            ? $"{baseUrl}/ImageBank/{DeliveryFolderPrefix}_{x.Id}/{x.FrontIdenitytImagePath}" 
-                            : null,
-                        BackIdentityImagePath = !string.IsNullOrEmpty(x.BackIdenitytImagePath) 
-                            ? $"{baseUrl}/ImageBank/{DeliveryFolderPrefix}_{x.Id}/{x.BackIdenitytImagePath}" 
-                            : null,
-                        FrontDrivingLicenseImagePath = !string.IsNullOrEmpty(x.FrontDrivingLicenseImagePath) 
-                            ? $"{baseUrl}/ImageBank/{DeliveryFolderPrefix}_{x.Id}/{x.FrontDrivingLicenseImagePath}" 
-                            : null,
-                        BackDrivingLicenseImagePath = !string.IsNullOrEmpty(x.BackDrivingLicenseImagePath) 
-                            ? $"{baseUrl}/ImageBank/{DeliveryFolderPrefix}_{x.Id}/{x.BackDrivingLicenseImagePath}" 
-                            : null,
-                        PersonalImagePath = !string.IsNullOrEmpty(x.PersonalImagePath) 
-                            ? $"{baseUrl}/ImageBank/{DeliveryFolderPrefix}_{x.Id}/{x.PersonalImagePath}" 
-                            : null,
-                        Active = x.Active,
-                        AndroidDevice = x.AndriodDevice,
-                        IosDevice = x.IosDevice,
-                        UserId = x.UserId,
-                        Email = x.User != null ? x.User.Email ?? string.Empty : string.Empty,
-                        VehicleId = x.VehicleId,
-                        VehiclePlateNumber = x.Vehicle != null ? x.Vehicle.LicensePlateNumber : null,
-                        VehicleType = x.Vehicle != null && x.Vehicle.VehicleType != null ? x.Vehicle.VehicleType.ArabicName : null,
-                        VehicleTypeId = x.Vehicle != null && x.Vehicle.VehicleType != null ? (int?)x.Vehicle.VehicleType.Id : null,
-                        VehicleModel = x.Vehicle != null && x.Vehicle.VehicleBrand != null ? x.Vehicle.VehicleBrand.ArabicName : null,
-                        VehicleBrandId = x.Vehicle != null && x.Vehicle.VehicleBrand != null ? (int?)x.Vehicle.VehicleBrand.Id : null,
-                        VehicleFrontImagePath = x.Vehicle != null && !string.IsNullOrEmpty(x.Vehicle.FrontImagePath) 
-                            ? $"{baseUrl}/ImageBank/{DeliveryFolderPrefix}_{x.Id}/{x.Vehicle.FrontImagePath}" 
-                            : null,
-                        VehicleSideImagePath = x.Vehicle != null && !string.IsNullOrEmpty(x.Vehicle.SideImagePath) 
-                            ? $"{baseUrl}/ImageBank/{DeliveryFolderPrefix}_{x.Id}/{x.Vehicle.SideImagePath}" 
-                            : null,
-                        VehicleFrontLicenseImagePath = x.Vehicle != null && !string.IsNullOrEmpty(x.Vehicle.FrontLicenseImagePath) 
-                            ? $"{baseUrl}/ImageBank/{DeliveryFolderPrefix}_{x.Id}/{x.Vehicle.FrontLicenseImagePath}" 
-                            : null,
-                        VehicleBackLicenseImagePath = x.Vehicle != null && !string.IsNullOrEmpty(x.Vehicle.BackLicenseImagePath) 
-                            ? $"{baseUrl}/ImageBank/{DeliveryFolderPrefix}_{x.Id}/{x.Vehicle.BackLicenseImagePath}" 
-                            : null,
-                        VehicleFrontInsuranceImagePath = x.Vehicle != null && !string.IsNullOrEmpty(x.Vehicle.FrontInsuranceImagePath) 
-                            ? $"{baseUrl}/ImageBank/{DeliveryFolderPrefix}_{x.Id}/{x.Vehicle.FrontInsuranceImagePath}" 
-                            : null,
-                        VehicleBackInsuranceImagePath = x.Vehicle != null && !string.IsNullOrEmpty(x.Vehicle.BackInsuranceImagePath) 
-                            ? $"{baseUrl}/ImageBank/{DeliveryFolderPrefix}_{x.Id}/{x.Vehicle.BackInsuranceImagePath}" 
-                            : null
-                    })
-                    .FirstOrDefaultAsync(cancellationToken);
+                    .Include(dm => dm.Vehicle!)
+                        .ThenInclude(v => v.Resident)
+                    .Include(dm => dm.Vehicle!)
+                        .ThenInclude(v => v.Company)
+                    .Include(dm => dm.Vehicle!)
+                        .ThenInclude(v => v.Renter)
+                    .Include(dm => dm.User)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(dm => dm.Id == request.DeliveryManId, cancellationToken);
 
-                if (deliveryMan == null)
+                if (x == null)
+                    return Result.Failure<GetDeliveryManRequestDetailsDto>("DeliveryManNotFound");
+
+                string? Img(string? path) => !string.IsNullOrEmpty(path)
+                    ? $"{baseUrl}/ImageBank/{DeliveryFolderPrefix}_{x.Id}/{path}"
+                    : null;
+
+                var vehicle = x.Vehicle;
+                string? ownerName = null;
+                string? ownerIdentity = null;
+                string? commercialNumber = null;
+                string? ownerFrontId = null;
+                string? ownerBackId = null;
+                string? commercialImg = null;
+                string? rentContract = null;
+                string? taxNumber = null;
+                string? taxCertificateImg = null;
+                string? ownerBankAccount = null;
+
+                if (vehicle != null)
                 {
-                    return Result.Failure<GetDeliveryManRequestDetailsDto>("Delivery man not found");
+                    switch (vehicle.VehicleOwnerType)
+                    {
+                        case VehicleOwnerType.Resident when vehicle.Resident != null:
+                            ownerName = vehicle.Resident.CitizenName;
+                            ownerIdentity = vehicle.Resident.IdentityNumber;
+                            ownerFrontId = Img(vehicle.Resident.FrontIdentityImagePath);
+                            ownerBackId = Img(vehicle.Resident.BackIdentityImagePath);
+                            ownerBankAccount = vehicle.Resident.BankAccountNumber;
+                            break;
+                        case VehicleOwnerType.Company when vehicle.Company != null:
+                            ownerName = vehicle.Company.CompanyName;
+                            commercialNumber = vehicle.Company.CommercialRecordNumber;
+                            commercialImg = Img(vehicle.Company.RecordImagePath);
+                            taxNumber = vehicle.Company.TaxNumber;
+                            taxCertificateImg = Img(vehicle.Company.TaxCertificateImagePath);
+                            ownerBankAccount = vehicle.Company.BankAccountNumber;
+                            break;
+                        case VehicleOwnerType.Renter when vehicle.Renter != null:
+                            ownerName = vehicle.Renter.CitizenName;
+                            ownerIdentity = vehicle.Renter.IdentityNumber;
+                            ownerFrontId = Img(vehicle.Renter.FrontIdentityImagePath);
+                            ownerBackId = Img(vehicle.Renter.BackIdentityImagePath);
+                            rentContract = Img(vehicle.Renter.RentContractImagePath);
+                            ownerBankAccount = vehicle.Renter.BankAccountNumber;
+                            break;
+                    }
                 }
 
-                return Result.Success(deliveryMan);
+                var dto = new GetDeliveryManRequestDetailsDto
+                {
+                    DeliveryManId = x.Id,
+                    FullName = x.FullName,
+                    Address = x.Address,
+                    PhoneNumber = x.PhoneNumber,
+                    IdentityNumber = x.IdentityNumber,
+                    BirthDate = x.BirthDate,
+                    IdentityExpirationDate = x.IdentityExpirationDate,
+                    DrivingLicenseExpirationDate = x.DrivingLicenseExpirationDate,
+                    DeliveryType = x.DeliveryType.ToString(),
+                    DeliveryLicenseType = x.DeliveryLicenseType.ToString(),
+                    State = x.DeliveryState.ToString(),
+                    StateName = GetStateName(x.DeliveryState),
+                    FrontIdentityImagePath = Img(x.FrontIdenitytImagePath),
+                    BackIdentityImagePath = Img(x.BackIdenitytImagePath),
+                    FrontDrivingLicenseImagePath = Img(x.FrontDrivingLicenseImagePath),
+                    BackDrivingLicenseImagePath = Img(x.BackDrivingLicenseImagePath),
+                    PersonalImagePath = Img(x.PersonalImagePath),
+                    Active = x.Active,
+                    AndroidDevice = x.AndriodDevice,
+                    IosDevice = x.IosDevice,
+                    UserId = x.UserId,
+                    Email = x.User?.Email ?? string.Empty,
+                    VehicleId = x.VehicleId,
+                    VehiclePlateNumber = vehicle?.LicensePlateNumber,
+                    VehicleType = vehicle?.VehicleType?.ArabicName,
+                    VehicleTypeId = vehicle?.VehicleTypeId,
+                    VehicleModel = vehicle?.VehicleBrand?.ArabicName,
+                    VehicleBrandId = vehicle?.VehicleBrandId,
+                    VehicleOwnerTypeId = vehicle != null ? (int)vehicle.VehicleOwnerType : null,
+                    VehicleOwnerName = ownerName,
+                    VehicleOwnerIdentityNumber = ownerIdentity,
+                    CommercialRecordNumber = commercialNumber,
+                    VehicleLicenseExpirationDate = vehicle?.LicenseExpirationDate,
+                    VehicleInsuranceExpirationDate = vehicle?.InSuranceExpirationDate,
+                    VehicleFrontImagePath = vehicle != null ? Img(vehicle.FrontImagePath) : null,
+                    VehicleSideImagePath = vehicle != null ? Img(vehicle.SideImagePath) : null,
+                    VehicleFrontLicenseImagePath = vehicle != null ? Img(vehicle.FrontLicenseImagePath) : null,
+                    VehicleBackLicenseImagePath = vehicle != null ? Img(vehicle.BackLicenseImagePath) : null,
+                    VehicleFrontInsuranceImagePath = vehicle != null ? Img(vehicle.FrontInsuranceImagePath) : null,
+                    VehicleBackInsuranceImagePath = vehicle != null ? Img(vehicle.BackInsuranceImagePath) : null,
+                    OwnerFrontIdentityImagePath = ownerFrontId,
+                    OwnerBackIdentityImagePath = ownerBackId,
+                    CommercialRecordImagePath = commercialImg,
+                    RentContractImagePath = rentContract,
+                    TaxNumber = taxNumber,
+                    TaxCertificateImagePath = taxCertificateImg,
+                    OwnerBankAccountNumber = ownerBankAccount,
+                    HasIncompleteRegistration = x.HasIncompleteRegistration
+                };
+
+                return Result.Success(dto);
             }
 
             private static string GetStateName(DeliveryRequesState state)

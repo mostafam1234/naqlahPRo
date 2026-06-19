@@ -1,4 +1,5 @@
 using Application.Features.AdminSection.OrderFeature.Dtos;
+using Application.Shared.Services;
 using CSharpFunctionalExtensions;
 using Domain.Enums;
 using Domain.InterFaces;
@@ -36,7 +37,7 @@ namespace Application.Features.AdminSection.OrderFeature.Queries
 
                     if (order == null)
                     {
-                        return Result.Failure<GetOrderDetailsForAdminDto>("Order not found");
+                        return Result.Failure<GetOrderDetailsForAdminDto>("OrderNotFound");
                     }
 
                     // Get customer info separately
@@ -119,7 +120,7 @@ namespace Application.Features.AdminSection.OrderFeature.Queries
                         .Select(h => new OrderStatusHistoryDto
                         {
                             Status = h.OrderStatus,
-                            StatusName = GetOrderStatusName(h.OrderStatus, request.LanguageId),
+                            StatusName = OrderDisplayLabels.GetOrderStatusName(h.OrderStatus, request.LanguageId),
                             CreationDate = h.CreationDate,
                             Description = GetStatusDescription(h.OrderStatus, request.LanguageId)
                         })
@@ -147,7 +148,7 @@ namespace Application.Features.AdminSection.OrderFeature.Queries
                         Id = order.Id,
                         OrderNumber = order.OrderNumber,
                         Status = order.OrderStatus,
-                        StatusName = GetOrderStatusName(order.OrderStatus, request.LanguageId),
+                        StatusName = OrderDisplayLabels.GetOrderStatusName(order.OrderStatus, request.LanguageId),
                         OrderType = order.OrderType,
                         OrderTypeName = GetOrderTypeName(order.OrderType, request.LanguageId),
                         Total = order.Total,
@@ -193,22 +194,25 @@ namespace Application.Features.AdminSection.OrderFeature.Queries
                 }
                 catch (Exception ex)
                 {
-                    return Result.Failure<GetOrderDetailsForAdminDto>($"Failed to get order details: {ex.Message}");
+                    return Result.Failure<GetOrderDetailsForAdminDto>("FailedToGetOrderDetails");
                 }
             }
 
-            private static string GetOrderStatusName(OrderStatus status, int languageId)
+            private static string GetStatusDescription(OrderStatus status, int languageId)
             {
+                var isArabic = languageId == (int)Language.Arabic;
+
                 return status switch
                 {
-                    OrderStatus.Pending => languageId == 1 ? "في الانتظار" : "Pending",
-                    OrderStatus.Assigned => languageId == 1 ? "تم تعيين كابتن" : "Assigned",
-                    OrderStatus.Completed => languageId == 1 ? "مكتمل" : "Completed",
-                    OrderStatus.Cancelled => languageId == 1 ? "ملغي" : "Cancelled",
-                    _ => languageId == 1 ? "غير محدد" : "Not Specified"
+                    OrderStatus.Pending => isArabic ? "تم إنشاء الطلب وهو في انتظار التعيين" : "Order created and awaiting assignment",
+                    OrderStatus.Assigned => isArabic ? "تم تعيين الطلب لمندوب التوصيل" : "Order assigned to delivery agent",
+                    OrderStatus.ConfirmedGoingToPickup => isArabic ? "تم تأكيد ذهاب المندوب لالتقاط الشحنة" : "Delivery man confirmed going to pickup shipment",
+                    OrderStatus.PickedUpFromDeliveryMan => isArabic ? "تم التقاط الطلب من المندوب" : "Order picked up from delivery man",
+                    OrderStatus.Completed => isArabic ? "تم إكمال الطلب بنجاح" : "Order completed successfully",
+                    OrderStatus.Cancelled => isArabic ? "تم إلغاء الطلب" : "Order cancelled",
+                    _ => isArabic ? "حالة غير معروفة" : "Unknown status"
                 };
             }
-
             private static string GetOrderTypeName(OrderType orderType, int languageId)
             {
                 return orderType switch
@@ -250,18 +254,6 @@ namespace Application.Features.AdminSection.OrderFeature.Queries
                     OrderPaymentStatus.Failed => languageId == 1 ? "فشل" : "Failed",
                     OrderPaymentStatus.Cancelled => languageId == 1 ? "ملغي" : "Cancelled",
                     _ => languageId == 1 ? "غير محدد" : "Not Specified"
-                };
-            }
-
-            private static string GetStatusDescription(OrderStatus status, int languageId)
-            {
-                return status switch
-                {
-                    OrderStatus.Pending => languageId == 1 ? "تم إنشاء الطلب وهو في انتظار التعيين" : "Order created and awaiting assignment",
-                    OrderStatus.Assigned => languageId == 1 ? "تم تعيين الطلب لمندوب التوصيل" : "Order assigned to delivery agent",
-                    OrderStatus.Completed => languageId == 1 ? "تم إكمال الطلب بنجاح" : "Order completed successfully",
-                    OrderStatus.Cancelled => languageId == 1 ? "تم إلغاء الطلب" : "Order cancelled",
-                    _ => languageId == 1 ? "حالة غير معروفة" : "Unknown status"
                 };
             }
         }

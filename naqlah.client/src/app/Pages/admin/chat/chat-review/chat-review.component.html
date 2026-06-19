@@ -2,7 +2,7 @@
       <!-- قائمة المستخدمين -->
       <div class="w-80 bg-white border-l border-gray-200 flex flex-col">
         <!-- الهيدر -->
-        <div class="p-4 bg-teal-600 text-white">
+        <div class="p-4 bg-primary-600 text-white">
           <h2 class="text-lg font-semibold">مراجعة الرسائل</h2>
           <div class="mt-2 relative">
             <input
@@ -22,7 +22,7 @@
           <div
             *ngFor="let user of filteredUsers"
             class="p-4 border-b border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors"
-            [class.bg-teal-50]="selectedUser?.id === user.id"
+            [class.bg-primary-50]="selectedUser?.id === user.id"
             (click)="selectUser(user)">
 
             <div class="flex items-center gap-3">
@@ -96,7 +96,7 @@
               <!-- الرسالة -->
               <div
                 class="p-3 rounded-2xl"
-                [class.bg-teal-700]="message.type === 'sent'"
+                [class.bg-primary-700]="message.type === 'sent'"
                 [class.text-white]="message.type === 'sent'"
                 [class.bg-white]="message.type === 'received'"
                 [class.text-gray-800]="message.type === 'received'">

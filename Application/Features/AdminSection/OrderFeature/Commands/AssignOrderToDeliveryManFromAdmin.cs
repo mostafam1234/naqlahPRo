@@ -39,19 +39,10 @@ namespace Application.Features.AdminSection.OrderFeature.Commands
                     .FirstOrDefaultAsync(o => o.Id == request.OrderId, cancellationToken);
 
                 if (order == null)
-                {
-                    var errMessage = request.LanguageId == 1 ? "الطلب غير موجود." : "Order not found.";
-                    return Result.Failure<int>(errMessage);
-                }
+                    return Result.Failure<int>("OrderNotFound");
 
-                // Only pending orders can be assigned
                 if (order.OrderStatus != OrderStatus.Pending)
-                {
-                    var errMessage = request.LanguageId == 1 
-                        ? "يمكن تعيين الطلبات المعلقة فقط." 
-                        : "Only pending orders can be assigned.";
-                    return Result.Failure<int>(errMessage);
-                }
+                    return Result.Failure<int>("OnlyPendingOrdersCanBeAssigned");
 
                 // Verify delivery man exists and is available
                 var deliveryMan = await _context.DeliveryMen
@@ -60,12 +51,7 @@ namespace Application.Features.AdminSection.OrderFeature.Commands
                                             && dm.Active, cancellationToken);
 
                 if (deliveryMan == null)
-                {
-                    var errMessage = request.LanguageId == 1 
-                        ? "مندوب التوصيل غير موجود أو غير متاح." 
-                        : "Delivery man not found or not available.";
-                    return Result.Failure<int>(errMessage);
-                }
+                    return Result.Failure<int>("DeliveryManNotFoundOrNotAvailable");
 
                 // Check if delivery man already has an active order
                 var hasActiveOrder = await _context.Orders
@@ -74,22 +60,12 @@ namespace Application.Features.AdminSection.OrderFeature.Commands
                                 && o.Id != request.OrderId, cancellationToken);
 
                 if (hasActiveOrder)
-                {
-                    var errMessage = request.LanguageId == 1 
-                        ? "مندوب التوصيل لديه طلب نشط بالفعل." 
-                        : "Delivery man already has an active order.";
-                    return Result.Failure<int>(errMessage);
-                }
+                    return Result.Failure<int>("DeliveryManAlreadyHasActiveOrder");
 
                 // Assign the delivery man
                 var assignResult = order.AssignToDeliveryMan(request.DeliveryManId, _dateTimeProvider.Now);
                 if (assignResult.IsFailure)
-                {
-                    var errMessage = request.LanguageId == 1
-                        ? assignResult.Error
-                        : assignResult.Error;
-                    return Result.Failure<int>(errMessage);
-                }
+                    return Result.Failure<int>(assignResult.Error);
 
                 await _customerNotificationService.PrepareAsync(
                     order.CustomerId,

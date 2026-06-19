@@ -1,14 +1,9 @@
-﻿using CSharpFunctionalExtensions;
-using Domain.Enums;
+﻿using Application.Shared.Services;
+using CSharpFunctionalExtensions;
 using Domain.InterFaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.DeliveryManSection.Regestration.Commands
 {
@@ -20,13 +15,12 @@ namespace Application.Features.DeliveryManSection.Regestration.Commands
         public string FrontImagePath { get; set; } = string.Empty;
         public string SideImagePath { get; set; } = string.Empty;
         public string FrontLicenseImagePath { get; set; } = string.Empty;
-        public string BackLicenseImagePath { get; set; } = string.Empty;
-        public string LicenseExpirationDate { get; set; } = string.Empty;
-        public string FrontInsuranceImagePath { get; set; } = string.Empty;
-        public string BackInsuranceImagePath { get; set; } = string.Empty;
-        public string InSuranceExpirationDate { get; set; } = string.Empty;
+        public string? BackLicenseImagePath { get; set; }
+        public string? LicenseExpirationDate { get; set; }
+        public string? FrontInsuranceImagePath { get; set; }
+        public string? BackInsuranceImagePath { get; set; }
+        public string? InSuranceExpirationDate { get; set; }
         public int VehicleOwnerTypeId { get;  set; }
-
 
         private class SaveDeliveryVehicleInfoCommandHandler :
             IRequestHandler<SaveDeliveryVehicleInfoCommand, Result>
@@ -48,36 +42,44 @@ namespace Application.Features.DeliveryManSection.Regestration.Commands
                 var userId = userSession.UserId;
                 var deliveryMan = await context.DeliveryMen
                                              .AsTracking()
-                                             .FirstOrDefaultAsync(x => x.UserId == userId);
+                                             .FirstOrDefaultAsync(x => x.UserId == userId, cancellationToken);
 
                 if (deliveryMan is null)
-                {
                     return Result.Failure("DeliveryMan Not Found");
+
+                var deliveryFolder = $"{DeliveryFolderPrefix}_{deliveryMan.Id}";
+
+                var frontImage = await mediaUploader.UploadFromBase64(request.FrontImagePath, deliveryFolder);
+                var sideImage = await mediaUploader.UploadFromBase64(request.SideImagePath, deliveryFolder);
+                var frontLicense = await mediaUploader.UploadFromBase64(request.FrontLicenseImagePath, deliveryFolder);
+
+                string? backLicense = null;
+                if (!string.IsNullOrWhiteSpace(request.BackLicenseImagePath))
+                    backLicense = await mediaUploader.UploadFromBase64(request.BackLicenseImagePath, deliveryFolder);
+
+                string? frontInsurance = null;
+                if (!string.IsNullOrWhiteSpace(request.FrontInsuranceImagePath))
+                    frontInsurance = await mediaUploader.UploadFromBase64(request.FrontInsuranceImagePath, deliveryFolder);
+
+                string? backInsurance = null;
+                if (!string.IsNullOrWhiteSpace(request.BackInsuranceImagePath))
+                    backInsurance = await mediaUploader.UploadFromBase64(request.BackInsuranceImagePath, deliveryFolder);
+
+                DateTime? licenseExpirationDate = null;
+                if (!string.IsNullOrWhiteSpace(request.LicenseExpirationDate))
+                {
+                    if (!DateTime.TryParseExact(request.LicenseExpirationDate, "yyyy/MM/dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsed))
+                        return Result.Failure("Invalid license expiration date");
+                    licenseExpirationDate = parsed;
                 }
 
-                var deliveryFolder = string.Join("{0}_{1}", DeliveryFolderPrefix, deliveryMan.Id);
-
-                var frontImage = await mediaUploader.UploadFromBase64(request.FrontImagePath,
-                                                                      deliveryFolder);
-
-                var sideImage = await mediaUploader.UploadFromBase64(request.SideImagePath,
-                                                                      deliveryFolder);
-                var frontLicense = await mediaUploader.UploadFromBase64(request.FrontLicenseImagePath,
-                                                                      deliveryFolder);
-                var backLicense = await mediaUploader.UploadFromBase64(request.BackInsuranceImagePath,
-                                                                      deliveryFolder);
-                var frontInsurance = await mediaUploader
-                    .UploadFromBase64(request.FrontInsuranceImagePath,
-                                      deliveryFolder);
-
-                var backInsurance = await mediaUploader.UploadFromBase64(request.BackInsuranceImagePath,
-                                                                         deliveryFolder);
-
-                DateTime licenseExpirationDate;
-                DateTime inSuranceExpirationDate;
-                DateTime.TryParseExact(request.LicenseExpirationDate, "yyyy/MM/dd", new CultureInfo("en-US"), DateTimeStyles.None, out licenseExpirationDate);
-                DateTime.TryParseExact(request.InSuranceExpirationDate, "yyyy/MM/dd", new CultureInfo("en-US"), DateTimeStyles.None, out inSuranceExpirationDate);
-
+                DateTime? inSuranceExpirationDate = null;
+                if (!string.IsNullOrWhiteSpace(request.InSuranceExpirationDate))
+                {
+                    if (!DateTime.TryParseExact(request.InSuranceExpirationDate, "yyyy/MM/dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsed))
+                        return Result.Failure("Invalid insurance expiration date");
+                    inSuranceExpirationDate = parsed;
+                }
 
                 var vehicleResult = deliveryMan.AddVehicle(request.VehicleTypeId,
                                                           request.VehicleBrandId,
@@ -90,10 +92,13 @@ namespace Application.Features.DeliveryManSection.Regestration.Commands
                                                           frontInsurance,
                                                           backInsurance,
                                                           inSuranceExpirationDate,
-                                                          request.VehicleOwnerTypeId
-                                                         );
-                var saveResult = await context.SaveChangesAsyncWithResult();
-                return saveResult;
+                                                          request.VehicleOwnerTypeId);
+
+                if (vehicleResult.IsFailure)
+                    return vehicleResult;
+
+                DeliveryManCommandHelper.RefreshCompleteness(deliveryMan);
+                return await context.SaveChangesAsyncWithResult();
             }
         }
     }

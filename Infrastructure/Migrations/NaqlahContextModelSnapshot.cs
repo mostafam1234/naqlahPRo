@@ -200,6 +200,52 @@ namespace Infrastructure.Migrations
                     b.ToTable("AuditLogDetails", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Models.CaptainNotification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DeliveryManId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsPushSent")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LegalDisclaimer")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<string>("MissingFieldsJson")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedAt");
+
+                    b.HasIndex("DeliveryManId");
+
+                    b.ToTable("NA_CaptainNotifications", (string)null);
+                });
+
             modelBuilder.Entity("Domain.Models.City", b =>
                 {
                     b.Property<int>("Id")
@@ -378,7 +424,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Address")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("AndriodDevice")
@@ -386,12 +431,13 @@ namespace Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("BackDrivingLicenseImagePath")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("BackIdenitytImagePath")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("BirthDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("DeliveryLicenseType")
                         .HasColumnType("int");
@@ -402,7 +448,7 @@ namespace Infrastructure.Migrations
                     b.Property<int>("DeliveryType")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("DrivingLicenseExpirationDate")
+                    b.Property<DateTime?>("DrivingLicenseExpirationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("FrontDrivingLicenseImagePath")
@@ -417,24 +463,37 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("IdentityExpirationDate")
+                    b.Property<bool>("HasIncompleteRegistration")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("IdentityExpirationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("IdentityNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("IncompleteProfileReminderSentAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("IosDevice")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PersonalImagePath")
+                    b.Property<string>("MissingProfileFieldsJson")
                         .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<string>("PersonalImagePath")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("RegisteredAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -448,6 +507,37 @@ namespace Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("NA_DeliveryMan", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Models.DeliveryManActiveHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Active")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ChangedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("ChangedByUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DeliveryManId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChangedAt");
+
+                    b.HasIndex("ChangedByUserId");
+
+                    b.HasIndex("DeliveryManId");
+
+                    b.ToTable("NA_DeliveryManActiveHistory", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Models.DeliveryManLocation", b =>
@@ -484,11 +574,9 @@ namespace Infrastructure.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("BackInsuranceImagePath")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("BackLicenseImagePath")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("DeliveryManId")
@@ -499,17 +587,16 @@ namespace Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FrontInsuranceImagePath")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FrontLicenseImagePath")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("InSuranceExpirationDate")
+                    b.Property<DateTime?>("InSuranceExpirationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("LicenseExpirationDate")
+                    b.Property<DateTime?>("LicenseExpirationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("LicensePlateNumber")
@@ -1211,11 +1298,9 @@ namespace Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("BackIdentityImagePath")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("BankAccountNumber")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CitizenName")
@@ -1231,7 +1316,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("RentContractImagePath")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("DeliveryVehicleId");
@@ -1245,11 +1329,9 @@ namespace Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("BackIdentityImagePath")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("BankAccountNumber")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CitizenName")
@@ -1633,6 +1715,9 @@ namespace Infrastructure.Migrations
                     b.Property<decimal>("Cost")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("EnglishName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -1640,6 +1725,12 @@ namespace Infrastructure.Migrations
                     b.Property<string>("IconImagePath")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("LoadCategory")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("ServiceFee")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -1724,6 +1815,17 @@ namespace Infrastructure.Migrations
                     b.Navigation("AuditLog");
                 });
 
+            modelBuilder.Entity("Domain.Models.CaptainNotification", b =>
+                {
+                    b.HasOne("Domain.Models.DeliveryMan", "DeliveryMan")
+                        .WithMany()
+                        .HasForeignKey("DeliveryManId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DeliveryMan");
+                });
+
             modelBuilder.Entity("Domain.Models.City", b =>
                 {
                     b.HasOne("Domain.Models.Region", null)
@@ -1779,6 +1881,24 @@ namespace Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Models.DeliveryManActiveHistory", b =>
+                {
+                    b.HasOne("Domain.Models.User", "ChangedByUser")
+                        .WithMany()
+                        .HasForeignKey("ChangedByUserId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("Domain.Models.DeliveryMan", "DeliveryMan")
+                        .WithMany()
+                        .HasForeignKey("DeliveryManId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("ChangedByUser");
+
+                    b.Navigation("DeliveryMan");
                 });
 
             modelBuilder.Entity("Domain.Models.DeliveryManLocation", b =>

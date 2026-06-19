@@ -1,5 +1,5 @@
-<div class="min-h-screen">
-  <div class="container mx-auto max-w-4xl">
+<div class="min-h-screen theme-page w-full">
+  <div class="w-full max-w-none">
 
     <!-- Page Header -->
     <app-page-header
@@ -10,7 +10,7 @@
     ></app-page-header>
 
     <!-- Content Card -->
-    <div class="bg-white rounded-xl shadow-sm border border-neutral-200">
+    <div class="theme-surface rounded-xl shadow-sm border w-full">
 
       <!-- Header -->
       <div class="px-6 py-4 border-b border-neutral-200 bg-neutral-50/50">
@@ -23,7 +23,7 @@
       <form
         [formGroup]="configForm"
         (ngSubmit)="save()"
-        class="p-6 grid grid-cols-1 md:grid-cols-2 gap-5"
+        class="p-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5"
       >
 
         <!-- Base KM -->
@@ -123,7 +123,7 @@
         </div>
 
         <!-- Actions -->
-        <div *ngIf="hasPermission('SystemConfigurationActions')" class="md:col-span-2 flex justify-end gap-3 pt-4">
+        <div *ngIf="hasPermission('SystemConfigurationActions')" class="md:col-span-2 xl:col-span-3 flex justify-end gap-3 pt-4">
           <button
             type="submit"
             [disabled]="configForm.invalid"

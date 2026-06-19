@@ -96,6 +96,24 @@ const routes: Routes = [
           ),
       },
       {
+        path: 'users/customers',
+        loadComponent: () =>
+          import('./Pages/admin/users/admin-customers/admin-customers.component').then(
+            (m) => m.AdminCustomersComponent
+          ),
+        canActivate: [permissionGuard],
+        data: { requiredPermission: 'CanViewCustomers' },
+      },
+      {
+        path: 'users/customers/:customerId',
+        loadComponent: () =>
+          import('./Pages/admin/users/admin-customers/admin-customer-detail.component').then(
+            (m) => m.AdminCustomerDetailComponent
+          ),
+        canActivate: [permissionGuard],
+        data: { requiredPermission: 'CanViewCustomers' },
+      },
+      {
         path: 'users/systemUsers/add-employee',
         loadComponent: () =>
           import('./Pages/admin/users/systme-users/add-employee/add-employee.component').then(
@@ -122,16 +140,34 @@ const routes: Routes = [
                 import('./Pages/admin/vehicle/vehicles/vehicles.component').then(
                   (m) => m.VehiclesComponent
                 ),
-              // children: [
-              //   {
-              //     path: 'brands',
-              //     loadComponent: () => import('./Pages/admin/vehicle/vehicle-brands/vehicle-brands.component').then(m => m.VehicleBrandsComponent)
-              //   },
-              //   {
-              //     path: 'types',
-              //     loadComponent: () => import('./Pages/admin/vehicle/vehicle-types/vehicle-types.component').then(m => m.VehicleTypesComponent)
-              //   }
-              // ]
+            },
+            {
+              path: 'vehicles/brand/add',
+              loadComponent: () =>
+                import('./Pages/admin/vehicle/add-vehicle-brand/add-vehicle-brand.component').then(
+                  (m) => m.AddVehicleBrandComponent
+                ),
+            },
+            {
+              path: 'vehicles/brand/edit/:id',
+              loadComponent: () =>
+                import('./Pages/admin/vehicle/edit-vehicle-brand/edit-vehicle-brand.component').then(
+                  (m) => m.EditVehicleBrandComponent
+                ),
+            },
+            {
+              path: 'vehicles/type/add',
+              loadComponent: () =>
+                import('./Pages/admin/vehicle/add-vehicle-type/add-vehicle-type.component').then(
+                  (m) => m.AddVehicleTypeComponent
+                ),
+            },
+            {
+              path: 'vehicles/type/edit/:id',
+              loadComponent: () =>
+                import('./Pages/admin/vehicle/edit-vehicle-type/edit-vehicle-type.component').then(
+                  (m) => m.EditVehicleTypeComponent
+                ),
             },
       {
         path: 'newCaptain',

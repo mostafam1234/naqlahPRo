@@ -117,4 +117,316 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="DeliveryTypeRequired" xml:space="preserve">
+    <value>Delivery type is required</value>
+  </data>
+  <data name="DeliveryLicenseTypeRequired" xml:space="preserve">
+    <value>Driving license type is required</value>
+  </data>
+  <data name="EmailRequired" xml:space="preserve">
+    <value>Email is required</value>
+  </data>
+  <data name="PasswordRequired" xml:space="preserve">
+    <value>Password is required</value>
+  </data>
+  <data name="DriverNameRequired" xml:space="preserve">
+    <value>Driver name is required</value>
+  </data>
+  <data name="PhoneNumberRequired" xml:space="preserve">
+    <value>Phone number is required</value>
+  </data>
+  <data name="IdentityNumberRequired" xml:space="preserve">
+    <value>Identity number is required</value>
+  </data>
+  <data name="BirthDateRequired" xml:space="preserve">
+    <value>Birth date is required</value>
+  </data>
+  <data name="DriverIdentityPhotoRequired" xml:space="preserve">
+    <value>Driver identity photo is required</value>
+  </data>
+  <data name="DriverDrivingLicensePhotoRequired" xml:space="preserve">
+    <value>Driver driving license photo is required</value>
+  </data>
+  <data name="VehicleTypeRequired" xml:space="preserve">
+    <value>Vehicle type is required</value>
+  </data>
+  <data name="VehicleBrandRequired" xml:space="preserve">
+    <value>Vehicle brand is required</value>
+  </data>
+  <data name="VehiclePlateNumberRequired" xml:space="preserve">
+    <value>Vehicle plate number is required</value>
+  </data>
+  <data name="VehicleOwnerTypeRequired" xml:space="preserve">
+    <value>Vehicle owner type is required</value>
+  </data>
+  <data name="VehicleOwnerNameRequired" xml:space="preserve">
+    <value>Vehicle owner name is required</value>
+  </data>
+  <data name="VehicleFrontPhotoRequired" xml:space="preserve">
+    <value>Vehicle front photo is required</value>
+  </data>
+  <data name="VehicleSidePhotoRequired" xml:space="preserve">
+    <value>Vehicle side photo is required</value>
+  </data>
+  <data name="VehicleRegistrationPhotoRequired" xml:space="preserve">
+    <value>Vehicle registration photo is required</value>
+  </data>
+  <data name="VehicleOwnerIdentityPhotoRequired" xml:space="preserve">
+    <value>Vehicle owner identity photo is required</value>
+  </data>
+  <data name="CommercialRegisterPhotoRequired" xml:space="preserve">
+    <value>Commercial register photo is required for company owners</value>
+  </data>
+  <data name="CustomerIdInvalid" xml:space="preserve">
+    <value>Invalid customer ID</value>
+  </data>
+  <data name="CustomerNotFound" xml:space="preserve">
+    <value>Customer not found</value>
+  </data>
+  <data name="RecordNotCustomerAccount" xml:space="preserve">
+    <value>This record is not a customer account</value>
+  </data>
+  <data name="NewPasswordRequired" xml:space="preserve">
+    <value>New password is required</value>
+  </data>
+  <data name="UserNotFoundOrDeleted" xml:space="preserve">
+    <value>User not found or has been deleted</value>
+  </data>
+  <data name="UserNotFound" xml:space="preserve">
+    <value>User not found</value>
+  </data>
+  <data name="CannotModifyDeletedAccount" xml:space="preserve">
+    <value>Cannot modify status of a deleted account</value>
+  </data>
+  <data name="NeighborhoodNotFound" xml:space="preserve">
+    <value>Neighborhood not found</value>
+  </data>
+  <data name="CityNotFound" xml:space="preserve">
+    <value>City not found</value>
+  </data>
+  <data name="RegionNotFound" xml:space="preserve">
+    <value>Region not found</value>
+  </data>
+  <data name="UserNotAuthenticated" xml:space="preserve">
+    <value>User not authenticated</value>
+  </data>
+  <data name="UsernameRequired" xml:space="preserve">
+    <value>Username is required</value>
+  </data>
+  <data name="UsernameAlreadyTaken" xml:space="preserve">
+    <value>Username is already taken</value>
+  </data>
+  <data name="EmailAlreadyTaken" xml:space="preserve">
+    <value>Email is already taken</value>
+  </data>
+  <data name="FailedToUpdatePassword" xml:space="preserve">
+    <value>Failed to update password</value>
+  </data>
+  <data name="OrderPackageNotFound" xml:space="preserve">
+    <value>Order package not found</value>
+  </data>
+  <data name="ArabicDescriptionRequired" xml:space="preserve">
+    <value>Arabic description is required</value>
+  </data>
+  <data name="EnglishDescriptionRequired" xml:space="preserve">
+    <value>English description is required</value>
+  </data>
+  <data name="MinimumWeightCannotBeNegative" xml:space="preserve">
+    <value>Minimum weight cannot be negative</value>
+  </data>
+  <data name="MaximumWeightCannotBeNegative" xml:space="preserve">
+    <value>Maximum weight cannot be negative</value>
+  </data>
+  <data name="MinimumWeightGreaterThanMaximum" xml:space="preserve">
+    <value>Minimum weight cannot be greater than maximum weight</value>
+  </data>
+  <data name="CategoryNotFound" xml:space="preserve">
+    <value>Category not found</value>
+  </data>
+  <data name="FailedToUploadImage" xml:space="preserve">
+    <value>Failed to upload image</value>
+  </data>
+  <data name="AdminEmailNotRegistered" xml:space="preserve">
+    <value>Email is not registered</value>
+  </data>
+  <data name="EmailAlreadyExists" xml:space="preserve">
+    <value>Email already exists</value>
+  </data>
+  <data name="EmailAlreadyExist" xml:space="preserve">
+    <value>Email already exists</value>
+  </data>
+  <data name="PhoneNumberInvalid" xml:space="preserve">
+    <value>Invalid phone number. Must start with 05 and be 10 digits</value>
+  </data>
+  <data name="PhoneNumberAlreadyExists" xml:space="preserve">
+    <value>Phone number already exists</value>
+  </data>
+  <data name="PhoneNumberAlreadyExist" xml:space="preserve">
+    <value>Phone number already exists</value>
+  </data>
+  <data name="UsernameAlreadyExists" xml:space="preserve">
+    <value>Username already exists</value>
+  </data>
+  <data name="RoleNotFound" xml:space="preserve">
+    <value>Role not found</value>
+  </data>
+  <data name="FailedToAssignRole" xml:space="preserve">
+    <value>Failed to assign role</value>
+  </data>
+  <data name="FailedToSaveRoleRecord" xml:space="preserve">
+    <value>Failed to save role record</value>
+  </data>
+  <data name="ConfigurationNotFound" xml:space="preserve">
+    <value>Configuration not found</value>
+  </data>
+  <data name="CustomerIdRequired" xml:space="preserve">
+    <value>Customer ID is required</value>
+  </data>
+  <data name="ModuleKeyRequired" xml:space="preserve">
+    <value>Module key is required</value>
+  </data>
+  <data name="UnknownModule" xml:space="preserve">
+    <value>Unknown module</value>
+  </data>
+  <data name="NoExporterForModule" xml:space="preserve">
+    <value>No exporter registered for this module</value>
+  </data>
+  <data name="AssistantWorkNotFound" xml:space="preserve">
+    <value>Assistant work not found</value>
+  </data>
+  <data name="OrderNotFound" xml:space="preserve">
+    <value>Order not found</value>
+  </data>
+  <data name="OrderPackageInUseCannotDelete" xml:space="preserve">
+    <value>Cannot delete order package because it is being used by existing orders</value>
+  </data>
+  <data name="UserHasNoRole" xml:space="preserve">
+    <value>User has no assigned role</value>
+  </data>
+  <data name="ImageRequired" xml:space="preserve">
+    <value>Image is required</value>
+  </data>
+  <data name="IconRequired" xml:space="preserve">
+    <value>Icon is required</value>
+  </data>
+  <data name="MainCategoryRequired" xml:space="preserve">
+    <value>At least one main category is required</value>
+  </data>
+  <data name="VehicleTypeNotFound" xml:space="preserve">
+    <value>Vehicle type not found</value>
+  </data>
+  <data name="VehicleBrandNotFound" xml:space="preserve">
+    <value>Vehicle brand not found</value>
+  </data>
+  <data name="FailedToGetOrders" xml:space="preserve">
+    <value>Failed to get orders</value>
+  </data>
+  <data name="FailedToGetOrderDetails" xml:space="preserve">
+    <value>Failed to get order details</value>
+  </data>
+  <data name="FailedToGetDashboardStatistics" xml:space="preserve">
+    <value>Failed to get dashboard statistics</value>
+  </data>
+  <data name="FailedToUploadIcon" xml:space="preserve">
+    <value>Failed to upload icon</value>
+  </data>
+  <data name="OrderAlreadyCancelled" xml:space="preserve">
+    <value>Order is already cancelled</value>
+  </data>
+  <data name="OnlyPendingOrdersCanBeCanceled" xml:space="preserve">
+    <value>Only pending orders can be canceled</value>
+  </data>
+  <data name="OnlyPendingOrdersCanBeAssigned" xml:space="preserve">
+    <value>Only pending orders can be assigned</value>
+  </data>
+  <data name="DeliveryManNotFoundOrNotAvailable" xml:space="preserve">
+    <value>Delivery man not found or not available</value>
+  </data>
+  <data name="DeliveryManAlreadyHasActiveOrder" xml:space="preserve">
+    <value>Delivery man already has an active order</value>
+  </data>
+  <data name="OnlyAssignedOrdersCanBeCompleted" xml:space="preserve">
+    <value>Only assigned orders can be completed</value>
+  </data>
+  <data name="NotificationNotFound" xml:space="preserve">
+    <value>Notification not found</value>
+  </data>
+  <data name="DeliveryManNotFound" xml:space="preserve">
+    <value>Delivery man not found</value>
+  </data>
+  <data name="DeliveryManNotExists" xml:space="preserve">
+    <value>Delivery man does not exist</value>
+  </data>
+  <data name="InvalidBirthDateFormat" xml:space="preserve">
+    <value>Invalid birth date format. Use yyyy-MM-dd</value>
+  </data>
+  <data name="InvalidIdentityExpirationDateFormat" xml:space="preserve">
+    <value>Invalid identity expiration date format</value>
+  </data>
+  <data name="InvalidDrivingLicenseExpirationDateFormat" xml:space="preserve">
+    <value>Invalid driving license expiration date format</value>
+  </data>
+  <data name="InvalidVehicleLicenseExpirationDateFormat" xml:space="preserve">
+    <value>Invalid vehicle license expiration date format</value>
+  </data>
+  <data name="InvalidVehicleInsuranceExpirationDateFormat" xml:space="preserve">
+    <value>Invalid vehicle insurance expiration date format</value>
+  </data>
+  <data name="FailedToLoadCreatedUser" xml:space="preserve">
+    <value>Failed to load created user or delivery man</value>
+  </data>
+  <data name="FailedToSaveUserRole" xml:space="preserve">
+    <value>Failed to save user role</value>
+  </data>
+  <data name="FailedToSaveData" xml:space="preserve">
+    <value>Failed to save data</value>
+  </data>
+  <data name="DeliveryManShouldHaveVehicle" xml:space="preserve">
+    <value>Delivery man should have a vehicle</value>
+  </data>
+  <data name="InvalidVehicleTypeName" xml:space="preserve">
+    <value>Invalid vehicle type name</value>
+  </data>
+  <data name="CostCannotBeNegative" xml:space="preserve">
+    <value>Cost cannot be negative</value>
+  </data>
+  <data name="ServiceFeeCannotBeNegative" xml:space="preserve">
+    <value>Service fee cannot be negative</value>
+  </data>
+  <data name="OrderNotInPendingStatus" xml:space="preserve">
+    <value>Order is not in pending status</value>
+  </data>
+  <data name="OrderAlreadyAssignedToDeliveryMan" xml:space="preserve">
+    <value>Order is already assigned to a delivery man</value>
+  </data>
+  <data name="InvalidDeliveryManId" xml:space="preserve">
+    <value>Invalid delivery man ID</value>
+  </data>
+  <data name="InsufficientWalletBalance" xml:space="preserve">
+    <value>Insufficient wallet balance to complete the order</value>
+  </data>
+  <data name="OrderAlreadyInStatus" xml:space="preserve">
+    <value>Order is already in this status</value>
+  </data>
+  <data name="OrderStatusTransitionNotAllowed" xml:space="preserve">
+    <value>Cannot transition order to the requested status</value>
+  </data>
+  <data name="InvalidVehicleTypeId" xml:space="preserve">
+    <value>Invalid vehicle type ID</value>
+  </data>
+  <data name="VehicleTypeAlreadySelected" xml:space="preserve">
+    <value>Vehicle type has already been selected for this order</value>
+  </data>
+  <data name="VehicleTypeOnlyForPendingOrders" xml:space="preserve">
+    <value>Vehicle type can only be set for pending orders</value>
+  </data>
+  <data name="OrderWayPointNotFound" xml:space="preserve">
+    <value>Order waypoint not found</value>
+  </data>
+  <data name="InvalidUserNameOrPassword" xml:space="preserve">
+    <value>Invalid username or password</value>
+  </data>
+  <data name="InValidUsernameOrPassword" xml:space="preserve">
+    <value>Invalid username or password</value>
+  </data>
 </root>

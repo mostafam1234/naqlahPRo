@@ -1,4 +1,4 @@
-<div class="side-bar bg-white flex flex-col px-3 py-4 space-y-1 relative">
+<div class="naqlah-sidebar side-bar flex flex-col relative">
   <!-- Close Button (Mobile Only) -->
   <button
     *ngIf="isMobile"
@@ -7,7 +7,7 @@
       'right-4': isRtl,
       'left-4': !isRtl
     }"
-    class="absolute top-4 z-10 w-10 h-10 flex items-center justify-center rounded-lg bg-neutral-100 hover:bg-neutral-200 text-neutral-700 hover:text-neutral-900 transition-all duration-200 shadow-sm"
+    class="sidebar-close-btn absolute top-4 z-10 w-10 h-10 flex items-center justify-center rounded-lg transition-all duration-200"
     aria-label="Close sidebar"
   >
     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -20,17 +20,28 @@
     </svg>
   </button>
 
-  <!-- Logo -->
-  <div class="flex justify-center pt-4 pb-2" [class.mt-12]="isMobile">
-    <img src="./assets/images/car.png" class="h-[75px] w-[75px]" alt="" />
+  <!-- Brand -->
+  <div class="sidebar-brand" [class.mt-12]="isMobile">
+    <div class="sidebar-brand__icon">
+      <svg viewBox="0 0 24 24" fill="none" class="w-7 h-7" aria-hidden="true">
+        <path d="M3 12h13l-3-3m3 3l-3 3M16 6h2a2 2 0 012 2v8a2 2 0 01-2 2h-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M7 18H5a2 2 0 01-2-2V8a2 2 0 012-2h2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="sidebar-brand__text">
+      <span class="sidebar-brand__name">نقلة</span>
+      <span class="sidebar-brand__tagline">نقل ذكي · سريع · موثوق</span>
+    </div>
   </div>
+
+  <nav class="sidebar-nav flex-1 space-y-1">
   <!-- HOME -->
   <div *ngIf="hasPermission('CanViewAdminHome')">
     <a
       routerLink="/admin/home"
-      routerLinkActive="bg-primary-500 text-white"
+      routerLinkActive="sidebar-link--active"
       [routerLinkActiveOptions]="{ exact: false }"
-      class="flex items-center cursor-pointer px-4 py-3 rounded-lg gap-3 text-neutral-700 font-medium text-sm transition-all duration-200 hover:bg-primary-100 hover:text-primary-700 group"
+      class="sidebar-nav-link group"
     >
       <svg
         width="20"
@@ -81,11 +92,11 @@
   </div>
 
   <!-- USERS -->
-  <div *ngIf="hasPermission('CanViewSystemUsers')">
+  <div *ngIf="hasPermission('CanViewSystemUsers') || hasPermission('CanViewCustomers')">
     <div
       (click)="toggleDropdown('users')"
-      class="flex justify-between items-center cursor-pointer px-4 py-3 rounded-lg gap-3 text-neutral-700 font-medium text-sm transition-all duration-200 hover:bg-primary-100 hover:text-primary-700 group"
-      [ngClass]="{ 'bg-primary-50 text-primary-700': openDropdown === 'users' }"
+      class="sidebar-nav-link sidebar-nav-link--dropdown group"
+      [ngClass]="{ 'sidebar-dropdown--open': openDropdown === 'users' }"
     >
       <div class="flex gap-3 items-center">
         <svg
@@ -151,13 +162,14 @@
     </div>
     <div
       *ngIf="openDropdown === 'users'"
-      class="ml-4 mt-1 space-y-1 border-r-2 border-primary-100 pr-2"
+      class="sidebar-submenu ml-4 mt-1 space-y-1 pr-2"
     >
       <a
+        *ngIf="hasPermission('CanViewSystemUsers')"
         routerLink="/admin/users/systemUsers"
-        routerLinkActive="bg-primary-500 text-white"
+        routerLinkActive="sidebar-link--active"
         [routerLinkActiveOptions]="{ exact: false }"
-        class="px-4 py-2.5 rounded-lg flex gap-3 items-center text-sm text-neutral-600 font-medium transition-all duration-200 hover:bg-primary-100 hover:text-primary-700"
+        class="sidebar-submenu-link"
       >
         <svg
           width="20"
@@ -197,11 +209,41 @@
         </svg>
         {{ "ADMIN.SIDEBAR.USERSPAGE.SYSTEMUSERS" | translate }}
       </a>
+      <a
+        *ngIf="hasPermission('CanViewCustomers')"
+        routerLink="/admin/users/customers"
+        routerLinkActive="sidebar-link--active"
+        [routerLinkActiveOptions]="{ exact: false }"
+        class="sidebar-submenu-link"
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M10 10a3 3 0 100-6 3 3 0 000 6zM10 11.667c3.333 0 6 1.083 6 2.916V17.5H4v-3.917c0-1.833 2.667-2.916 6-2.916z"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M15.834 10.834a2 2 0 100-4 2 2 0 000 4zM17.917 17.917h-3"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+          />
+        </svg>
+        {{ "ADMIN.SIDEBAR.USERSPAGE.CUSTOMERS" | translate }}
+      </a>
       <a *ngIf="hasPermission('CanViewCaptains')"
         routerLink="/admin/users/captains"
-        routerLinkActive="bg-primary-500 text-white"
+        routerLinkActive="sidebar-link--active"
         [routerLinkActiveOptions]="{ exact: false }"
-        class="px-4 py-2.5 rounded-lg flex items-center gap-3 text-sm text-neutral-600 font-medium transition-all duration-200 hover:bg-primary-100 hover:text-primary-700"
+        class="sidebar-submenu-link flex items-center"
       >
         <svg
           width="20"
@@ -248,9 +290,9 @@
   <div *ngIf="hasPermission('CanViewAllOrders')">
     <div
       (click)="toggleDropdown('requests')"
-      class="flex justify-between items-center cursor-pointer px-4 py-3 rounded-lg gap-3 text-neutral-700 font-medium text-sm transition-all duration-200 hover:bg-primary-100 hover:text-primary-700 group"
+      class="sidebar-nav-link sidebar-nav-link--dropdown group"
       [ngClass]="{
-        'bg-primary-50 text-primary-700': openDropdown === 'requests'
+        'sidebar-dropdown--open': openDropdown === 'requests'
       }"
     >
       <div class="flex gap-3 items-center">
@@ -345,13 +387,13 @@
     </div>
     <div
       *ngIf="openDropdown === 'requests' && hasPermission('CanViewControlCaptainOrders')"
-      class="ml-4 mt-1 space-y-1 border-r-2 border-primary-100 pr-2"
+      class="sidebar-submenu ml-4 mt-1 space-y-1 pr-2"
     >
       <a
         routerLink="/admin/requests/controlCaptainRequest"
-        routerLinkActive="bg-primary-500 text-white"
+        routerLinkActive="sidebar-link--active"
         [routerLinkActiveOptions]="{ exact: false }"
-        class="px-4 py-2.5 rounded-lg flex items-center gap-3 text-sm text-neutral-600 font-medium transition-all duration-200 hover:bg-primary-100 hover:text-primary-700"
+        class="sidebar-submenu-link flex items-center"
       >
         <svg
           width="20"
@@ -398,9 +440,9 @@
   <div *ngIf="hasPermission('CanViewVehicles')">
     <a
       routerLink="/admin/vehicles"
-      routerLinkActive="bg-primary-500 text-white"
+      routerLinkActive="sidebar-link--active"
       [routerLinkActiveOptions]="{ exact: false }"
-      class="flex items-center cursor-pointer px-4 py-3 rounded-lg gap-3 text-neutral-700 font-medium text-sm transition-all duration-200 hover:bg-primary-100 hover:text-primary-700"
+      class="sidebar-nav-link"
     >
       <svg
         width="20"
@@ -454,9 +496,9 @@
   <div *ngIf="hasPermission('CanViewMainCategories')">
     <a
       routerLink="/admin/main-categories"
-      routerLinkActive="bg-primary-500 text-white"
+      routerLinkActive="sidebar-link--active"
       [routerLinkActiveOptions]="{ exact: false }"
-      class="flex items-center cursor-pointer px-4 py-3 rounded-lg gap-3 text-neutral-700 font-medium text-sm transition-all duration-200 hover:bg-primary-100 hover:text-primary-700"
+      class="sidebar-nav-link"
     >
       <svg
         width="20"
@@ -507,9 +549,9 @@
   <div *ngIf="hasPermission('CanViewSystemConfiguration')">
   <a
     routerLink="/admin/systemConfiguration"
-    routerLinkActive="bg-primary-500 text-white"
+    routerLinkActive="sidebar-link--active"
     [routerLinkActiveOptions]="{ exact: false }"
-    class="flex items-center cursor-pointer px-4 py-3 rounded-lg gap-3 text-neutral-700 font-medium text-sm transition-all duration-200 hover:bg-primary-100 hover:text-primary-700"
+    class="sidebar-nav-link"
   >
     <!-- System Configuration (Settings / Gear Icon) -->
     <svg
@@ -533,7 +575,7 @@
       />
     </svg>
 
-    <span>اعدات النظام</span>
+    <span>{{ "ADMIN.SIDEBAR.SYSTEM_CONFIGURATION" | translate }}</span>
   </a>
 </div>
 
@@ -542,9 +584,9 @@
   <div *ngIf="hasPermission('CanViewAssistantWorks')">
     <a
       routerLink="/admin/assistant-works"
-      routerLinkActive="bg-primary-500 text-white"
+      routerLinkActive="sidebar-link--active"
       [routerLinkActiveOptions]="{ exact: false }"
-      class="flex items-center cursor-pointer px-4 py-3 rounded-lg gap-3 text-neutral-700 font-medium text-sm transition-all duration-200 hover:bg-primary-100 hover:text-primary-700"
+      class="sidebar-nav-link"
     >
       <svg
         width="20"
@@ -555,7 +597,7 @@
       >
         <path
           d="M10 2.5C8.625 2.5 7.5 3.625 7.5 5C7.5 6.375 8.625 7.5 10 7.5C11.375 7.5 12.5 6.375 12.5 5C12.5 3.625 11.375 2.5 10 2.5ZM10 6.25C9.3125 6.25 8.75 5.6875 8.75 5C8.75 4.3125 9.3125 3.75 10 3.75C10.6875 3.75 11.25 4.3125 11.25 5C11.25 5.6875 10.6875 6.25 10 6.25ZM5 8.75C3.625 8.75 2.5 9.875 2.5 11.25C2.5 12.625 3.625 13.75 5 13.75C6.375 13.75 7.5 12.625 7.5 11.25C7.5 9.875 6.375 8.75 5 8.75ZM5 12.5C4.3125 12.5 3.75 11.9375 3.75 11.25C3.75 10.5625 4.3125 10 5 10C5.6875 10 6.25 10.5625 6.25 11.25C6.25 11.9375 5.6875 12.5 5 12.5ZM15 8.75C13.625 8.75 12.5 9.875 12.5 11.25C12.5 12.625 13.625 13.75 15 13.75C16.375 13.75 17.5 12.625 17.5 11.25C17.5 9.875 16.375 8.75 15 8.75ZM15 12.5C14.3125 12.5 13.75 11.9375 13.75 11.25C13.75 10.5625 14.3125 10 15 10C15.6875 10 16.25 10.5625 16.25 11.25C16.25 11.9375 15.6875 12.5 15 12.5ZM10 10C8.625 10 7.5 11.125 7.5 12.5C7.5 13.875 8.625 15 10 15C11.375 15 12.5 13.875 12.5 12.5C12.5 11.125 11.375 10 10 10ZM10 13.75C9.3125 13.75 8.75 13.1875 8.75 12.5C8.75 11.8125 9.3125 11.25 10 11.25C10.6875 11.25 11.25 11.8125 11.25 12.5C11.25 13.1875 10.6875 13.75 10 13.75Z"
-          fill="#292D32"
+          fill="currentColor"
         />
       </svg>
       <span>{{ "ADMIN.SIDEBAR.ASSISTANT_WORKS" | translate }}</span>
@@ -582,9 +624,9 @@
   <div *ngIf="hasPermission('CanManageRolePermissions')">
     <a
       routerLink="/admin/role-permissions"
-      routerLinkActive="bg-primary-500 text-white"
+      routerLinkActive="sidebar-link--active"
       [routerLinkActiveOptions]="{ exact: false }"
-      class="flex items-center cursor-pointer px-4 py-3 rounded-lg gap-3 text-neutral-700 font-medium text-sm transition-all duration-200 hover:bg-primary-100 hover:text-primary-700"
+      class="sidebar-nav-link"
     >
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -598,9 +640,9 @@
     <a
       routerLink="/admin/audit"
       (click)="onAuditMenuClick()"
-      routerLinkActive="bg-primary-500 text-white"
+      routerLinkActive="sidebar-link--active"
       [routerLinkActiveOptions]="{ exact: false }"
-      class="relative flex items-center cursor-pointer px-4 py-3 rounded-lg gap-3 text-neutral-700 font-medium text-sm transition-all duration-200 hover:bg-primary-100 hover:text-primary-700"
+      class="sidebar-nav-link relative"
     >
       <span class="relative inline-flex">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -619,9 +661,9 @@
   <div *ngIf="hasPermission('CanExportData')">
     <a
       routerLink="/admin/backup"
-      routerLinkActive="bg-primary-500 text-white"
+      routerLinkActive="sidebar-link--active"
       [routerLinkActiveOptions]="{ exact: false }"
-      class="flex items-center cursor-pointer px-4 py-3 rounded-lg gap-3 text-neutral-700 font-medium text-sm transition-all duration-200 hover:bg-primary-100 hover:text-primary-700"
+      class="sidebar-nav-link"
     >
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M10 3v10m0 0l3-3m-3 3L7 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -635,9 +677,9 @@
   <div *ngIf="hasPermission('CanViewAreasSettings')">
     <a
       routerLink="/admin/areasSettings"
-      routerLinkActive="bg-primary-500 text-white"
+      routerLinkActive="sidebar-link--active"
       [routerLinkActiveOptions]="{ exact: false }"
-      class="flex items-center cursor-pointer px-4 py-3 rounded-lg gap-3 text-neutral-700 font-medium text-sm transition-all duration-200 hover:bg-primary-100 hover:text-primary-700"
+      class="sidebar-nav-link"
     >
       <svg
         width="20"
@@ -729,9 +771,9 @@
   <div *ngIf="hasPermission('CanViewCustomerWalletTransactions')">
     <a
       routerLink="/admin/customer-wallet-transactions"
-      routerLinkActive="bg-primary-500 text-white"
+      routerLinkActive="sidebar-link--active"
       [routerLinkActiveOptions]="{ exact: false }"
-      class="flex items-center cursor-pointer px-4 py-3 rounded-lg gap-3 text-neutral-700 font-medium text-sm transition-all duration-200 hover:bg-primary-100 hover:text-primary-700"
+      class="sidebar-nav-link"
     >
       <svg
         width="20"
@@ -779,9 +821,9 @@
   <div *ngIf="hasPermission('CanViewNewCaptainApplications')">
     <div
       (click)="toggleDropdown('dataReview')"
-      class="flex justify-between items-center cursor-pointer px-4 py-3 rounded-lg gap-3 text-neutral-700 font-medium text-sm transition-all duration-200 hover:bg-primary-100 hover:text-primary-700 group"
+      class="sidebar-nav-link sidebar-nav-link--dropdown group"
       [ngClass]="{
-        'bg-primary-50 text-primary-700': openDropdown === 'dataReview'
+        'sidebar-dropdown--open': openDropdown === 'dataReview'
       }"
     >
       <div class="flex gap-3 items-center">
@@ -841,13 +883,13 @@
     </div>
     <div
       *ngIf="openDropdown === 'dataReview'"
-      class="ml-4 mt-1 space-y-1 border-r-2 border-primary-100 pr-2"
+      class="sidebar-submenu ml-4 mt-1 space-y-1 pr-2"
     >
       <a
         routerLink="/admin/newCaptain"
-        routerLinkActive="bg-primary-500 text-white"
+        routerLinkActive="sidebar-link--active"
         [routerLinkActiveOptions]="{ exact: false }"
-        class="px-4 py-2.5 rounded-lg flex items-center gap-3 text-sm text-neutral-600 font-medium transition-all duration-200 hover:bg-primary-100 hover:text-primary-700"
+        class="sidebar-submenu-link flex items-center"
       >
         <svg
           width="20"
@@ -895,9 +937,9 @@
   <div>
     <div
       (click)="toggleDropdown('techSupport')"
-      class="flex justify-between items-center cursor-pointer px-4 py-3 rounded-lg gap-3 text-neutral-700 font-medium text-sm transition-all duration-200 hover:bg-primary-100 hover:text-primary-700 group"
+      class="sidebar-nav-link sidebar-nav-link--dropdown group"
       [ngClass]="{
-        'bg-primary-50 text-primary-700': openDropdown === 'techSupport'
+        'sidebar-dropdown--open': openDropdown === 'techSupport'
       }"
     >
       <div class="flex gap-3 items-center">
@@ -940,13 +982,13 @@
     </div>
     <div
       *ngIf="openDropdown === 'techSupport'"
-      class="ml-4 mt-1 space-y-1 border-r-2 border-primary-100 pr-2"
+      class="sidebar-submenu ml-4 mt-1 space-y-1 pr-2"
     >
       <a *ngIf="hasPermission('CanViewComplains')"
         routerLink="/admin/tech-support/complains"
-        routerLinkActive="bg-primary-500 text-white"
+        routerLinkActive="sidebar-link--active"
         [routerLinkActiveOptions]="{ exact: false }"
-        class="px-4 py-2.5 rounded-lg flex items-center gap-3 text-sm text-neutral-600 font-medium transition-all duration-200 hover:bg-primary-100 hover:text-primary-700"
+        class="sidebar-submenu-link flex items-center"
       >
         <svg
           width="20"
@@ -968,9 +1010,9 @@
       <a
         *ngIf="hasPermission('CanViewSuggestions')"
         routerLink="/admin/tech-support/suggestions"
-        routerLinkActive="bg-primary-500 text-white"
+        routerLinkActive="sidebar-link--active"
         [routerLinkActiveOptions]="{ exact: false }"
-        class="px-4 py-2.5 rounded-lg flex items-center gap-3 text-sm text-neutral-600 font-medium transition-all duration-200 hover:bg-primary-100 hover:text-primary-700"
+        class="sidebar-submenu-link flex items-center"
       >
         <svg
           width="20"
@@ -996,9 +1038,9 @@
   <div *ngIf="hasPermission('CanViewCategoriesControl')">
     <div
       (click)="toggleDropdown('category')"
-      class="flex justify-between items-center cursor-pointer px-4 py-3 rounded-lg gap-3 text-neutral-700 font-medium text-sm transition-all duration-200 hover:bg-primary-100 hover:text-primary-700 group"
+      class="sidebar-nav-link sidebar-nav-link--dropdown group"
       [ngClass]="{
-        'bg-primary-50 text-primary-700': openDropdown === 'category'
+        'sidebar-dropdown--open': openDropdown === 'category'
       }"
     >
       <div class="flex gap-3 items-center">
@@ -1063,11 +1105,13 @@
     </div>
   </div>
 
+  </nav>
+
   <!-- LOGOUT -->
-  <div class="mt-2">
+  <div class="sidebar-footer mt-auto">
     <a
       (click)="logout()"
-      class="flex items-center cursor-pointer px-4 py-3 rounded-lg gap-3 text-neutral-700 font-medium text-sm transition-all duration-200 hover:bg-error-50 hover:text-error-600"
+      class="sidebar-logout"
     >
       <svg
         width="20"

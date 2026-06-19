@@ -18,6 +18,7 @@ namespace Application.DependencyInjection
             {
                 configuration.RegisterServicesFromAssembly(currentAssembly);
             });
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ResultLocalizationBehavior<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(AuditBehaviour<,>));
@@ -25,6 +26,7 @@ namespace Application.DependencyInjection
 
             // Register Notification Service
             services.AddScoped<Application.Shared.Services.INotificationService, Application.Shared.Services.NotificationService>();
+            services.AddScoped<Application.Features.AdminSection.DeliveryManFeature.Queries.CaptainControlOrdersService>();
 
             // Backup / Excel export - module exporters
             services.AddScoped<IModuleExporter, OrdersExcelExporter>();

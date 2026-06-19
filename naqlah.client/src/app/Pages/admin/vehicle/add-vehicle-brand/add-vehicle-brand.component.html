@@ -1,0 +1,63 @@
+<div class="min-h-screen theme-page na-shell vf-animate">
+  <app-page-header
+    title="إضافة ماركة مركبة"
+    subtitle="أدخل بيانات الماركة التجارية الجديدة"
+    [showBackButton]="true"
+    iconPath="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+    (onBackClick)="onCancel()"
+  ></app-page-header>
+
+  <div class="vf-hero">
+    <div class="vf-hero__content">
+      <span class="vf-hero__eyebrow">ماركة جديدة</span>
+      <h1 class="vf-hero__title">إضافة علامة تجارية</h1>
+      <p class="vf-hero__subtitle">أضف ماركة مركبة جديدة لتظهر في قوائم التسجيل وإدارة الأسطول.</p>
+    </div>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="vf-card">
+      <div class="vf-card__head">
+        <h2 class="vf-card__title">بيانات الماركة</h2>
+        <p class="vf-card__desc">الاسم بالعربية والإنجليزية مطلوبان</p>
+      </div>
+      <div class="vf-card__body">
+        <div class="vf-fields-2">
+          <div class="vf-field">
+            <label class="vf-label">الاسم بالعربية</label>
+            <input
+              class="vf-input"
+              [class.vf-input--invalid]="form.get('arabicName')?.touched && form.get('arabicName')?.invalid"
+              formControlName="arabicName"
+              type="text"
+              placeholder="مثال: تويوتا"
+            />
+            <span class="vf-error" *ngIf="form.get('arabicName')?.touched && form.get('arabicName')?.invalid">
+              هذا الحقل مطلوب
+            </span>
+          </div>
+          <div class="vf-field">
+            <label class="vf-label">الاسم بالإنجليزية</label>
+            <input
+              class="vf-input"
+              [class.vf-input--invalid]="form.get('englishName')?.touched && form.get('englishName')?.invalid"
+              formControlName="englishName"
+              type="text"
+              placeholder="Example: Toyota"
+            />
+            <span class="vf-error" *ngIf="form.get('englishName')?.touched && form.get('englishName')?.invalid">
+              هذا الحقل مطلوب
+            </span>
+          </div>
+        </div>
+
+        <div class="vf-actions">
+          <button type="button" class="vf-btn vf-btn--ghost" (click)="onCancel()">إلغاء</button>
+          <button type="submit" class="vf-btn vf-btn--primary" [disabled]="isSubmitting">
+            {{ isSubmitting ? 'جاري الحفظ...' : 'حفظ الماركة' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
