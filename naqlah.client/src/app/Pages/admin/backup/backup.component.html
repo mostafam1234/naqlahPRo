@@ -1,130 +1,230 @@
-<div class="backup-page w-full min-h-[calc(100vh-120px)]" dir="rtl">
-  <!-- Header -->
+<div class="bk-page theme-page na-shell vf-animate" dir="rtl">
   <app-page-header
     [title]="'ADMIN.BACKUP.TITLE' | translate"
     [subtitle]="'ADMIN.BACKUP.SUBTITLE' | translate"
+    iconPath="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
   ></app-page-header>
 
-  <div class="backup-content w-full grid grid-cols-1 xl:grid-cols-12 gap-6 xl:gap-8">
-    <!-- Left: Date range + Export action -->
-    <div class="xl:col-span-4 space-y-6">
-      <!-- Date range card -->
-      <div class="backup-card">
-        <div class="backup-card-header">
-          <span class="backup-card-icon">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-            </svg>
-          </span>
-          <div>
-            <h3 class="backup-card-title">{{ 'ADMIN.BACKUP.DATE_RANGE' | translate }}</h3>
-            <p class="backup-card-hint">{{ 'ADMIN.BACKUP.DATE_RANGE_HINT' | translate }}</p>
-          </div>
-        </div>
-        <div class="backup-card-body">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label for="fromDate" class="backup-label">{{ 'ADMIN.BACKUP.FROM' | translate }}</label>
-              <input
-                id="fromDate"
-                type="date"
-                [(ngModel)]="fromDate"
-                class="backup-input"
-              />
-            </div>
-            <div>
-              <label for="toDate" class="backup-label">{{ 'ADMIN.BACKUP.TO' | translate }}</label>
-              <input
-                id="toDate"
-                type="date"
-                [(ngModel)]="toDate"
-                class="backup-input"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
+  <div class="bk-tabs">
+    <button
+      type="button"
+      class="bk-tab"
+      [class.bk-tab--active]="activeTab === 'database'"
+      (click)="setTab('database')"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+      </svg>
+      {{ 'ADMIN.BACKUP.TAB_DATABASE' | translate }}
+    </button>
+    <button
+      type="button"
+      class="bk-tab"
+      [class.bk-tab--active]="activeTab === 'excel'"
+      (click)="setTab('excel')"
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6M5 21h14a2 2 0 002-2V7l-5-5H5a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+      </svg>
+      {{ 'ADMIN.BACKUP.TAB_EXCEL' | translate }}
+    </button>
+  </div>
 
-      <!-- Export action card -->
-      <div class="backup-card backup-card-action">
-        <div class="backup-card-body flex flex-col items-stretch gap-4">
-          <!-- Progress -->
-          <div *ngIf="exporting && progressMessage" class="backup-progress">
-            <svg class="backup-spinner" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            <span>{{ progressMessage }}</span>
-          </div>
-          <!-- Error -->
-          <div *ngIf="errorMessage" class="backup-error">
-            {{ errorMessage }}
-          </div>
-          <button
-            type="button"
-            (click)="export()"
-            [disabled]="exporting || selectedModules.size === 0"
-            class="backup-export-btn"
-          >
-            <svg *ngIf="!exporting" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-            </svg>
-            <svg *ngIf="exporting" class="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-            </svg>
-            <span>{{ exporting ? ('ADMIN.BACKUP.EXPORTING' | translate) : ('ADMIN.BACKUP.EXPORT_BUTTON' | translate) }}</span>
-          </button>
-          <p class="text-xs text-neutral-500 text-center">
-            {{ 'ADMIN.BACKUP.SELECT_MODULES' | translate }} ({{ selectedModules.size }})
-          </p>
-        </div>
+  <!-- Full database backup -->
+  <section *ngIf="activeTab === 'database'" class="bk-section">
+    <div class="bk-hero">
+      <div class="bk-hero__content">
+        <span class="bk-hero__badge">{{ 'ADMIN.BACKUP.FULL_BACKUP_BADGE' | translate }}</span>
+        <h2 class="bk-hero__title">{{ 'ADMIN.BACKUP.FULL_BACKUP_TITLE' | translate }}</h2>
+        <p class="bk-hero__desc">{{ 'ADMIN.BACKUP.FULL_BACKUP_DESC' | translate }}</p>
+        <ul class="bk-hero__list">
+          <li>{{ 'ADMIN.BACKUP.FULL_BACKUP_POINT_1' | translate }}</li>
+          <li>{{ 'ADMIN.BACKUP.FULL_BACKUP_POINT_2' | translate }}</li>
+          <li>{{ 'ADMIN.BACKUP.FULL_BACKUP_POINT_3' | translate }}</li>
+        </ul>
+      </div>
+      <div class="bk-hero__icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2 1 3 3 3h10c2 0 3-1 3-3V7M4 7h16M4 7l2-3h12l2 3M9 12h6"/>
+        </svg>
       </div>
     </div>
 
-    <!-- Right: Module selection -->
-    <div class="xl:col-span-8">
-      <div class="backup-card h-full">
-        <div class="backup-card-header backup-card-header-modules">
-          <span class="backup-card-icon">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
-            </svg>
-          </span>
-          <div class="flex-1">
-            <h3 class="backup-card-title">{{ 'ADMIN.BACKUP.SELECT_MODULES' | translate }}</h3>
+    <div *ngIf="operationPhase === 'running' || operationProgress > 0" class="bk-progress-panel">
+      <div class="bk-progress-panel__head">
+        <span>{{ 'ADMIN.BACKUP.PROGRESS_LABEL' | translate }}</span>
+        <strong>{{ operationProgress }}%</strong>
+      </div>
+      <div class="bk-progress-bar">
+        <div class="bk-progress-bar__fill" [style.width.%]="operationProgress"></div>
+      </div>
+      <p *ngIf="operationCurrentItem" class="bk-progress-panel__item">{{ operationCurrentItem }}</p>
+    </div>
+
+    <div class="bk-grid bk-grid--2">
+      <article class="bk-card bk-card--accent">
+        <div class="bk-card__head">
+          <div class="bk-card__icon bk-card__icon--teal">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
           </div>
-          <div class="flex gap-2">
-            <button type="button" (click)="selectAll()" class="backup-link-btn">
-              {{ 'ADMIN.BACKUP.SELECT_ALL' | translate }}
-            </button>
-            <span class="text-neutral-300">|</span>
-            <button type="button" (click)="clearAll()" class="backup-link-btn backup-link-btn-muted">
-              {{ 'ADMIN.BACKUP.CLEAR_ALL' | translate }}
-            </button>
+          <div>
+            <h3 class="bk-card__title">{{ 'ADMIN.BACKUP.FULL_BACKUP_CREATE_TITLE' | translate }}</h3>
+            <p class="bk-card__desc">{{ 'ADMIN.BACKUP.FULL_BACKUP_CREATE_DESC' | translate }}</p>
           </div>
         </div>
-        <div class="backup-card-body backup-modules-body">
-          <div *ngFor="let group of groupedModules" class="backup-module-group">
-            <p class="backup-group-label">{{ group.groupKey | translate }}</p>
-            <div class="backup-modules-grid">
+        <div class="bk-card__body">
+          <button
+            type="button"
+            class="bk-btn bk-btn--primary bk-btn--block"
+            (click)="exportFullDatabase()"
+            [disabled]="fullBackupLoading || restoreLoading"
+          >
+            <svg *ngIf="!fullBackupLoading" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            <span class="bk-spinner" *ngIf="fullBackupLoading"></span>
+            <span>{{ fullBackupLoading ? ('ADMIN.BACKUP.FULL_BACKUP_CREATING' | translate) : ('ADMIN.BACKUP.FULL_BACKUP_BUTTON' | translate) }}</span>
+          </button>
+        </div>
+      </article>
+
+      <article class="bk-card bk-card--restore">
+        <div class="bk-card__head">
+          <div class="bk-card__icon bk-card__icon--violet">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h5M20 20v-5h-5M4 9a9 9 0 0115.3-6.7L20 5M20 15a9 9 0 01-15.3 6.7L4 19"/></svg>
+          </div>
+          <div>
+            <h3 class="bk-card__title">{{ 'ADMIN.BACKUP.RESTORE_TITLE' | translate }}</h3>
+            <p class="bk-card__desc">{{ 'ADMIN.BACKUP.RESTORE_DESC' | translate }}</p>
+          </div>
+        </div>
+        <div class="bk-card__body">
+          <label class="bk-upload" [class.bk-upload--filled]="selectedRestoreFile">
+            <input type="file" accept=".sql,text/sql" (change)="onRestoreFileSelected($event)" />
+            <span class="bk-upload__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+            </span>
+            <span class="bk-upload__text" *ngIf="!selectedRestoreFile">{{ 'ADMIN.BACKUP.RESTORE_FILE_HINT' | translate }}</span>
+            <span class="bk-upload__text bk-upload__text--name" *ngIf="selectedRestoreFile">{{ selectedRestoreFile.name }}</span>
+          </label>
+
+          <button
+            type="button"
+            class="bk-btn bk-btn--secondary bk-btn--block"
+            (click)="restoreFullDatabase()"
+            [disabled]="restoreLoading || fullBackupLoading || !selectedRestoreFile"
+          >
+            <span class="bk-spinner bk-spinner--dark" *ngIf="restoreLoading"></span>
+            <span>{{ restoreLoading ? ('ADMIN.BACKUP.RESTORE_RUNNING' | translate) : ('ADMIN.BACKUP.RESTORE_BUTTON' | translate) }}</span>
+          </button>
+
+          <div *ngIf="restoreError" class="bk-alert bk-alert--error">{{ restoreError }}</div>
+
+          <div *ngIf="restoreSummary" class="bk-restore-summary">
+            <h4>{{ 'ADMIN.BACKUP.RESTORE_RESULT_TITLE' | translate }}</h4>
+            <div class="bk-stats">
+              <div class="bk-stat bk-stat--ok">
+                <span class="bk-stat__value">{{ restoreSummary.rowsInserted }}</span>
+                <span class="bk-stat__label">{{ 'ADMIN.BACKUP.RESTORE_INSERTED' | translate }}</span>
+              </div>
+              <div class="bk-stat bk-stat--muted">
+                <span class="bk-stat__value">{{ restoreSummary.rowsSkipped }}</span>
+                <span class="bk-stat__label">{{ 'ADMIN.BACKUP.RESTORE_SKIPPED' | translate }}</span>
+              </div>
+              <div class="bk-stat">
+                <span class="bk-stat__value">{{ restoreSummary.tablesChanged ?? 0 }}</span>
+                <span class="bk-stat__label">{{ 'ADMIN.BACKUP.RESTORE_TABLES_CHANGED' | translate }}</span>
+              </div>
+            </div>
+            <p class="bk-restore-note">{{ 'ADMIN.BACKUP.RESTORE_NOTE' | translate:{ total: restoreSummary.totalTables ?? restoreSummary.tablesProcessed } }}</p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Excel module export -->
+  <section *ngIf="activeTab === 'excel'" class="bk-section">
+    <div class="bk-grid bk-grid--excel">
+      <aside class="bk-sidebar">
+        <article class="bk-card">
+          <div class="bk-card__head">
+            <div class="bk-card__icon bk-card__icon--sky">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            </div>
+            <div>
+              <h3 class="bk-card__title">{{ 'ADMIN.BACKUP.DATE_RANGE' | translate }}</h3>
+              <p class="bk-card__desc">{{ 'ADMIN.BACKUP.DATE_RANGE_HINT' | translate }}</p>
+            </div>
+          </div>
+          <div class="bk-card__body">
+            <div class="bk-field-grid">
+              <div>
+                <label for="fromDate" class="bk-label">{{ 'ADMIN.BACKUP.FROM' | translate }}</label>
+                <input id="fromDate" type="date" [(ngModel)]="fromDate" class="bk-input" />
+              </div>
+              <div>
+                <label for="toDate" class="bk-label">{{ 'ADMIN.BACKUP.TO' | translate }}</label>
+                <input id="toDate" type="date" [(ngModel)]="toDate" class="bk-input" />
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="bk-card bk-card--sticky">
+          <div class="bk-card__body">
+            <div *ngIf="exporting && progressMessage" class="bk-alert bk-alert--info">
+              <span class="bk-spinner"></span>
+              {{ progressMessage }}
+            </div>
+            <div *ngIf="errorMessage" class="bk-alert bk-alert--error">{{ errorMessage }}</div>
+
+            <button
+              type="button"
+              class="bk-btn bk-btn--primary bk-btn--block"
+              (click)="export()"
+              [disabled]="exporting || selectedModules.size === 0"
+            >
+              <svg *ngIf="!exporting" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+              <span class="bk-spinner" *ngIf="exporting"></span>
+              <span>{{ exporting ? ('ADMIN.BACKUP.EXPORTING' | translate) : ('ADMIN.BACKUP.EXPORT_BUTTON' | translate) }}</span>
+            </button>
+            <p class="bk-footnote">{{ 'ADMIN.BACKUP.SELECT_MODULES' | translate }} · {{ selectedModules.size }}</p>
+          </div>
+        </article>
+      </aside>
+
+      <article class="bk-card bk-card--modules">
+        <div class="bk-card__head bk-card__head--split">
+          <div class="bk-card__head-main">
+            <div class="bk-card__icon bk-card__icon--emerald">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+            </div>
+            <div>
+              <h3 class="bk-card__title">{{ 'ADMIN.BACKUP.EXCEL_SECTION_TITLE' | translate }}</h3>
+              <p class="bk-card__desc">{{ 'ADMIN.BACKUP.EXCEL_SECTION_DESC' | translate }}</p>
+            </div>
+          </div>
+          <div class="bk-card__actions">
+            <button type="button" class="bk-link" (click)="selectAll()">{{ 'ADMIN.BACKUP.SELECT_ALL' | translate }}</button>
+            <span class="bk-divider">|</span>
+            <button type="button" class="bk-link bk-link--muted" (click)="clearAll()">{{ 'ADMIN.BACKUP.CLEAR_ALL' | translate }}</button>
+          </div>
+        </div>
+        <div class="bk-card__body bk-modules-scroll">
+          <div *ngFor="let group of groupedModules" class="bk-module-group">
+            <p class="bk-group-label">{{ group.groupKey | translate }}</p>
+            <div class="bk-modules-grid">
               <label
                 *ngFor="let item of group.items"
-                class="backup-module-chip"
-                [class.backup-module-chip-selected]="selectedModules.has(item.key)"
+                class="bk-chip"
+                [class.bk-chip--selected]="selectedModules.has(item.key)"
               >
-                <input
-                  type="checkbox"
-                  [checked]="selectedModules.has(item.key)"
-                  (change)="toggleModule(item.key)"
-                  class="backup-module-checkbox"
-                />
-                <span class="backup-module-label">{{ item.labelKey | translate }}</span>
+                <input type="checkbox" [checked]="selectedModules.has(item.key)" (change)="toggleModule(item.key)" />
+                <span>{{ item.labelKey | translate }}</span>
               </label>
             </div>
           </div>
         </div>
-      </div>
+      </article>
     </div>
-  </div>
+  </section>
 </div>

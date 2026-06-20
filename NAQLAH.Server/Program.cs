@@ -38,7 +38,12 @@ namespace NAQLAH.Server
             // Add services to the container.
 
             var presentaionAssembly = typeof(PresentaionLayerAssemblyRefrence).Assembly;
-            builder.Services.AddControllers().AddApplicationPart(presentaionAssembly);
+            builder.Services.AddControllers()
+                .AddApplicationPart(presentaionAssembly)
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+                });
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

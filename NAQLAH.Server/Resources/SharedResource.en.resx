@@ -291,6 +291,18 @@
   <data name="NoExporterForModule" xml:space="preserve">
     <value>No exporter registered for this module</value>
   </data>
+  <data name="BackupFileRequired" xml:space="preserve">
+    <value>Backup file is required</value>
+  </data>
+  <data name="InvalidBackupFile" xml:space="preserve">
+    <value>Invalid backup file</value>
+  </data>
+  <data name="DatabaseBackupFailed" xml:space="preserve">
+    <value>Failed to create database backup</value>
+  </data>
+  <data name="DatabaseRestoreFailed" xml:space="preserve">
+    <value>Failed to restore database backup</value>
+  </data>
   <data name="AssistantWorkNotFound" xml:space="preserve">
     <value>Assistant work not found</value>
   </data>

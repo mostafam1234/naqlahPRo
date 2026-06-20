@@ -4083,6 +4083,228 @@
         }
       }
     },
+    "/api/BackupAdmin/ExportFullDatabase": {
+      "get": {
+        "tags": [
+          "BackupAdmin"
+        ],
+        "operationId": "BackupAdmin_ExportFullDatabase",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/BackupAdmin/StartFullDatabaseBackup": {
+      "post": {
+        "tags": [
+          "BackupAdmin"
+        ],
+        "operationId": "BackupAdmin_StartFullDatabaseBackup",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/BackupAdmin/StartFullDatabaseRestore": {
+      "post": {
+        "tags": [
+          "BackupAdmin"
+        ],
+        "operationId": "BackupAdmin_StartFullDatabaseRestore",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "nullable": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/BackupAdmin/OperationStatus/{jobId}": {
+      "get": {
+        "tags": [
+          "BackupAdmin"
+        ],
+        "operationId": "BackupAdmin_GetOperationStatus",
+        "parameters": [
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DatabaseOperationStatus"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/BackupAdmin/OperationDownload/{jobId}": {
+      "get": {
+        "tags": [
+          "BackupAdmin"
+        ],
+        "operationId": "BackupAdmin_DownloadOperationResult",
+        "parameters": [
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/BackupAdmin/RestoreFullDatabase": {
+      "post": {
+        "tags": [
+          "BackupAdmin"
+        ],
+        "operationId": "BackupAdmin_RestoreFullDatabase",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "nullable": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DatabaseRestoreSummary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/CustomerAdmin/GetAllCustomers": {
       "get": {
         "tags": [
@@ -11988,6 +12210,82 @@
             "items": {
               "type": "string"
             }
+          }
+        }
+      },
+      "DatabaseOperationStatus": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "jobId": {
+            "type": "string"
+          },
+          "operation": {
+            "type": "string"
+          },
+          "phase": {
+            "type": "string"
+          },
+          "progressPercent": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "currentItem": {
+            "type": "string"
+          },
+          "completedItems": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalItems": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "summary": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/DatabaseRestoreSummary"
+              }
+            ]
+          },
+          "errorMessage": {
+            "type": "string",
+            "nullable": true
+          },
+          "downloadFileName": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "DatabaseRestoreSummary": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "totalTables": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tablesProcessed": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "tablesChanged": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rowsInserted": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rowsSkipped": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "batchesExecuted": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
