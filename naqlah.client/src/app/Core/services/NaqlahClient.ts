@@ -6200,6 +6200,355 @@ export class BackupAdminClient {
         }
         return _observableOf(null as any);
     }
+
+    exportFullDatabase(): Observable<FileResponse> {
+        let url_ = this.baseUrl + "/api/BackupAdmin/ExportFullDatabase";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/octet-stream"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processExportFullDatabase(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processExportFullDatabase(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<FileResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<FileResponse>;
+        }));
+    }
+
+    protected processExportFullDatabase(response: HttpResponseBase): Observable<FileResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
+            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
+            if (fileName) {
+                fileName = decodeURIComponent(fileName);
+            } else {
+                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            }
+            return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    startFullDatabaseBackup(): Observable<any> {
+        let url_ = this.baseUrl + "/api/BackupAdmin/StartFullDatabaseBackup";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processStartFullDatabaseBackup(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processStartFullDatabaseBackup(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<any>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<any>;
+        }));
+    }
+
+    protected processStartFullDatabaseBackup(response: HttpResponseBase): Observable<any> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    startFullDatabaseRestore(file?: FileParameter | null | undefined): Observable<any> {
+        let url_ = this.baseUrl + "/api/BackupAdmin/StartFullDatabaseRestore";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = new FormData();
+        if (file !== null && file !== undefined)
+            content_.append("file", file.data, file.fileName ? file.fileName : "file");
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processStartFullDatabaseRestore(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processStartFullDatabaseRestore(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<any>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<any>;
+        }));
+    }
+
+    protected processStartFullDatabaseRestore(response: HttpResponseBase): Observable<any> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : <any>null;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getOperationStatus(jobId: string): Observable<DatabaseOperationStatus> {
+        let url_ = this.baseUrl + "/api/BackupAdmin/OperationStatus/{jobId}";
+        if (jobId === undefined || jobId === null)
+            throw new Error("The parameter 'jobId' must be defined.");
+        url_ = url_.replace("{jobId}", encodeURIComponent("" + jobId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetOperationStatus(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetOperationStatus(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<DatabaseOperationStatus>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<DatabaseOperationStatus>;
+        }));
+    }
+
+    protected processGetOperationStatus(response: HttpResponseBase): Observable<DatabaseOperationStatus> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = DatabaseOperationStatus.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 404) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result404: any = null;
+            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result404 = ProblemDetails.fromJS(resultData404);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result404);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    downloadOperationResult(jobId: string): Observable<FileResponse> {
+        let url_ = this.baseUrl + "/api/BackupAdmin/OperationDownload/{jobId}";
+        if (jobId === undefined || jobId === null)
+            throw new Error("The parameter 'jobId' must be defined.");
+        url_ = url_.replace("{jobId}", encodeURIComponent("" + jobId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/octet-stream"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDownloadOperationResult(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDownloadOperationResult(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<FileResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<FileResponse>;
+        }));
+    }
+
+    protected processDownloadOperationResult(response: HttpResponseBase): Observable<FileResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            let fileNameMatch = contentDisposition ? /filename\*=(?:(\\?['"])(.*?)\1|(?:[^\s]+'.*?')?([^;\n]*))/g.exec(contentDisposition) : undefined;
+            let fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[3] || fileNameMatch[2] : undefined;
+            if (fileName) {
+                fileName = decodeURIComponent(fileName);
+            } else {
+                fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+                fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            }
+            return _observableOf({ fileName: fileName, data: responseBlob as any, status: status, headers: _headers });
+        } else if (status === 404) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result404: any = null;
+            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result404 = ProblemDetails.fromJS(resultData404);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result404);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    restoreFullDatabase(file?: FileParameter | null | undefined): Observable<DatabaseRestoreSummary> {
+        let url_ = this.baseUrl + "/api/BackupAdmin/RestoreFullDatabase";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = new FormData();
+        if (file !== null && file !== undefined)
+            content_.append("file", file.data, file.fileName ? file.fileName : "file");
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processRestoreFullDatabase(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processRestoreFullDatabase(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<DatabaseRestoreSummary>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<DatabaseRestoreSummary>;
+        }));
+    }
+
+    protected processRestoreFullDatabase(response: HttpResponseBase): Observable<DatabaseRestoreSummary> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = DatabaseRestoreSummary.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result400: any = null;
+            let resultData400 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result400 = ProblemDetail.fromJS(resultData400);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result400);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 @Injectable({
@@ -17094,6 +17443,94 @@ export class AuditFilterOptionsDto {
     }
 }
 
+export class DatabaseOperationStatus {
+    jobId!: string;
+    operation!: string;
+    phase!: string;
+    progressPercent!: number;
+    currentItem!: string;
+    completedItems!: number;
+    totalItems!: number;
+    summary!: DatabaseRestoreSummary | null;
+    errorMessage!: string | null;
+    downloadFileName!: string | null;
+
+    init(_data?: any) {
+        if (_data) {
+            this.jobId = _data["jobId"] !== undefined ? _data["jobId"] : <any>null;
+            this.operation = _data["operation"] !== undefined ? _data["operation"] : <any>null;
+            this.phase = _data["phase"] !== undefined ? _data["phase"] : <any>null;
+            this.progressPercent = _data["progressPercent"] !== undefined ? _data["progressPercent"] : <any>null;
+            this.currentItem = _data["currentItem"] !== undefined ? _data["currentItem"] : <any>null;
+            this.completedItems = _data["completedItems"] !== undefined ? _data["completedItems"] : <any>null;
+            this.totalItems = _data["totalItems"] !== undefined ? _data["totalItems"] : <any>null;
+            this.summary = _data["summary"] ? DatabaseRestoreSummary.fromJS(_data["summary"]) : <any>null;
+            this.errorMessage = _data["errorMessage"] !== undefined ? _data["errorMessage"] : <any>null;
+            this.downloadFileName = _data["downloadFileName"] !== undefined ? _data["downloadFileName"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): DatabaseOperationStatus {
+        data = typeof data === 'object' ? data : {};
+        let result = new DatabaseOperationStatus();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["jobId"] = this.jobId !== undefined ? this.jobId : <any>null;
+        data["operation"] = this.operation !== undefined ? this.operation : <any>null;
+        data["phase"] = this.phase !== undefined ? this.phase : <any>null;
+        data["progressPercent"] = this.progressPercent !== undefined ? this.progressPercent : <any>null;
+        data["currentItem"] = this.currentItem !== undefined ? this.currentItem : <any>null;
+        data["completedItems"] = this.completedItems !== undefined ? this.completedItems : <any>null;
+        data["totalItems"] = this.totalItems !== undefined ? this.totalItems : <any>null;
+        data["summary"] = this.summary ? this.summary.toJSON() : <any>null;
+        data["errorMessage"] = this.errorMessage !== undefined ? this.errorMessage : <any>null;
+        data["downloadFileName"] = this.downloadFileName !== undefined ? this.downloadFileName : <any>null;
+        return data;
+    }
+}
+
+export class DatabaseRestoreSummary {
+    totalTables!: number;
+    tablesProcessed!: number;
+    tablesChanged!: number;
+    rowsInserted!: number;
+    rowsSkipped!: number;
+    batchesExecuted!: number;
+
+    init(_data?: any) {
+        if (_data) {
+            this.totalTables = _data["totalTables"] !== undefined ? _data["totalTables"] : <any>null;
+            this.tablesProcessed = _data["tablesProcessed"] !== undefined ? _data["tablesProcessed"] : <any>null;
+            this.tablesChanged = _data["tablesChanged"] !== undefined ? _data["tablesChanged"] : <any>null;
+            this.rowsInserted = _data["rowsInserted"] !== undefined ? _data["rowsInserted"] : <any>null;
+            this.rowsSkipped = _data["rowsSkipped"] !== undefined ? _data["rowsSkipped"] : <any>null;
+            this.batchesExecuted = _data["batchesExecuted"] !== undefined ? _data["batchesExecuted"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): DatabaseRestoreSummary {
+        data = typeof data === 'object' ? data : {};
+        let result = new DatabaseRestoreSummary();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalTables"] = this.totalTables !== undefined ? this.totalTables : <any>null;
+        data["tablesProcessed"] = this.tablesProcessed !== undefined ? this.tablesProcessed : <any>null;
+        data["tablesChanged"] = this.tablesChanged !== undefined ? this.tablesChanged : <any>null;
+        data["rowsInserted"] = this.rowsInserted !== undefined ? this.rowsInserted : <any>null;
+        data["rowsSkipped"] = this.rowsSkipped !== undefined ? this.rowsSkipped : <any>null;
+        data["batchesExecuted"] = this.batchesExecuted !== undefined ? this.batchesExecuted : <any>null;
+        return data;
+    }
+}
+
 export class PagedResultOfAdminCustomerListItemDto {
     data!: AdminCustomerListItemDto[];
     totalCount!: number;
@@ -21096,6 +21533,11 @@ function formatDate(d: Date) {
     return d.getFullYear() + '-' + 
         (d.getMonth() < 9 ? ('0' + (d.getMonth()+1)) : (d.getMonth()+1)) + '-' +
         (d.getDate() < 10 ? ('0' + d.getDate()) : d.getDate());
+}
+
+export interface FileParameter {
+    data: any;
+    fileName: string;
 }
 
 export interface FileResponse {

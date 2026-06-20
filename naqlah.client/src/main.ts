@@ -15,6 +15,20 @@ export function HttpLoaderFactory(httpClient: HttpClient) {
   return new TranslateHttpLoader(httpClient);
 }
 
+function resolveApiBaseUrl(config: AppConfigService): string {
+  const configured = config.getConfig().apiBaseUrl?.replace(/\/$/, '') ?? '';
+  if (typeof window === 'undefined') {
+    return configured;
+  }
+
+  const host = window.location.hostname;
+  if (host === 'localhost' || host === '127.0.0.1') {
+    return '';
+  }
+
+  return configured;
+}
+
 bootstrapApplication(AppComponent, {
   providers: [
     // إضافة HTTP Client مع الـ interceptors
@@ -30,7 +44,7 @@ bootstrapApplication(AppComponent, {
     }),
     appRouterProviders,
     RolePermissionsAdminClient,
-    { provide: API_BASE_URL, useFactory: (config: AppConfigService) => config.getConfig().apiBaseUrl || '', deps: [AppConfigService] },
+    { provide: API_BASE_URL, useFactory: (config: AppConfigService) => resolveApiBaseUrl(config), deps: [AppConfigService] },
     importProvidersFrom(
       TranslateModule.forRoot({
         loader: {

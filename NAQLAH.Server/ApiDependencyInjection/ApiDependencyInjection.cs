@@ -31,6 +31,10 @@ namespace NAQLAH.Server.ApiDependencyInjection
             services.AddHttpClient<IMadaPaymentService, Infrastructure.Services.MadaPaymentService>();
             services.AddSingleton<IReadFromAppSetting, ReadFromAppSetting>();
             services.AddScoped<IInvoicePdfService, InvoicePdfService>();
+            services.AddScoped<IDatabaseBackupService, DatabaseBackupService>();
+            services.AddSingleton<IDatabaseBackupJobStore, DatabaseBackupJobStore>();
+            services.AddSingleton<DatabaseBackupJobRunner>();
+            services.AddScoped<IBackupOperationService, BackupOperationService>();
             services.AddScoped<Application.Shared.Services.ICustomerNotificationService, Application.Shared.Services.CustomerNotificationService>();
             services.AddScoped<ProcessScheduledNotificationsJob>();
             return services;

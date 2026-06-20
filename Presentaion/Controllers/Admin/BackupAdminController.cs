@@ -1,3 +1,4 @@
+using Application.Features.AdminSection.BackupFeature.Commands;
 using Application.Features.AdminSection.BackupFeature.Dtos;
 using Application.Features.AdminSection.BackupFeature.Queries;
 using Domain.Constants;
@@ -21,16 +22,18 @@ namespace Presentaion.Controllers.Admin
     {
         private readonly IMediator _mediator;
         private readonly IUserSession _userSession;
+        private readonly IBackupOperationService _backupOperationService;
 
-        public BackupAdminController(IMediator mediator, IUserSession userSession)
+        public BackupAdminController(
+            IMediator mediator,
+            IUserSession userSession,
+            IBackupOperationService backupOperationService)
         {
             _mediator = mediator;
             _userSession = userSession;
+            _backupOperationService = backupOperationService;
         }
 
-        /// <summary>
-        /// Export a single module to Excel. Optional from/to date filter (applies only to date-filterable modules).
-        /// </summary>
         [HttpGet("Export")]
         [ProducesResponseType(typeof(FileResult), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
@@ -54,6 +57,90 @@ namespace Presentaion.Controllers.Admin
 
             var exportResult = result.Value;
             return File(exportResult.Stream, exportResult.ContentType, exportResult.FileName);
+        }
+
+        [HttpGet("ExportFullDatabase")]
+        [ProducesResponseType(typeof(FileResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> ExportFullDatabase()
+        {
+            var result = await _mediator.Send(new ExportFullDatabaseBackupQuery());
+
+            if (result.IsFailure)
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+
+            var exportResult = result.Value;
+            return File(exportResult.Stream, exportResult.ContentType, exportResult.FileName);
+        }
+
+        [HttpPost("StartFullDatabaseBackup")]
+        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+        public IActionResult StartFullDatabaseBackup()
+        {
+            var jobId = _backupOperationService.StartBackup();
+            return Ok(new { jobId });
+        }
+
+        [HttpPost("StartFullDatabaseRestore")]
+        [RequestSizeLimit(524_288_000)]
+        [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        public IActionResult StartFullDatabaseRestore(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest(ProblemDetail.CreateProblemDetail("BackupFileRequired"));
+
+            var stream = file.OpenReadStream();
+            var jobId = _backupOperationService.StartRestore(stream);
+            return Ok(new { jobId });
+        }
+
+        [HttpGet("OperationStatus/{jobId}")]
+        [ProducesResponseType(typeof(DatabaseOperationStatus), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult GetOperationStatus(string jobId)
+        {
+            var status = _backupOperationService.GetStatus(jobId);
+            if (status == null)
+                return NotFound();
+
+            return Ok(status);
+        }
+
+        [HttpGet("OperationDownload/{jobId}")]
+        [ProducesResponseType(typeof(FileResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult DownloadOperationResult(string jobId)
+        {
+            var status = _backupOperationService.GetStatus(jobId);
+            if (status == null || status.Phase != "completed")
+                return NotFound();
+
+            var bytes = _backupOperationService.GetBackupFile(jobId);
+            if (bytes == null || bytes.Length == 0)
+                return NotFound();
+
+            var fileName = status.DownloadFileName ?? "Naqlah_FullBackup.sql";
+            return File(bytes, "application/sql", fileName);
+        }
+
+        [HttpPost("RestoreFullDatabase")]
+        [RequestSizeLimit(524_288_000)]
+        [ProducesResponseType(typeof(DatabaseRestoreSummary), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetail), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> RestoreFullDatabase(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest(ProblemDetail.CreateProblemDetail("BackupFileRequired"));
+
+            await using var stream = file.OpenReadStream();
+            var command = new RestoreFullDatabaseBackupCommand { SqlStream = stream };
+            var result = await _mediator.Send(command);
+
+            if (result.IsFailure)
+                return BadRequest(ProblemDetail.CreateProblemDetail(result.Error));
+
+            return Ok(result.Value);
         }
     }
 }
